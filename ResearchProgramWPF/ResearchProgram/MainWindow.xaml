@@ -51,16 +51,12 @@
                         <RowDefinition Height="16*" />
                         <RowDefinition Height="25"/>
                     </Grid.RowDefinitions>
-                    
-                    <TabControl Grid.Row="0">
-                        <TabItem Header="2020 год"
-                                 Name="tabItem1">
-                            
-                        </TabItem>
-                        <TabItem Header="ПГНИУ">
-                            
-                        </TabItem>
-                    </TabControl>
+
+                    <DataGrid x:Name="GrantsTable"
+                              AutoGenerateColumns="True"
+                              ItemsSource="{Binding GrantsDataTable}"
+                              Grid.Row="0">
+                    </DataGrid>
 
                     <Label Content="Отображение с НДФЛ" 
                            Grid.Row="1"
@@ -68,7 +64,12 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Люди">
-                <Grid Background="#FFE5E5E5" />
+                <Grid Background="#FFE5E5E5">
+                    <DataGrid x:Name="PeopleTable"
+                              AutoGenerateColumns="True"
+                              ItemsSource="{Binding PeopleDataTable}">
+                    </DataGrid>
+                </Grid>
             </TabItem>
         </TabControl>
 

@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Data;
+using Npgsql;
 
 namespace ResearchProgram
 {
@@ -62,25 +64,86 @@ namespace ResearchProgram
     /// </summary>
     public partial class MainWindow : Window
     {
+        public DataTable GrantsDataTable { get; private set; }
+        public DataTable PeopleDataTable { get; private set; }
 
         public MainWindow()
         {
+
             InitializeComponent();
 
 
-            DataGrid dg = new DataGrid();
-            dg.Name = "testName1";
+            // Загружаем данные в таблицу грантов
+            LoadGrantsTable();
+            // Загружаем данные в таблицу людей
+            LoadPeopleTable();
 
-            // Создание столбцов
-            DataGridTextColumn textcol = new DataGridTextColumn();
-            Binding b = new Binding("Lol kek cheburek");
-            textcol.Binding = b;
-            textcol.Header = "textcol1";
-            dg.Columns.Add(textcol);
-            tabItem1.Content = dg;
-
+            DataContext = this;
         }
 
+        /// <summary>
+        /// Загрузка данных в таблицу договоров
+        /// </summary>
+        private void LoadGrantsTable()
+        {
+            var ds = new DataSet("Grants");
+            this.GrantsDataTable = ds.Tables.Add("GrantsTable");
 
+            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.LoadTable(GrantsDataTable);
+            CRUDDataBase.CloseConnect();
+        }
+
+        /// <summary>
+        /// Загрузка данных в таблицу людей
+        /// </summary>
+        private void LoadPeopleTable()
+        {
+            var ds = new DataSet("Grants");
+            this.PeopleDataTable = ds.Tables.Add("PeopleTable");
+            this.PeopleDataTable.Columns.Add("First");
+            this.PeopleDataTable.Columns.Add("Second");
+
+            this.PeopleDataTable.Rows.Add("11", "12");
+            this.PeopleDataTable.Rows.Add("21", "22");
+        }
+
+    }
+
+
+
+    public static class CRUDDataBase
+    {
+        public static string loginFromDB = Environment.GetEnvironmentVariable("PGUSER");
+        public static string passwordFromDB = Environment.GetEnvironmentVariable("PGPASSWORD");
+
+        private static NpgsqlConnection conn;
+
+        public static void ConnectByDataBase()
+        {
+            conn = new NpgsqlConnection($"Server=localhost; Port=5432; User Id={loginFromDB}; Password={passwordFromDB}; Database=postgres");
+            conn.Open();
+        }
+
+        public static void LoadTable(DataTable dataTable)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, OKVED, nameNIOKR, customerId, startDate, endDate, price, id, OKVED, nameNIOKR, customerId, startDate, endDate, price, leadNIOKRId, kafedraId, unitId, institutionId, GRNTI, NIR, NOC FROM grants;", conn);
+            NpgsqlDataReader dr = cmd.ExecuteReader();
+
+
+            dataTable.Columns.Add("First");
+            dataTable.Columns.Add("Second");
+            while (dr.Read())
+            {
+
+                dataTable.Rows.Add("11", "12");
+                dataTable.Rows.Add("21", "22");
+            }
+        }
+
+        public static void CloseConnect()
+        {
+            conn.Close();
+        }
     }
 }
