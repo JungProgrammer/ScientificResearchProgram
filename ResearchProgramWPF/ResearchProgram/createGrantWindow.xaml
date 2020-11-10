@@ -84,8 +84,6 @@
             </Grid.RowDefinitions>
 
             <TabControl Grid.Row="0">
-
-
                 <TabItem Name="OKVED">
                     <TabItem.Content>
                         <Grid>
@@ -176,7 +174,7 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <Label Content="Дата начала"
+                            <Label Content="Дата окончания"
                                    Grid.Row="0"
                                    Margin="0 5 0 0"/>
                             <DatePicker Name="endDateDatePicker"
@@ -207,7 +205,7 @@
 
                 <TabItem Name="deposits">
                     <TabItem.Content>
-                        <Grid>
+                        <Grid Name="depositsGrid">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -222,18 +220,18 @@
                                    Grid.Row="0"
                                    Grid.Column="0"
                                    Margin="0 5 0 0"/>
-                            <ComboBox Grid.Row="1"
+                            <!--<ComboBox Grid.Row="1"
                                       Grid.Column="0"
                                       Margin="5 0"
-                                      ItemsSource="{Binding depositsList}"/>
+                                      ItemsSource="{Binding depositsList}"/>-->
                             <Label Content="Сумма"
                                    Grid.Row="0"
                                    Grid.Column="1"
                                    Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="1"
+                            <!--<TextBox Grid.Row="1"
                                      Grid.Column="1"
                                      Name="summTextBox1"
-                                     Margin="5 0"/>
+                                     Margin="5 0"/>-->
                             <Button Content="+"
                                     Name="depositsAddButton"
                                     Grid.Row="2"
@@ -270,7 +268,7 @@
 
                 <TabItem Name="executors">
                     <TabItem.Content>
-                        <Grid>
+                        <Grid Name="executorsGrid">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -280,7 +278,7 @@
                             <Label Content="Исполнитель"
                                    Grid.Row="0"
                                    Margin="0 5 0 0"/>
-                            <ComboBox Grid.Row="1"
+                            <!--<ComboBox Grid.Row="1"
                                       Name="executorsComboBox1"
                                       Margin="5 0"
                                       ItemsSource="{Binding personsList}"
@@ -288,7 +286,7 @@
                                       IsEditable="True"
                                       StaysOpenOnEdit="True"
                                       IsDropDownOpen="True"
-                                      KeyUp="Cmb_KeyUp" Grid.ColumnSpan="2"/>
+                                      KeyUp="Cmb_KeyUp" Grid.ColumnSpan="2"/>-->
                             <Button Content="+"
                                     Name="executorsAddButton"
                                     Grid.Row="2"
@@ -394,7 +392,7 @@
 
                 <TabItem Name="researchTypes">
                     <TabItem.Content>
-                        <Grid>
+                        <Grid Name="researchTypesGrid">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -417,30 +415,24 @@
                     </TabItem.Content>
                 </TabItem>
 
-
-
-
-
-
-
-
-
-
-
                 <TabItem x:Name="ExecutorsContractItem">
-                <TabItem.Content>
-                  <Grid>
-                    <Grid.RowDefinitions>
-                      <RowDefinition Height="Auto"/>
-                      <RowDefinition Height="Auto"/>
-                      <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                    <TabItem.Content>
+                        <Grid Name="executorsContractGrid">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="9*"/>
+                                <ColumnDefinition Width="55*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
 
-                    <Label Content="Исполнители по договору"
+                            <Label Content="Исполнители по договору"
                     Grid.Row="0"
                     Margin="0 5 0 0" Grid.ColumnSpan="2"/>
 
-                    <ComboBox Grid.Row="1"
+                            <!--<ComboBox Grid.Row="1"
                               x:Name="executorContranctComboBox"
                               Margin="5 0"
                               ItemsSource="{Binding personsList}"
@@ -448,22 +440,22 @@
                               IsEditable="True"
                               StaysOpenOnEdit="True"
                               IsDropDownOpen="True"
-                              KeyUp="Cmb_KeyUp" Grid.ColumnSpan="2"/>
+                              KeyUp="Cmb_KeyUp" Grid.ColumnSpan="2"/>-->
 
-                    <Button Grid.Row="2"
+                            <Button Grid.Row="2"
                             x:Name="buttonAddExecutorOnContract"
                             Content="+"
-                            Margin="175 7"
-                            Width="Auto"/>
+                            Margin="121.333,7,175,7"
+                            Width="Auto" Grid.Column="1" Click="buttonAddExecutorOnContract_Click"/>
 
-                  </Grid>
-                </TabItem.Content>
-              </TabItem>
+                        </Grid>
+                    </TabItem.Content>
+                </TabItem>
 
 
                 <TabItem x:Name="ScienceTypeItem">
                     <TabItem.Content>
-                        <Grid>
+                        <Grid Name ="scienceTypeGrid">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -474,7 +466,7 @@
                             Grid.Row="0"
                             Margin="0 5 0 0" Grid.ColumnSpan="2"/>
 
-                            <ComboBox Grid.Row="1"
+                            <!--<ComboBox Grid.Row="1"
                                       x:Name="scienceTypeComboBox"
                                       Margin="5 0"
                                       ItemsSource="{Binding scienceTypeList}"
@@ -482,14 +474,14 @@
                                       IsEditable="True"
                                       StaysOpenOnEdit="True"
                                       IsDropDownOpen="True"
-                                      KeyUp="Cmb_KeyUp" Grid.ColumnSpan="2"/>
+                                      KeyUp="Cmb_KeyUp" Grid.ColumnSpan="2"/>-->
 
-                          <Button Grid.Row="2"
+                            <Button Grid.Row="2"
                                   x:Name="buttonAddScienceType"
                                   Content="+"
                                   Margin="175 7"
                                   Width="Auto"/>
-                          
+
                         </Grid>
                     </TabItem.Content>
                 </TabItem>

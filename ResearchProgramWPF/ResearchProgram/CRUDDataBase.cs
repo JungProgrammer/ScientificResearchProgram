@@ -462,5 +462,30 @@ namespace ResearchProgram
             reader.Close();
             return researchTypesList;
         }
+
+        /// <summary>
+        /// Получение списка типов науки
+        /// </summary>
+        /// <returns></returns>
+        public static List<string> GetScienceTypes()
+        {
+            List<string> researchTypesList = new List<string>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT title FROM scienceTypes ORDER BY title;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    researchTypesList.Add(reader[0].ToString());
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+            return researchTypesList;
+        }
     }
 }
