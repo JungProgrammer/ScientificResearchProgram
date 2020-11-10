@@ -67,7 +67,7 @@ namespace ResearchProgram
             depositsGrid.Children.Add(lbl);
             Grid.SetRow(lbl, 0);
             Grid.SetColumn(lbl, 1);*/
-            addExecutorDepositsOnForm();
+            //addExecutorDepositsOnForm();
             addExecutorOnContractOnForm();
             addExecutortOnForm();
             addScienceTypeForm();
@@ -141,25 +141,51 @@ namespace ResearchProgram
             itemsViewOriginal.Refresh();
         }
 
-        private void depositsAddButton_Click(object sender, RoutedEventArgs e)
-        {
-
-            depositsGrid.RowDefinitions.Add(new RowDefinition());
-
-            ComboBox cmb = new ComboBox() { Margin = new Thickness(5, 0, 5, 0), ItemsSource = depositsList };
-            depositsGrid.Children.Add(cmb);
-            Grid.SetRow(cmb, enteredDepositsList.Count() + 1);
-            Grid.SetColumn(cmb, 0);
-            TextBox txt = new TextBox() { Margin = new Thickness(5, 0, 5, 0) };
-            depositsGrid.Children.Add(txt);
-            Grid.SetRow(txt, enteredDepositsList.Count() + 1);
-            Grid.SetColumn(txt, 1);
-            enteredDepositsList.Add(new object[2] { cmb, txt });
-        }
 
         private void buttonAddExecutorOnContract_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void depositsAddButton_Click_1(object sender, RoutedEventArgs e)
+        {
+            //depositsGrid.RowDefinitions.Add(new RowDefinition());
+
+            //ComboBox cmb = new ComboBox() { Margin = new Thickness(5, 0, 5, 0), ItemsSource = depositsList };
+            //depositsGrid.Children.Add(cmb);
+            //Grid.SetRow(cmb, enteredDepositsList.Count() + 1);
+            //Grid.SetColumn(cmb, 0);
+            //TextBox txt = new TextBox() { Margin = new Thickness(5, 0, 5, 0) };
+            //depositsGrid.Children.Add(txt);
+            //Grid.SetRow(txt, enteredDepositsList.Count() + 1);
+            //Grid.SetColumn(txt, 1);
+            //enteredDepositsList.Add(new object[2] { cmb, txt });
+
+
+            StackPanel horizontalStackPanel = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+            };
+
+            ComboBox depositorComboBox = new ComboBox()
+            {
+                Margin = new Thickness(5, 0, 5, 10),
+                ItemsSource = depositsList,
+                MinWidth = 240
+                
+            };
+
+            TextBox sumTextBox = new TextBox()
+            {
+                Margin = new Thickness(5, 0, 5, 10),
+                MinWidth = 90
+            };
+
+            horizontalStackPanel.Children.Add(depositorComboBox);
+            horizontalStackPanel.Children.Add(sumTextBox);
+
+
+            depositsVerticalListView.Items.Add(horizontalStackPanel);
         }
     }
 }

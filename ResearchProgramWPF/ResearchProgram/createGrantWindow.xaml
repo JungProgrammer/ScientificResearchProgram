@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResearchProgram"
         mc:Ignorable="d"
-        Title="Создать новый договор" Height="605" Width="650">
+        Title="Создать новый договор" Height="605" Width="670">
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -207,9 +207,9 @@
                     <TabItem.Content>
                         <Grid Name="depositsGrid">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="15*"/>
+                                <RowDefinition Height="1.2*"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="6*"/>
@@ -219,25 +219,27 @@
                             <Label Content="Средства"
                                    Grid.Row="0"
                                    Grid.Column="0"
-                                   Margin="0 5 0 0"/>
-                            <!--<ComboBox Grid.Row="1"
-                                      Grid.Column="0"
-                                      Margin="5 0"
-                                      ItemsSource="{Binding depositsList}"/>-->
+                                   Margin="0 5 0 0"
+                                   FontSize="13"/>
                             <Label Content="Сумма"
                                    Grid.Row="0"
                                    Grid.Column="1"
-                                   Margin="0 5 0 0"/>
-                            <!--<TextBox Grid.Row="1"
-                                     Grid.Column="1"
-                                     Name="summTextBox1"
-                                     Margin="5 0"/>-->
-                            <Button Content="+"
+                                   Margin="0 5 0 0"
+                                   FontSize="13"/>
+
+
+                            <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="2"
+                                      x:Name="depositsVerticalListView">
+                            </ListView>
+
+                            <Button Content="Добавить"
                                     Name="depositsAddButton"
                                     Grid.Row="2"
                                     Grid.ColumnSpan="2"
-                                    Margin="175 7"
-                                    Width="Auto"/>
+                                    Margin="150 7"
+                                    Width="Auto" Click="depositsAddButton_Click_1"/>
+                            
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
@@ -529,9 +531,9 @@
 
             </TabControl>
 
-            <Button Content="Добавить договор"
+            <Button Content="Создать договор"
                     Grid.Row="1"
-                    Margin="2"></Button>
+                    Margin="280 3 10 3"></Button>
         </Grid>
     </Grid>
 </Window>
