@@ -60,9 +60,9 @@ namespace ResearchProgram
             enteredExecutorsList = new List<ComboBox>();
 
             //addExecutorDepositsOnForm();
-            addExecutorOnContractOnForm();
+            //addExecutorOnContractOnForm();
             //addExecutortOnForm();
-            addScienceTypeForm();
+            //addScienceTypeForm();
             DataContext = this;
         }
         /// <summary>
@@ -133,11 +133,6 @@ namespace ResearchProgram
             itemsViewOriginal.Refresh();
         }
 
-
-        private void buttonAddExecutorOnContract_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         /// <summary>
         /// Добавление строки в средства
@@ -219,6 +214,69 @@ namespace ResearchProgram
                 for (int i = 0; i < countSelectedElement; i++)
                 {
                     executorsVerticalListView.Items.Remove(executorsVerticalListView.SelectedItems[0]);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выделите нужный для удаления элемент");
+            }
+        }
+
+        private void executorOnContractAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            ComboBox executorOnContractComboBox = new ComboBox()
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                ItemsSource = personsList,
+                IsTextSearchEnabled = false,
+                IsEditable = true,
+                StaysOpenOnEdit = true,
+                MinWidth = 300
+            };
+            executorOnContractComboBox.KeyUp += Cmb_KeyUp;
+
+            executorOnContractVerticalListView.Items.Add(executorOnContractComboBox);
+        }
+
+        private void executorOnContractDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            int countSelectedElement = executorOnContractVerticalListView.SelectedItems.Count;
+            if (countSelectedElement > 0)
+            {
+                for (int i = 0; i < countSelectedElement; i++)
+                {
+                    executorOnContractVerticalListView.Items.Remove(executorOnContractVerticalListView.SelectedItems[0]);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выделите нужный для удаления элемент");
+            }
+        }
+
+        private void scienceTypeAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            ComboBox scienceTypeComboBox = new ComboBox() { 
+                Margin = new Thickness(5, 0, 5, 0), 
+                ItemsSource = scienceTypeList, 
+                IsTextSearchEnabled = false, 
+                IsEditable = true, 
+                StaysOpenOnEdit = true,
+                MinWidth = 300
+            };
+            scienceTypeComboBox.KeyUp += Cmb_KeyUp;
+
+            scienceTypeVerticalListView.Items.Add(scienceTypeComboBox);
+        }
+
+        private void scienceTypeDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            int countSelectedElement = scienceTypeVerticalListView.SelectedItems.Count;
+            if (countSelectedElement > 0)
+            {
+                for (int i = 0; i < countSelectedElement; i++)
+                {
+                    scienceTypeVerticalListView.Items.Remove(scienceTypeVerticalListView.SelectedItems[0]);
                 }
             }
             else

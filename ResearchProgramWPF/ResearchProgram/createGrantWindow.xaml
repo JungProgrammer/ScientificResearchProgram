@@ -441,34 +441,40 @@
                     <TabItem.Content>
                         <Grid Name="executorsContractGrid">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="9*"/>
-                                <ColumnDefinition Width="55*"/>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="3*"/>
                             </Grid.ColumnDefinitions>
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="15*"/>
+                                <RowDefinition Height="1.2*"/>
                             </Grid.RowDefinitions>
 
                             <Label Content="Исполнители по договору"
-                    Grid.Row="0"
-                    Margin="0 5 0 0" Grid.ColumnSpan="2"/>
+                                    Grid.Row="0"
+                                    Margin="0 5 0 0" 
+                                   Grid.ColumnSpan="3"/>
 
-                            <!--<ComboBox Grid.Row="1"
-                              x:Name="executorContranctComboBox"
-                              Margin="5 0"
-                              ItemsSource="{Binding personsList}"
-                              IsTextSearchEnabled="False"
-                              IsEditable="True"
-                              StaysOpenOnEdit="True"
-                              IsDropDownOpen="True"
-                              KeyUp="Cmb_KeyUp" Grid.ColumnSpan="2"/>-->
 
-                            <Button Grid.Row="2"
-                            x:Name="buttonAddExecutorOnContract"
-                            Content="+"
-                            Margin="121.333,7,175,7"
-                            Width="Auto" Grid.Column="1" Click="buttonAddExecutorOnContract_Click"/>
+                            <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="executorOnContractVerticalListView">
+                            </ListView>
+
+
+                            <Button Content="Добавить"
+                                    Name="executorOnContractAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="2 5 10 5"
+                                    Width="Auto" Click="executorOnContractAddButton_Click"/>
+                            <Button Content="Удалить"
+                                    Name="executorOnContractDeleteButton"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Margin="0 5 20 5"
+                                    Width="Auto" Click="executorOnContractDeleteButton_Click"/>
 
                         </Grid>
                     </TabItem.Content>
@@ -478,31 +484,42 @@
                 <TabItem x:Name="ScienceTypeItem">
                     <TabItem.Content>
                         <Grid Name ="scienceTypeGrid">
+
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="3*"/>
+                            </Grid.ColumnDefinitions>
+
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="15*"/>
+                                <RowDefinition Height="1.2*"/>
                             </Grid.RowDefinitions>
 
                             <Label Content="Тип науки"
                             Grid.Row="0"
                             Margin="0 5 0 0" Grid.ColumnSpan="2"/>
 
-                            <!--<ComboBox Grid.Row="1"
-                                      x:Name="scienceTypeComboBox"
-                                      Margin="5 0"
-                                      ItemsSource="{Binding scienceTypeList}"
-                                      IsTextSearchEnabled="False"
-                                      IsEditable="True"
-                                      StaysOpenOnEdit="True"
-                                      IsDropDownOpen="True"
-                                      KeyUp="Cmb_KeyUp" Grid.ColumnSpan="2"/>-->
 
-                            <Button Grid.Row="2"
-                                  x:Name="buttonAddScienceType"
-                                  Content="+"
-                                  Margin="175 7"
-                                  Width="Auto"/>
+                            <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="scienceTypeVerticalListView">
+                            </ListView>
+
+
+                            <Button Content="Добавить"
+                                    Name="scienceTypeAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="2 5 10 5"
+                                    Width="Auto" Click="scienceTypeAddButton_Click"/>
+                            <Button Content="Удалить"
+                                    Name="scienceTypeDeleteButton"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Margin="0 5 20 5"
+                                    Width="Auto" Click="scienceTypeDeleteButton_Click"/>
 
                         </Grid>
                     </TabItem.Content>
