@@ -212,7 +212,8 @@
                                 <RowDefinition Height="1.2*"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="6*"/>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="3*"/>
                                 <ColumnDefinition Width="3*"/>
                             </Grid.ColumnDefinitions>
 
@@ -220,26 +221,32 @@
                                    Grid.Row="0"
                                    Grid.Column="0"
                                    Margin="0 5 0 0"
-                                   FontSize="13"/>
+                                   FontSize="13" Grid.ColumnSpan="3"/>
                             <Label Content="Сумма"
                                    Grid.Row="0"
-                                   Grid.Column="1"
+                                   Grid.Column="4"
                                    Margin="0 5 0 0"
                                    FontSize="13"/>
 
 
                             <ListView Grid.Row="1"
-                                      Grid.ColumnSpan="2"
+                                      Grid.ColumnSpan="5"
                                       x:Name="depositsVerticalListView">
                             </ListView>
 
                             <Button Content="Добавить"
                                     Name="depositsAddButton"
                                     Grid.Row="2"
-                                    Grid.ColumnSpan="2"
-                                    Margin="150 7"
+                                    Grid.Column="0"
+                                    Margin="10 5"
                                     Width="Auto" Click="depositsAddButton_Click_1"/>
-                            
+                            <Button Content="Удалить"
+                                    Name="depositsDeleteButton"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Margin="10 5"
+                                    Width="Auto" Click="depositsDeleteButton_Click"/>
+
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
@@ -272,28 +279,41 @@
                     <TabItem.Content>
                         <Grid Name="executorsGrid">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="15*"/>
+                                <RowDefinition Height="1.2*"/>
                             </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="3*"/>
+                            </Grid.ColumnDefinitions>
 
                             <Label Content="Исполнитель"
                                    Grid.Row="0"
+                                   Grid.ColumnSpan="3"
                                    Margin="0 5 0 0"/>
-                            <!--<ComboBox Grid.Row="1"
-                                      Name="executorsComboBox1"
-                                      Margin="5 0"
-                                      ItemsSource="{Binding personsList}"
-                                      IsTextSearchEnabled="False"
-                                      IsEditable="True"
-                                      StaysOpenOnEdit="True"
-                                      IsDropDownOpen="True"
-                                      KeyUp="Cmb_KeyUp" Grid.ColumnSpan="2"/>-->
-                            <Button Content="+"
-                                    Name="executorsAddButton"
+
+
+                            <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="3"
+                                      x:Name="executorsVerticalListView">
+                            </ListView>
+                            
+
+                            <Button Content="Добавить"
+                                    Name="executorAddButton"
                                     Grid.Row="2"
-                                    Margin="175 7"
-                                    Width="Auto"/>
+                                    Grid.Column="0"
+                                    Margin="10 5"
+                                    Width="Auto" Click="executorAddButton_Click"/>
+                            <Button Content="Удалить"
+                                    Name="executorDeleteButton"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Margin="10 5"
+                                    Width="Auto" Click="executorDeleteButton_Click"/>
+
                         </Grid>
                     </TabItem.Content>
                 </TabItem>

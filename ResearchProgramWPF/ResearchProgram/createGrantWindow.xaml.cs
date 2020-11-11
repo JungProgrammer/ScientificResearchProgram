@@ -59,17 +59,9 @@ namespace ResearchProgram
             enteredScienceTypesList = new List<ComboBox>();
             enteredExecutorsList = new List<ComboBox>();
 
-            /*Label lbl = new Label() { Content = "Средства", Margin = new Thickness(0, 5, 0, 0)};
-            depositsGrid.Children.Add(lbl);
-            Grid.SetRow(lbl, 0);
-            Grid.SetColumn(lbl, 0);
-            lbl = new Label() { Content = "Сумма", Margin = new Thickness(0, 5, 0, 0) };
-            depositsGrid.Children.Add(lbl);
-            Grid.SetRow(lbl, 0);
-            Grid.SetColumn(lbl, 1);*/
             //addExecutorDepositsOnForm();
             addExecutorOnContractOnForm();
-            addExecutortOnForm();
+            //addExecutortOnForm();
             addScienceTypeForm();
             DataContext = this;
         }
@@ -147,20 +139,13 @@ namespace ResearchProgram
 
         }
 
+        /// <summary>
+        /// Добавление строки в средства
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void depositsAddButton_Click_1(object sender, RoutedEventArgs e)
         {
-            //depositsGrid.RowDefinitions.Add(new RowDefinition());
-
-            //ComboBox cmb = new ComboBox() { Margin = new Thickness(5, 0, 5, 0), ItemsSource = depositsList };
-            //depositsGrid.Children.Add(cmb);
-            //Grid.SetRow(cmb, enteredDepositsList.Count() + 1);
-            //Grid.SetColumn(cmb, 0);
-            //TextBox txt = new TextBox() { Margin = new Thickness(5, 0, 5, 0) };
-            //depositsGrid.Children.Add(txt);
-            //Grid.SetRow(txt, enteredDepositsList.Count() + 1);
-            //Grid.SetColumn(txt, 1);
-            //enteredDepositsList.Add(new object[2] { cmb, txt });
-
 
             StackPanel horizontalStackPanel = new StackPanel()
             {
@@ -186,6 +171,60 @@ namespace ResearchProgram
 
 
             depositsVerticalListView.Items.Add(horizontalStackPanel);
+        }
+
+        /// <summary>
+        /// Метод удаления строки из средств
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void depositsDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+
+            int countSelectedElement = depositsVerticalListView.SelectedItems.Count;
+            if (countSelectedElement > 0)
+            {
+                for (int i = 0; i < countSelectedElement; i++)
+                {
+                    depositsVerticalListView.Items.Remove(depositsVerticalListView.SelectedItems[0]);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выделите нужный для удаления элемент");
+            }
+        }
+
+        private void executorAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            ComboBox executorComboBox = new ComboBox()
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                ItemsSource = personsList,
+                IsTextSearchEnabled = false,
+                IsEditable = true,
+                StaysOpenOnEdit = true,
+                MinWidth = 300
+            };
+            executorComboBox.KeyUp += Cmb_KeyUp;
+
+            executorsVerticalListView.Items.Add(executorComboBox);
+        }
+
+        private void executorDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            int countSelectedElement = executorsVerticalListView.SelectedItems.Count;
+            if (countSelectedElement > 0)
+            {
+                for (int i = 0; i < countSelectedElement; i++)
+                {
+                    executorsVerticalListView.Items.Remove(executorsVerticalListView.SelectedItems[0]);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выделите нужный для удаления элемент");
+            }
         }
     }
 }
