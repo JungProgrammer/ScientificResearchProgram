@@ -102,3 +102,5 @@ Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgram
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\ResearchProgram.pdb
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\createGrantWindow.g.cs
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\createGrantWindow.baml
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createGrantWindow.g.cs
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createGrantWindow.baml
