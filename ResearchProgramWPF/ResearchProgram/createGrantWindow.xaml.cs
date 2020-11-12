@@ -1,21 +1,10 @@
-﻿using System;
+﻿using DotNetKit.Windows.Controls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Npgsql;
-using DotNetKit.Windows.Controls;
-using System.ComponentModel;
-using System.Collections.ObjectModel;
-using THE.Controls;
 
 namespace ResearchProgram
 {
@@ -26,7 +15,7 @@ namespace ResearchProgram
     {
         //Списки данных из БД
         public List<string> NIOKRList { get; set; }
-        public List<string> personsList { get; set; }
+        public List<Person> personsList { get; set; }
         public List<string> selectedItems { get; set; }
         public List<string> selectedValues { get; set; }
 
@@ -41,6 +30,9 @@ namespace ResearchProgram
         public List<Object[]> enteredDepositsList { get; set; }
         public List<ComboBox> enteredExecutorsContractList { get; set; }
         public List<ComboBox> enteredScienceTypesList { get; set; }
+
+        public string selectedCustomer { get; set; }
+        AutoCompleteComboBox customerAutoCompleteComboBox;
 
 
         public createGrantWindow()
@@ -66,100 +58,103 @@ namespace ResearchProgram
             enteredScienceTypesList = new List<ComboBox>();
             enteredExecutorsList = new List<ComboBox>();
 
+            addCustomerAutoCompleteComboBox();
+            addLeadNIOKRAutoCompleteComboBox();
+            addInstitutionAutoCompleteComboBox();
+            addUnitAutoCompleteComboBox();
+            addKafedraAutoCompleteComboBox();
+            addResearchTypeAutoCompleteComboBox();
+
+
             DataContext = this;
         }
         /// <summary>
-        /// Динамическое добавление полей ввода на форму средств
+        /// Добавление комбо бокса к заказчику
         /// </summary>
-        private void addExecutorOnContractOnForm()
+        private void addCustomerAutoCompleteComboBox()
         {
-            ComboBox cmb = new ComboBox() { Margin = new Thickness(5, 0, 5, 0), ItemsSource = personsList, IsTextSearchEnabled = false, IsEditable = true, StaysOpenOnEdit = true, IsDropDownOpen = true };
-            cmb.KeyUp += Cmb_KeyUp;
-            executorsContractGrid.Children.Add(cmb);
-            Grid.SetRow(cmb, 1);
-            Grid.SetColumnSpan(cmb, 2);
-            enteredExecutorsContractList.Add(cmb);
-        }
-        /// <summary>
-        /// Динамическое добавление полей ввода на форму исполнителей
-        /// </summary>
-        private void addExecutortOnForm()
-        {
-            ComboBox cmb = new ComboBox() { Margin = new Thickness(5, 0, 5, 0), ItemsSource = personsList, IsTextSearchEnabled = false, IsEditable = true, StaysOpenOnEdit = true, IsDropDownOpen = true };
-            cmb.KeyUp += Cmb_KeyUp;
-            executorsGrid.Children.Add(cmb);
-            Grid.SetRow(cmb, 1);
-            Grid.SetColumnSpan(cmb, 2);
-            enteredExecutorsList.Add(cmb);
-        }
-        /// <summary>
-        /// Динамическое добавление полей ввода на форму исполнителей по договору
-        /// </summary>
-        private void addExecutorDepositsOnForm()
-        {
-            ComboBox cmb = new ComboBox() { Margin = new Thickness(5, 0, 5, 0), ItemsSource = depositsList };
-            depositsGrid.Children.Add(cmb);
-            Grid.SetRow(cmb, 1);
-            Grid.SetColumn(cmb, 0);
-            TextBox txt = new TextBox() { Margin = new Thickness(5, 0, 5, 0) };
-            depositsGrid.Children.Add(txt);
-            Grid.SetRow(txt, 1);
-            Grid.SetColumn(txt, 1);
-            enteredDepositsList.Add(new object[2] { cmb, txt });
-        }
-        /// <summary>
-        /// Динамическое добавление полей ввода на форму типов исследования
-        /// </summary>
-        private void addScienceTypeForm()
-        {
-            ComboBox cmb = new ComboBox() { Margin = new Thickness(5, 0, 5, 0), ItemsSource = scienceTypeList, IsTextSearchEnabled = false, IsEditable = true, StaysOpenOnEdit = true, IsDropDownOpen = true };
-            cmb.KeyUp += Cmb_KeyUp;
-            scienceTypeGrid.Children.Add(cmb);
-            Grid.SetRow(cmb, 1);
-            Grid.SetColumnSpan(cmb, 2);
-            enteredScienceTypesList.Add(cmb);
-        }
 
-
-        private void Cmb_KeyUp(object sender, KeyEventArgs e)
-        {
-            ComboBox comboBoxSender = (ComboBox)sender;
-
-            
-
-            var itemSource = comboBoxSender.ItemsSource;
-            CollectionView itemsViewOriginal = (CollectionView)CollectionViewSource.GetDefaultView(itemSource);
-
-            itemsViewOriginal.Filter = ((o) =>
+            customerAutoCompleteComboBox = new AutoCompleteComboBox()
             {
-                if (String.IsNullOrEmpty(comboBoxSender.Text.ToLower())) return true;
-                else
-                {
-                    if ((((string)o).ToLower()).Contains(comboBoxSender.Text.ToLower())) return true;
-                    else return false;
-                }
-            });
-            itemsViewOriginal.Refresh();
+                Margin = new Thickness(5, 0, 5, 0),
+                ItemsSource = new List<Person>(personsList),
+                MinWidth = 300
+            };
+            customerGrid.Children.Add(customerAutoCompleteComboBox);
+            Grid.SetRow(customerAutoCompleteComboBox, 1);
+        }
+        /// <summary>
+        /// Добавление комбо бокса к руководителю НИОКР
+        /// </summary>
+        private void addLeadNIOKRAutoCompleteComboBox()
+        {
+            AutoCompleteComboBox LeadNIOKRAutoCompleteComboBox = new AutoCompleteComboBox()
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                ItemsSource = new List<Person>(personsList),
+                MinWidth = 300,
 
-            
-
-            //ICollectionView filteredView = new CollectionViewSource { Source = scienceTypeList }.View;
-
-            //filteredView.Filter = ((o) =>
-            //{
-            //    if (String.IsNullOrEmpty(comboBoxSender.Text.ToLower())) return true;
-            //    else
-            //    {
-            //        if ((((string)o).ToLower()).Contains(comboBoxSender.Text.ToLower())) return true;
-            //        else return false;
-            //    }
-            //});
-            ////filteredView.Refresh();
-
-
-            //comboBoxSender.ItemsSource = filteredView;
+            };
+            leadNIOKRGrid.Children.Add(LeadNIOKRAutoCompleteComboBox);
+            Grid.SetRow(LeadNIOKRAutoCompleteComboBox, 1);
+        }
+        /// <summary>
+        /// Добавление комбо бокса к кафедре
+        /// </summary>
+        private void addKafedraAutoCompleteComboBox()
+        {
+            AutoCompleteComboBox kafedraAutoCompleteComboBox = new AutoCompleteComboBox()
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                ItemsSource = new List<string>(kafedrasList),
+                MinWidth = 300
+            };
+            kafedraGrid.Children.Add(kafedraAutoCompleteComboBox);
+            Grid.SetRow(kafedraAutoCompleteComboBox, 1);
+        }
+        /// <summary>
+        /// Добавление комбо бокса к подразделению
+        /// </summary>
+        private void addUnitAutoCompleteComboBox()
+        {
+            AutoCompleteComboBox unitAutoCompleteComboBox = new AutoCompleteComboBox()
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                ItemsSource = new List<string>(unitsList),
+                MinWidth = 300
+            };
+            unitGrid.Children.Add(unitAutoCompleteComboBox);
+            Grid.SetRow(unitAutoCompleteComboBox, 1);
+        }
+        /// <summary>
+        /// Добавление комбо бокса к учреждению
+        /// </summary>
+        private void addInstitutionAutoCompleteComboBox()
+        {
+            AutoCompleteComboBox institutionAutoCompleteComboBox = new AutoCompleteComboBox()
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                ItemsSource = new List<string>(instituionsList),
+                MinWidth = 300
+            };
+            institutionGrid.Children.Add(institutionAutoCompleteComboBox);
+            Grid.SetRow(institutionAutoCompleteComboBox, 1);
         }
 
+        /// <summary>
+        /// Добавление комбо бокса к типу
+        /// </summary>
+        private void addResearchTypeAutoCompleteComboBox()
+        {
+            AutoCompleteComboBox researchTypeAutoCompleteComboBox = new AutoCompleteComboBox()
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                ItemsSource = new List<string>(researchTypesList),
+                MinWidth = 300
+            };
+            researchTypesGrid.Children.Add(researchTypeAutoCompleteComboBox);
+            Grid.SetRow(researchTypeAutoCompleteComboBox, 1);
+        }
 
         /// <summary>
         /// Добавление строки в средства
@@ -178,8 +173,7 @@ namespace ResearchProgram
             {
                 Margin = new Thickness(5, 0, 5, 10),
                 ItemsSource = depositsList,
-                MinWidth = 240
-                
+                Width = 240
             };
 
             TextBox sumTextBox = new TextBox()
@@ -219,16 +213,13 @@ namespace ResearchProgram
 
         private void executorAddButton_Click(object sender, RoutedEventArgs e)
         {
-            ComboBox executorComboBox = new ComboBox()
+
+            AutoCompleteComboBox executorComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = personsList,
-                IsTextSearchEnabled = false,
-                IsEditable = true,
-                StaysOpenOnEdit = true,
+                ItemsSource = new List<Person>(personsList),
                 MinWidth = 300
             };
-            executorComboBox.KeyUp += Cmb_KeyUp;
 
             executorsVerticalListView.Items.Add(executorComboBox);
         }
@@ -251,16 +242,14 @@ namespace ResearchProgram
 
         private void executorOnContractAddButton_Click(object sender, RoutedEventArgs e)
         {
-            ComboBox executorOnContractComboBox = new ComboBox()
+
+            AutoCompleteComboBox executorOnContractComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = personsList,
-                IsTextSearchEnabled = false,
-                IsEditable = true,
-                StaysOpenOnEdit = true,
+                ItemsSource = new List<Person>(personsList),
                 MinWidth = 300
             };
-            executorOnContractComboBox.KeyUp += Cmb_KeyUp;
+
 
             executorOnContractVerticalListView.Items.Add(executorOnContractComboBox);
         }
@@ -308,6 +297,39 @@ namespace ResearchProgram
             {
                 MessageBox.Show("Выделите нужный для удаления элемент");
             }
+        }
+        /// <summary>
+        /// Смена вкладок по нажатию кнопки и изменение цвета фона
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void grantParametersButtonClick(object sender, RoutedEventArgs e)
+        {
+            createGrantTabControl.SelectedItem = createGrantTabControl.Items.OfType<TabItem>().SingleOrDefault(n => n.Name == ((Button)sender).Tag.ToString());
+            foreach (Button button in grantParametersButtonStackPanel.Children.OfType<Button>()){
+                button.Background = new SolidColorBrush(Color.FromArgb(255, 222, 222, 222));
+            }
+            ((Button)sender).Background = new SolidColorBrush(Color.FromArgb(255, 189, 189, 189));
+            
+        }
+
+        private void createGrantButtonClick(object sender, RoutedEventArgs e)
+        {
+            Grant newGrant = new Grant();
+
+            newGrant.OKVED = OKVEDTextBox.Text;
+            
+            if (NIOKRComboBox.SelectedItem != null)
+                newGrant.NameNIOKR = NIOKRComboBox.SelectedItem.ToString();
+
+            newGrant.Customer = new Person()
+            {
+                Id = ((Person)customerAutoCompleteComboBox.SelectedItem).Id,
+                FIO = ((Person)customerAutoCompleteComboBox.SelectedItem).FIO
+            };
+
+
+
         }
     }
 }

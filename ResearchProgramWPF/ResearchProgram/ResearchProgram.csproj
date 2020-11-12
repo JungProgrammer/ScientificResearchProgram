@@ -108,12 +108,14 @@
       <DependentUpon>createGrantWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="CRUDDataBase.cs" />
+    <Compile Include="Grant.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

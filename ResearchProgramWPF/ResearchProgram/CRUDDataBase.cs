@@ -173,7 +173,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение исполнителей
-            cmd = new NpgsqlCommand("SELECT grantId, FIO, isExecutorContract FROM executors " +
+            cmd = new NpgsqlCommand("SELECT grantId, FIO, isExecutorContract, executorId FROM executors " +
                                         "JOIN persons p on executors.executorId = p.id " +
                                         "JOIN grants g on executors.grantId = g.id " +
                                         "ORDER BY grantId; ", conn);
@@ -193,11 +193,19 @@ namespace ResearchProgram
                     FIO = reader[1].ToString();
                     if (isExecutorContract)
                     {
-                        grants[grant_index].ExecutorContract.Add(FIO);
+                        grants[grant_index].ExecutorContract.Add(new Person()
+                        {
+                            Id = Convert.ToInt32(reader[3]),
+                            FIO = reader[1].ToString()
+                        });
                     }
                     else
                     {
-                        grants[grant_index].Executor.Add(FIO);
+                        grants[grant_index].Executor.Add(new Person()
+                        {
+                            Id = Convert.ToInt32(reader[3]),
+                            FIO = reader[1].ToString()
+                        });
                     }
                 }
             }
@@ -227,11 +235,11 @@ namespace ResearchProgram
 
                     grants[grant_index].OKVED = reader[1].ToString();
                     grants[grant_index].NameNIOKR = reader[2].ToString();
-                    grants[grant_index].Customer = reader[3].ToString();
+                    grants[grant_index].Customer = new Person() { FIO = reader[3].ToString() };
                     grants[grant_index].StartDate = Convert.ToDateTime(reader[4]);
                     grants[grant_index].EndDate = Convert.ToDateTime(reader[5]);
                     grants[grant_index].Price = Convert.ToInt32(reader[6]);
-                    grants[grant_index].LeadNIOKR = reader[7].ToString();
+                    grants[grant_index].LeadNIOKR = new Person() { FIO = reader[7].ToString() };
                     grants[grant_index].Kafedra = reader[8].ToString();
                     grants[grant_index].Unit = reader[9].ToString();
                     grants[grant_index].Institution = reader[10].ToString();
@@ -315,17 +323,21 @@ namespace ResearchProgram
         /// Получение списка людей
         /// </summary>
         /// <returns></returns>
-        public static List<string> GetPersons()
+        public static List<Person> GetPersons()
         {
-            List<string> personsList = new List<string>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT FIO FROM persons ORDER BY FIO;", conn);
+            List<Person> personsList = new List<Person>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT Id,FIO FROM persons ORDER BY FIO;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    personsList.Add(reader[0].ToString());
+                    personsList.Add(new Person()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        FIO = reader[1].ToString()
+                    });
                 }
             }
             else

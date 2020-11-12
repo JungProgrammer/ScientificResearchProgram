@@ -16,61 +16,99 @@
         </Grid.ColumnDefinitions>
         <ScrollViewer VerticalScrollBarVisibility="Auto">
             <StackPanel Grid.Column="0" 
-                        Margin="5 2">
+                        Margin="5 2"
+                        x:Name="grantParametersButtonStackPanel">
                 <Button Content="ОКВЭД"
                         Margin="0 0 0 3"
-                        FontSize="17"/>
+                        FontSize="17"
+                        Tag="OKVED"
+                        Click="grantParametersButtonClick"
+                        Background="#BBB"/>
                 <Button Content="Наименование НИОКР"
                         Margin="0 0 0 3"
-                        FontSize="17"/>
+                        FontSize="17"
+                        Tag="NIOKR"
+                        Click="grantParametersButtonClick"/>
                 <Button  Content="Заказчик"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="customer"
+                         Click="grantParametersButtonClick"/>
                 <Button  Content="Дата начала"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="startDate"
+                         Click="grantParametersButtonClick"/>
                 <Button  Content="Дата завершения"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="endDate"
+                         Click="grantParametersButtonClick"/>
                 <Button  Content="Общая сумма договора"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="price"
+                         Click="grantParametersButtonClick"/>
                 <Button  Content="Средства"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="deposits"
+                         Click="grantParametersButtonClick"/>
                 <Button  Content="Руководитель НИОКР"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="leadNIOKR"
+                         Click="grantParametersButtonClick"/>
                 <Button  Content="Исполнители"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="executors"
+                         Click="grantParametersButtonClick"/>
                 <Button  Content="Кафедра"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="kafedra"
+                         Click="grantParametersButtonClick"/>
                 <Button  Content="Подразделение"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="unit"
+                         Click="grantParametersButtonClick"/>
                 <Button  Content="Учреждение"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="institution"
+                         Click="grantParametersButtonClick"/>
                 <Button  Content="ГРНТИ"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="GRNTI"
+                         Click="grantParametersButtonClick"/>
                 <Button  Content="Тип"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="researchTypes"
+                         Click="grantParametersButtonClick"/>
                 <Button  Content="Исполнители по договору"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="ExecutorsContractItem"
+                         Click="grantParametersButtonClick"/>
                 <Button  Content="Тип науки"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="ScienceTypeItem"
+                         Click="grantParametersButtonClick"/>
                 <Button  Content="НИР или УСЛУГА"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="NIRItem"
+                         Click="grantParametersButtonClick"/>
                 <Button  Content="НОЦ"
                          Margin="0 0 0 3"
-                         FontSize="17"/>
+                         FontSize="17"
+                         Tag="NOCItem"
+                         Click="grantParametersButtonClick"/>
             </StackPanel>
         </ScrollViewer>
         <GridSplitter Grid.Column="1" 
@@ -84,8 +122,10 @@
                 <RowDefinition Height="5*" />
             </Grid.RowDefinitions>
 
-            <TabControl Grid.Row="0">
-                <TabItem Name="OKVED">
+            <TabControl Grid.Row="0"
+                        x:Name="createGrantTabControl">
+                <TabItem Name="OKVED"
+                         Visibility="Collapsed">
                     <TabItem.Content>
                         <Grid>
                             <Grid.RowDefinitions>
@@ -105,7 +145,8 @@
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="NIOKR">
+                <TabItem Name="NIOKR"
+                         Visibility="Collapsed">
                     <TabItem.Content>
                         <Grid>
                             <Grid.RowDefinitions>
@@ -124,9 +165,10 @@
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="customer">
+                <TabItem Name="customer"
+                         Visibility="Collapsed">
                     <TabItem.Content>
-                        <Grid>
+                        <Grid x:Name="customerGrid">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -134,22 +176,14 @@
 
                             <Label Content="Заказчик"
                                    Grid.Row="0"
-                                   Margin="0 5 0 0"/>
+                                   Margin="0 5 0 0" Grid.ColumnSpan="2"/>
 
-                            <ComboBox Grid.Row="1"
-                                      Name="customerComboBox"
-                                      Margin="5 0"
-                                      ItemsSource="{Binding personsList}"
-                                      IsTextSearchEnabled="False"
-                                      IsEditable="True"
-                                      StaysOpenOnEdit="True"
-                                      IsDropDownOpen="True"
-                                      KeyUp="Cmb_KeyUp"/>
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="startDate">
+                <TabItem Name="startDate"
+                         Visibility="Collapsed">
                     <TabItem.Content>
                         <Grid>
                             <Grid.RowDefinitions>
@@ -168,7 +202,8 @@
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="endDate">
+                <TabItem Name="endDate"
+                         Visibility="Collapsed">
                     <TabItem.Content>
                         <Grid>
                             <Grid.RowDefinitions>
@@ -187,7 +222,8 @@
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="price">
+                <TabItem Name="price"
+                         Visibility="Collapsed">
                     <TabItem.Content>
                         <Grid>
                             <Grid.RowDefinitions>
@@ -206,7 +242,8 @@
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="deposits">
+                <TabItem Name="deposits"
+                         Visibility="Collapsed">
                     <TabItem.Content>
                         <Grid Name="depositsGrid">
                             <Grid.RowDefinitions>
@@ -254,9 +291,10 @@
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="leadNIOKR">
+                <TabItem Name="leadNIOKR"
+                         Visibility="Collapsed">
                     <TabItem.Content>
-                        <Grid>
+                        <Grid x:Name="leadNIOKRGrid">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -266,19 +304,13 @@
                             <Label Content="Руководитель НИОКР"
                                    Grid.Row="0"
                                    Margin="0 5 0 0"/>
-                            <ComboBox Grid.Row="1"
-                                      Margin="5 0"
-                                      ItemsSource="{Binding personsList}"
-                                      IsTextSearchEnabled="False"
-                                      IsEditable="True"
-                                      StaysOpenOnEdit="True"
-                                      IsDropDownOpen="True"
-                                      KeyUp="Cmb_KeyUp" Grid.ColumnSpan="2"/>
+
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="executors">
+                <TabItem Name="executors"
+                         Visibility="Collapsed">
                     <TabItem.Content>
                         <Grid Name="executorsGrid">
                             <Grid.RowDefinitions>
@@ -302,7 +334,7 @@
                                       Grid.ColumnSpan="3"
                                       x:Name="executorsVerticalListView">
                             </ListView>
-                            
+
 
                             <Button Content="Добавить"
                                     Name="executorAddButton"
@@ -321,9 +353,10 @@
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="kafedra">
+                <TabItem Name="kafedra"
+                         Visibility="Collapsed">
                     <TabItem.Content>
-                        <Grid>
+                        <Grid x:Name="kafedraGrid">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -333,22 +366,15 @@
                             <Label Content="Кафедра"
                                    Grid.Row="0"
                                    Margin="0 5 0 0"/>
-                            <ComboBox Grid.Row="1"
-                                      Name="kafedraComboBox"
-                                      Margin="5 0"
-                                      ItemsSource="{Binding kafedrasList}"
-                                      IsTextSearchEnabled="False"
-                                      IsEditable="True"
-                                      StaysOpenOnEdit="True"
-                                      IsDropDownOpen="True"
-                                      KeyUp="Cmb_KeyUp" Grid.ColumnSpan="2"/>
+
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="unit">
+                <TabItem Name="unit"
+                         Visibility="Collapsed">
                     <TabItem.Content>
-                        <Grid>
+                        <Grid x:Name="unitGrid">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -358,22 +384,15 @@
                             <Label Content="Подразделение"
                                    Grid.Row="0"
                                    Margin="0 5 0 0"/>
-                            <ComboBox Grid.Row="1"
-                                      Name="unitComboBox"
-                                      Margin="5 0"
-                                      ItemsSource="{Binding unitsList}"
-                                      IsTextSearchEnabled="False"
-                                      IsEditable="True"
-                                      StaysOpenOnEdit="True"
-                                      IsDropDownOpen="True"
-                                      KeyUp="Cmb_KeyUp" Grid.ColumnSpan="2"/>
+
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="institution">
+                <TabItem Name="institution"
+                         Visibility="Collapsed">
                     <TabItem.Content>
-                        <Grid>
+                        <Grid x:Name="institutionGrid">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -391,12 +410,13 @@
                                       IsEditable="True"
                                       StaysOpenOnEdit="True"
                                       IsDropDownOpen="True"
-                                      KeyUp="Cmb_KeyUp" Grid.ColumnSpan="2"/>
+                                      Grid.ColumnSpan="2"/>
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="GRNTI">
+                <TabItem Name="GRNTI"
+                         Visibility="Collapsed">
                     <TabItem.Content>
                         <Grid>
                             <Grid.RowDefinitions>
@@ -415,7 +435,8 @@
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="researchTypes">
+                <TabItem Name="researchTypes"
+                         Visibility="Collapsed">
                     <TabItem.Content>
                         <Grid Name="researchTypesGrid">
                             <Grid.RowDefinitions>
@@ -427,20 +448,13 @@
                             <Label Content="Тип"
                                    Grid.Row="0"
                                    Margin="0 5 0 0"/>
-                            <ComboBox Grid.Row="1"
-                                      Name="researchTypesComboBox"
-                                      Margin="5 0"
-                                      ItemsSource="{Binding researchTypesList}"
-                                      IsTextSearchEnabled="False"
-                                      IsEditable="True"
-                                      StaysOpenOnEdit="True"
-                                      IsDropDownOpen="True"
-                                      KeyUp="Cmb_KeyUp" Grid.ColumnSpan="2"/>
+
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem x:Name="ExecutorsContractItem">
+                <TabItem x:Name="ExecutorsContractItem"
+                         Visibility="Collapsed">
                     <TabItem.Content>
                         <Grid Name="executorsContractGrid">
                             <Grid.ColumnDefinitions>
@@ -484,7 +498,8 @@
                 </TabItem>
 
 
-                <TabItem x:Name="ScienceTypeItem">
+                <TabItem x:Name="ScienceTypeItem"
+                         Visibility="Collapsed">
                     <TabItem.Content>
                         <Grid Name ="scienceTypeGrid">
 
@@ -529,7 +544,8 @@
                 </TabItem>
 
 
-                <TabItem Name="NIRItem">
+                <TabItem Name="NIRItem"
+                         Visibility="Collapsed">
                     <TabItem.Content>
                         <Grid>
                             <Grid.RowDefinitions>
@@ -551,7 +567,8 @@
                 </TabItem>
 
 
-                <TabItem Name="NOCItem">
+                <TabItem Name="NOCItem"
+                         Visibility="Collapsed">
                     <TabItem.Content>
                         <Grid>
                             <Grid.RowDefinitions>
@@ -573,7 +590,8 @@
 
             <Button Content="Создать договор"
                     Grid.Row="1"
-                    Margin="280 3 10 3"></Button>
+                    Margin="280 3 10 3" Click="createGrantButtonClick"
+                    x:Name="createGrantButton"></Button>
         </Grid>
     </Grid>
 </Window>
