@@ -12,6 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Npgsql;
+using DotNetKit.Windows.Controls;
+using System.ComponentModel;
+using System.Collections.ObjectModel;
+using THE.Controls;
 
 namespace ResearchProgram
 {
@@ -23,6 +27,9 @@ namespace ResearchProgram
         //Списки данных из БД
         public List<string> NIOKRList { get; set; }
         public List<string> personsList { get; set; }
+        public List<string> selectedItems { get; set; }
+        public List<string> selectedValues { get; set; }
+
         public List<string> depositsList { get; set; }
         public List<string> scienceTypeList { get; set; }
         public List<string> kafedrasList { get; set; }
@@ -59,10 +66,6 @@ namespace ResearchProgram
             enteredScienceTypesList = new List<ComboBox>();
             enteredExecutorsList = new List<ComboBox>();
 
-            //addExecutorDepositsOnForm();
-            //addExecutorOnContractOnForm();
-            //addExecutortOnForm();
-            //addScienceTypeForm();
             DataContext = this;
         }
         /// <summary>
@@ -117,20 +120,44 @@ namespace ResearchProgram
             enteredScienceTypesList.Add(cmb);
         }
 
+
         private void Cmb_KeyUp(object sender, KeyEventArgs e)
         {
-            CollectionView itemsViewOriginal = (CollectionView)CollectionViewSource.GetDefaultView(((ComboBox)sender).ItemsSource);
+            ComboBox comboBoxSender = (ComboBox)sender;
+
+            
+
+            var itemSource = comboBoxSender.ItemsSource;
+            CollectionView itemsViewOriginal = (CollectionView)CollectionViewSource.GetDefaultView(itemSource);
 
             itemsViewOriginal.Filter = ((o) =>
             {
-                if (String.IsNullOrEmpty(((ComboBox)sender).Text.ToLower())) return true;
+                if (String.IsNullOrEmpty(comboBoxSender.Text.ToLower())) return true;
                 else
                 {
-                    if ((((string)o).ToLower()).Contains(((ComboBox)sender).Text.ToLower())) return true;
+                    if ((((string)o).ToLower()).Contains(comboBoxSender.Text.ToLower())) return true;
                     else return false;
                 }
             });
             itemsViewOriginal.Refresh();
+
+            
+
+            //ICollectionView filteredView = new CollectionViewSource { Source = scienceTypeList }.View;
+
+            //filteredView.Filter = ((o) =>
+            //{
+            //    if (String.IsNullOrEmpty(comboBoxSender.Text.ToLower())) return true;
+            //    else
+            //    {
+            //        if ((((string)o).ToLower()).Contains(comboBoxSender.Text.ToLower())) return true;
+            //        else return false;
+            //    }
+            //});
+            ////filteredView.Refresh();
+
+
+            //comboBoxSender.ItemsSource = filteredView;
         }
 
 
@@ -256,15 +283,13 @@ namespace ResearchProgram
 
         private void scienceTypeAddButton_Click(object sender, RoutedEventArgs e)
         {
-            ComboBox scienceTypeComboBox = new ComboBox() { 
-                Margin = new Thickness(5, 0, 5, 0), 
-                ItemsSource = scienceTypeList, 
-                IsTextSearchEnabled = false, 
-                IsEditable = true, 
-                StaysOpenOnEdit = true,
+            AutoCompleteComboBox scienceTypeComboBox = new AutoCompleteComboBox()
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                ItemsSource = new List<string>(scienceTypeList),
                 MinWidth = 300
             };
-            scienceTypeComboBox.KeyUp += Cmb_KeyUp;
+
 
             scienceTypeVerticalListView.Items.Add(scienceTypeComboBox);
         }
