@@ -92,6 +92,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Institution.cs" />
+    <Compile Include="ResearchType.cs" />
+    <Compile Include="ScienceType.cs" />
+    <Compile Include="Unit.cs" />
     <Page Include="createGrantWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -109,6 +113,7 @@
     </Compile>
     <Compile Include="CRUDDataBase.cs" />
     <Compile Include="Grant.cs" />
+    <Compile Include="Kafedra.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

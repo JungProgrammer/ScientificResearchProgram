@@ -78,7 +78,10 @@ namespace ResearchProgram
                     grant_index = ShowGrantIndex(grants, grant_id);
 
                     researchType = reader[1].ToString();
-                    grants[grant_index].ResearchType.Add(researchType);
+                    grants[grant_index].ResearchType.Add(new ResearchType()
+                    {
+                        Title = researchType
+                    });
                 }
             }
             else
@@ -133,7 +136,9 @@ namespace ResearchProgram
                     grant_index = ShowGrantIndex(grants, grant_id);
 
                     scienceType = reader[1].ToString();
-                    grants[grant_index].ScienceType.Add(scienceType);
+                    grants[grant_index].ScienceType.Add(new ScienceType() { 
+                        Title = scienceType
+                    });
                 }
             }
             else
@@ -240,9 +245,9 @@ namespace ResearchProgram
                     grants[grant_index].EndDate = Convert.ToDateTime(reader[5]);
                     grants[grant_index].Price = Convert.ToInt32(reader[6]);
                     grants[grant_index].LeadNIOKR = new Person() { FIO = reader[7].ToString() };
-                    grants[grant_index].Kafedra = reader[8].ToString();
-                    grants[grant_index].Unit = reader[9].ToString();
-                    grants[grant_index].Institution = reader[10].ToString();
+                    grants[grant_index].Kafedra = new Kafedra() { Title = reader[8].ToString() };
+                    grants[grant_index].Unit = new Unit() { Title = reader[9].ToString() };
+                    grants[grant_index].Institution = new Institution() { Title = reader[10].ToString() };
                     grants[grant_index].GRNTI = reader[11].ToString();
                     grants[grant_index].NIR = reader[12].ToString();
                     grants[grant_index].NOC = reader[13].ToString();
@@ -380,17 +385,21 @@ namespace ResearchProgram
         /// Получение списка кафедр
         /// </summary>
         /// <returns></returns>
-        public static List<string> GetKafedras()
+        public static List<Kafedra> GetKafedras()
         {
-            List<string> kafedrasList = new List<string>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT title FROM kafedras ORDER BY title;", conn);
+            List<Kafedra> kafedrasList = new List<Kafedra>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM kafedras ORDER BY title;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    kafedrasList.Add(reader[0].ToString());
+                    kafedrasList.Add(new Kafedra()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
                 }
             }
             else
@@ -398,23 +407,28 @@ namespace ResearchProgram
                 Debug.WriteLine("No rows found.");
             }
             reader.Close();
+
             return kafedrasList;
         }
         /// <summary>
         /// Получение списка подразделений
         /// </summary>
         /// <returns></returns>
-        public static List<string> GetUnits()
+        public static List<Unit> GetUnits()
         {
-            List<string> unitsList = new List<string>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT title FROM units ORDER BY title;", conn);
+            List<Unit> unitsList = new List<Unit>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM units ORDER BY title;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    unitsList.Add(reader[0].ToString());
+                    unitsList.Add(new Unit()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
                 }
             }
             else
@@ -422,6 +436,7 @@ namespace ResearchProgram
                 Debug.WriteLine("No rows found.");
             }
             reader.Close();
+
             return unitsList;
         }
 
@@ -429,17 +444,20 @@ namespace ResearchProgram
         /// Получение списка учреждений
         /// </summary>
         /// <returns></returns>
-        public static List<string> GetInstitutions()
+        public static List<Institution> GetInstitutions()
         {
-            List<string> institutionsList = new List<string>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT title FROM institutions ORDER BY title;", conn);
+            List<Institution> institutionsList = new List<Institution>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM institutions ORDER BY title;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    institutionsList.Add(reader[0].ToString());
+                    institutionsList.Add(new Institution() { 
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
                 }
             }
             else
@@ -454,17 +472,20 @@ namespace ResearchProgram
         /// Получение списка типов исследования
         /// </summary>
         /// <returns></returns>
-        public static List<string> GetResearchTypes()
+        public static List<ResearchType> GetResearchTypes()
         {
-            List<string> researchTypesList = new List<string>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT title FROM researchTypes ORDER BY title;", conn);
+            List<ResearchType> researchTypesList = new List<ResearchType>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM researchTypes ORDER BY title;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    researchTypesList.Add(reader[0].ToString());
+                    researchTypesList.Add(new ResearchType() { 
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
                 }
             }
             else
@@ -479,17 +500,20 @@ namespace ResearchProgram
         /// Получение списка типов науки
         /// </summary>
         /// <returns></returns>
-        public static List<string> GetScienceTypes()
+        public static List<ScienceType> GetScienceTypes()
         {
-            List<string> researchTypesList = new List<string>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT title FROM scienceTypes ORDER BY title;", conn);
+            List<ScienceType> scienctTypeTypesList = new List<ScienceType>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM scienceTypes ORDER BY title;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    researchTypesList.Add(reader[0].ToString());
+                    scienctTypeTypesList.Add(new ScienceType() { 
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
                 }
             }
             else
@@ -497,7 +521,7 @@ namespace ResearchProgram
                 Debug.WriteLine("No rows found.");
             }
             reader.Close();
-            return researchTypesList;
+            return scienctTypeTypesList;
         }
     }
 }

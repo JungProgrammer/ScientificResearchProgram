@@ -123,7 +123,7 @@
             </Grid.RowDefinitions>
 
             <TabControl Grid.Row="0"
-                        x:Name="createGrantTabControl">
+                        x:Name="createGrantTabControl" >
                 <TabItem Name="OKVED"
                          Visibility="Collapsed">
                     <TabItem.Content>
@@ -559,8 +559,9 @@
 
                             <StackPanel Name="nirStackPanel"
                                       Grid.Row="1">
-                                <RadioButton GroupName="NIRRadio" Content="НИР" IsChecked="True" />
-                                <RadioButton GroupName="NIRRadio" Content="Услуга" />
+                                <RadioButton GroupName="NIRRadio" 
+                                             Content="НИР"   Checked="RadioButton_Checked" />
+                                <RadioButton GroupName="NIRRadio" Content="Услуга" Checked="RadioButton_Checked" />
                             </StackPanel>
                         </Grid>
                     </TabItem.Content>

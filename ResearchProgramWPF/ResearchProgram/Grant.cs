@@ -13,10 +13,10 @@ namespace ResearchProgram
             Depositor = new List<string>();
             DepositorSum = new List<string>();
             Executor = new List<Person>();
-            ResearchType = new List<string>();
+            ResearchType = new List<ResearchType>();
             PriorityTrand = new List<string>();
             ExecutorContract = new List<Person>();
-            ScienceType = new List<string>();
+            ScienceType = new List<ScienceType>();
         }
 
         // Id
@@ -42,21 +42,21 @@ namespace ResearchProgram
         // Исполнитель
         public List<Person> Executor { get; set; }
         // Кафедра
-        public string Kafedra { get; set; }
+        public Kafedra Kafedra { get; set; }
         // Подразделение
-        public string Unit { get; set; }
+        public Unit Unit { get; set; }
         // Учреждение
-        public string Institution { get; set; }
+        public Institution Institution { get; set; }
         // ГРНТИ
         public string GRNTI { get; set; }
         // Тип исследования
-        public List<string> ResearchType { get; set; }
+        public List<ResearchType> ResearchType { get; set; }
         // Приоритетные направления
         public List<string> PriorityTrand { get; set; }
         // Исполнители по договору
         public List<Person> ExecutorContract { get; set; }
         // Тип науки
-        public List<string> ScienceType { get; set; }
+        public List<ScienceType> ScienceType { get; set; }
         // НИР или услуга
         public string NIR { get; set; }
         // НОЦ

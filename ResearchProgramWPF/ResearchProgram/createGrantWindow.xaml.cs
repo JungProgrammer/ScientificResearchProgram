@@ -20,19 +20,31 @@ namespace ResearchProgram
         public List<string> selectedValues { get; set; }
 
         public List<string> depositsList { get; set; }
-        public List<string> scienceTypeList { get; set; }
-        public List<string> kafedrasList { get; set; }
-        public List<string> unitsList { get; set; }
-        public List<string> instituionsList { get; set; }
-        public List<string> researchTypesList { get; set; }
+        public List<ScienceType> scienceTypeList { get; set; }
+        public List<Kafedra> kafedrasList { get; set; }
+        public List<Unit> unitsList { get; set; }
+        public List<Institution> instituionsList { get; set; }
+        public List<ResearchType> researchTypesList { get; set; }
         //Списки данных из формы
         public List<ComboBox> enteredExecutorsList { get; set; }
         public List<Object[]> enteredDepositsList { get; set; }
         public List<ComboBox> enteredExecutorsContractList { get; set; }
         public List<ComboBox> enteredScienceTypesList { get; set; }
 
-        public string selectedCustomer { get; set; }
+        public string NirChecker;
+
+        // Combobox для заказчика
         AutoCompleteComboBox customerAutoCompleteComboBox;
+        // Combobox для руководителя
+        AutoCompleteComboBox LeadNIOKRAutoCompleteComboBox;
+        // Combobox для кафедры
+        AutoCompleteComboBox kafedraAutoCompleteComboBox;
+        // Combobox для подразделения
+        AutoCompleteComboBox unitAutoCompleteComboBox;
+        // Combobox для подразделения
+        AutoCompleteComboBox institutionAutoCompleteComboBox;
+        // Combobox для типа исследования
+        AutoCompleteComboBox researchTypeAutoCompleteComboBox;
 
 
         public createGrantWindow()
@@ -88,7 +100,7 @@ namespace ResearchProgram
         /// </summary>
         private void addLeadNIOKRAutoCompleteComboBox()
         {
-            AutoCompleteComboBox LeadNIOKRAutoCompleteComboBox = new AutoCompleteComboBox()
+            LeadNIOKRAutoCompleteComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
                 ItemsSource = new List<Person>(personsList),
@@ -103,10 +115,10 @@ namespace ResearchProgram
         /// </summary>
         private void addKafedraAutoCompleteComboBox()
         {
-            AutoCompleteComboBox kafedraAutoCompleteComboBox = new AutoCompleteComboBox()
+            kafedraAutoCompleteComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<string>(kafedrasList),
+                ItemsSource = new List<Kafedra>(kafedrasList),
                 MinWidth = 300
             };
             kafedraGrid.Children.Add(kafedraAutoCompleteComboBox);
@@ -117,10 +129,10 @@ namespace ResearchProgram
         /// </summary>
         private void addUnitAutoCompleteComboBox()
         {
-            AutoCompleteComboBox unitAutoCompleteComboBox = new AutoCompleteComboBox()
+            unitAutoCompleteComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<string>(unitsList),
+                ItemsSource = new List<Unit>(unitsList),
                 MinWidth = 300
             };
             unitGrid.Children.Add(unitAutoCompleteComboBox);
@@ -131,10 +143,10 @@ namespace ResearchProgram
         /// </summary>
         private void addInstitutionAutoCompleteComboBox()
         {
-            AutoCompleteComboBox institutionAutoCompleteComboBox = new AutoCompleteComboBox()
+            institutionAutoCompleteComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<string>(instituionsList),
+                ItemsSource = new List<Institution>(instituionsList),
                 MinWidth = 300
             };
             institutionGrid.Children.Add(institutionAutoCompleteComboBox);
@@ -146,10 +158,10 @@ namespace ResearchProgram
         /// </summary>
         private void addResearchTypeAutoCompleteComboBox()
         {
-            AutoCompleteComboBox researchTypeAutoCompleteComboBox = new AutoCompleteComboBox()
+            researchTypeAutoCompleteComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<string>(researchTypesList),
+                ItemsSource = new List<ResearchType>(researchTypesList),
                 MinWidth = 300
             };
             researchTypesGrid.Children.Add(researchTypeAutoCompleteComboBox);
@@ -275,7 +287,7 @@ namespace ResearchProgram
             AutoCompleteComboBox scienceTypeComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<string>(scienceTypeList),
+                ItemsSource = new List<ScienceType>(scienceTypeList),
                 MinWidth = 300
             };
 
@@ -317,19 +329,168 @@ namespace ResearchProgram
         {
             Grant newGrant = new Grant();
 
-            newGrant.OKVED = OKVEDTextBox.Text;
-            
-            if (NIOKRComboBox.SelectedItem != null)
-                newGrant.NameNIOKR = NIOKRComboBox.SelectedItem.ToString();
-
-            newGrant.Customer = new Person()
+            if (OKVEDTextBox.Text.ToString() != "")
             {
-                Id = ((Person)customerAutoCompleteComboBox.SelectedItem).Id,
-                FIO = ((Person)customerAutoCompleteComboBox.SelectedItem).FIO
-            };
+                newGrant.OKVED = OKVEDTextBox.Text;
+            }
+
+            if (NIOKRComboBox.SelectedItem != null)
+            {
+                newGrant.NameNIOKR = NIOKRComboBox.SelectedItem.ToString();
+            }
+
+            if ((Person)customerAutoCompleteComboBox.SelectedItem != null)
+            {
+                newGrant.Customer = new Person()
+                {
+                    Id = ((Person)customerAutoCompleteComboBox.SelectedItem).Id,
+                    FIO = ((Person)customerAutoCompleteComboBox.SelectedItem).FIO
+                };
+            }
+
+            if (startDateDatePicker.SelectedDate != null)
+            {
+                newGrant.StartDate = (DateTime)startDateDatePicker.SelectedDate;
+            }
+
+            if (endDateDatePicker.SelectedDate != null)
+            {
+                newGrant.EndDate = (DateTime)endDateDatePicker.SelectedDate;
+            }
+
+            if (priceTextBox.Text.ToString() != "")
+            {
+                newGrant.Price = float.Parse(priceTextBox.Text);
+            }
+
+            if (depositsVerticalListView.Items != null)
+            {
+                ComboBox cmb;
+                TextBox partSum;
+
+                foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
+                {
+                    cmb = (ComboBox)sp.Children[0];
+                    partSum = (TextBox)sp.Children[1];
+
+                    if (cmb.SelectedItem != null && partSum.Text.ToString() != "")
+                    {
+                        newGrant.Depositor.Add(cmb.SelectedItem.ToString());
+                        newGrant.DepositorSum.Add(partSum.Text.ToString());
+                    }
+                }
+            }
+
+            if (LeadNIOKRAutoCompleteComboBox.SelectedItem != null)
+            {
+                newGrant.LeadNIOKR = new Person() {
+                    Id = ((Person)LeadNIOKRAutoCompleteComboBox.SelectedItem).Id,
+                    FIO = ((Person)LeadNIOKRAutoCompleteComboBox.SelectedItem).FIO
+                };
+            }
+
+            if (executorsVerticalListView.Items != null)
+            {
+                foreach (AutoCompleteComboBox cmb in executorsVerticalListView.Items.OfType<AutoCompleteComboBox>())
+                {
+                    if (cmb.SelectedItem != null)
+                    {
+                        newGrant.Executor.Add(new Person()
+                        {
+                            Id = ((Person)cmb.SelectedItem).Id,
+                            FIO = ((Person)cmb.SelectedItem).FIO
+                        });
+                    }
+                }
+            }
+
+            if (kafedraAutoCompleteComboBox.SelectedItem != null)
+            {
+                newGrant.Kafedra = new Kafedra()
+                {
+                    Id = ((Kafedra)kafedraAutoCompleteComboBox.SelectedItem).Id,
+                    Title = kafedraAutoCompleteComboBox.SelectedItem.ToString()
+                };
+            }
 
 
+            if (unitAutoCompleteComboBox.SelectedItem != null)
+            {
+                newGrant.Unit = new Unit()
+                {
+                    Id = ((Unit)unitAutoCompleteComboBox.SelectedItem).Id,
+                    Title = unitAutoCompleteComboBox.SelectedItem.ToString()
+                };
+            }
 
+            if (institutionAutoCompleteComboBox.SelectedItem != null)
+            {
+                newGrant.Institution = new Institution()
+                {
+                    Id = ((Institution)institutionAutoCompleteComboBox.SelectedItem).Id,
+                    Title = institutionAutoCompleteComboBox.SelectedItem.ToString()
+                };
+            }
+
+            if (GRNTITextBox.Text != "")
+            {
+                newGrant.GRNTI = GRNTITextBox.Text;
+            }
+
+            if (researchTypeAutoCompleteComboBox.SelectedItem != null)
+            {
+                newGrant.ResearchType.Add(new ResearchType()
+                {
+                    Id = ((ResearchType)researchTypeAutoCompleteComboBox.SelectedItem).Id,
+                    Title = researchTypeAutoCompleteComboBox.SelectedItem.ToString()
+                });
+            }
+
+            if (executorOnContractVerticalListView.Items != null)
+            {
+                foreach (AutoCompleteComboBox cmb in executorOnContractVerticalListView.Items.OfType<AutoCompleteComboBox>())
+                {
+                    if (cmb.SelectedItem != null)
+                    {
+                        newGrant.ExecutorContract.Add(new Person() {
+                            Id = ((Person)cmb.SelectedItem).Id,
+                            FIO = cmb.SelectedItem.ToString()
+                        });
+                    }
+                }
+            }
+
+            if (scienceTypeVerticalListView.Items != null)
+            {
+                foreach (AutoCompleteComboBox cmb in scienceTypeVerticalListView.Items.OfType<AutoCompleteComboBox>())
+                {
+                    if (cmb.SelectedItem != null)
+                    {
+                        newGrant.ScienceType.Add(new ScienceType()
+                        {
+                            Id = ((ScienceType)cmb.SelectedItem).Id,
+                            Title = cmb.SelectedItem.ToString()
+                        });
+                    }
+                }
+            }
+
+            if (NirChecker != "")
+            {
+                newGrant.NIR = NirChecker;
+            }
+
+            if (NOCTextBox.Text != "")
+            {
+                newGrant.NOC = NOCTextBox.Text;
+            }
+
+        }
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            RadioButton pressed = (RadioButton)sender;
+            NirChecker = pressed.Content.ToString();
         }
     }
 }
