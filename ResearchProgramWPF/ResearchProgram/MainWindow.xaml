@@ -8,6 +8,8 @@
         Title="MainWindow"
         Height="900"
         Width="1300">
+
+
     <Grid>
 
         <Grid.RowDefinitions>
@@ -52,9 +54,19 @@
                         <RowDefinition Height="25"/>
                     </Grid.RowDefinitions>
 
+                    <!--<DataGrid x:Name="GrantsTable"
+                              AutoGenerateColumns="True"
+                              ItemsSource="{Binding Source={x:Static local:WorkerWithGrantsTable.GrantsDataTable}}"
+                              Grid.Row="0">
+                    </DataGrid>-->
+                    <!--<DataGrid x:Name="GrantsTable"
+                              AutoGenerateColumns="True"
+                              ItemsSource="{Binding Path=(local:WorkerWithGrantsTable.GrantsDataTable)}"
+                              Grid.Row="0">
+                    </DataGrid>-->
                     <DataGrid x:Name="GrantsTable"
                               AutoGenerateColumns="True"
-                              ItemsSource="{Binding GrantsDataTable}"
+                              ItemsSource="{Binding Source={x:Static local:WorkerWithGrantsTable.GrantsDataTable}, Mode=OneWay}"
                               Grid.Row="0">
                     </DataGrid>
 

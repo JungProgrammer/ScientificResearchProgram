@@ -125,7 +125,9 @@ namespace ResearchProgram
                     grant_index = ShowGrantIndex(grants, grant_id);
 
                     priorityTrend = reader[1].ToString();
-                    grants[grant_index].PriorityTrand.Add(priorityTrend);
+                    grants[grant_index].PriorityTrands.Add(new PriorityTrend() { 
+                        Title = priorityTrend
+                    });
                 }
             }
             else
@@ -185,7 +187,7 @@ namespace ResearchProgram
                     {
                         Title = grantDeposit
                     });
-                    grants[grant_index].DepositorSum.Add(grantDepositSum);
+                    grants[grant_index].DepositorSum.Add(float.Parse(grantDepositSum));
                 }
             }
             else
@@ -261,7 +263,7 @@ namespace ResearchProgram
                     grants[grant_index].Customer = new Person() { FIO = reader[3].ToString() };
                     grants[grant_index].StartDate = Convert.ToDateTime(reader[4]);
                     grants[grant_index].EndDate = Convert.ToDateTime(reader[5]);
-                    grants[grant_index].Price = Convert.ToInt32(reader[6]);
+                    grants[grant_index].Price = float.Parse(reader[6].ToString());
                     grants[grant_index].LeadNIOKR = new Person() { FIO = reader[7].ToString() };
                     grants[grant_index].Kafedra = new Kafedra() { Title = reader[8].ToString() };
                     grants[grant_index].Unit = new Unit() { Title = reader[9].ToString() };
@@ -280,27 +282,7 @@ namespace ResearchProgram
 
             for (int i = 0; i < grants.Length; i++)
             {
-                dataTable.Rows.Add((i + 1).ToString(),
-                    grants[i].OKVED,
-                    grants[i].NameNIOKR,
-                    grants[i].Customer,
-                    grants[i].StartDate,
-                    grants[i].EndDate,
-                    grants[i].Price,
-                    String.Join("\n", grants[i].Depositor),
-                    String.Join("\n", grants[i].DepositorSum),
-                    grants[i].LeadNIOKR,
-                    String.Join("\n", grants[i].Executor),
-                    grants[i].Kafedra,
-                    grants[i].Unit,
-                    grants[i].Institution,
-                    grants[i].GRNTI,
-                    String.Join("\n", grants[i].ResearchType),
-                    String.Join("\n", grants[i].PriorityTrand),
-                    String.Join("\n", grants[i].ExecutorContract),
-                    String.Join("\n", grants[i].ScienceType),
-                    grants[i].NIR,
-                    grants[i].NOC);
+                WorkerWithGrantsTable.AddRowToGrantTable(grants[i]);
             }
         }
 
@@ -333,7 +315,8 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    dataTable.Columns.Add(reader[1].ToString());
+                    //dataTable.Columns.Add(reader[1].ToString());
+                    WorkerWithGrantsTable.AddHeadersToGrantTable(reader[1].ToString());
                 }
             }
             else
@@ -398,6 +381,34 @@ namespace ResearchProgram
             return depositsList;
         }
 
+        /// <summary>
+        /// Получение приоритетных направлений
+        /// </summary>
+        /// <returns></returns>
+        public static List<PriorityTrend> GetPriorityTrends()
+        {
+            List<PriorityTrend> priorityTrendsList = new List<PriorityTrend>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM prioritytrends ORDER BY title;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    priorityTrendsList.Add(new PriorityTrend()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+            return priorityTrendsList;
+        }
         /// <summary>
         /// Получение списка кафедр
         /// </summary>
@@ -660,7 +671,7 @@ namespace ResearchProgram
                 ":partsum)", conn);
                 cmd.Parameters.Add(new NpgsqlParameter("grantid", newMaxGrantId));
                 cmd.Parameters.Add(new NpgsqlParameter("sourceid", grant.Depositor[i].Id));
-                cmd.Parameters.Add(new NpgsqlParameter("partsum", float.Parse(grant.DepositorSum[i])));
+                cmd.Parameters.Add(new NpgsqlParameter("partsum", grant.DepositorSum[i]));
                 cmd.ExecuteNonQuery();
             }
 
@@ -689,6 +700,20 @@ namespace ResearchProgram
                 ":sciencetypesid)", conn);
                 cmd.Parameters.Add(new NpgsqlParameter("grantid", newMaxGrantId));
                 cmd.Parameters.Add(new NpgsqlParameter("sciencetypesid", sType.Id));
+                cmd.ExecuteNonQuery();
+            }
+
+            // Добавление приоритетных направлений
+            foreach (PriorityTrend priorityTrend in grant.PriorityTrands)
+            {
+                cmd = new NpgsqlCommand("insert into grantprioritytrends (" +
+                "grantid, " +
+                "prioritytrendsid) " +
+                "values(" +
+                ":grantid, " +
+                ":prioritytrendsid)", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("grantid", newMaxGrantId));
+                cmd.Parameters.Add(new NpgsqlParameter("prioritytrendsid", priorityTrend.Id));
                 cmd.ExecuteNonQuery();
             }
         }

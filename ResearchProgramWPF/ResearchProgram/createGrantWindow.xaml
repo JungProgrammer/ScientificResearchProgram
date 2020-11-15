@@ -84,10 +84,15 @@
                          FontSize="17"
                          Tag="GRNTI"
                          Click="grantParametersButtonClick"/>
-                <Button  Content="Тип"
+                <Button  Content="Тип исследования"
                          Margin="0 0 0 3"
                          FontSize="17"
                          Tag="researchTypes"
+                         Click="grantParametersButtonClick"/>
+                <Button  Content="Приоритетные направления"
+                         Margin="0 0 0 3"
+                         FontSize="17"
+                         Tag="priorityTrends"
                          Click="grantParametersButtonClick"/>
                 <Button  Content="Исполнители по договору"
                          Margin="0 0 0 3"
@@ -123,7 +128,7 @@
             </Grid.RowDefinitions>
 
             <TabControl Grid.Row="0"
-                        x:Name="createGrantTabControl" >
+                        x:Name="createGrantTabControl"  >
                 <TabItem Name="OKVED"
                          Visibility="Collapsed">
                     <TabItem.Content>
@@ -422,6 +427,50 @@
                             <TextBox Grid.Row="1"
                                       Name="GRNTITextBox"
                                       Margin="5 0"/>
+                        </Grid>
+                    </TabItem.Content>
+                </TabItem>
+
+                <TabItem Name="priorityTrends"
+                         Visibility="Collapsed">
+                    <TabItem.Content>
+                        <Grid Name="priorityTrendsGrid">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="3*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="15*"/>
+                                <RowDefinition Height="1.2*"/>
+                            </Grid.RowDefinitions>
+
+                            <Label Content="Приоритетные направления"
+                            Grid.Row="0"
+                            Margin="0 5 0 0" Grid.ColumnSpan="2"/>
+
+
+                            <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="priorityTrendsVerticalListView">
+                            </ListView>
+
+
+                            <Button Content="Добавить"
+                                    Name="priorityTrendAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="2 5 10 5"
+                                    Width="Auto" Click="priorityTrendAddButton_Click"/>
+                            <Button Content="Удалить"
+                                    Name="priorityTrendDeleteButton"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Margin="0 5 20 5"
+                                    Width="Auto" Click="priorityTrendDeleteButton_Click"/>
+
                         </Grid>
                     </TabItem.Content>
                 </TabItem>

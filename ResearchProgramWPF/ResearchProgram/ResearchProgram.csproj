@@ -94,9 +94,11 @@
     </ApplicationDefinition>
     <Compile Include="Depositor.cs" />
     <Compile Include="Institution.cs" />
+    <Compile Include="PriorityTrend.cs" />
     <Compile Include="ResearchType.cs" />
     <Compile Include="ScienceType.cs" />
     <Compile Include="Unit.cs" />
+    <Compile Include="WorkerWithGrantsTable.cs" />
     <Page Include="createGrantWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

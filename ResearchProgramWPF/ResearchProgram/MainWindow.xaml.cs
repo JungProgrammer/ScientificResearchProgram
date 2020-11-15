@@ -15,7 +15,6 @@ namespace ResearchProgram
     /// </summary>
     public partial class MainWindow : Window
     {
-        public DataTable GrantsDataTable { get; private set; }
         public DataTable PeopleDataTable { get; private set; }
 
         public MainWindow()
@@ -40,11 +39,11 @@ namespace ResearchProgram
         private void LoadGrantsTable()
         {
             var ds = new DataSet("Grants");
-            this.GrantsDataTable = ds.Tables.Add("GrantsTable");
+            WorkerWithGrantsTable.GrantsDataTable = ds.Tables.Add("GrantsTable");
 
             CRUDDataBase.ConnectByDataBase();
-            CRUDDataBase.CreateHeaders(GrantsDataTable);
-            CRUDDataBase.LoadTable(GrantsDataTable);
+            CRUDDataBase.CreateHeaders(WorkerWithGrantsTable.GrantsDataTable);
+            CRUDDataBase.LoadTable(WorkerWithGrantsTable.GrantsDataTable);
             CRUDDataBase.CloseConnect();
         }
 

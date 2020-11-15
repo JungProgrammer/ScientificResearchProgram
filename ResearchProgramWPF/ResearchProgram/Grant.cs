@@ -11,10 +11,10 @@ namespace ResearchProgram
         public Grant()
         {
             Depositor = new List<Depositor>();
-            DepositorSum = new List<string>();
+            DepositorSum = new List<float>();
             Executor = new List<Person>();
             ResearchType = new List<ResearchType>();
-            PriorityTrand = new List<string>();
+            PriorityTrands = new List<PriorityTrend>();
             ExecutorContract = new List<Person>();
             ScienceType = new List<ScienceType>();
         }
@@ -36,7 +36,7 @@ namespace ResearchProgram
         // Средства
         public List<Depositor> Depositor { get; set; }
         // Часть средств
-        public List<string> DepositorSum { get; set; }
+        public List<float> DepositorSum { get; set; }
         // руководитель
         public Person LeadNIOKR { get; set; }
         // Исполнитель
@@ -52,7 +52,7 @@ namespace ResearchProgram
         // Тип исследования
         public List<ResearchType> ResearchType { get; set; }
         // Приоритетные направления
-        public List<string> PriorityTrand { get; set; }
+        public List<PriorityTrend> PriorityTrands { get; set; }
         // Исполнители по договору
         public List<Person> ExecutorContract { get; set; }
         // Тип науки

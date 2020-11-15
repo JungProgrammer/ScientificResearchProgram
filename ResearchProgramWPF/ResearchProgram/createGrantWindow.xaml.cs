@@ -25,6 +25,7 @@ namespace ResearchProgram
         public List<Unit> unitsList { get; set; }
         public List<Institution> instituionsList { get; set; }
         public List<ResearchType> researchTypesList { get; set; }
+        public List<PriorityTrend> priorityTrendList { get; set; }
         //Списки данных из формы
         public List<ComboBox> enteredExecutorsList { get; set; }
         public List<Object[]> enteredDepositsList { get; set; }
@@ -66,6 +67,7 @@ namespace ResearchProgram
             instituionsList = CRUDDataBase.GetInstitutions();
             researchTypesList = CRUDDataBase.GetResearchTypes();
             scienceTypeList = CRUDDataBase.GetScienceTypes();
+            priorityTrendList = CRUDDataBase.GetPriorityTrends();
 
             enteredDepositsList = new List<object[]>();
             enteredExecutorsContractList = new List<ComboBox>();
@@ -256,6 +258,35 @@ namespace ResearchProgram
             }
         }
 
+        private void priorityTrendAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            AutoCompleteComboBox priorityTrendComboBox = new AutoCompleteComboBox()
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                ItemsSource = new List<PriorityTrend>(priorityTrendList),
+                MinWidth = 300
+            };
+
+
+            priorityTrendsVerticalListView.Items.Add(priorityTrendComboBox);
+        }
+
+        private void priorityTrendDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            int countSelectedElement = priorityTrendsVerticalListView.SelectedItems.Count;
+            if (countSelectedElement > 0)
+            {
+                for (int i = 0; i < countSelectedElement; i++)
+                {
+                    priorityTrendsVerticalListView.Items.Remove(priorityTrendsVerticalListView.SelectedItems[0]);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выделите нужный для удаления элемент");
+            }
+        }
+
         private void executorOnContractAddButton_Click(object sender, RoutedEventArgs e)
         {
 
@@ -322,11 +353,11 @@ namespace ResearchProgram
         private void grantParametersButtonClick(object sender, RoutedEventArgs e)
         {
             createGrantTabControl.SelectedItem = createGrantTabControl.Items.OfType<TabItem>().SingleOrDefault(n => n.Name == ((Button)sender).Tag.ToString());
-            foreach (Button button in grantParametersButtonStackPanel.Children.OfType<Button>()){
+            foreach (Button button in grantParametersButtonStackPanel.Children.OfType<Button>()) {
                 button.Background = new SolidColorBrush(Color.FromArgb(255, 222, 222, 222));
             }
             ((Button)sender).Background = new SolidColorBrush(Color.FromArgb(255, 189, 189, 189));
-            
+
         }
 
         /// <summary>
@@ -385,7 +416,7 @@ namespace ResearchProgram
 
             if (priceTextBox.Text.ToString() != "")
             {
-                newGrant.Price = float.Parse(priceTextBox.Text);
+                newGrant.Price = ConvertToRightFloat(priceTextBox.Text);
             }
 
             if (depositsVerticalListView.Items != null)
@@ -405,7 +436,7 @@ namespace ResearchProgram
                             Id = ((Depositor)cmb.SelectedItem).Id,
                             Title = cmb.SelectedItem.ToString()
                         });
-                        newGrant.DepositorSum.Add(partSum.Text.ToString());
+                        newGrant.DepositorSum.Add(ConvertToRightFloat(partSum.Text));
                     }
                 }
             }
@@ -498,6 +529,20 @@ namespace ResearchProgram
                     Title = researchTypeAutoCompleteComboBox.SelectedItem.ToString()
                 });
             }
+            if (priorityTrendsVerticalListView.Items != null)
+            {
+                foreach (AutoCompleteComboBox cmb in priorityTrendsVerticalListView.Items.OfType<AutoCompleteComboBox>())
+                {
+                    if (cmb.SelectedItem != null)
+                    {
+                        newGrant.PriorityTrands.Add(new PriorityTrend()
+                        {
+                            Id = ((PriorityTrend)cmb.SelectedItem).Id,
+                            Title = cmb.SelectedItem.ToString()
+                        });
+                    }
+                }
+            }
 
             if (executorOnContractVerticalListView.Items != null)
             {
@@ -557,6 +602,8 @@ namespace ResearchProgram
 
                 // Закрываем соединение с БД
                 CRUDDataBase.CloseConnect();
+
+                //WorkerWithGrantsTable.AddRowToGrantTable(newGrant);
             }
         }
 
@@ -564,6 +611,16 @@ namespace ResearchProgram
         {
             RadioButton pressed = (RadioButton)sender;
             NirChecker = pressed.Content.ToString();
+        }
+
+        /// <summary>
+        /// Возвращает правильное вещественное значение. Если пользователь, например, ввел точку вместо запятой
+        /// </summary>
+        /// <param name="floatNum"></param>
+        /// <returns></returns>
+        public float ConvertToRightFloat(string floatNum)
+        {
+            return float.Parse(floatNum.Replace('.', ','));
         }
     }
 }
