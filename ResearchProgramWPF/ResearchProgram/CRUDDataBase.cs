@@ -16,12 +16,27 @@ namespace ResearchProgram
 
         private static NpgsqlConnection conn;
 
+        /// <summary>
+        /// Подключение к БД
+        /// </summary>
         public static void ConnectByDataBase()
         {
             conn = new NpgsqlConnection($"Server=localhost; Port=5432; User Id={loginFromDB}; Password={passwordFromDB}; Database=postgres");
             conn.Open();
         }
 
+        /// <summary>
+        /// Закрытия соединения с БД
+        /// </summary>
+        public static void CloseConnect()
+        {
+            conn.Close();
+        }
+
+        /// <summary>
+        /// Выгружает таблицу договоров на гланый экран
+        /// </summary>
+        /// <param name="dataTable"></param>
         public static void LoadTable(DataTable dataTable)
         {
             int grant_index = 0;
@@ -166,7 +181,10 @@ namespace ResearchProgram
 
                     grantDeposit = reader[1].ToString();
                     grantDepositSum = reader[2].ToString();
-                    grants[grant_index].Depositor.Add(grantDeposit);
+                    grants[grant_index].Depositor.Add(new Depositor()
+                    {
+                        Title = grantDeposit
+                    });
                     grants[grant_index].DepositorSum.Add(grantDepositSum);
                 }
             }
@@ -331,7 +349,7 @@ namespace ResearchProgram
         public static List<Person> GetPersons()
         {
             List<Person> personsList = new List<Person>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT Id,FIO FROM persons ORDER BY FIO;", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT Id, FIO FROM persons ORDER BY FIO;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -356,17 +374,20 @@ namespace ResearchProgram
         /// Получение списка средств
         /// </summary>
         /// <returns></returns>
-        public static List<string> GetDeposits()
+        public static List<Depositor> GetDeposits()
         {
-            List<string> depositsList = new List<string>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT title FROM depositors ORDER BY title;", conn);
+            List<Depositor> depositsList = new List<Depositor>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM depositors ORDER BY title;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    depositsList.Add(reader[0].ToString());
+                    depositsList.Add(new Depositor() { 
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
                 }
             }
             else
@@ -377,10 +398,6 @@ namespace ResearchProgram
             return depositsList;
         }
 
-        public static void CloseConnect()
-        {
-            conn.Close();
-        }
         /// <summary>
         /// Получение списка кафедр
         /// </summary>
@@ -522,6 +539,158 @@ namespace ResearchProgram
             }
             reader.Close();
             return scienctTypeTypesList;
+        }
+
+
+        /// <summary>
+        /// Загрузка в БД нового договора
+        /// </summary>
+        /// <param name="grant"></param>
+        public static void InsertNewGrantToDB(Grant grant)
+        {
+            // Id договора, который будет создан
+            int newMaxGrantId = 0;
+
+            // Вставляем в бд новый договор
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into grants (" +
+                "okved, " +
+                "nameniokr, " +
+                "customerid, " +
+                "startdate, " +
+                "enddate, " +
+                "price, " +
+                "leadniokrid, " +
+                "kafedraid, " +
+                "unitid, " +
+                "institutionid, " +
+                "grnti, " +
+                "nir, " +
+                "noc) " +
+                "values(:okved, " +
+                ":nameniokr, " +
+                ":customerid, " +
+                ":startdate, " +
+                ":enddate, " +
+                ":price, " +
+                ":leadniokrid, " +
+                ":kafedraid, " +
+                ":unitid, " +
+                ":institutionid, " +
+                ":grnti, " +
+                ":nir, " +
+                ":noc)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("okved", grant.OKVED));
+            cmd.Parameters.Add(new NpgsqlParameter("nameniokr", grant.NameNIOKR));
+            cmd.Parameters.Add(new NpgsqlParameter("customerid", grant.Customer.Id));
+            cmd.Parameters.Add(new NpgsqlParameter("startdate", grant.StartDate));
+            cmd.Parameters.Add(new NpgsqlParameter("enddate", grant.EndDate));
+            cmd.Parameters.Add(new NpgsqlParameter("leadniokrid", grant.LeadNIOKR.Id));
+            cmd.Parameters.Add(new NpgsqlParameter("kafedraid", grant.Kafedra.Id));
+            cmd.Parameters.Add(new NpgsqlParameter("unitid", grant.Unit.Id));
+            cmd.Parameters.Add(new NpgsqlParameter("institutionid", grant.Institution.Id));
+            cmd.Parameters.Add(new NpgsqlParameter("price", grant.Price));
+            cmd.Parameters.Add(new NpgsqlParameter("grnti", grant.GRNTI));
+            cmd.Parameters.Add(new NpgsqlParameter("nir", grant.NIR));
+            cmd.Parameters.Add(new NpgsqlParameter("noc", grant.NOC));
+
+            cmd.ExecuteNonQuery();
+
+
+
+            // Ищем id договора, который только что добавили
+            cmd = new NpgsqlCommand("SELECT id FROM grants ORDER BY id DESC", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Read();
+                newMaxGrantId = Convert.ToInt32(reader[0]);
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+
+
+            // Вставляем исполнителей
+            foreach(Person executor in grant.Executor)
+            {
+                cmd = new NpgsqlCommand("insert into executors (" +
+                "grantid, " +
+                "executorid," +
+                "isexecutorcontract) " +
+                "values(" +
+                ":grantid, " +
+                ":executorid, " +
+                ":isexecutorcontract)", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("grantid", newMaxGrantId));
+                cmd.Parameters.Add(new NpgsqlParameter("executorid", executor.Id));
+                cmd.Parameters.Add(new NpgsqlParameter("isexecutorcontract", false));
+                cmd.ExecuteNonQuery();
+            }
+            foreach (Person executor in grant.ExecutorContract)
+            {
+                cmd = new NpgsqlCommand("insert into executors (" +
+                "grantid, " +
+                "executorid," +
+                "isexecutorcontract) " +
+                "values(" +
+                ":grantid, " +
+                ":executorid, " +
+                ":isexecutorcontract)", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("grantid", newMaxGrantId));
+                cmd.Parameters.Add(new NpgsqlParameter("executorid", executor.Id));
+                cmd.Parameters.Add(new NpgsqlParameter("isexecutorcontract", true));
+                cmd.ExecuteNonQuery();
+            }
+
+
+            // Добавление источников средств в БД
+            for(int i = 0; i < grant.Depositor.Count(); i++)
+            {
+                cmd = new NpgsqlCommand("insert into grantdeposits (" +
+                "grantid, " +
+                "sourceid," +
+                "partsum) " +
+                "values(" +
+                ":grantid, " +
+                ":sourceid, " +
+                ":partsum)", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("grantid", newMaxGrantId));
+                cmd.Parameters.Add(new NpgsqlParameter("sourceid", grant.Depositor[i].Id));
+                cmd.Parameters.Add(new NpgsqlParameter("partsum", float.Parse(grant.DepositorSum[i])));
+                cmd.ExecuteNonQuery();
+            }
+
+            // Добавление типов исследования
+            foreach(ResearchType rType in grant.ResearchType)
+            {
+                cmd = new NpgsqlCommand("insert into grantresearchtype (" +
+                "grantid, " +
+                "researchtypeid) " +
+                "values(" +
+                ":grantid, " +
+                ":researchtypeid)", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("grantid", newMaxGrantId));
+                cmd.Parameters.Add(new NpgsqlParameter("researchtypeid", rType.Id));
+                cmd.ExecuteNonQuery();
+            }
+
+            // Добавление типов науки
+            foreach(ScienceType sType in grant.ScienceType)
+            {
+                cmd = new NpgsqlCommand("insert into grantsciencetypes (" +
+                "grantid, " +
+                "sciencetypesid) " +
+                "values(" +
+                ":grantid, " +
+                ":sciencetypesid)", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("grantid", newMaxGrantId));
+                cmd.Parameters.Add(new NpgsqlParameter("sciencetypesid", sType.Id));
+                cmd.ExecuteNonQuery();
+            }
         }
     }
 }

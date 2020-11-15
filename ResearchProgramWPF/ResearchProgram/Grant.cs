@@ -10,7 +10,7 @@ namespace ResearchProgram
     {
         public Grant()
         {
-            Depositor = new List<string>();
+            Depositor = new List<Depositor>();
             DepositorSum = new List<string>();
             Executor = new List<Person>();
             ResearchType = new List<ResearchType>();
@@ -34,7 +34,7 @@ namespace ResearchProgram
         // Цена договора
         public float Price { get; set; }
         // Средства
-        public List<string> Depositor { get; set; }
+        public List<Depositor> Depositor { get; set; }
         // Часть средств
         public List<string> DepositorSum { get; set; }
         // руководитель

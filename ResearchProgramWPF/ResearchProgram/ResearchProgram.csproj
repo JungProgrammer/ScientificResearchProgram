@@ -92,6 +92,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Depositor.cs" />
     <Compile Include="Institution.cs" />
     <Compile Include="ResearchType.cs" />
     <Compile Include="ScienceType.cs" />

@@ -402,15 +402,6 @@
                             <Label Content="Учреждение"
                                    Grid.Row="0"
                                    Margin="0 5 0 0"/>
-                            <ComboBox Grid.Row="1"
-                                      Name="institutionComboBox"
-                                      Margin="5 0"
-                                      ItemsSource="{Binding instituionsList}"
-                                      IsTextSearchEnabled="False"
-                                      IsEditable="True"
-                                      StaysOpenOnEdit="True"
-                                      IsDropDownOpen="True"
-                                      Grid.ColumnSpan="2"/>
                         </Grid>
                     </TabItem.Content>
                 </TabItem>

@@ -19,7 +19,7 @@ namespace ResearchProgram
         public List<string> selectedItems { get; set; }
         public List<string> selectedValues { get; set; }
 
-        public List<string> depositsList { get; set; }
+        public List<Depositor> depositsList { get; set; }
         public List<ScienceType> scienceTypeList { get; set; }
         public List<Kafedra> kafedrasList { get; set; }
         public List<Unit> unitsList { get; set; }
@@ -56,7 +56,9 @@ namespace ResearchProgram
             NIOKRList.Add("19");
             NIOKRList.Add("20");
 
+            // Подключение к базе данных
             CRUDDataBase.ConnectByDataBase();
+
             personsList = CRUDDataBase.GetPersons();
             depositsList = CRUDDataBase.GetDeposits();
             kafedrasList = CRUDDataBase.GetKafedras();
@@ -77,6 +79,8 @@ namespace ResearchProgram
             addKafedraAutoCompleteComboBox();
             addResearchTypeAutoCompleteComboBox();
 
+            // Закрытие подключения к базе данных
+            CRUDDataBase.CloseConnect();
 
             DataContext = this;
         }
@@ -325,18 +329,34 @@ namespace ResearchProgram
             
         }
 
+        /// <summary>
+        /// Создает новый экземпляр договора и загружает его в базу данных
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void createGrantButtonClick(object sender, RoutedEventArgs e)
         {
             Grant newGrant = new Grant();
 
-            if (OKVEDTextBox.Text.ToString() != "")
+            // Булевская переменная, которая отвечает за правильное создание договора. Если все необходимые данные были внесены, то договор создается
+            bool isAllOkey = true;
+
+            if (OKVEDTextBox.Text.ToString() != null)
             {
                 newGrant.OKVED = OKVEDTextBox.Text;
+            }
+            else
+            {
+                newGrant.OKVED = "";
             }
 
             if (NIOKRComboBox.SelectedItem != null)
             {
                 newGrant.NameNIOKR = NIOKRComboBox.SelectedItem.ToString();
+            }
+            else
+            {
+                newGrant.NameNIOKR = "";
             }
 
             if ((Person)customerAutoCompleteComboBox.SelectedItem != null)
@@ -346,6 +366,11 @@ namespace ResearchProgram
                     Id = ((Person)customerAutoCompleteComboBox.SelectedItem).Id,
                     FIO = ((Person)customerAutoCompleteComboBox.SelectedItem).FIO
                 };
+            }
+            else
+            {
+                MessageBox.Show("Необходимо указать заказчика");
+                isAllOkey = false;
             }
 
             if (startDateDatePicker.SelectedDate != null)
@@ -375,7 +400,11 @@ namespace ResearchProgram
 
                     if (cmb.SelectedItem != null && partSum.Text.ToString() != "")
                     {
-                        newGrant.Depositor.Add(cmb.SelectedItem.ToString());
+                        newGrant.Depositor.Add(new Depositor()
+                        {
+                            Id = ((Depositor)cmb.SelectedItem).Id,
+                            Title = cmb.SelectedItem.ToString()
+                        });
                         newGrant.DepositorSum.Add(partSum.Text.ToString());
                     }
                 }
@@ -387,6 +416,11 @@ namespace ResearchProgram
                     Id = ((Person)LeadNIOKRAutoCompleteComboBox.SelectedItem).Id,
                     FIO = ((Person)LeadNIOKRAutoCompleteComboBox.SelectedItem).FIO
                 };
+            }
+            else
+            {
+                MessageBox.Show("Необходимо указать руководителя проекта");
+                isAllOkey = false;
             }
 
             if (executorsVerticalListView.Items != null)
@@ -412,6 +446,11 @@ namespace ResearchProgram
                     Title = kafedraAutoCompleteComboBox.SelectedItem.ToString()
                 };
             }
+            else
+            {
+                MessageBox.Show("Необходимо указать кафедру");
+                isAllOkey = false;
+            }
 
 
             if (unitAutoCompleteComboBox.SelectedItem != null)
@@ -422,6 +461,11 @@ namespace ResearchProgram
                     Title = unitAutoCompleteComboBox.SelectedItem.ToString()
                 };
             }
+            else
+            {
+                MessageBox.Show("Необходимо указать подразделение");
+                isAllOkey = false;
+            }
 
             if (institutionAutoCompleteComboBox.SelectedItem != null)
             {
@@ -431,10 +475,19 @@ namespace ResearchProgram
                     Title = institutionAutoCompleteComboBox.SelectedItem.ToString()
                 };
             }
+            else
+            {
+                MessageBox.Show("Необходимо указать учреждение");
+                isAllOkey = false;
+            }
 
             if (GRNTITextBox.Text != "")
             {
                 newGrant.GRNTI = GRNTITextBox.Text;
+            }
+            else
+            {
+                newGrant.GRNTI = "";
             }
 
             if (researchTypeAutoCompleteComboBox.SelectedItem != null)
@@ -475,16 +528,36 @@ namespace ResearchProgram
                 }
             }
 
-            if (NirChecker != "")
+            if (NirChecker != null)
             {
                 newGrant.NIR = NirChecker;
+            }
+            else
+            {
+                newGrant.NIR = "";
             }
 
             if (NOCTextBox.Text != "")
             {
                 newGrant.NOC = NOCTextBox.Text;
             }
+            else
+            {
+                newGrant.NOC = "";
+            }
 
+
+            // Если данные введены корректно
+            if (isAllOkey)
+            {
+                // Подключаюсь к БД
+                CRUDDataBase.ConnectByDataBase();
+
+                CRUDDataBase.InsertNewGrantToDB(newGrant);
+
+                // Закрываем соединение с БД
+                CRUDDataBase.CloseConnect();
+            }
         }
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
