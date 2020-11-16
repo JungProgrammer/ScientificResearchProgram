@@ -282,7 +282,7 @@ namespace ResearchProgram
 
             for (int i = 0; i < grants.Length; i++)
             {
-                WorkerWithGrantsTable.AddRowToGrantTable(grants[i]);
+                WorkerWithGrantsTable.AddRowToGrantTable(dataTable, grants[i]);
             }
         }
 
@@ -316,7 +316,7 @@ namespace ResearchProgram
                 while (reader.Read())
                 {
                     //dataTable.Columns.Add(reader[1].ToString());
-                    WorkerWithGrantsTable.AddHeadersToGrantTable(reader[1].ToString());
+                    WorkerWithGrantsTable.AddHeadersToGrantTable(dataTable, reader[1].ToString());
                 }
             }
             else

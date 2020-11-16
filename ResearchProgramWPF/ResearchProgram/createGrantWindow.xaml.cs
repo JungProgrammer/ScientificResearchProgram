@@ -1,5 +1,6 @@
 ﻿using DotNetKit.Windows.Controls;
 using System;
+using System.Data;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
@@ -13,6 +14,9 @@ namespace ResearchProgram
     /// </summary>
     public partial class createGrantWindow : Window
     {
+        private DataTable grantsDataTable;
+
+
         //Списки данных из БД
         public List<string> NIOKRList { get; set; }
         public List<Person> personsList { get; set; }
@@ -48,9 +52,11 @@ namespace ResearchProgram
         AutoCompleteComboBox researchTypeAutoCompleteComboBox;
 
 
-        public createGrantWindow()
+        public createGrantWindow(DataTable grantsDataTable)
         {
             InitializeComponent();
+
+            this.grantsDataTable = grantsDataTable;
 
             //Заполнение списков
             NIOKRList = new List<string>();
@@ -83,8 +89,6 @@ namespace ResearchProgram
 
             // Закрытие подключения к базе данных
             CRUDDataBase.CloseConnect();
-
-            DataContext = this;
         }
         /// <summary>
         /// Добавление комбо бокса к заказчику
@@ -603,7 +607,7 @@ namespace ResearchProgram
                 // Закрываем соединение с БД
                 CRUDDataBase.CloseConnect();
 
-                //WorkerWithGrantsTable.AddRowToGrantTable(newGrant);
+                WorkerWithGrantsTable.AddRowToGrantTable(grantsDataTable, newGrant);
             }
         }
 

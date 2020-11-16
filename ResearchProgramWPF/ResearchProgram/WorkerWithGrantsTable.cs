@@ -9,24 +9,22 @@ using System.Linq;
 
 namespace ResearchProgram
 {
-    public static class WorkerWithGrantsTable
+    public class WorkerWithGrantsTable
     {
-        // Таблица договоров
-        public static DataTable GrantsDataTable { get;  set; }
-
         private static int countOfRows = 0;
 
+        public WorkerWithGrantsTable() { }
 
-        public static void AddHeadersToGrantTable(string header)
+        public static void AddHeadersToGrantTable(DataTable dataTable, string header)
         {
-            GrantsDataTable.Columns.Add(header);
+            dataTable.Columns.Add(header);
         }
 
-        public static void AddRowToGrantTable(Grant grant)
+        public static void AddRowToGrantTable(DataTable dataTable, Grant grant)
         {
             countOfRows++;
 
-            GrantsDataTable.Rows.Add(
+            dataTable.Rows.Add(
                     countOfRows.ToString(),
                     grant.OKVED,
                     grant.NameNIOKR,

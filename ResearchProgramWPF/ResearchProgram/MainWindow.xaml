@@ -9,7 +9,6 @@
         Height="900"
         Width="1300">
 
-
     <Grid>
 
         <Grid.RowDefinitions>
@@ -34,7 +33,7 @@
               FontSize="13">
             <MenuItem Header="Файл">
                 <MenuItem Header="Фай"></MenuItem>
-                <MenuItem Header="Создать договор">
+                <MenuItem Header="Создать договор" Click="CreateGrantMenuItem_Click">
                 </MenuItem>
                 <Separator />
                 <MenuItem Header="Настройки"></MenuItem>
@@ -54,21 +53,13 @@
                         <RowDefinition Height="25"/>
                     </Grid.RowDefinitions>
 
-                    <!--<DataGrid x:Name="GrantsTable"
-                              AutoGenerateColumns="True"
-                              ItemsSource="{Binding Source={x:Static local:WorkerWithGrantsTable.GrantsDataTable}}"
-                              Grid.Row="0">
-                    </DataGrid>-->
-                    <!--<DataGrid x:Name="GrantsTable"
-                              AutoGenerateColumns="True"
-                              ItemsSource="{Binding Path=(local:WorkerWithGrantsTable.GrantsDataTable)}"
-                              Grid.Row="0">
-                    </DataGrid>-->
                     <DataGrid x:Name="GrantsTable"
                               AutoGenerateColumns="True"
-                              ItemsSource="{Binding Source={x:Static local:WorkerWithGrantsTable.GrantsDataTable}, Mode=OneWay}"
+                              ItemsSource="{Binding GrantsDataTable}"
                               Grid.Row="0">
                     </DataGrid>
+
+
 
                     <Label Content="Отображение с НДФЛ" 
                            Grid.Row="1"

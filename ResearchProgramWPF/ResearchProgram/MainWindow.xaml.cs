@@ -15,15 +15,15 @@ namespace ResearchProgram
     /// </summary>
     public partial class MainWindow : Window
     {
+        // Таблица договоров
+        public DataTable GrantsDataTable { get; set; }
         public DataTable PeopleDataTable { get; private set; }
 
         public MainWindow()
         {
-
             InitializeComponent();
 
-            createGrantWindow w = new createGrantWindow();
-            w.Show();
+            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             // Загружаем данные в таблицу грантов
             LoadGrantsTable();
@@ -39,11 +39,11 @@ namespace ResearchProgram
         private void LoadGrantsTable()
         {
             var ds = new DataSet("Grants");
-            WorkerWithGrantsTable.GrantsDataTable = ds.Tables.Add("GrantsTable");
+            GrantsDataTable = ds.Tables.Add("GrantsTable");
 
             CRUDDataBase.ConnectByDataBase();
-            CRUDDataBase.CreateHeaders(WorkerWithGrantsTable.GrantsDataTable);
-            CRUDDataBase.LoadTable(WorkerWithGrantsTable.GrantsDataTable);
+            CRUDDataBase.CreateHeaders(GrantsDataTable);
+            CRUDDataBase.LoadTable(GrantsDataTable);
             CRUDDataBase.CloseConnect();
         }
 
@@ -61,6 +61,15 @@ namespace ResearchProgram
             this.PeopleDataTable.Rows.Add("21", "22");
         }
 
+        private void CreateGrantMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            createGrantWindow newGrantWindow = new createGrantWindow(GrantsDataTable);
+            newGrantWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+            newGrantWindow.Owner = this;
+
+            newGrantWindow.Show();
+        }
     }
 
 }
