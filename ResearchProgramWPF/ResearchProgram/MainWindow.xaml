@@ -32,9 +32,9 @@
               Grid.ColumnSpan="100"
               FontSize="13">
             <MenuItem Header="Файл">
-                <MenuItem Header="Фай"></MenuItem>
-                <MenuItem Header="Создать договор" Click="CreateGrantMenuItem_Click">
-                </MenuItem>
+                <MenuItem Header="Создать договор" Click="CreateGrantMenuItem_Click"/>
+                <MenuItem Header="Добавить человека" Click="CreatePersonMenuItem_Click"/>
+
                 <Separator />
                 <MenuItem Header="Настройки"></MenuItem>
                 <MenuItem Header="Выход"></MenuItem>
