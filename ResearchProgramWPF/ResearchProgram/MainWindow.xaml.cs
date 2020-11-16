@@ -42,10 +42,13 @@ namespace ResearchProgram
             var ds = new DataSet("Grants");
             GrantsDataTable = ds.Tables.Add("GrantsTable");
 
+
             CRUDDataBase.ConnectByDataBase();
             CRUDDataBase.CreateGrantsHeaders(GrantsDataTable);
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
             CRUDDataBase.CloseConnect();
+
+
         }
 
         /// <summary>
@@ -70,6 +73,16 @@ namespace ResearchProgram
             newGrantWindow.Owner = this;
 
             newGrantWindow.Show();
+        }
+
+        private void CreatePersonMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            createPersonWindow newPersonWindow = new createPersonWindow(PeopleDataTable); // поменять на нужный
+            newPersonWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+            newPersonWindow.Owner = this;
+            
+            newPersonWindow.Show();
         }
     }
 

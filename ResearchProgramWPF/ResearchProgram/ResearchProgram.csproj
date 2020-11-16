@@ -92,6 +92,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="createPersonWindow.xaml.cs">
+      <DependentUpon>createPersonWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Depositor.cs" />
     <Compile Include="Institution.cs" />
     <Compile Include="Job.cs" />
@@ -101,6 +104,10 @@
     <Compile Include="Unit.cs" />
     <Compile Include="WorkerWithGrantsTable.cs" />
     <Page Include="createGrantWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="createPersonWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
