@@ -21,6 +21,8 @@ namespace ResearchProgram
 
         // Id
         public int Id { get; set; }
+        // Номер договора
+        public string grantNumber { get; set; }
         // ОКВЕД
         public string OKVED { get; set; }
         // Наименование НИОКР

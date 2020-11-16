@@ -9,23 +9,30 @@ using System.Linq;
 
 namespace ResearchProgram
 {
-    public class WorkerWithGrantsTable
+    public class WorkerWithTablesOnMainForm
     {
-        private static int countOfRows = 0;
+        private static int countOfGrantRows = 0;
+        private static int countOfPersonRows = 0;
 
-        public WorkerWithGrantsTable() { }
+        public WorkerWithTablesOnMainForm() { }
 
-        public static void AddHeadersToGrantTable(DataTable dataTable, string header)
+        public static void AddHeadersToGrantTable(DataTable grantsTable, string header)
         {
-            dataTable.Columns.Add(header);
+            grantsTable.Columns.Add(header);
+        }
+
+        public static void AddHeadersToPersonTable(DataTable personsTable, string header)
+        {
+            personsTable.Columns.Add(header);
         }
 
         public static void AddRowToGrantTable(DataTable dataTable, Grant grant)
         {
-            countOfRows++;
+            countOfGrantRows++;
 
             dataTable.Rows.Add(
-                    countOfRows.ToString(),
+                    countOfGrantRows.ToString(),
+                    grant.grantNumber,
                     grant.OKVED,
                     grant.NameNIOKR,
                     grant.Customer,
@@ -46,6 +53,23 @@ namespace ResearchProgram
                     String.Join("\n", grant.ScienceType),
                     grant.NIR,
                     grant.NOC);
+        }
+
+        public static void AddRowToPersonsTable(DataTable dataTable, Person person)
+        {
+            countOfPersonRows++;
+
+            dataTable.Rows.Add(
+                    countOfGrantRows.ToString(),
+                    person.FIO,
+                    person.BitrhDate,
+                    person.Sex.ToString(),
+                    person.PlaceOfWork,
+                    person.Category,
+                    person.Degree,
+                    person.Rank,
+                    String.Join("\n", person.Jobs)
+                    );
         }
     }
 }

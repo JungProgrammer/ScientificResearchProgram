@@ -24,6 +24,11 @@
                         Tag="OKVED"
                         Click="grantParametersButtonClick"
                         Background="#BBB"/>
+                <Button Content="Номер договора"
+                        Margin="0 0 0 3"
+                        FontSize="17"
+                        Tag="grantNumber"
+                        Click="grantParametersButtonClick"/>
                 <Button Content="Наименование НИОКР"
                         Margin="0 0 0 3"
                         FontSize="17"
@@ -129,6 +134,7 @@
 
             <TabControl Grid.Row="0"
                         x:Name="createGrantTabControl"  >
+                
                 <TabItem Name="OKVED"
                          Visibility="Collapsed">
                     <TabItem.Content>
@@ -144,6 +150,27 @@
                                    Margin="0 5 0 0"/>
                             <TextBox Grid.Row="1"
                                      Name="OKVEDTextBox"
+                                     Margin="5 0"></TextBox>
+
+                        </Grid>
+                    </TabItem.Content>
+                </TabItem>
+
+                <TabItem Name="grantNumber"
+                         Visibility="Collapsed">
+                    <TabItem.Content>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Label Content="Номер договора"
+                                   Grid.Row="0"
+                                   Margin="0 5 0 0"/>
+                            <TextBox Grid.Row="1"
+                                     Name="grantNumberTextBox"
                                      Margin="5 0"></TextBox>
 
                         </Grid>

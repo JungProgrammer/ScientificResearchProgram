@@ -376,13 +376,23 @@ namespace ResearchProgram
             // Булевская переменная, которая отвечает за правильное создание договора. Если все необходимые данные были внесены, то договор создается
             bool isAllOkey = true;
 
-            if (OKVEDTextBox.Text.ToString() != null)
+            if (OKVEDTextBox.Text.ToString() != "")
             {
                 newGrant.OKVED = OKVEDTextBox.Text;
             }
             else
             {
                 newGrant.OKVED = "";
+            }
+
+            if(grantNumberTextBox.Text.ToString() != "")
+            {
+                newGrant.grantNumber = grantNumberTextBox.Text;
+            }
+            else
+            {
+                MessageBox.Show("Необходимо указать номер договора");
+                isAllOkey = false;
             }
 
             if (NIOKRComboBox.SelectedItem != null)
@@ -607,7 +617,9 @@ namespace ResearchProgram
                 // Закрываем соединение с БД
                 CRUDDataBase.CloseConnect();
 
-                WorkerWithGrantsTable.AddRowToGrantTable(grantsDataTable, newGrant);
+                WorkerWithTablesOnMainForm.AddRowToGrantTable(grantsDataTable, newGrant);
+
+                MessageBox.Show("Договор успешно создан");
             }
         }
 

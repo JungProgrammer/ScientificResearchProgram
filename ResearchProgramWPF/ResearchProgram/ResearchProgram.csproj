@@ -94,6 +94,7 @@
     </ApplicationDefinition>
     <Compile Include="Depositor.cs" />
     <Compile Include="Institution.cs" />
+    <Compile Include="Job.cs" />
     <Compile Include="PriorityTrend.cs" />
     <Compile Include="ResearchType.cs" />
     <Compile Include="ScienceType.cs" />
