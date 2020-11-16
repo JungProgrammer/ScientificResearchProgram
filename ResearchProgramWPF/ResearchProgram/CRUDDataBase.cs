@@ -37,7 +37,7 @@ namespace ResearchProgram
         /// Выгружает таблицу договоров на гланый экран
         /// </summary>
         /// <param name="dataTable"></param>
-        public static void LoadTable(DataTable dataTable)
+        public static void LoadGrantsTable(DataTable dataTable)
         {
             int grant_index = 0;
             int grant_id = 0;
@@ -242,7 +242,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение остальных столбцов
-            cmd = new NpgsqlCommand("SELECT grants.id, OKVED, nameNIOKR, p.FIO, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC FROM grants " +
+            cmd = new NpgsqlCommand("SELECT grants.id, grants.grantnumber, OKVED, nameNIOKR, p.FIO, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC FROM grants " +
                                                         "JOIN persons p on grants.customerId = p.id " +
                                                         "JOIN persons p2 on grants.leadNIOKRId = p2.id " +
                                                         "JOIN kafedras k on grants.kafedraId = k.id " +
@@ -258,19 +258,20 @@ namespace ResearchProgram
                     grant_id = Convert.ToInt32(reader[0]);
                     grant_index = ShowGrantIndex(grants, grant_id);
 
-                    grants[grant_index].OKVED = reader[1].ToString();
-                    grants[grant_index].NameNIOKR = reader[2].ToString();
-                    grants[grant_index].Customer = new Person() { FIO = reader[3].ToString() };
-                    grants[grant_index].StartDate = Convert.ToDateTime(reader[4]);
-                    grants[grant_index].EndDate = Convert.ToDateTime(reader[5]);
-                    grants[grant_index].Price = float.Parse(reader[6].ToString());
-                    grants[grant_index].LeadNIOKR = new Person() { FIO = reader[7].ToString() };
-                    grants[grant_index].Kafedra = new Kafedra() { Title = reader[8].ToString() };
-                    grants[grant_index].Unit = new Unit() { Title = reader[9].ToString() };
-                    grants[grant_index].Institution = new Institution() { Title = reader[10].ToString() };
-                    grants[grant_index].GRNTI = reader[11].ToString();
-                    grants[grant_index].NIR = reader[12].ToString();
-                    grants[grant_index].NOC = reader[13].ToString();
+                    grants[grant_index].grantNumber = reader[1].ToString();
+                    grants[grant_index].OKVED = reader[2].ToString();
+                    grants[grant_index].NameNIOKR = reader[3].ToString();
+                    grants[grant_index].Customer = new Person() { FIO = reader[4].ToString() };
+                    grants[grant_index].StartDate = Convert.ToDateTime(reader[5]);
+                    grants[grant_index].EndDate = Convert.ToDateTime(reader[6]);
+                    grants[grant_index].Price = float.Parse(reader[7].ToString());
+                    grants[grant_index].LeadNIOKR = new Person() { FIO = reader[8].ToString() };
+                    grants[grant_index].Kafedra = new Kafedra() { Title = reader[9].ToString() };
+                    grants[grant_index].Unit = new Unit() { Title = reader[10].ToString() };
+                    grants[grant_index].Institution = new Institution() { Title = reader[11].ToString() };
+                    grants[grant_index].GRNTI = reader[12].ToString();
+                    grants[grant_index].NIR = reader[13].ToString();
+                    grants[grant_index].NOC = reader[14].ToString();
                 }
             }
             else
@@ -282,7 +283,112 @@ namespace ResearchProgram
 
             for (int i = 0; i < grants.Length; i++)
             {
-                WorkerWithGrantsTable.AddRowToGrantTable(dataTable, grants[i]);
+                WorkerWithTablesOnMainForm.AddRowToGrantTable(dataTable, grants[i]);
+            }
+        }
+
+        /// <summary>
+        /// Выгружает таблицу договоров на гланый экран
+        /// </summary>
+        /// <param name="dataTable"></param>
+        public static void LoadPersonsTable(DataTable dataTable)
+        {
+            int personIndex = 0;
+            int personId = 0;
+            int countOfPeople = 0;
+
+            // массив людей
+            Person[] persons = null;
+
+            // Инициализация массива людей и присваивание им id
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, (SELECT COUNT(*) FROM persons) FROM persons;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                int i;
+                reader.Read();
+                countOfPeople = Convert.ToInt32(reader[1]);
+                // Инициализация договоров
+                persons = new Person[countOfPeople];
+                for (i = 0; i < countOfPeople; i++) persons[i] = new Person();
+
+                personId = Convert.ToInt32(reader[0]);
+                persons[0].Id = personId;
+
+                i = 1;
+                while (reader.Read())
+                {
+                    personId = Convert.ToInt32(reader[0]);
+                    persons[i].Id = personId;
+                    i++;
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+
+            // Получение работ человека
+            cmd = new NpgsqlCommand("SELECT personid, title, salary, salaryrate FROM persons " +
+                                        "JOIN salaryrates ON persons.id = salaryrates.personid " +
+                                        "JOIN jobs ON salaryrates.jobid = jobs.id; ", conn);
+            reader = cmd.ExecuteReader();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    personId = Convert.ToInt32(reader[0]);
+                    personIndex = ShowPersonIndex(persons, personId);
+
+                    persons[personIndex].Jobs.Add(new Job() { 
+                        Title = reader[1].ToString(),
+                        Salary = float.Parse(reader[2].ToString()),
+                        SalaryRate = float.Parse(reader[3].ToString())
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+
+
+            // Получение остальных столбцов
+            cmd = new NpgsqlCommand("SELECT id, fio, birthdate, sex, placeofwork, category, degree, rank FROM persons", conn);
+            reader = cmd.ExecuteReader();
+
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    personId = Convert.ToInt32(reader[0]);
+                    personIndex = ShowPersonIndex(persons, personId);
+
+                    persons[personIndex].FIO = reader[1].ToString();
+                    persons[personIndex].BitrhDate = reader[2].ToString();
+                    persons[personIndex].Sex = (bool)reader[3];
+                    persons[personIndex].PlaceOfWork = reader[4].ToString();
+                    persons[personIndex].Category = reader[5].ToString();
+                    persons[personIndex].Degree = reader[6].ToString();
+                    persons[personIndex].Rank = reader[7].ToString();
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+
+            for (int i = 0; i < persons.Length; i++)
+            {
+                WorkerWithTablesOnMainForm.AddRowToPersonsTable(dataTable, persons[i]);
             }
         }
 
@@ -304,9 +410,26 @@ namespace ResearchProgram
         }
 
         /// <summary>
-        /// Создание заголовков для таблиц
+        /// Ищет индекс гранта в массиве по id гранта
         /// </summary>
-        public static void CreateHeaders(DataTable dataTable)
+        /// <param name="grants"></param>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        static int ShowPersonIndex(Person[] persons, int id)
+        {
+            int index = 0;
+            for (int i = 0; i < persons.Length; i++)
+            {
+                if (persons[i].Id == id) index = i;
+            }
+
+            return index;
+        }
+
+        /// <summary>
+        /// Создание заголовков для таблицы договоров
+        /// </summary>
+        public static void CreateGrantsHeaders(DataTable dataTable)
         {
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, field_title FROM fieldslist ORDER BY id", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
@@ -315,8 +438,29 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    //dataTable.Columns.Add(reader[1].ToString());
-                    WorkerWithGrantsTable.AddHeadersToGrantTable(dataTable, reader[1].ToString());
+                    WorkerWithTablesOnMainForm.AddHeadersToGrantTable(dataTable, reader[1].ToString());
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+        }
+
+        /// <summary>
+        /// Создание заголовков для таблицы людей
+        /// </summary>
+        public static void CreatePersonsHeaders(DataTable dataTable)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, name_field FROM fields_persons_list ORDER BY id", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    WorkerWithTablesOnMainForm.AddHeadersToPersonTable(dataTable, reader[1].ToString());
                 }
             }
             else
