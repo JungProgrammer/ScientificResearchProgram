@@ -329,8 +329,6 @@ namespace ResearchProgram
                 ItemsSource = new List<ScienceType>(scienceTypeList),
                 MinWidth = 300
             };
-
-
             scienceTypeVerticalListView.Items.Add(scienceTypeComboBox);
         }
 

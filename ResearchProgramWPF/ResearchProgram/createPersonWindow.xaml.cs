@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Data;
+using DotNetKit.Windows.Controls;
 
 
 namespace ResearchProgram
@@ -23,9 +24,18 @@ namespace ResearchProgram
     {
         public string sexChecked;
 
+        public List<Job> jobsList { get; set; }
+
+
+
         public createPersonWindow(DataTable personsDataTable)
         {
             InitializeComponent();
+
+            CRUDDataBase.ConnectByDataBase();
+            jobsList = CRUDDataBase.GetJobs();
+            CRUDDataBase.CloseConnect();
+
         }
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
@@ -40,7 +50,37 @@ namespace ResearchProgram
         }
         private void jobsAddButton_Click_1(object sender, RoutedEventArgs e)
         {
+            StackPanel horizontalStackPanel = new StackPanel()
+            {
+                Orientation = Orientation.Horizontal,
+            };
 
+            AutoCompleteComboBox jobComboBox = new AutoCompleteComboBox()
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                ItemsSource = new List<Job>(jobsList),
+                MinWidth = 150
+            };
+
+            TextBox salaryTextBox = new TextBox()
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                MinWidth = 120,
+                IsEnabled = false
+            };
+
+            TextBox salaryRateTextBox = new TextBox()
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                MinWidth = 75
+            };
+
+            horizontalStackPanel.Children.Add(jobComboBox);
+            horizontalStackPanel.Children.Add(salaryTextBox);
+            horizontalStackPanel.Children.Add(salaryRateTextBox);
+
+
+            jobsVerticalListView.Items.Add(horizontalStackPanel);
         }
         private void jobsDeleteButton_Click(object sender, RoutedEventArgs e)
         {

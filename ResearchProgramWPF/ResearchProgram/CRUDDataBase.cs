@@ -717,5 +717,35 @@ namespace ResearchProgram
                 cmd.ExecuteNonQuery();
             }
         }
+
+        /// <summary>
+        /// Получение списка должностей с их зарплатами из БД
+        /// </summary>
+        /// <returns></returns>
+        public static List<Job> GetJobs()
+        {
+            List<Job> jobsList = new List<Job>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title, salary FROM jobs ORDER BY title;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    jobsList.Add(new Job()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString(),
+                        Salary = Convert.ToInt32(reader[2])
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+            return jobsList;
+        }
     }
 }
