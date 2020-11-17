@@ -8,25 +8,17 @@ namespace ResearchProgram
 {
     public class Job
     {
-<<<<<<< HEAD
+        // Id в БД
         public int Id { get; set; }
 
+        // Название работы
         public string Title { get; set; }
 
-        public int Salary { get; set; }
-=======
-        // Id в БД
-        public int Id;
-
-        // Название работы
-        public string Title;
-
         // Оклад
-        public float Salary;
+        public float Salary { get; set; }
 
         // Ставка
-        public float SalaryRate;
->>>>>>> 4f0c2ddc71648269d9222e06aa1bc6e1009f3a83
+        public float SalaryRate { get; set; }
 
         public override string ToString()
         {

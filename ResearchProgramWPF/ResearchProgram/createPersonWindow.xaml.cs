@@ -36,6 +36,7 @@ namespace ResearchProgram
             jobsList = CRUDDataBase.GetJobs();
             CRUDDataBase.CloseConnect();
 
+            DataContext = this;
         }
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
@@ -55,19 +56,24 @@ namespace ResearchProgram
                 Orientation = Orientation.Horizontal,
             };
 
+
             AutoCompleteComboBox jobComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
                 ItemsSource = new List<Job>(jobsList),
+                SelectedItem = jobsList[0],
+                Name = "dsF",
                 MinWidth = 150
             };
 
-            TextBox salaryTextBox = new TextBox()
+            TextBlock salaryTextBlock = new TextBlock()
             {
                 Margin = new Thickness(5, 0, 5, 0),
                 MinWidth = 120,
                 IsEnabled = false
             };
+            salaryTextBlock.SetBinding(TextBlock.TextProperty, new Binding()  { Source = jobComboBox, Path = new PropertyPath(ComboBox.SelectedValueProperty), TargetNullValue = "", Converter = new JobConverter() });
+
 
             TextBox salaryRateTextBox = new TextBox()
             {
@@ -76,7 +82,7 @@ namespace ResearchProgram
             };
 
             horizontalStackPanel.Children.Add(jobComboBox);
-            horizontalStackPanel.Children.Add(salaryTextBox);
+            horizontalStackPanel.Children.Add(salaryTextBlock);
             horizontalStackPanel.Children.Add(salaryRateTextBox);
 
 
@@ -85,6 +91,11 @@ namespace ResearchProgram
         private void jobsDeleteButton_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void ChangeJobComboBox(object sender, RoutedEventArgs e)
+        {
+            
         }
 
         private void personParametersButtonClick(object sender, RoutedEventArgs e)
