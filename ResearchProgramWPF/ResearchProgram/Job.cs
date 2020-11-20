@@ -20,6 +20,41 @@ namespace ResearchProgram
         // Ставка
         public float SalaryRate { get; set; }
 
+        /// <summary>
+        /// Возвращает список окладов всех работ
+        /// </summary>
+        /// <param name="jobs"></param>
+        /// <returns></returns>
+        public static List<string> GetSalariesFromPerson(List<Job> jobs)
+        {
+            List<string> salaries = new List<string>();
+
+            foreach(Job job in jobs)
+            {
+                salaries.Add(job.Salary.ToString());
+            }
+
+            return salaries;
+        }
+
+        /// <summary>
+        /// Возвращает список ставок всех работ
+        /// </summary>
+        /// <param name="jobs"></param>
+        /// <returns></returns>
+        public static List<string> GetSalaryRatesFromPerson(List<Job> jobs)
+        {
+            List<string> salaryRates = new List<string>();
+
+
+            foreach (Job job in jobs)
+            {
+                salaryRates.Add(job.SalaryRate.ToString());
+            }
+
+            return salaryRates;
+        }
+
         public override string ToString()
         {
             return Title;

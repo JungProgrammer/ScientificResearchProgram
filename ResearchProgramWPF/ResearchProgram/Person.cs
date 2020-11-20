@@ -8,10 +8,23 @@ namespace ResearchProgram
 {
     public class Person
     {
+        public Person()
+        {
+            Id = 0;
+            FIO = "";
+            BitrhDate = DateTime.MinValue;
+            Sex = true;
+            PlaceOfWork = "";
+            Category = "";
+            Degree = "";
+            Rank = "";
+            Jobs = new List<Job>();
+        }
+
         public int Id { get; set; }
 
         public string FIO { get; set; }
-        public string BitrhDate { get; set; }
+        public DateTime BitrhDate { get; set; }
         public bool Sex { get; set; }
         public string PlaceOfWork { get; set; }
         public string Category { get; set; }
@@ -19,11 +32,6 @@ namespace ResearchProgram
         public string Rank { get; set; }
         public List<Job> Jobs { get; set; }
 
-
-        public Person()
-        {
-            Jobs = new List<Job>();
-        }
 
         public override string ToString()
         {

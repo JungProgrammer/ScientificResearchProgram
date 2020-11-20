@@ -99,6 +99,7 @@
     <Compile Include="Institution.cs" />
     <Compile Include="Job.cs" />
     <Compile Include="JobConverter.cs" />
+    <Compile Include="Parser.cs" />
     <Compile Include="PriorityTrend.cs" />
     <Compile Include="ResearchType.cs" />
     <Compile Include="ScienceType.cs" />

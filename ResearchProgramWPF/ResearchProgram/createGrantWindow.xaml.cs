@@ -14,6 +14,7 @@ namespace ResearchProgram
     /// </summary>
     public partial class createGrantWindow : Window
     {
+        // DataTable для грантов на главной таблице
         private DataTable grantsDataTable;
 
 
@@ -428,7 +429,7 @@ namespace ResearchProgram
 
             if (priceTextBox.Text.ToString() != "")
             {
-                newGrant.Price = ConvertToRightFloat(priceTextBox.Text);
+                newGrant.Price = Parser.ConvertToRightFloat(priceTextBox.Text);
             }
 
             if (depositsVerticalListView.Items != null)
@@ -448,7 +449,7 @@ namespace ResearchProgram
                             Id = ((Depositor)cmb.SelectedItem).Id,
                             Title = cmb.SelectedItem.ToString()
                         });
-                        newGrant.DepositorSum.Add(ConvertToRightFloat(partSum.Text));
+                        newGrant.DepositorSum.Add(Parser.ConvertToRightFloat(partSum.Text));
                     }
                 }
             }
@@ -627,14 +628,5 @@ namespace ResearchProgram
             NirChecker = pressed.Content.ToString();
         }
 
-        /// <summary>
-        /// Возвращает правильное вещественное значение. Если пользователь, например, ввел точку вместо запятой
-        /// </summary>
-        /// <param name="floatNum"></param>
-        /// <returns></returns>
-        public float ConvertToRightFloat(string floatNum)
-        {
-            return float.Parse(floatNum.Replace('.', ','));
-        }
     }
 }
