@@ -14,7 +14,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="20" />
             <RowDefinition Height="15*" />
-            <RowDefinition MaxHeight="48" Height="1*" />
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -45,27 +44,57 @@
 
         <TabControl Grid.Row="1"
                     Grid.ColumnSpan="100"
-                    FontSize="16">
+                    FontSize="15">
             <TabItem Header="Договоры">
                 <Grid Background="#FFE5E5E5">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="16*" />
-                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="25" />
+                        <RowDefinition Height="16*"/>
+                        <RowDefinition Height="50"/>
                     </Grid.RowDefinitions>
+
+
+                    <Label Content="Отображение с НДФЛ" 
+                           Grid.Row="0"
+                           FontSize="12"/>
 
                     <DataGrid x:Name="GrantsTable"
                               AutoGenerateColumns="True"
                               ItemsSource="{Binding GrantsDataTable}"
-                              Grid.Row="0">
+                              Grid.Row="1"
+                              SelectionUnit="CellOrRowHeader">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Скрыть выделенные столбцы" 
+                                          Click="hideSelectedColumns">
+                                    <MenuItem.Icon>
+                                        <Image Source="/ResearchProgram;component/Icons/hide.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <MenuItem Header="Показать скрытые столбцы" 
+                                          Click="showHiddenColumns">
+                                    <MenuItem.Icon>
+                                        <Image Source="/ResearchProgram;component/Icons/show.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
                     </DataGrid>
 
 
-
-                    <Label Content="Отображение с НДФЛ" 
-                           Grid.Row="1"
-                           FontSize="12"/>
+                    <Button Grid.Row="2"
+                            Name="grantsFiltersButton"
+                            Margin="10 8 10 8"
+                            MinWidth="100"
+                            MinHeight="30"
+                            MaxWidth="150"
+                            Content="Фильтры"
+                            
+                            HorizontalAlignment="Left"
+                            FontSize="14" Click="grantsFiltersButton_Click"/>
                 </Grid>
             </TabItem>
+            
             <TabItem Header="Люди">
                 <Grid Background="#FFE5E5E5">
                     <DataGrid x:Name="PeopleTable"
@@ -76,13 +105,6 @@
             </TabItem>
         </TabControl>
 
-
-        <Button Grid.Row="2"
-                Margin="8"
-                MinWidth="100"
-                MinHeight="30"
-                Content="Фильтры"
-                FontSize="18"/>
 
 
     </Grid>

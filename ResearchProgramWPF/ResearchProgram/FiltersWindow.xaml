@@ -1,0 +1,1054 @@
+﻿<Window x:Class="ResearchProgram.FiltersWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ResearchProgram"
+        xmlns:dotNetKitControls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
+        mc:Ignorable="d"
+        Title="Фильтры" Height="650" Width="900">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="12*"/>
+            <RowDefinition Height="50"/>
+        </Grid.RowDefinitions>
+
+        <DockPanel LastChildFill="True"
+                   Grid.Row="0"
+                   MaxHeight="45">
+            <Button DockPanel.Dock="Left" 
+                    x:Name="addFilterButton"
+                    Content="Добавить фильтр"
+                    Margin="10 8 10 8" Click="addFilterButton_Click"
+                    />
+            <dotNetKitControls:AutoCompleteComboBox DockPanel.Dock="Right" 
+                                                    x:Name="filterComboBox"
+                                                    ItemsSource="{Binding Path=GrantHeaders}"
+                                                    SelectedItem="{Binding Path=SelectedGrantHeader}"
+                                                    Margin="5 8 250 8"
+                                                    FontSize="13"/>
+        </DockPanel>
+
+        <TabControl Grid.Row="1"
+                    x:Name="filtersTabConrol">
+            
+            <TabItem x:Name="OKVED"
+                     Header="ОКВЭД">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="ОКВЭД"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="okvedVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="okvedAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="okvedAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="okvedDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="okvedDeleteButton_Click"/>
+
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem x:Name="grantNumber"
+                     Header="Номер договора"
+                     Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Номер договора"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="numberOfGrantsVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="grantNumberAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="grantNumberAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="grantNumberDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="grantNumberDeleteButton_Click"/>
+
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem x:Name="NIOKR"
+                     Header="Наименование НИОКР"
+                     Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="НИОКР"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="NIOKRVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="NIOKRAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="NIOKRAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="NIOKRDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="NIOKRDeleteButton_Click"/>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem Name="customer"
+                     Header="Заказчики"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid x:Name="customerGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Заказчик"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="customerVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="customerAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="customerAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="customerDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="customerDeleteButton_Click"/>
+
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem Name="startDate"
+                     Header="Дата начала"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Дата начала"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="startDateVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="startDateAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="startDateAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="startDateDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="startDateDeleteButton_Click"/>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem Name="endDate"
+                     Header="Дата окончания"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Дата окончания"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="endDateVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="endDateAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="endDateAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="endDateDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="endDateDeleteButton_Click"/>
+                    
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem Name="price"
+                     Header="Общая сумма договора"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Общая сумма договора"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="priceVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="priceAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="priceAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="priceDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="priceDeleteButton_Click"/>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem Name="deposits"
+                     Header="Средства"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid Name="depositsGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Средства"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="depositsVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="depositsAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="depositsAddButton_Click_1"/>
+                        <Button Content="Удалить"
+                                Name="depositsDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="depositsDeleteButton_Click"/>
+
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem Name="leadNIOKR"
+                     Header="Руководители НИОКР"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid x:Name="leadNIOKRGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Руководители НИОКР"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="leadNIOKRVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="leadNIOKRAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="leadNIOKRAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="leadNIOKRDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="leadNIOKRDeleteButton_Click"/>
+
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem Name="executors"
+                     Header="Исполнители"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid Name="executorsGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Исполнители"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="executorsVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="executorsAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="executorsAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="executorsDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="executorsDeleteButton_Click"/>
+
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem Name="kafedra"
+                     Header="Кафедры"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid x:Name="kafedraGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Кафедра"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="kafedraVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="kafedraAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="kafedraAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="kafedraDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="kafedraDeleteButton_Click"/>
+
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem Name="unit"
+                     Header="Подразделения"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid x:Name="unitGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Подразделение"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="unitVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="unitAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="unitAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="unitDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="unitDeleteButton_Click"/>
+
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem Name="institution"
+                     Header="Учреждения"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid x:Name="institutionGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Учреждение"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="institutionVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="institutionAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="institutionAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="institutionDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="institutionDeleteButton_Click"/>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem Name="GRNTI"
+                     Header="ГРНТИ"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="ГРНТИ"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="GRNTIVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="GRNTIAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="GRNTIAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="GRNTIDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="GRNTIDeleteButton_Click"/>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem Name="priorityTrends"
+                     Header="Приоритетные направления"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid Name="priorityTrendsGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Приоритетные направления"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="priorityTrendsVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="priorityTrendsAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="priorityTrendsAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="priorityTrendsDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="priorityTrendsDeleteButton_Click"/>
+
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem Name="researchTypes"
+                     Header="Типы исследования"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid Name="researchTypesGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Тип исследования"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="researchTypesVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="researchTypesTrendsAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="researchTypesAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="researchTypesDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="researchTypesDeleteButton_Click"/>
+
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem x:Name="ExecutorsContractItem"
+                     Header="Исполнители по договору"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid Name="executorsContractGrid">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Исполнители по договору"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="ExecutorsContractItemVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="ExecutorsContractItemTrendsAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="ExecutorsContractItemAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="ExecutorsContractItemDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="ExecutorsContractItemDeleteButton_Click"/>
+
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem x:Name="ScienceTypeItem"
+                     Header="Типы наук"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid Name ="scienceTypeGrid">
+
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Тип науки"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="ScienceTypeItemVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="ScienceTypeItemTrendsAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="ScienceTypeItemAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="ScienceTypeItemDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="ScienceTypeItemDeleteButton_Click"/>
+
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+            <TabItem Name="NIRItem"
+                     Header="НИР"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <Label Content="НИР или Услуга"
+                           Grid.Row="0"
+                           Margin="0 5 0 0"/>
+
+                        <StackPanel Name="nirStackPanel"
+                                      Grid.Row="1">
+                            <RadioButton GroupName="NIRRadio" 
+                                             Content="НИР"   Checked="RadioButton_Checked" />
+                            <RadioButton GroupName="NIRRadio" Content="Услуга" Checked="RadioButton_Checked" />
+                        </StackPanel>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+
+            <TabItem Name="NOCItem"
+                     Header="НОЦ"
+                         Visibility="Collapsed">
+                <TabItem.Content>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="НОЦ"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="5"
+                                      x:Name="NOCItemVerticalListView">
+                        </ListView>
+
+                        <Button Content="Добавить"
+                                    Name="NOCItemAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                    Click="NOCItemAddButton_Click"/>
+                        <Button Content="Удалить"
+                                Name="NOCItemDeleteButton"
+                                Grid.Row="2"
+                                Grid.Column="1"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Left"
+                                    Margin="0 5 10 5"
+                                    Width="Auto" Click="NOCItemDeleteButton_Click"/>
+                    </Grid>
+                </TabItem.Content>
+            </TabItem>
+
+        </TabControl>
+
+        <Button Grid.Row="2"
+                x:Name="applyFiltersButton"
+                Content="Применить фильтр"
+                HorizontalAlignment="Right"
+                MaxHeight="45"
+                Margin="0 8 10 8" Click="applyFiltersButton_Click">
+        </Button>
+        
+    </Grid>
+</Window>

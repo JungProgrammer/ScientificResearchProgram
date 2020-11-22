@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Npgsql;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace ResearchProgram
 {
@@ -424,6 +425,36 @@ namespace ResearchProgram
             }
 
             return index;
+        }
+
+        /// <summary>
+        /// Получение названия полей
+        /// </summary>
+        /// <returns></returns>
+        public static ObservableCollection<GrantHeader> GetGrantsHeadersForFilters()
+        {
+            ObservableCollection<GrantHeader> grantHeaders = new ObservableCollection<GrantHeader>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, field_russian, field_english FROM filter_fields ORDER BY id", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    grantHeaders.Add(new GrantHeader(){
+                        nameOnRussia = reader[1].ToString(),
+                        nameForElement = reader[2].ToString()
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+            return grantHeaders;
         }
 
         /// <summary>
