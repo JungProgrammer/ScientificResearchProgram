@@ -435,7 +435,7 @@ namespace ResearchProgram
         {
             ObservableCollection<GrantHeader> grantHeaders = new ObservableCollection<GrantHeader>();
 
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, field_russian, field_english FROM filter_fields ORDER BY id", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, field_russian, field_english, is_combobox_needed, is_textbox_needed, is_comparison_needed, is_date_needed FROM filter_fields ORDER BY id", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -444,7 +444,11 @@ namespace ResearchProgram
                 {
                     grantHeaders.Add(new GrantHeader(){
                         nameOnRussia = reader[1].ToString(),
-                        nameForElement = reader[2].ToString()
+                        nameForElement = reader[2].ToString(),
+                        Is_combobox_needed = (bool)reader[3],
+                        Is_textbox_needed = (bool)reader[4],
+                        Is_comparison_needed = (bool)reader[5],
+                        Is_date_needed = (bool)reader[6]
                     });
                 }
             }
