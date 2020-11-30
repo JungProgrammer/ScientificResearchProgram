@@ -59,20 +59,20 @@ namespace ResearchProgram
             {
                 Margin = new Thickness(5, 0, 5, 0),
                 ItemsSource = new List<Job>(jobsList),
-                MinWidth = 150
+                Width = 150
             };
 
             TextBox salaryTextBox = new TextBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                MinWidth = 120,
+                Width = 120,
                 IsEnabled = false
             };
 
             TextBox salaryRateTextBox = new TextBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                MinWidth = 75
+                Width = 75
             };
 
             horizontalStackPanel.Children.Add(jobComboBox);
