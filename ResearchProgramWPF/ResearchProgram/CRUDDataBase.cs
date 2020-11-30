@@ -997,5 +997,14 @@ namespace ResearchProgram
             reader.Close();
             return jobsList;
         }
+
+        public static void InsertNewKafedraToDB(Kafedra kafedra)
+        {
+            // Вставляем в БД новую кафедру
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into kafedras (title) values(:title)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", kafedra.Title));
+
+            cmd.ExecuteNonQuery();
+        }
     }
 }

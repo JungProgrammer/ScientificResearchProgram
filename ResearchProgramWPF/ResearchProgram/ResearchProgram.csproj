@@ -93,6 +93,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="createKafedraWindow.xaml.cs">
+      <DependentUpon>createKafedraWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="createPersonWindow.xaml.cs">
       <DependentUpon>createPersonWindow.xaml</DependentUpon>
     </Compile>
@@ -111,6 +114,10 @@
     <Compile Include="VisibilityConveter.cs" />
     <Compile Include="WorkerWithGrantsTable.cs" />
     <Page Include="createGrantWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="createKafedraWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

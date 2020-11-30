@@ -88,6 +88,17 @@ namespace ResearchProgram
             newPersonWindow.Show();
         }
 
+        // Открытие окна с созданием кафедр
+        private void CreateKafedraMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            createKafedraWindow newKafedraWindow = new createKafedraWindow();
+            newKafedraWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+            newKafedraWindow.Owner = this;
+
+            newKafedraWindow.Show();
+        }
+
         // Открытые окна фильтров
         private void grantsFiltersButton_Click(object sender, RoutedEventArgs e)
         {
