@@ -7,6 +7,74 @@
         xmlns:dotNetKitControls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
         mc:Ignorable="d"
         Title="Фильтры" Height="650" Width="900">
+    <Window.Resources>
+
+        <DataTemplate x:Key="templateForTheContent" DataType="{x:Type local:GrantHeader}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="32"/>
+                    <RowDefinition Height="15*"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="400"/>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="3*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Content="{Binding Path=nameOnRussia}"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                <ListView Grid.Row="1"
+                                  Grid.ColumnSpan="5"
+                                  ItemsSource="{Binding FilterElementsData}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Data}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <dotNetKitControls:AutoCompleteComboBox Grid.Row="2"
+                                                                Grid.Column="0"
+                                                                Margin="10 5 0 5"
+                                                                MaxWidth="400"/>
+                <Button Content="Добавить"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                Click="addNewFilterParameter"/>
+                <Button Content="Удалить"
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Right"
+                                Margin="0 5 10 5"
+                                Click="deleteFilterParameter"/>
+
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="templateForTheHeader" DataType="{x:Type local:GrantHeader}">
+            <TextBlock Text="{Binding Path=nameOnRussia}"/>
+        </DataTemplate>
+
+    </Window.Resources>
+
+
+
+
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
@@ -30,9 +98,126 @@
                                                     FontSize="13"/>
         </DockPanel>
 
+
+
+
+
         <TabControl Grid.Row="1"
-                    x:Name="filtersTabConrol">
+                    x:Name="filtersTabControl"
+                    ItemsSource="{Binding GrantItemsForControlPanel}"
+                    ContentTemplate="{StaticResource templateForTheContent}"
+                    ItemTemplate="{StaticResource templateForTheHeader}">
+        </TabControl>
+
+
+
+
+        <!--<TabControl Grid.Row="1"
+                    x:Name="filtersTabControl"
+                    ItemsSource="{Binding Path=GrantItemsForControlPanel}">
+            <TabControl.ItemTemplate>
+                <DataTemplate >
+                    <TextBlock Text="{Binding Path=nameOnRussia}"/>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="32"/>
+                            <RowDefinition Height="15*"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="400"/>
+                            <ColumnDefinition Width="250"/>
+                            <ColumnDefinition Width="3*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="{Binding Path=nameOnRussia}"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                   FontSize="13" Grid.ColumnSpan="3"/>
+
+
+                        <ListView Grid.Row="1"
+                                  Grid.ColumnSpan="5"
+                                  x:Name="filt"
+                                  ItemTemplate="{Binding filterElements}">
+                        </ListView>
+
+                        <dotNetKitControls:AutoCompleteComboBox Grid.Row="2"
+                                                                Grid.Column="0"
+                                                                Margin="10 5 0 5"
+                                                                MaxWidth="400"/>
+                        <Button Content="Добавить"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Margin="10 5 0 5"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="250"
+                                HorizontalAlignment="Left"
+                                Click="addNewFilterParameter"/>
+                        <Button Content="Удалить"
+                                Grid.Row="2"
+                                Grid.Column="2"
+                                MaxHeight="30"
+                                MinWidth="200"
+                                MaxWidth="300"
+                                HorizontalAlignment="Right"
+                                Margin="0 5 10 5"
+                                Click="deleteFilterParameter"/>
+
+                    </Grid>
+                </DataTemplate>
+            </TabControl.ContentTemplate>-->
+        
+        
+        
+        
+        
+        
+
+
+            <!--<TabControl.Items>
+                <local:GrantHeader nameForElement="lol" nameOnRussia="kek"/>
+                <local:GrantHeader nameForElement="lol" nameOnRussia="kek2"/>
+                <local:GrantHeader nameForElement="lol" nameOnRussia="kek3"/>
+            </TabControl.Items>-->
+
+
+            <!--<TabControl Grid.Row="1"
+                    x:Name="filtersTabConrol" >
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <HeaderedContentControl Header="{Binding nameOnRussia}"/>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <DockPanel>
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom">
+                            <Button Content="add" Margin="0,0,5,0"/>
+                            <Button Content="delete"/>
+                        </StackPanel>
+                        <StackPanel>
+                            <Label Content="{Binding Path=nameOnRussia}" />
+                            <TextBox Text="{Binding Path=nameForElement}"/>
+                        </StackPanel>
+                    </DockPanel>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
             
+            <TabControl.Items>
+                <local:GrantHeader nameForElement="lol" nameOnRussia="kek"/>
+                <local:GrantHeader nameForElement="lol" nameOnRussia="kek2"/>
+                <local:GrantHeader nameForElement="lol" nameOnRussia="kek3"/>
+            </TabControl.Items>-->
+
+            <!--#region -->
+            <!--
             <TabItem x:Name="OKVED"
                      Header="ОКВЭД">
                 <TabItem.Content>
@@ -1039,8 +1224,10 @@
                     </Grid>
                 </TabItem.Content>
             </TabItem>
+            -->
+            <!--#endregion-->
 
-        </TabControl>
+        <!--</TabControl>-->
 
         <Button Grid.Row="2"
                 x:Name="applyFiltersButton"
@@ -1049,6 +1236,6 @@
                 MaxHeight="45"
                 Margin="0 8 10 8" Click="applyFiltersButton_Click">
         </Button>
-        
+
     </Grid>
 </Window>

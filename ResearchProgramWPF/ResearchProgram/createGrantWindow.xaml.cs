@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Collections.ObjectModel;
 
 namespace ResearchProgram
 {
@@ -19,7 +20,7 @@ namespace ResearchProgram
 
 
         //Списки данных из БД
-        public List<string> NIOKRList { get; set; }
+        public ObservableCollection<string> NIOKRList { get; set; }
         public List<Person> personsList { get; set; }
         public List<string> selectedItems { get; set; }
         public List<string> selectedValues { get; set; }
@@ -55,14 +56,14 @@ namespace ResearchProgram
 
         public createGrantWindow(DataTable grantsDataTable)
         {
+            NIOKRList = new ObservableCollection<string>();
+            NIOKRList.Add("19");
+            NIOKRList.Add("20");
+
             InitializeComponent();
 
             this.grantsDataTable = grantsDataTable;
 
-            //Заполнение списков
-            NIOKRList = new List<string>();
-            NIOKRList.Add("19");
-            NIOKRList.Add("20");
 
             // Подключение к базе данных
             CRUDDataBase.ConnectByDataBase();
