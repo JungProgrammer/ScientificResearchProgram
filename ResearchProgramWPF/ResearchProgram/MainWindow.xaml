@@ -32,7 +32,16 @@
               FontSize="13">
             <MenuItem Header="Файл">
                 <MenuItem Header="Создать договор" Click="CreateGrantMenuItem_Click"/>
-                <MenuItem Header="Добавить человека" Click="CreatePersonMenuItem_Click"/>
+                <MenuItem Header="Добавить">
+                    <MenuItem Header="Человек" Click="CreatePersonMenuItem_Click"/>
+                    <MenuItem Header="Средства"/>
+                    <MenuItem Header="Кафедра" Click="CreateKafedraMenuItem_Click"/>
+                    <MenuItem Header="Подразделение"/>
+                    <MenuItem Header="Учреждение"/>
+                    <MenuItem Header="Тип исследования"/>
+                    <MenuItem Header="Приоритетные направления"/>
+                    <MenuItem Header="Тип науки"/>
+                </MenuItem>
 
                 <Separator />
                 <MenuItem Header="Настройки"></MenuItem>
