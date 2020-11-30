@@ -83,12 +83,8 @@ namespace ResearchProgram
             {
                 Margin = new Thickness(5, 0, 5, 0),
                 ItemsSource = new List<Job>(jobsList),
-<<<<<<< HEAD
-                Width = 150
-=======
                 Width = 190,
                 MinWidth = 150
->>>>>>> 8ad46eb224737230063aaf4ba5ff8b8ee0d467e7
             };
 
             TextBlock salaryTextBlock = new TextBlock()
