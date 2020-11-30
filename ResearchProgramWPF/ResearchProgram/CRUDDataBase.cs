@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Npgsql;
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 
 namespace ResearchProgram
 {
@@ -371,7 +372,7 @@ namespace ResearchProgram
                     personIndex = ShowPersonIndex(persons, personId);
 
                     persons[personIndex].FIO = reader[1].ToString();
-                    persons[personIndex].BitrhDate = reader[2].ToString();
+                    persons[personIndex].BitrhDate = (DateTime)reader[2];
                     persons[personIndex].Sex = (bool)reader[3];
                     persons[personIndex].PlaceOfWork = reader[4].ToString();
                     persons[personIndex].Category = reader[5].ToString();
@@ -424,6 +425,36 @@ namespace ResearchProgram
             }
 
             return index;
+        }
+
+        /// <summary>
+        /// Получение названия полей
+        /// </summary>
+        /// <returns></returns>
+        public static ObservableCollection<GrantHeader> GetGrantsHeadersForFilters()
+        {
+            ObservableCollection<GrantHeader> grantHeaders = new ObservableCollection<GrantHeader>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, field_russian, field_english FROM filter_fields ORDER BY id", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    grantHeaders.Add(new GrantHeader(){
+                        nameOnRussia = reader[1].ToString(),
+                        nameForElement = reader[2].ToString()
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+            return grantHeaders;
         }
 
         /// <summary>
@@ -694,6 +725,77 @@ namespace ResearchProgram
             }
             reader.Close();
             return scienctTypeTypesList;
+        }
+
+
+        /// <summary>
+        /// Загрузка в БД нового человека
+        /// </summary>
+        /// <param name="person"></param>
+        public static void InsertNewPersonToDB(Person person)
+        {
+            // Id человека, который будет создан
+            int newMaxPersonId = 0;
+
+            // Вставляем в БД нового человека
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into persons (" +
+                "fio, " +
+                "birthdate, " +
+                "sex, " +
+                "placeofwork, " +
+                "category, " +
+                "degree, " +
+                "rank) " +
+                "values(:fio, " +
+                ":birthdate, " +
+                ":sex, " +
+                ":placeofwork, " +
+                ":category, " +
+                ":degree, " +
+                ":rank)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("fio", person.FIO));
+            cmd.Parameters.Add(new NpgsqlParameter("birthdate", person.BitrhDate));
+            cmd.Parameters.Add(new NpgsqlParameter("sex", person.Sex));
+            cmd.Parameters.Add(new NpgsqlParameter("placeofwork", person.PlaceOfWork));
+            cmd.Parameters.Add(new NpgsqlParameter("category", person.Category));
+            cmd.Parameters.Add(new NpgsqlParameter("degree", person.Degree));
+            cmd.Parameters.Add(new NpgsqlParameter("rank", person.Rank));
+
+            cmd.ExecuteNonQuery();
+
+
+            // Ищем id человека, которого только что добавили
+            cmd = new NpgsqlCommand("SELECT id FROM persons ORDER BY id DESC", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Read();
+                newMaxPersonId = Convert.ToInt32(reader[0]);
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+
+            // Вставляем работы
+            foreach (Job job in person.Jobs)
+            {
+                cmd = new NpgsqlCommand("insert into salaryrates (" +
+                "personid, " +
+                "jobid," +
+                "salaryrate) " +
+                "values(" +
+                ":personid, " +
+                ":jobid, " +
+                ":salaryrate)", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("personid", newMaxPersonId));
+                cmd.Parameters.Add(new NpgsqlParameter("jobid", job.Id));
+                cmd.Parameters.Add(new NpgsqlParameter("salaryrate", job.SalaryRate));
+                cmd.ExecuteNonQuery();
+            }
         }
 
 

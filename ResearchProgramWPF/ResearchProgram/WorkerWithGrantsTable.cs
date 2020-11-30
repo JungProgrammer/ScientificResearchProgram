@@ -16,21 +16,36 @@ namespace ResearchProgram
 
         public WorkerWithTablesOnMainForm() { }
 
-        public static void AddHeadersToGrantTable(DataTable grantsTable, string header)
+        /// <summary>
+        /// Загружает заголовки в grantsDataTable
+        /// </summary>
+        /// <param name="grantsDataTable"></param>
+        /// <param name="header"></param>
+        public static void AddHeadersToGrantTable(DataTable grantsDataTable, string header)
         {
-            grantsTable.Columns.Add(header);
+            grantsDataTable.Columns.Add(header);
         }
 
-        public static void AddHeadersToPersonTable(DataTable personsTable, string header)
+        /// <summary>
+        /// Загружает заголовки в personsDataTable
+        /// </summary>
+        /// <param name="personsDataTable"></param>
+        /// <param name="header"></param>
+        public static void AddHeadersToPersonTable(DataTable personsDataTable, string header)
         {
-            personsTable.Columns.Add(header);
+            personsDataTable.Columns.Add(header);
         }
 
-        public static void AddRowToGrantTable(DataTable dataTable, Grant grant)
+        /// <summary>
+        /// Добавляет строку в grantDataTable
+        /// </summary>
+        /// <param name="grantsDataTable"></param>
+        /// <param name="grant"></param>
+        public static void AddRowToGrantTable(DataTable grantsDataTable, Grant grant)
         {
             countOfGrantRows++;
 
-            dataTable.Rows.Add(
+            grantsDataTable.Rows.Add(
                     countOfGrantRows.ToString(),
                     grant.grantNumber,
                     grant.OKVED,
@@ -55,12 +70,17 @@ namespace ResearchProgram
                     grant.NOC);
         }
 
-        public static void AddRowToPersonsTable(DataTable dataTable, Person person)
+        /// <summary>
+        /// Добавляет строку в personDataTable
+        /// </summary>
+        /// <param name="personsDataTable"></param>
+        /// <param name="person"></param>
+        public static void AddRowToPersonsTable(DataTable personsDataTable, Person person)
         {
             countOfPersonRows++;
 
-            dataTable.Rows.Add(
-                    countOfGrantRows.ToString(),
+            personsDataTable.Rows.Add(
+                    countOfPersonRows.ToString(),
                     person.FIO,
                     person.BitrhDate,
                     person.Sex.ToString(),
@@ -68,7 +88,9 @@ namespace ResearchProgram
                     person.Category,
                     person.Degree,
                     person.Rank,
-                    String.Join("\n", person.Jobs)
+                    String.Join("\n", person.Jobs),
+                    String.Join("\n", Job.GetSalariesFromPerson(person.Jobs)),
+                    String.Join("\n", Job.GetSalaryRatesFromPerson(person.Jobs))
                     );
         }
     }

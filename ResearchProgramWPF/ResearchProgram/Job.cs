@@ -8,25 +8,52 @@ namespace ResearchProgram
 {
     public class Job
     {
-<<<<<<< HEAD
+        // Id в БД
         public int Id { get; set; }
 
+        // Название работы
         public string Title { get; set; }
 
-        public int Salary { get; set; }
-=======
-        // Id в БД
-        public int Id;
-
-        // Название работы
-        public string Title;
-
         // Оклад
-        public float Salary;
+        public float Salary { get; set; }
 
         // Ставка
-        public float SalaryRate;
->>>>>>> 4f0c2ddc71648269d9222e06aa1bc6e1009f3a83
+        public float SalaryRate { get; set; }
+
+        /// <summary>
+        /// Возвращает список окладов всех работ
+        /// </summary>
+        /// <param name="jobs"></param>
+        /// <returns></returns>
+        public static List<string> GetSalariesFromPerson(List<Job> jobs)
+        {
+            List<string> salaries = new List<string>();
+
+            foreach(Job job in jobs)
+            {
+                salaries.Add(job.Salary.ToString());
+            }
+
+            return salaries;
+        }
+
+        /// <summary>
+        /// Возвращает список ставок всех работ
+        /// </summary>
+        /// <param name="jobs"></param>
+        /// <returns></returns>
+        public static List<string> GetSalaryRatesFromPerson(List<Job> jobs)
+        {
+            List<string> salaryRates = new List<string>();
+
+
+            foreach (Job job in jobs)
+            {
+                salaryRates.Add(job.SalaryRate.ToString());
+            }
+
+            return salaryRates;
+        }
 
         public override string ToString()
         {

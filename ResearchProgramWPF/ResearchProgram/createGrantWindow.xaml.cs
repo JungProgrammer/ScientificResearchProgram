@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Collections.ObjectModel;
 
 namespace ResearchProgram
 {
@@ -14,11 +15,12 @@ namespace ResearchProgram
     /// </summary>
     public partial class createGrantWindow : Window
     {
+        // DataTable для грантов на главной таблице
         private DataTable grantsDataTable;
 
 
         //Списки данных из БД
-        public List<string> NIOKRList { get; set; }
+        public ObservableCollection<string> NIOKRList { get; set; }
         public List<Person> personsList { get; set; }
         public List<string> selectedItems { get; set; }
         public List<string> selectedValues { get; set; }
@@ -54,14 +56,14 @@ namespace ResearchProgram
 
         public createGrantWindow(DataTable grantsDataTable)
         {
+            NIOKRList = new ObservableCollection<string>();
+            NIOKRList.Add("19");
+            NIOKRList.Add("20");
+
             InitializeComponent();
 
             this.grantsDataTable = grantsDataTable;
 
-            //Заполнение списков
-            NIOKRList = new List<string>();
-            NIOKRList.Add("19");
-            NIOKRList.Add("20");
 
             // Подключение к базе данных
             CRUDDataBase.ConnectByDataBase();
@@ -428,7 +430,7 @@ namespace ResearchProgram
 
             if (priceTextBox.Text.ToString() != "")
             {
-                newGrant.Price = ConvertToRightFloat(priceTextBox.Text);
+                newGrant.Price = Parser.ConvertToRightFloat(priceTextBox.Text);
             }
 
             if (depositsVerticalListView.Items != null)
@@ -448,7 +450,7 @@ namespace ResearchProgram
                             Id = ((Depositor)cmb.SelectedItem).Id,
                             Title = cmb.SelectedItem.ToString()
                         });
-                        newGrant.DepositorSum.Add(ConvertToRightFloat(partSum.Text));
+                        newGrant.DepositorSum.Add(Parser.ConvertToRightFloat(partSum.Text));
                     }
                 }
             }
@@ -627,14 +629,5 @@ namespace ResearchProgram
             NirChecker = pressed.Content.ToString();
         }
 
-        /// <summary>
-        /// Возвращает правильное вещественное значение. Если пользователь, например, ввел точку вместо запятой
-        /// </summary>
-        /// <param name="floatNum"></param>
-        /// <returns></returns>
-        public float ConvertToRightFloat(string floatNum)
-        {
-            return float.Parse(floatNum.Replace('.', ','));
-        }
     }
 }

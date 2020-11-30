@@ -6,6 +6,7 @@ using System.Windows;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
+using System.Windows.Controls;
 
 namespace ResearchProgram
 {
@@ -65,6 +66,7 @@ namespace ResearchProgram
             CRUDDataBase.CloseConnect();
         }
 
+        // открытие окна с созданием договора
         private void CreateGrantMenuItem_Click(object sender, RoutedEventArgs e)
         {
             createGrantWindow newGrantWindow = new createGrantWindow(GrantsDataTable);
@@ -75,14 +77,60 @@ namespace ResearchProgram
             newGrantWindow.Show();
         }
 
+        // Открытие окна с созданием людей
         private void CreatePersonMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            createPersonWindow newPersonWindow = new createPersonWindow(PeopleDataTable); // поменять на нужный
+            createPersonWindow newPersonWindow = new createPersonWindow(PeopleDataTable); 
             newPersonWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             newPersonWindow.Owner = this;
             
             newPersonWindow.Show();
+        }
+
+        // Открытые окна фильтров
+        private void grantsFiltersButton_Click(object sender, RoutedEventArgs e)
+        {
+            FiltersWindow filtersWindow = new FiltersWindow();
+            filtersWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            filtersWindow.Owner = this;
+            filtersWindow.Show();
+        }
+
+        /// <summary>
+        /// Скрытие выделенных столбцов
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void hideSelectedColumns(object sender, RoutedEventArgs e)
+        {
+            //selectedCells = GrantsTable.SelectedCells;
+            if(GrantsTable.SelectedCells != null)
+            {
+                int columnNumber;
+
+                foreach(DataGridCellInfo selectedCell in GrantsTable.SelectedCells) {
+                    columnNumber = selectedCell.Column.DisplayIndex;
+                    GrantsTable.Columns[columnNumber].Visibility = Visibility.Collapsed;
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выделите ячейки с нужными столбцами");
+            }
+        }
+
+        /// <summary>
+        /// Показ скрытых столбцов
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void showHiddenColumns(object sender, RoutedEventArgs e)
+        {
+            foreach (DataGridColumn column in GrantsTable.Columns)
+            {
+                column.Visibility = Visibility.Visible;
+            }
         }
     }
 

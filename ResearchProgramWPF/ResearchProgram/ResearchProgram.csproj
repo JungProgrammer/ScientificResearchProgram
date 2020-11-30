@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <UseVSHostingProcess>true</UseVSHostingProcess>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -96,8 +97,13 @@
       <DependentUpon>createPersonWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Depositor.cs" />
+    <Compile Include="FiltersWindow.xaml.cs">
+      <DependentUpon>FiltersWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Institution.cs" />
     <Compile Include="Job.cs" />
+    <Compile Include="JobConverter.cs" />
+    <Compile Include="Parser.cs" />
     <Compile Include="PriorityTrend.cs" />
     <Compile Include="ResearchType.cs" />
     <Compile Include="ScienceType.cs" />
@@ -108,6 +114,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="createPersonWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="FiltersWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -157,6 +167,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\hide.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\show.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
