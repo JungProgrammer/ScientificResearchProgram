@@ -9,30 +9,12 @@ ResearchProgram
 none
 false
 DEBUG;TRACE
-<<<<<<< HEAD
 C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\App.xaml
-51773288819
-
-26-275205702
-=======
-Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\App.xaml
 111838753556
 
-<<<<<<< HEAD
-29118944663
-129546590634
-createDepositsWindow.xaml;createGrantWindow.xaml;createInstitutionWindow.xaml;createKafedraWindow.xaml;createPersonWindow.xaml;createPriorityTrendWindow.xaml;createResearchType.xaml;createScienceTypeWindow.xaml;createUnitWindow.xaml;FiltersWindow.xaml;MainWindow.xaml;
-=======
-<<<<<<< HEAD
-23-680331015
->>>>>>> 1a99f68f74c3e7fe58e61ae7bfeff8a0d7b27dc2
+32379679382
 129328559448
-createGrantWindow.xaml;createKafedraWindow.xaml;createPersonWindow.xaml;FiltersWindow.xaml;MainWindow.xaml;
-<<<<<<< HEAD
-=======
->>>>>>> 9f73915b7527f8b042178cefc37b20522ab0cdad
->>>>>>> 3ce7f8710e6dbdbb581a65e862825fa01fb0a403
->>>>>>> 1a99f68f74c3e7fe58e61ae7bfeff8a0d7b27dc2
+createDepositsWindow.xaml;createGrantWindow.xaml;createInstitutionWindow.xaml;createKafedraWindow.xaml;createPersonWindow.xaml;createPriorityTrendWindow.xaml;createResearchType.xaml;createScienceTypeWindow.xaml;createUnitWindow.xaml;FiltersWindow.xaml;MainWindow.xaml;
 
 False
 

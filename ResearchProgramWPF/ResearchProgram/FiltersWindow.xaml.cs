@@ -45,15 +45,21 @@ namespace ResearchProgram
         // Выбранное значение для этого комбобокса
         public IContainer ChooseDataFromCombobox { get; set; }
 
+
         // Нужен вывод текстбокса
         public bool Is_textbox_needed { get; set; }
         // Текст для текстбоксового поля
         public string ChooseDataFromTextBox { get; set; }
 
+
         // Нужен вывод сравнимого выражения
         public bool Is_comparison_needed { get; set; }
+
+
         // Нужен вывод датапикера
         public bool Is_date_needed { get; set; }
+        // Выбранная дата
+        public DateTime ChooseDateFromDatePicker { get; set; }
 
 
         public ObservableCollection<FilterElement> FilterElementsData { get; set; }
@@ -65,6 +71,7 @@ namespace ResearchProgram
             nameForElement = "";
             FilterElementsData = new ObservableCollection<FilterElement>();
             DataToComboBox = new List<IContainer>();
+            ChooseDateFromDatePicker = DateTime.Now;
         }
 
 
@@ -210,6 +217,22 @@ namespace ResearchProgram
                 curGrantHeader.FilterElementsData.Add(new FilterElement()
                 {
                     Data = curGrantHeader.ChooseDataFromTextBox
+                });
+            }
+            // Если на странице Data
+            else if (curGrantHeader.Is_date_needed)
+            {
+                curGrantHeader.FilterElementsData.Add(new FilterElement()
+                {
+                    Data = curGrantHeader.ChooseDateFromDatePicker.ToString()
+                });
+            }
+            // Если на странице сумма
+            else if (curGrantHeader.Is_comparison_needed)
+            {
+                curGrantHeader.FilterElementsData.Add(new FilterElement()
+                {
+                    Data = curGrantHeader.ChooseDateFromDatePicker.ToString()
                 });
             }
         }
