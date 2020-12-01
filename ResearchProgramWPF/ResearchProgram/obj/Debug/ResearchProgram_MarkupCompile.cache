@@ -12,9 +12,21 @@ DEBUG;TRACE
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\App.xaml
 111838753556
 
+<<<<<<< HEAD
 29118944663
 129546590634
 createDepositsWindow.xaml;createGrantWindow.xaml;createInstitutionWindow.xaml;createKafedraWindow.xaml;createPersonWindow.xaml;createPriorityTrendWindow.xaml;createResearchType.xaml;createScienceTypeWindow.xaml;createUnitWindow.xaml;FiltersWindow.xaml;MainWindow.xaml;
+=======
+<<<<<<< HEAD
+23-680331015
+129328559448
+createGrantWindow.xaml;createPersonWindow.xaml;FiltersWindow.xaml;MainWindow.xaml;
+=======
+23-535940421
+129546590634
+createGrantWindow.xaml;createKafedraWindow.xaml;createPersonWindow.xaml;FiltersWindow.xaml;MainWindow.xaml;
+>>>>>>> 9f73915b7527f8b042178cefc37b20522ab0cdad
+>>>>>>> 3ce7f8710e6dbdbb581a65e862825fa01fb0a403
 
 False
 

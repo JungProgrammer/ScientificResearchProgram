@@ -129,6 +129,7 @@
     <Compile Include="ResearchType.cs" />
     <Compile Include="ScienceType.cs" />
     <Compile Include="Unit.cs" />
+    <Compile Include="VisibilityConveter.cs" />
     <Compile Include="WorkerWithGrantsTable.cs" />
     <Page Include="createDepositsWindow.xaml">
       <SubType>Designer</SubType>

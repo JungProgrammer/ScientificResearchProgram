@@ -20,7 +20,6 @@ namespace ResearchProgram
 
     public class FilterElement
     {
-        private string _data;
         public string Data { get; set; }
 
     }
@@ -38,6 +37,23 @@ namespace ResearchProgram
             }
         }
         public string nameForElement { get; set; }
+
+        // Нужен вывод комбобокса
+        private bool _is_combobox_needed;
+        public bool Is_combobox_needed {
+            get => _is_combobox_needed;
+            set
+            {
+                _is_combobox_needed = value;
+                OnPropertyChanged(nameof(Is_combobox_needed));
+            }
+        }
+        // Нужен вывод текстбокса
+        public bool Is_textbox_needed { get; set; }
+        // Нужен вывод сравнимого выражения
+        public bool Is_comparison_needed { get; set; }
+        // Нужен вывод датапикера
+        public bool Is_date_needed { get; set; }
 
 
         public ObservableCollection<FilterElement> FilterElementsData { get; set; }
@@ -136,10 +152,6 @@ namespace ResearchProgram
         {
             if(_selectedGrantHeader != null)
             {
-                _selectedGrantHeader.FilterElementsData.Add(new FilterElement()
-                {
-                    Data = "ospdkf"
-                });
                 GrantItemsForControlPanel.Add(_selectedGrantHeader);
                 filtersTabControl.SelectedItem = _selectedGrantHeader;
 
