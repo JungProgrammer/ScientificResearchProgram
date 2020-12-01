@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ResearchProgram
 {
-    public class Unit: IContainer
+    public class Nir: IContainer
     {
         public int Id { get; set; }
 

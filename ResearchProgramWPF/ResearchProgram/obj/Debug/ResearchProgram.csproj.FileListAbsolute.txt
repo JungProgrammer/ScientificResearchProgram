@@ -122,3 +122,5 @@ Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgram
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\FiltersWindow.baml
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\createKafedraWindow.g.cs
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\createKafedraWindow.baml
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createKafedraWindow.g.cs
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createKafedraWindow.baml

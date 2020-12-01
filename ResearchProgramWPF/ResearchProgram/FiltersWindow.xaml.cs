@@ -25,8 +25,8 @@ namespace ResearchProgram
     }
 
 
-   public class GrantHeader: INotifyPropertyChanged
-   {
+    public class GrantHeader : INotifyPropertyChanged
+    {
         private string _nameOnRussia;
         public string nameOnRussia {
             get => _nameOnRussia;
@@ -39,17 +39,17 @@ namespace ResearchProgram
         public string nameForElement { get; set; }
 
         // Нужен вывод комбобокса
-        private bool _is_combobox_needed;
-        public bool Is_combobox_needed {
-            get => _is_combobox_needed;
-            set
-            {
-                _is_combobox_needed = value;
-                OnPropertyChanged(nameof(Is_combobox_needed));
-            }
-        }
+        public bool Is_combobox_needed { get; set; }
+        // Данные для ItemSource этого комбобокса
+        public List<IContainer> DataToComboBox { get; set; }
+        // Выбранное значение для этого комбобокса
+        public IContainer ChooseDataFromCombobox { get; set; }
+
         // Нужен вывод текстбокса
         public bool Is_textbox_needed { get; set; }
+        // Текст для текстбоксового поля
+        public string ChooseDataFromTextBox { get; set; }
+
         // Нужен вывод сравнимого выражения
         public bool Is_comparison_needed { get; set; }
         // Нужен вывод датапикера
@@ -64,6 +64,7 @@ namespace ResearchProgram
             nameOnRussia = "";
             nameForElement = "";
             FilterElementsData = new ObservableCollection<FilterElement>();
+            DataToComboBox = new List<IContainer>();
         }
 
 
@@ -193,10 +194,24 @@ namespace ResearchProgram
         /// <param name="e"></param>
         private void addNewFilterParameter(object sender, RoutedEventArgs e)
         {
-            ((GrantHeader)filtersTabControl.SelectedItem).FilterElementsData.Add(new FilterElement()
+            GrantHeader curGrantHeader = ((GrantHeader)filtersTabControl.SelectedItem);
+
+            // Если на странице ComboBox
+            if (curGrantHeader.Is_combobox_needed)
             {
-                Data = "abcd"
-            });
+                curGrantHeader.FilterElementsData.Add(new FilterElement()
+                {
+                    Data = curGrantHeader.ChooseDataFromCombobox.GetTitle()
+                });
+            }
+            // Если на странице textbox
+            else if (curGrantHeader.Is_textbox_needed)
+            {
+                curGrantHeader.FilterElementsData.Add(new FilterElement()
+                {
+                    Data = curGrantHeader.ChooseDataFromTextBox
+                });
+            }
         }
 
         /// <summary>
@@ -209,251 +224,5 @@ namespace ResearchProgram
 
         }
 
-        //private void scienceTypeAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void scienceTypeDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void executorOnContractDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void RadioButton_Checked(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void depositsAddButton_Click_1(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void depositsDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void okvedAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    TextBox textBox = new TextBox() {
-        //        MinWidth = 400,
-        //        MinHeight = 22,
-        //        FontSize = 13,
-        //        Margin = new Thickness(40, 10, 5, 10),
-        //    };
-
-        //    okvedVerticalListView.Items.Add(textBox);
-        //}
-
-        //private void okvedDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    int countSelectedElement = okvedVerticalListView.SelectedItems.Count;
-        //    if (countSelectedElement > 0)
-        //    {
-        //        for (int i = 0; i < countSelectedElement; i++)
-        //        {
-        //            okvedVerticalListView.Items.Remove(okvedVerticalListView.SelectedItems[0]);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("Выделите нужный для удаления элемент");
-        //    }
-        //}
-
-        //private void grantNumberAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    TextBox textBox = new TextBox()
-        //    {
-        //        MinWidth = 400,
-        //        MinHeight = 22,
-        //        FontSize = 13,
-        //        Margin = new Thickness(40, 10, 5, 10),
-        //    };
-
-        //    numberOfGrantsVerticalListView.Items.Add(textBox);
-        //}
-
-        //private void grantNumberDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-        //    int countSelectedElement = numberOfGrantsVerticalListView.SelectedItems.Count;
-        //    if (countSelectedElement > 0)
-        //    {
-        //        for (int i = 0; i < countSelectedElement; i++)
-        //        {
-        //            numberOfGrantsVerticalListView.Items.Remove(numberOfGrantsVerticalListView.SelectedItems[0]);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        MessageBox.Show("Выделите нужный для удаления элемент");
-        //    }
-        //}
-
-        //private void NIOKRAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void NIOKRDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void customerAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void customerDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void startDateAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void startDateDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void endDateAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void endDateDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void priceAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void priceDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void leadNIOKRAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void leadNIOKRDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void executorsAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void executorsDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void kafedraAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void kafedraDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void unitAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void unitDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void institutionAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void institutionDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void GRNTIAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void GRNTIDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void priorityTrendsAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void priorityTrendsDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void ExecutorsContractItemAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void ExecutorsContractItemDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void ScienceTypeItemAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void ScienceTypeItemDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void NOCItemAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void NOCItemDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void researchTypesAddButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
-
-        //private void researchTypesDeleteButton_Click(object sender, RoutedEventArgs e)
-        //{
-
-        //}
     }
 }

@@ -6,11 +6,16 @@ using System.Threading.Tasks;
 
 namespace ResearchProgram
 {
-    public class Institution
+    public class Institution: IContainer
     {
         public int Id { get; set; }
 
         public string Title { get; set; }
+
+        public string GetTitle()
+        {
+            return Title;
+        }
 
         public override string ToString()
         {
