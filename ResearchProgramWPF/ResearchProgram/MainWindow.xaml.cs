@@ -99,6 +99,72 @@ namespace ResearchProgram
             newKafedraWindow.Show();
         }
 
+        // Открытие окна с созданием средств
+        private void CreateDepositsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            createDepositsWindow newDepositWindow = new createDepositsWindow();
+            newDepositWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+            newDepositWindow.Owner = this;
+
+            newDepositWindow.Show();
+        }
+
+        // Открытие окна с созданием учреждения
+        private void CreateUnitMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            createUnitWindow newUnitWindow = new createUnitWindow();
+            newUnitWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+            newUnitWindow.Owner = this;
+
+            newUnitWindow.Show();
+        }
+
+        // Открытие окна с созданием подразделения
+        private void CreateInstitutionMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            createInstitutionWindow newInstitutionWindow = new createInstitutionWindow();
+            newInstitutionWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+            newInstitutionWindow.Owner = this;
+
+            newInstitutionWindow.Show();
+        }
+
+        // Открытие окна с созданием типа исследования
+        private void CreateResearchTypeMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            createResearchType newResearchTypeWindow = new createResearchType();
+            newResearchTypeWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+            newResearchTypeWindow.Owner = this;
+
+            newResearchTypeWindow.Show();
+        }
+
+        // Открытие окна с созданием приоритетных направлений
+        private void CreatePriorityTrendsMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            createPriorityTrendWindow newPriorityTrendWindow = new createPriorityTrendWindow();
+            newPriorityTrendWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+            newPriorityTrendWindow.Owner = this;
+
+            newPriorityTrendWindow.Show();
+        }
+
+        // Открытие окна с созданием типов науки
+        private void CreateScienceTypeMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            createScienceTypeWindow newScienceTypeWindow = new createScienceTypeWindow();
+            newScienceTypeWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+            newScienceTypeWindow.Owner = this;
+
+            newScienceTypeWindow.Show();
+        }
+
         // Открытые окна фильтров
         private void grantsFiltersButton_Click(object sender, RoutedEventArgs e)
         {

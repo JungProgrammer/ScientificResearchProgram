@@ -34,21 +34,19 @@
                 <MenuItem Header="Создать договор" Click="CreateGrantMenuItem_Click"/>
                 <MenuItem Header="Добавить">
                     <MenuItem Header="Человек" Click="CreatePersonMenuItem_Click"/>
-                    <MenuItem Header="Средства"/>
+                    <MenuItem Header="Средства" Click="CreateDepositsMenuItem_Click"/>
                     <MenuItem Header="Кафедра" Click="CreateKafedraMenuItem_Click"/>
-                    <MenuItem Header="Подразделение"/>
-                    <MenuItem Header="Учреждение"/>
-                    <MenuItem Header="Тип исследования"/>
-                    <MenuItem Header="Приоритетные направления"/>
-                    <MenuItem Header="Тип науки"/>
+                    <MenuItem Header="Подразделение" Click="CreateUnitMenuItem_Click"/>
+                    <MenuItem Header="Учреждение" Click="CreateInstitutionMenuItem_Click"/>
+                    <MenuItem Header="Тип исследования" Click="CreateResearchTypeMenuItem_Click"/>
+                    <MenuItem Header="Приоритетные направления" Click="CreatePriorityTrendsMenuItem_Click"/>
+                    <MenuItem Header="Тип науки" Click="CreateScienceTypeMenuItem_Click"/>
                 </MenuItem>
 
                 <Separator />
                 <MenuItem Header="Настройки"></MenuItem>
                 <MenuItem Header="Выход"></MenuItem>
             </MenuItem>
-            <MenuItem Header="Правка"></MenuItem>
-            <MenuItem Header="Вид"></MenuItem>
         </Menu>
 
         <TabControl Grid.Row="1"
