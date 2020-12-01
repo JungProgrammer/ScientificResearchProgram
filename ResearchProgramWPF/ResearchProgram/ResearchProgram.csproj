@@ -93,11 +93,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="createDepositsWindow.xaml.cs">
+      <DependentUpon>createDepositsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="createInstitutionWindow.xaml.cs">
+      <DependentUpon>createInstitutionWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="createKafedraWindow.xaml.cs">
       <DependentUpon>createKafedraWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="createPersonWindow.xaml.cs">
       <DependentUpon>createPersonWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="createPriorityTrendWindow.xaml.cs">
+      <DependentUpon>createPriorityTrendWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="createResearchType.xaml.cs">
+      <DependentUpon>createResearchType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="createScienceTypeWindow.xaml.cs">
+      <DependentUpon>createScienceTypeWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="createUnitWindow.xaml.cs">
+      <DependentUpon>createUnitWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Depositor.cs" />
     <Compile Include="FiltersWindow.xaml.cs">
@@ -112,7 +130,15 @@
     <Compile Include="ScienceType.cs" />
     <Compile Include="Unit.cs" />
     <Compile Include="WorkerWithGrantsTable.cs" />
+    <Page Include="createDepositsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="createGrantWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="createInstitutionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -121,6 +147,22 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="createPersonWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="createPriorityTrendWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="createResearchType.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="createScienceTypeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="createUnitWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

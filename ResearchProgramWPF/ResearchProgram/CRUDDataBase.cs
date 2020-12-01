@@ -1002,5 +1002,60 @@ namespace ResearchProgram
 
             cmd.ExecuteNonQuery();
         }
+
+        public static void InsertNewDepositToDB(Depositor depositor)
+        {
+            // Вставляем в БД новый источник средств
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into depositors (title) values(:title)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", depositor.Title));
+
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void InsertNewUnitToDB(Unit unit)
+        {
+            // Вставляем в БД новое подразделение
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into units (title) values(:title)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", unit.Title));
+
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void InsertNewInstituitonToDB(Institution institution)
+        {
+            // Вставляем в БД новое учреждение
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into institutions (title) values(:title)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", institution.Title));
+
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void InsertNewResearchTypeToDB(ResearchType researchType)
+        {
+            // Вставляем в БД новый тип исследования
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into researchtypes (title) values(:title)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", researchType.Title));
+
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void InsertNewPriorityTrendsToDB(PriorityTrend priorityTrend)
+        {
+            // Вставляем в БД новое приоритетное напрвление
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into prioritytrends (title) values(:title)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", priorityTrend.Title));
+
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void InsertNewScienceTypeToDB(ScienceType scienceType)
+        {
+            // Вставляем в БД новый тип науки
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into sciencetypes (title) values(:title)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", scienceType.Title));
+
+            cmd.ExecuteNonQuery();
+        }
+
     }
 }
