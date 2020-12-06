@@ -289,7 +289,7 @@ namespace ResearchProgram
         }
 
         /// <summary>
-        /// Выгружает таблицу договоров на гланый экран
+        /// Выгружает таблицу людей
         /// </summary>
         /// <param name="dataTable"></param>
         public static void LoadPersonsTable(DataTable dataTable)

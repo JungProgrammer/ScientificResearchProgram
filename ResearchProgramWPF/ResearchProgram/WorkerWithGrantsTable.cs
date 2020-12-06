@@ -44,20 +44,20 @@ namespace ResearchProgram
         public static void AddRowToGrantTable(DataTable grantsDataTable, Grant grant)
         {
             countOfGrantRows++;
-
+            Console.WriteLine(grant.Customer);
             grantsDataTable.Rows.Add(
                     countOfGrantRows.ToString(),
                     grant.grantNumber,
                     grant.OKVED,
                     grant.NameNIOKR,
-                    grant.Customer,
-                    grant.StartDate,
-                    grant.EndDate,
+                    grant.Customer.shortName(),
+                    grant.StartDate.ToString("dd.MM.yyyy"),
+                    grant.EndDate.ToString("dd.MM.yyyy"),
                     grant.Price,
                     String.Join("\n", grant.Depositor),
                     String.Join("\n", grant.DepositorSum),
-                    grant.LeadNIOKR,
-                    String.Join("\n", grant.Executor),
+                    grant.LeadNIOKR.shortName(),
+                    String.Join("\n", grant.Executor.Select(x => x.shortName()).ToArray()),
                     grant.Kafedra,
                     grant.Unit,
                     grant.Institution,
