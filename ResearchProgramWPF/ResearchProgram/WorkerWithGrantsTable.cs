@@ -83,7 +83,7 @@ namespace ResearchProgram
                     countOfPersonRows.ToString(),
                     person.FIO,
                     person.BitrhDate,
-                    person.Sex.ToString(),
+                    person.Sex ? "M" : "Ж",
                     person.PlaceOfWork,
                     person.Category,
                     person.Degree,
