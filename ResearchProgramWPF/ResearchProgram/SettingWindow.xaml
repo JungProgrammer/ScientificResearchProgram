@@ -1,0 +1,33 @@
+﻿<Window x:Class="ResearchProgram.SettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ResearchProgram"
+        mc:Ignorable="d"
+        x:Name="settingWindow"
+        Title="Настройки" Height="450" Width="450">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <CheckBox Grid.Row="0" 
+                  Content="Отображение с НДС"
+                  Margin="5 10"
+                  x:Name="NDSCheckBox"
+                  IsChecked="{Binding ElementName=settingWindow, Path=IsNDSCheckBoxChecked}"
+                  Click="NDSCheckBox_Clicked"/>
+    </Grid>
+</Window>

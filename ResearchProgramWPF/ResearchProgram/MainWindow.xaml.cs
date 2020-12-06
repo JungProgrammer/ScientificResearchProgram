@@ -35,6 +35,14 @@ namespace ResearchProgram
             DataContext = this;
         }
 
+        public String nDSShow = Settings.Default.NDSKey ? "Отображение с НДС" : "Отображение без НДС";
+
+        public String NDSShow
+        {
+            get { return Settings.Default.NDSKey ? "Отображение с НДС" : "Отображение без НДС"; }
+            set { }
+        }
+
         /// <summary>
         /// Загрузка данных в таблицу договоров
         /// </summary>
@@ -163,6 +171,17 @@ namespace ResearchProgram
             newScienceTypeWindow.Owner = this;
 
             newScienceTypeWindow.Show();
+        }
+
+        // Открытие окна настроек
+        private void SettingsTypeMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            SettingWindow newSettingWindow = new SettingWindow();
+            newSettingWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+            newSettingWindow.Owner = this;
+
+            newSettingWindow.Show();
         }
 
         // Открытые окна фильтров
