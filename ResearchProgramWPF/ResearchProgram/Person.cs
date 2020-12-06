@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ResearchProgram
 {
-    public class Person
+    public class Person: IContainer
     {
         public Person()
         {
@@ -32,6 +32,10 @@ namespace ResearchProgram
         public string Rank { get; set; }
         public List<Job> Jobs { get; set; }
 
+        public string GetTitle()
+        {
+            return FIO;
+        }
 
         public override string ToString()
         {

@@ -122,6 +122,10 @@ Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgram
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\FiltersWindow.baml
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\createKafedraWindow.g.cs
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\createKafedraWindow.baml
+<<<<<<< HEAD
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createKafedraWindow.g.cs
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createKafedraWindow.baml
+=======
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\createDepositsWindow.g.cs
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\createDepositsWindow.baml
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\createUnitWindow.g.cs
@@ -134,3 +138,16 @@ Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgram
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\createPriorityTrendWindow.baml
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\createScienceTypeWindow.g.cs
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\createScienceTypeWindow.baml
+>>>>>>> 1a99f68f74c3e7fe58e61ae7bfeff8a0d7b27dc2
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createDepositsWindow.g.cs
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createInstitutionWindow.g.cs
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createPriorityTrendWindow.g.cs
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createResearchType.g.cs
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createScienceTypeWindow.g.cs
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createUnitWindow.g.cs
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createDepositsWindow.baml
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createInstitutionWindow.baml
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createPriorityTrendWindow.baml
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createResearchType.baml
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createScienceTypeWindow.baml
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\createUnitWindow.baml

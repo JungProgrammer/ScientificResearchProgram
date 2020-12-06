@@ -126,7 +126,7 @@ namespace ResearchProgram
                     grant_index = ShowGrantIndex(grants, grant_id);
 
                     priorityTrend = reader[1].ToString();
-                    grants[grant_index].PriorityTrands.Add(new PriorityTrend() { 
+                    grants[grant_index].PriorityTrands.Add(new PriorityTrend() {
                         Title = priorityTrend
                     });
                 }
@@ -154,7 +154,7 @@ namespace ResearchProgram
                     grant_index = ShowGrantIndex(grants, grant_id);
 
                     scienceType = reader[1].ToString();
-                    grants[grant_index].ScienceType.Add(new ScienceType() { 
+                    grants[grant_index].ScienceType.Add(new ScienceType() {
                         Title = scienceType
                     });
                 }
@@ -344,7 +344,7 @@ namespace ResearchProgram
                     personId = Convert.ToInt32(reader[0]);
                     personIndex = ShowPersonIndex(persons, personId);
 
-                    persons[personIndex].Jobs.Add(new Job() { 
+                    persons[personIndex].Jobs.Add(new Job() {
                         Title = reader[1].ToString(),
                         Salary = float.Parse(reader[2].ToString()),
                         SalaryRate = float.Parse(reader[3].ToString())
@@ -427,6 +427,23 @@ namespace ResearchProgram
             return index;
         }
 
+        // Для метода GetGrantsHeadersForFilters
+        enum DataToComboBox
+        {
+            customer = 4,
+            deposits = 8,
+            leadNIOKR = 9,
+            executors = 10,
+            kafedra = 11,
+            unit = 12,
+            institution = 13,
+            researchTypes = 15,
+            priorityTrends = 16,
+            ExecutorsContractItem = 17,
+            ScienceTypeItem = 18,
+            NIRItem = 19
+        }
+
         /// <summary>
         /// Получение названия полей
         /// </summary>
@@ -435,21 +452,82 @@ namespace ResearchProgram
         {
             ObservableCollection<GrantHeader> grantHeaders = new ObservableCollection<GrantHeader>();
 
+            List<Unit> unitList = GetUnits();
+            List<ScienceType> scienceTypeList = GetScienceTypes();
+            List<ResearchType> researchTypeList = GetResearchTypes();
+            List<PriorityTrend> priorityTrendList = GetPriorityTrends();
+            List<Kafedra> kafedraList = GetKafedras();
+            List<Institution> institutionList = GetInstitutions();
+            List<Person> peopleList = GetPersons();
+            List<Depositor> depositList = GetDeposits();
+            List<Nir> nirList = new List<Nir>() {
+                new Nir() {Title = "НИР" },
+                new Nir() {Title = "Услуга" }
+            };
+
+
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, field_russian, field_english, is_combobox_needed, is_textbox_needed, is_comparison_needed, is_date_needed FROM filter_fields ORDER BY id", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
+                GrantHeader newGrantHeader;
+                DataToComboBox curId;
                 while (reader.Read())
                 {
-                    grantHeaders.Add(new GrantHeader(){
+                    curId = (DataToComboBox)reader[0];
+
+                    newGrantHeader = new GrantHeader()
+                    {
                         nameOnRussia = reader[1].ToString(),
                         nameForElement = reader[2].ToString(),
                         Is_combobox_needed = (bool)reader[3],
                         Is_textbox_needed = (bool)reader[4],
                         Is_comparison_needed = (bool)reader[5],
                         Is_date_needed = (bool)reader[6]
-                    });
+                    };
+                    switch (curId)
+                    {
+                        case DataToComboBox.customer:
+                            //newGrantHeader.DataToComboBox = peopleList.ConvertAll(x => (IContainer)x);
+                            newGrantHeader.DataToComboBox = new List<IContainer>(peopleList);
+                            break;
+                        case DataToComboBox.deposits:
+                            newGrantHeader.DataToComboBox = depositList.ConvertAll(x => (IContainer)x);
+                            break;
+                        case DataToComboBox.leadNIOKR:
+                            newGrantHeader.DataToComboBox = new List<IContainer>(peopleList);
+                            break;
+                        case DataToComboBox.executors:
+                            newGrantHeader.DataToComboBox = new List<IContainer>(peopleList);
+                            break;
+                        case DataToComboBox.kafedra:
+                            newGrantHeader.DataToComboBox = kafedraList.ConvertAll(x => (IContainer)x);
+                            break;
+                        case DataToComboBox.unit:
+                            newGrantHeader.DataToComboBox = unitList.ConvertAll(x => (IContainer)x);
+                            break;
+                        case DataToComboBox.institution:
+                            newGrantHeader.DataToComboBox = institutionList.ConvertAll(x => (IContainer)x);
+                            break;
+                        case DataToComboBox.researchTypes:
+                            newGrantHeader.DataToComboBox = researchTypeList.ConvertAll(x => (IContainer)x);
+                            break;
+                        case DataToComboBox.priorityTrends:
+                            newGrantHeader.DataToComboBox = priorityTrendList.ConvertAll(x => (IContainer)x);
+                            break;
+                        case DataToComboBox.ExecutorsContractItem:
+                            newGrantHeader.DataToComboBox = new List<IContainer>(peopleList);
+                            break;
+                        case DataToComboBox.ScienceTypeItem:
+                            newGrantHeader.DataToComboBox = scienceTypeList.ConvertAll(x => (IContainer)x);
+                            break;
+                        case DataToComboBox.NIRItem:
+                            newGrantHeader.DataToComboBox = nirList.ConvertAll(x => (IContainer)x);
+                            break;
+                    }
+
+                    grantHeaders.Add(newGrantHeader);
                 }
             }
             else
@@ -460,6 +538,7 @@ namespace ResearchProgram
 
             return grantHeaders;
         }
+
 
         /// <summary>
         /// Создание заголовков для таблицы договоров

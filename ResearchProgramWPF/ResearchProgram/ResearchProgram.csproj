@@ -121,9 +121,11 @@
     <Compile Include="FiltersWindow.xaml.cs">
       <DependentUpon>FiltersWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="IContainer.cs" />
     <Compile Include="Institution.cs" />
     <Compile Include="Job.cs" />
     <Compile Include="JobConverter.cs" />
+    <Compile Include="Nir.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="PriorityTrend.cs" />
     <Compile Include="ResearchType.cs" />

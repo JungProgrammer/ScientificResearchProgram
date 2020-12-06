@@ -4,17 +4,37 @@
 winexe
 C#
 .cs
-Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\
 ResearchProgram
 none
 false
 DEBUG;TRACE
+<<<<<<< HEAD
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\App.xaml
+51773288819
+
+27-1117565069
+=======
 Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\App.xaml
 111838753556
 
 31-693412618
 129546590634
 createDepositsWindow.xaml;createGrantWindow.xaml;createInstitutionWindow.xaml;createKafedraWindow.xaml;createPersonWindow.xaml;createPriorityTrendWindow.xaml;createResearchType.xaml;createScienceTypeWindow.xaml;createUnitWindow.xaml;FiltersWindow.xaml;MainWindow.xaml;
+<<<<<<< HEAD
+=======
+=======
+<<<<<<< HEAD
+24-1522690382
+>>>>>>> 1a99f68f74c3e7fe58e61ae7bfeff8a0d7b27dc2
+129328559448
+createGrantWindow.xaml;createKafedraWindow.xaml;createPersonWindow.xaml;FiltersWindow.xaml;MainWindow.xaml;
+<<<<<<< HEAD
+=======
+>>>>>>> 9f73915b7527f8b042178cefc37b20522ab0cdad
+>>>>>>> 3ce7f8710e6dbdbb581a65e862825fa01fb0a403
+>>>>>>> 1a99f68f74c3e7fe58e61ae7bfeff8a0d7b27dc2
+>>>>>>> efa5fe8635eedcbbd69f7999b2f0991ba4a020a5
 
 True
 
