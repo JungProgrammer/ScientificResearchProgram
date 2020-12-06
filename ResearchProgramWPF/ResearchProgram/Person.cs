@@ -42,6 +42,10 @@ namespace ResearchProgram
             return FIO;
         }
 
+        /// <summary>
+        /// Возвращает имя в формате Фамилия И.О.
+        /// </summary>
+        /// <returns></returns>
         public string shortName()
         {
             string[] FIODivided = FIO.Split(' ');
