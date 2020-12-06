@@ -41,5 +41,20 @@ namespace ResearchProgram
         {
             return FIO;
         }
+
+        /// <summary>
+        /// Возвращает имя в формате Фамилия И.О.
+        /// </summary>
+        /// <returns></returns>
+        public string shortName()
+        {
+            string[] FIODivided = FIO.Split(' ');
+            string lastName = FIODivided[0];
+            string firstName = FIODivided[1];
+            string patronymic = FIODivided[2];
+
+            string shortName = lastName + " " + firstName[0] + ". " + patronymic[0] + ".";
+            return shortName;
+        }
     }
 }

@@ -4,17 +4,17 @@
 winexe
 C#
 .cs
-C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\
+Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\obj\Debug\
 ResearchProgram
 none
 false
 DEBUG;TRACE
-C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\App.xaml
-111838753556
+Z:\True Seeker\Рабочий стол\ScientificResearchProgram\ResearchProgramWPF\ResearchProgram\App.xaml
+121923031241
 
-32379679382
-129328559448
-createDepositsWindow.xaml;createGrantWindow.xaml;createInstitutionWindow.xaml;createKafedraWindow.xaml;createPersonWindow.xaml;createPriorityTrendWindow.xaml;createResearchType.xaml;createScienceTypeWindow.xaml;createUnitWindow.xaml;FiltersWindow.xaml;MainWindow.xaml;
+34410049490
+130-1176822209
+createDepositsWindow.xaml;createGrantWindow.xaml;createInstitutionWindow.xaml;createKafedraWindow.xaml;createPersonWindow.xaml;createPriorityTrendWindow.xaml;createResearchType.xaml;createScienceTypeWindow.xaml;createUnitWindow.xaml;FiltersWindow.xaml;MainWindow.xaml;SettingWindow.xaml;
 
 False
 

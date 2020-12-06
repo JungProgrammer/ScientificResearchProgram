@@ -4,10 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResearchProgram"
+        xmlns:properties="clr-namespace:ResearchProgram.Properties"
         mc:Ignorable="d"
         Title="MainWindow"
         Height="900"
-        Width="1300">
+        Width="1300"
+        x:Name="mainWindow">
 
     <Grid>
 
@@ -44,7 +46,7 @@
                 </MenuItem>
 
                 <Separator />
-                <MenuItem Header="Настройки"></MenuItem>
+                <MenuItem Header="Настройки" Click="SettingsTypeMenuItem_Click"></MenuItem>
                 <MenuItem Header="Выход"></MenuItem>
             </MenuItem>
         </Menu>
@@ -61,7 +63,7 @@
                     </Grid.RowDefinitions>
 
 
-                    <Label Content="Отображение с НДФЛ" 
+                    <Label Content="{Binding  NDSShow, UpdateSourceTrigger=PropertyChanged}" 
                            Grid.Row="0"
                            FontSize="12"/>
 
