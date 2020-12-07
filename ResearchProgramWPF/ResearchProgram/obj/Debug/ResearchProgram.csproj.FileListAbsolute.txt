@@ -59,3 +59,4 @@ C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\Resea
 C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\ResearchProgram.csproj.CopyComplete
 C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\ResearchProgram.exe
 C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\ResearchProgram.pdb
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\ResearchProgram.csprojAssemblyReference.cache

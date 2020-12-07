@@ -119,9 +119,11 @@
       <DependentUpon>createUnitWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Depositor.cs" />
+    <Compile Include="FilterElement.cs" />
     <Compile Include="FiltersWindow.xaml.cs">
       <DependentUpon>FiltersWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GrantsFilters.cs" />
     <Compile Include="IContainer.cs" />
     <Compile Include="Institution.cs" />
     <Compile Include="Job.cs" />
@@ -242,6 +244,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\show.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\update.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\update1.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

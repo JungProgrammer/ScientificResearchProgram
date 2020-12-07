@@ -40,6 +40,8 @@ namespace ResearchProgram
         /// <param name="dataTable"></param>
         public static void LoadGrantsTable(DataTable dataTable)
         {
+            dataTable.Rows.Clear();
+
             int grant_index = 0;
             int grant_id = 0;
             int countOfGrants = 0;
