@@ -142,6 +142,7 @@
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Unit.cs" />
+    <Compile Include="Utilities.cs" />
     <Compile Include="VisibilityConveter.cs" />
     <Compile Include="WorkerWithGrantsTable.cs" />
     <Page Include="createDepositsWindow.xaml">

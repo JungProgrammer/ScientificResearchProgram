@@ -464,7 +464,7 @@ namespace ResearchProgram
             List<Depositor> depositList = GetDeposits();
             List<Nir> nirList = new List<Nir>() {
                 new Nir() {Title = "НИР" },
-                new Nir() {Title = "Услуга" }
+                new Nir() {Title = "УСЛУГА" }
             };
 
 
@@ -491,7 +491,6 @@ namespace ResearchProgram
                     switch (curId)
                     {
                         case DataToComboBox.customer:
-                            //newGrantHeader.DataToComboBox = peopleList.ConvertAll(x => (IContainer)x);
                             newGrantHeader.DataToComboBox = new List<IContainer>(peopleList);
                             break;
                         case DataToComboBox.deposits:
@@ -895,6 +894,7 @@ namespace ResearchProgram
 
             // Вставляем в бд новый договор
             NpgsqlCommand cmd = new NpgsqlCommand("insert into grants (" +
+                "grantnumber, " +
                 "okved, " +
                 "nameniokr, " +
                 "customerid, " +
@@ -908,7 +908,9 @@ namespace ResearchProgram
                 "grnti, " +
                 "nir, " +
                 "noc) " +
-                "values(:okved, " +
+                "values(" +
+                ":grantnumber, " +
+                ":okved, " +
                 ":nameniokr, " +
                 ":customerid, " +
                 ":startdate, " +
@@ -921,6 +923,7 @@ namespace ResearchProgram
                 ":grnti, " +
                 ":nir, " +
                 ":noc)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantnumber", grant.grantNumber));
             cmd.Parameters.Add(new NpgsqlParameter("okved", grant.OKVED));
             cmd.Parameters.Add(new NpgsqlParameter("nameniokr", grant.NameNIOKR));
             cmd.Parameters.Add(new NpgsqlParameter("customerid", grant.Customer.Id));

@@ -47,6 +47,10 @@
                                 <TextBlock MinWidth="50"
                                            Margin="20 5"
                                            Text="Фильтр:"/>
+                                <TextBlock MinWidth="20"
+                                           Margin="20 5"
+                                           Text="{Binding Sign}"
+                                           Visibility="{Binding Is_comparison_needed, Converter={StaticResource visibilityConveter}}"/>
                                 <TextBlock MinWidth="300"
                                            Margin="5 5"
                                            Text="{Binding Data}"/>
@@ -168,14 +172,23 @@
         </TabControl>
 
 
+        <StackPanel Orientation="Horizontal"
+                    Grid.Row="2"
+                    HorizontalAlignment="Right">
+            <Button x:Name="resetAllFiltersButton"
+                    Content="Сбросить фильтры"
+                    MaxHeight="45"
+                    Margin="0 8 10 8"
+                    Click="resetAllFilters">
+            </Button>
+            <Button x:Name="applyFiltersButton"
+                    Content="Применить фильтры"
+                    MaxHeight="45"
+                    Margin="0 8 10 8" 
+                    Click="applyFiltersButton_Click">
+            </Button>
+        </StackPanel>
 
-        <Button Grid.Row="2"
-                x:Name="applyFiltersButton"
-                Content="Применить фильтр"
-                HorizontalAlignment="Right"
-                MaxHeight="45"
-                Margin="0 8 10 8" Click="applyFiltersButton_Click">
-        </Button>
 
     </Grid>
 </Window>

@@ -96,8 +96,17 @@ namespace ResearchProgram
         DataTable GrantsDataTable { get; set; }
 
 
-        private ObservableCollection<GrantHeader> _listOfGrantHeaders { get; set; }
-        public ObservableCollection<GrantHeader> GrantHeaders { get; set; }
+        private ObservableCollection<GrantHeader> _grantHeaders;
+        public ObservableCollection<GrantHeader> GrantHeaders
+        {
+            get => _grantHeaders;
+            set
+            {
+                _grantHeaders = value;
+                OnPropertyChanged(nameof(GrantHeaders));
+            }
+        }
+
 
         // Коллекция для создания фильтров
         public ObservableCollection<GrantHeader> GrantItemsForControlPanel { get; set; }
@@ -226,7 +235,8 @@ namespace ResearchProgram
             {
                 curGrantHeader.FilterElementsData.Add(new FilterElement()
                 {
-                    Data = curGrantHeader.ChooseComparisonSign + curGrantHeader.ChooseAllSum
+                    Data = curGrantHeader.ChooseAllSum,
+                    Sign = curGrantHeader.ChooseComparisonSign
                 });
             }
         }
@@ -280,10 +290,10 @@ namespace ResearchProgram
             GrantsFilters.Unit =                FindGrantHeader(GrantItemsForControlPanel, "unit")                  != null     ?   FindGrantHeader(GrantItemsForControlPanel, "unit").FilterElementsData                   : null;
             GrantsFilters.Institution =         FindGrantHeader(GrantItemsForControlPanel, "institution")           != null     ?   FindGrantHeader(GrantItemsForControlPanel, "institution").FilterElementsData            : null;
             GrantsFilters.GRNTI =               FindGrantHeader(GrantItemsForControlPanel, "GRNTI")                 != null     ?   FindGrantHeader(GrantItemsForControlPanel, "GRNTI").FilterElementsData                  : null;
-            GrantsFilters.ResearchType =        FindGrantHeader(GrantItemsForControlPanel, "researchTypes")         != null     ?   FindGrantHeader(GrantItemsForControlPanel, "researchTypes").FilterElementsData          : null;
+            GrantsFilters.ResearchTypes =        FindGrantHeader(GrantItemsForControlPanel, "researchTypes")         != null     ?   FindGrantHeader(GrantItemsForControlPanel, "researchTypes").FilterElementsData          : null;
             GrantsFilters.PriorityTrands =      FindGrantHeader(GrantItemsForControlPanel, "priorityTrends")        != null     ?   FindGrantHeader(GrantItemsForControlPanel, "priorityTrends").FilterElementsData         : null;
             GrantsFilters.ExecutorContract =    FindGrantHeader(GrantItemsForControlPanel, "ExecutorsContractItem") != null     ?   FindGrantHeader(GrantItemsForControlPanel, "ExecutorsContractItem").FilterElementsData  : null;
-            GrantsFilters.ScienceType =         FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem")       != null     ?   FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem").FilterElementsData        : null;
+            GrantsFilters.ScienceTypes =         FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem")       != null     ?   FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem").FilterElementsData        : null;
             GrantsFilters.NIR =                 FindGrantHeader(GrantItemsForControlPanel, "NIRItem")               != null     ?   FindGrantHeader(GrantItemsForControlPanel, "NIRItem").FilterElementsData                : null;
             GrantsFilters.NOC =                 FindGrantHeader(GrantItemsForControlPanel, "NOCItem")               != null     ?   FindGrantHeader(GrantItemsForControlPanel, "NOCItem").FilterElementsData                : null;
         }
@@ -305,6 +315,28 @@ namespace ResearchProgram
             }
 
             return null;
+        }
+
+        /// <summary>
+        /// Событие, которое происходит, когда нажимается кнопка сброса фильтров
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void resetAllFilters(object sender, RoutedEventArgs e)
+        {
+            // Удаление всех видов фильтров, которые остались невыбранные в combobox
+            GrantHeaders.Clear();
+            // Восстановить все возможные фильтры в combobox
+            SetGrantHeaders();
+            // Удаление всех фильтров, которые уже пользователь добавил
+            GrantItemsForControlPanel.Clear();
+            // Сброс текущих фильтров у текущего класса
+            GrantsFilters.ResetFilters();
+
+            // Загрузить снова таблицу
+            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.LoadGrantsTable(GrantsDataTable);
+            CRUDDataBase.CloseConnect();
         }
     }
 }
