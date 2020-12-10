@@ -7,13 +7,15 @@ using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Windows.Controls;
-
 namespace ResearchProgram
 {
 
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
+    /// 
+
+
     public partial class MainWindow : Window
     {
         // Таблица договоров
@@ -35,13 +37,13 @@ namespace ResearchProgram
             DataContext = this;
         }
 
-        public String nDSShow = Settings.Default.NDSKey ? "Отображение с НДС" : "Отображение без НДС";
-
-        public String NDSShow
+        private Settings settings
         {
-            get { return Settings.Default.NDSKey ? "Отображение с НДС" : "Отображение без НДС"; }
-            set { }
+            get { return (Settings)GetValue(SettingsProperty); }
+            set { SetValue(SettingsProperty, value); }
         }
+        public static readonly DependencyProperty SettingsProperty = DependencyProperty.Register("settings", typeof(Settings), typeof(MainWindow), new PropertyMetadata(Settings.Default));
+
 
         /// <summary>
         /// Загрузка данных в таблицу договоров
@@ -82,7 +84,7 @@ namespace ResearchProgram
 
             newGrantWindow.Owner = this;
 
-            newGrantWindow.Show();
+            newGrantWindow.ShowDialog();
         }
 
         // Открытие окна с созданием людей
@@ -93,7 +95,7 @@ namespace ResearchProgram
 
             newPersonWindow.Owner = this;
             
-            newPersonWindow.Show();
+            newPersonWindow.ShowDialog();
         }
 
         // Открытие окна с созданием кафедр
@@ -104,7 +106,7 @@ namespace ResearchProgram
 
             newKafedraWindow.Owner = this;
 
-            newKafedraWindow.Show();
+            newKafedraWindow.ShowDialog();
         }
 
         // Открытие окна с созданием средств
@@ -115,7 +117,7 @@ namespace ResearchProgram
 
             newDepositWindow.Owner = this;
 
-            newDepositWindow.Show();
+            newDepositWindow.ShowDialog();
         }
 
         // Открытие окна с созданием учреждения
@@ -126,7 +128,7 @@ namespace ResearchProgram
 
             newUnitWindow.Owner = this;
 
-            newUnitWindow.Show();
+            newUnitWindow.ShowDialog();
         }
 
         // Открытие окна с созданием подразделения
@@ -137,7 +139,7 @@ namespace ResearchProgram
 
             newInstitutionWindow.Owner = this;
 
-            newInstitutionWindow.Show();
+            newInstitutionWindow.ShowDialog();
         }
 
         // Открытие окна с созданием типа исследования
@@ -148,7 +150,7 @@ namespace ResearchProgram
 
             newResearchTypeWindow.Owner = this;
 
-            newResearchTypeWindow.Show();
+            newResearchTypeWindow.ShowDialog();
         }
 
         // Открытие окна с созданием приоритетных направлений
@@ -159,7 +161,7 @@ namespace ResearchProgram
 
             newPriorityTrendWindow.Owner = this;
 
-            newPriorityTrendWindow.Show();
+            newPriorityTrendWindow.ShowDialog();
         }
 
         // Открытие окна с созданием типов науки
@@ -170,7 +172,7 @@ namespace ResearchProgram
 
             newScienceTypeWindow.Owner = this;
 
-            newScienceTypeWindow.Show();
+            newScienceTypeWindow.ShowDialog();
         }
 
         // Открытие окна настроек
@@ -181,7 +183,7 @@ namespace ResearchProgram
 
             newSettingWindow.Owner = this;
 
-            newSettingWindow.Show();
+            newSettingWindow.ShowDialog();
         }
 
         // Открытые окна фильтров
@@ -190,7 +192,7 @@ namespace ResearchProgram
             FiltersWindow filtersWindow = new FiltersWindow();
             filtersWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             filtersWindow.Owner = this;
-            filtersWindow.Show();
+            filtersWindow.ShowDialog();
         }
 
         /// <summary>
