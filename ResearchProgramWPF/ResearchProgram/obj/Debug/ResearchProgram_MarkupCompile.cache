@@ -12,18 +12,9 @@ DEBUG;TRACE
 C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\App.xaml
 121923031241
 
-<<<<<<< HEAD
-35-432309877
-=======
-<<<<<<< HEAD
 35-924001907
-130-1176822209
-=======
-34410049490
->>>>>>> 0d465bf662929ec96831b03bad579426841237ca
 130-1394853395
->>>>>>> bba61bf0aededf3c5143c4c201b36f7304fd7494
 createDepositsWindow.xaml;createGrantWindow.xaml;createInstitutionWindow.xaml;createKafedraWindow.xaml;createPersonWindow.xaml;createPriorityTrendWindow.xaml;createResearchType.xaml;createScienceTypeWindow.xaml;createUnitWindow.xaml;FiltersWindow.xaml;MainWindow.xaml;SettingWindow.xaml;
 
-True
+False
 
