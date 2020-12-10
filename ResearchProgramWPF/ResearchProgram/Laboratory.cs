@@ -6,17 +6,16 @@ using System.Threading.Tasks;
 
 namespace ResearchProgram
 {
-    public class Kafedra: IContainer
+    public class Laboratory: IContainer
     {
         public int Id { get; set; }
 
         public string Title { get; set; }
 
-        public Kafedra()
+        public Laboratory()
         {
             Title = "Не указан";
         }
-
 
         public string GetTitle()
         {

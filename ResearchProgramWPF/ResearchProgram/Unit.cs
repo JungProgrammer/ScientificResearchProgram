@@ -12,6 +12,11 @@ namespace ResearchProgram
 
         public string Title { get; set; }
 
+        public Unit()
+        {
+            Title = "Не указан";
+        }
+
         public string GetTitle()
         {
             return Title;

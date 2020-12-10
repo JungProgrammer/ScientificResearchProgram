@@ -12,8 +12,12 @@ namespace ResearchProgram
 {
     class CRUDDataBase
     {
-        public static string loginFromDB = Environment.GetEnvironmentVariable("PGUSER");
-        public static string passwordFromDB = Environment.GetEnvironmentVariable("PGPASSWORD");
+        //public static string loginFromDB = Environment.GetEnvironmentVariable("PGUSER");
+        //public static string passwordFromDB = Environment.GetEnvironmentVariable("PGPASSWORD");
+
+        public static string loginFromDB = "postgres";
+        public static string passwordFromDB = "XeKhM9bQnRYah";
+
 
         private static NpgsqlConnection conn;
 
@@ -22,7 +26,7 @@ namespace ResearchProgram
         /// </summary>
         public static void ConnectByDataBase()
         {
-            conn = new NpgsqlConnection($"Server=localhost; Port=5432; User Id={loginFromDB}; Password={passwordFromDB}; Database=postgres");
+            conn = new NpgsqlConnection($"Server=212.192.88.14; Port=5432; User Id={loginFromDB}; Password={passwordFromDB}; Database=postgres");
             conn.Open();
         }
 
@@ -201,7 +205,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение исполнителей
-            cmd = new NpgsqlCommand("SELECT grantId, FIO, isExecutorContract, executorId FROM executors " +
+            cmd = new NpgsqlCommand("SELECT grantId, FIO, executorId FROM executors " +
                                         "JOIN persons p on executors.executorId = p.id " +
                                         "JOIN grants g on executors.grantId = g.id " +
                                         "ORDER BY grantId; ", conn);
@@ -210,31 +214,17 @@ namespace ResearchProgram
             if (reader.HasRows)
             {
                 string FIO;
-                bool isExecutorContract;
                 while (reader.Read())
                 {
                     grant_id = Convert.ToInt32(reader[0]);
-                    isExecutorContract = Convert.ToBoolean(reader[2]);
-
                     grant_index = ShowGrantIndex(grants, grant_id);
-
                     FIO = reader[1].ToString();
-                    if (isExecutorContract)
+
+                    grants[grant_index].Executor.Add(new Person()
                     {
-                        grants[grant_index].ExecutorContract.Add(new Person()
-                        {
-                            Id = Convert.ToInt32(reader[3]),
-                            FIO = reader[1].ToString()
-                        });
-                    }
-                    else
-                    {
-                        grants[grant_index].Executor.Add(new Person()
-                        {
-                            Id = Convert.ToInt32(reader[3]),
-                            FIO = reader[1].ToString()
-                        });
-                    }
+                        Id = Convert.ToInt32(reader[2]),
+                        FIO = reader[1].ToString()
+                    });
                 }
             }
             else

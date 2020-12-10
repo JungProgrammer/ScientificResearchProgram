@@ -49,11 +49,22 @@ namespace ResearchProgram
         public string shortName()
         {
             string[] FIODivided = FIO.Split(' ');
-            string lastName = FIODivided[0];
-            string firstName = FIODivided[1];
-            string patronymic = FIODivided[2];
+            string shortName;
 
-            string shortName = lastName + " " + firstName[0] + ". " + patronymic[0] + ".";
+            // Если у нас корректно заполнено ФИО
+            if (FIODivided.Length == 3)
+            {
+                string lastName = FIODivided[0];
+                string firstName = FIODivided[1];
+                string patronymic = FIODivided[2];
+
+                shortName = lastName + " " + firstName[0] + ". " + patronymic[0] + ".";
+            }
+            else
+            {
+                shortName = FIO;
+            }
+            
             return shortName;
         }
     }

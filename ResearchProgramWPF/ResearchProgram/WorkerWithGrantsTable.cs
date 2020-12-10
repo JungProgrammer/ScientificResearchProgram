@@ -49,7 +49,7 @@ namespace ResearchProgram
                 if (grantsDataTable.Rows.Count == 0) countOfGrantRows = 0;
                 countOfGrantRows++;
                 Console.WriteLine(grant.Customer);
-                grantsDataTable.Rows.Add(
+             grantsDataTable.Rows.Add(
                         countOfGrantRows.ToString(),
                         grant.grantNumber,
                         grant.OKVED,
@@ -62,13 +62,13 @@ namespace ResearchProgram
                         String.Join("\n", grant.DepositorSum),
                         grant.LeadNIOKR.shortName(),
                         String.Join("\n", grant.Executor.Select(x => x.shortName()).ToArray()),
-                        grant.Kafedra,
-                        grant.Unit,
                         grant.Institution,
+                        grant.Unit,
+                        grant.Kafedra,
+                        grant.Laboratory,
                         grant.GRNTI,
                         String.Join("\n", grant.ResearchType),
                         String.Join("\n", grant.PriorityTrands),
-                        String.Join("\n", grant.ExecutorContract),
                         String.Join("\n", grant.ScienceType),
                         grant.NIR,
                         grant.NOC);

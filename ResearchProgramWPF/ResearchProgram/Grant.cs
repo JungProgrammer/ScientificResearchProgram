@@ -17,6 +17,21 @@ namespace ResearchProgram
             PriorityTrands = new List<PriorityTrend>();
             ExecutorContract = new List<Person>();
             ScienceType = new List<ScienceType>();
+
+            Id = 0;
+            grantNumber = "Не указан";
+            OKVED = "Не указан";
+            NameNIOKR = "Не указан";
+            Price = 0;
+            Institution = new Institution();
+            Unit = new Unit();
+            Kafedra = new Kafedra();
+            Laboratory = new Laboratory();
+            GRNTI = "Не указан";
+            NIR = "Не указан";
+            NOC = "Не указан";
+            LeadNIOKR = new Person();
+            Customer = new Person();  //_________________________________________________________________________________________________________Изменить
         }
 
         // Id
@@ -43,12 +58,14 @@ namespace ResearchProgram
         public Person LeadNIOKR { get; set; }
         // Исполнитель
         public List<Person> Executor { get; set; }
-        // Кафедра
-        public Kafedra Kafedra { get; set; }
-        // Подразделение
-        public Unit Unit { get; set; }
         // Учреждение
         public Institution Institution { get; set; }
+        // Подразделение
+        public Unit Unit { get; set; }
+        // Кафедра
+        public Kafedra Kafedra { get; set; }
+        // Лаборатория 
+        public Laboratory Laboratory { get; set; }
         // ГРНТИ
         public string GRNTI { get; set; }
         // Тип исследования

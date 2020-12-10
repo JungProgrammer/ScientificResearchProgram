@@ -211,7 +211,7 @@ namespace ResearchProgram
             FiltersWindow filtersWindow = new FiltersWindow(GrantsDataTable);
             filtersWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             filtersWindow.Owner = this;
-            filtersWindow.ShowDialog();
+            filtersWindow.Show();
         }
 
         /// <summary>
