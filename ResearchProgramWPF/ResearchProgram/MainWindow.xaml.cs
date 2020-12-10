@@ -7,26 +7,20 @@ using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Windows.Controls;
-<<<<<<< HEAD
-=======
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
->>>>>>> filters_future
+
 namespace ResearchProgram
 {
 
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-<<<<<<< HEAD
     /// 
 
 
-    public partial class MainWindow : Window
-=======
     public partial class MainWindow : Window, INotifyPropertyChanged
->>>>>>> filters_future
     {
         private DataTable _grantsDataTable;
         // Таблица договоров

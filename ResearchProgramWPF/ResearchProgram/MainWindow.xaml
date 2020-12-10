@@ -71,9 +71,7 @@
                     <Label Content="{Binding settings.NDSKey, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource NDSConverter}}" 
                            Grid.Row="0"
                            FontSize="12"/>
-<<<<<<< HEAD
-=======
-
+                    
                     <Button Grid.Row="0"
                             x:Name="grantsUpdateButton"
                             Margin="0 0 2 2"
@@ -86,7 +84,6 @@
                                    Width="25"/>
                     </Button>
 
->>>>>>> filters_future
                     <DataGrid x:Name="GrantsTable"
                               AutoGenerateColumns="True"
                               ItemsSource="{Binding GrantsDataTable}"
