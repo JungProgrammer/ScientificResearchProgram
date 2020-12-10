@@ -126,6 +126,7 @@
     <Compile Include="Institution.cs" />
     <Compile Include="Job.cs" />
     <Compile Include="JobConverter.cs" />
+    <Compile Include="NDSConverter.cs" />
     <Compile Include="Nir.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="PriorityTrend.cs" />

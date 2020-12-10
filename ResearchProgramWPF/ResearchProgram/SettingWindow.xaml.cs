@@ -24,18 +24,40 @@ namespace ResearchProgram
             InitializeComponent();
 
         }
-        public bool isNDSCheckBoxChecked = Settings.Default.NDSKey;
-        public bool IsNDSCheckBoxChecked
+        public bool isNDSCheckBoxChecked;
+        public bool IsNDSCheckBoxChecked {get; set;} = Settings.Default.NDSKey;
+
+        private void applyButton_Click(object sender, RoutedEventArgs e)
         {
-            get { return isNDSCheckBoxChecked; }
-            set { isNDSCheckBoxChecked = value; }
+            Settings.Default.NDSKey = NDSCheckBox.IsChecked.Value;
+            Settings.Default.Save();
         }
 
-        private void NDSCheckBox_Clicked(object sender, RoutedEventArgs e)
+        private void closeButton_Click(object sender, RoutedEventArgs e)
         {
-            Settings.Default.NDSKey = !Settings.Default.NDSKey;
-            Settings.Default.Save();
-            IsNDSCheckBoxChecked = Settings.Default.NDSKey;
+            if (applyButton.IsEnabled)
+            {
+                MessageBoxResult close = MessageBox.Show("Введённые изменения не сохранятся. Вы хотите сохранить настройки?", "Настройки", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+
+                switch (close)
+                {
+                    case MessageBoxResult.Yes:
+                        applyButton_Click(sender, e);
+                        Close();
+                        break;
+                    case MessageBoxResult.No:
+                        Close();
+                        break;
+                }
+            }
+            else {
+                Close();
+            }
+        }
+
+        private void NDSCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            applyButton.IsEnabled = true;
         }
     }
 }

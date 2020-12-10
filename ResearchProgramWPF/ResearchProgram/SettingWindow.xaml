@@ -18,16 +18,48 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
         </Grid.RowDefinitions>
+        <GroupBox Grid.Row="0"
+                  Grid.ColumnSpan="2"
+                  Margin="5 0">
+            <GroupBox.Header>
+                <Label Content="Параметры отображения"/>
+            </GroupBox.Header>
+            <CheckBox Grid.Row="0" 
+                    Content="Отображение с НДС"
+                    Margin="7 3"
+                    x:Name="NDSCheckBox"
+                    IsChecked="{Binding ElementName=settingWindow, Path=IsNDSCheckBoxChecked}"
+                      Click="NDSCheckBox_Click"/>
+        </GroupBox>
+        <Grid
+            Grid.Row="5"
+            Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
 
-        <CheckBox Grid.Row="0" 
-                  Content="Отображение с НДС"
-                  Margin="5 10"
-                  x:Name="NDSCheckBox"
-                  IsChecked="{Binding ElementName=settingWindow, Path=IsNDSCheckBoxChecked}"
-                  Click="NDSCheckBox_Clicked"/>
+            <Button Content="Применить"
+                    x:Name="applyButton"
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Margin="30 45 0 10"
+                    Click="applyButton_Click"
+                    IsEnabled="False"/>
+
+            <Button Content="Закрыть"
+                    x:Name="closeButton"
+                    Grid.Row="0"
+                    Grid.Column="3"
+                    Margin="20 45 10 10"
+                    Click="closeButton_Click"/>
+        </Grid>
     </Grid>
+    
 </Window>

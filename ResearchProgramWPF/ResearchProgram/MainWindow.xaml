@@ -4,13 +4,15 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResearchProgram"
-        xmlns:properties="clr-namespace:ResearchProgram.Properties"
+        xmlns:properties="clr-namespace:ResearchProgram.Properties" 
         mc:Ignorable="d"
         Title="MainWindow"
         Height="900"
         Width="1300"
         x:Name="mainWindow">
-
+    <Window.Resources>
+        <local:NDSConverter x:Key="NDSConverter" />
+    </Window.Resources>
     <Grid>
 
         <Grid.RowDefinitions>
@@ -63,10 +65,12 @@
                     </Grid.RowDefinitions>
 
 
-                    <Label Content="{Binding  NDSShow, UpdateSourceTrigger=PropertyChanged}" 
+                    <!--<Label Content="{local:SettingBinding NDSKey}" 
+                           Grid.Row="0"
+                           FontSize="12"/>-->
+                    <Label Content="{Binding settings.NDSKey, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource NDSConverter}}" 
                            Grid.Row="0"
                            FontSize="12"/>
-
                     <DataGrid x:Name="GrantsTable"
                               AutoGenerateColumns="True"
                               ItemsSource="{Binding GrantsDataTable}"
