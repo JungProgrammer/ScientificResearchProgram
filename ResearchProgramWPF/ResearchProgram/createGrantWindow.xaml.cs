@@ -617,8 +617,6 @@ namespace ResearchProgram
                 // Закрываем соединение с БД
                 CRUDDataBase.CloseConnect();
 
-                WorkerWithTablesOnMainForm.AddRowToGrantTable(grantsDataTable, newGrant);
-
                 MessageBox.Show("Договор успешно создан");
             }
         }

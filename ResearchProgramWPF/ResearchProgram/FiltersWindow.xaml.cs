@@ -14,17 +14,10 @@ using System.Windows.Shapes;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Data;
 
 namespace ResearchProgram
 {
-
-    public class FilterElement
-    {
-        public string Data { get; set; }
-
-    }
-
-
     public class GrantHeader : INotifyPropertyChanged
     {
         private string _nameOnRussia;
@@ -54,6 +47,10 @@ namespace ResearchProgram
 
         // Нужен вывод сравнимого выражения
         public bool Is_comparison_needed { get; set; }
+        // Выбранный знак сравнения
+        public string ChooseComparisonSign { get; set; }
+        // Выбранная общая сумма
+        public string ChooseAllSum { get; set; }
 
 
         // Нужен вывод датапикера
@@ -95,9 +92,21 @@ namespace ResearchProgram
     /// </summary>
     public partial class FiltersWindow : Window, INotifyPropertyChanged
     {
+        // Таблица, которая отвечает за гранты
+        DataTable GrantsDataTable { get; set; }
 
-        private ObservableCollection<GrantHeader> _listOfGrantHeaders { get; set; }
-        public ObservableCollection<GrantHeader> GrantHeaders { get; set; }
+
+        private ObservableCollection<GrantHeader> _grantHeaders;
+        public ObservableCollection<GrantHeader> GrantHeaders
+        {
+            get => _grantHeaders;
+            set
+            {
+                _grantHeaders = value;
+                OnPropertyChanged(nameof(GrantHeaders));
+            }
+        }
+
 
         // Коллекция для создания фильтров
         public ObservableCollection<GrantHeader> GrantItemsForControlPanel { get; set; }
@@ -115,9 +124,12 @@ namespace ResearchProgram
 
 
 
-        public FiltersWindow()
+        public FiltersWindow(DataTable grantsDataTable)
         {
             InitializeComponent();
+
+            // Присваиваем ссылку на GrantsDataTable из main
+            GrantsDataTable = grantsDataTable;
 
             InitializeData();
 
@@ -141,15 +153,6 @@ namespace ResearchProgram
             CRUDDataBase.CloseConnect();
         }
 
-        /// <summary>
-        /// Применить поставленные фильтры
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void applyFiltersButton_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         /// <summary>
         /// Добавление нового фильтра
@@ -224,7 +227,7 @@ namespace ResearchProgram
             {
                 curGrantHeader.FilterElementsData.Add(new FilterElement()
                 {
-                    Data = curGrantHeader.ChooseDateFromDatePicker.ToString()
+                    Data = curGrantHeader.ChooseDateFromDatePicker.ToString("dd.MM.yyyy")
                 });
             }
             // Если на странице сумма
@@ -232,7 +235,8 @@ namespace ResearchProgram
             {
                 curGrantHeader.FilterElementsData.Add(new FilterElement()
                 {
-                    Data = curGrantHeader.ChooseDateFromDatePicker.ToString()
+                    Data = curGrantHeader.ChooseAllSum,
+                    Sign = curGrantHeader.ChooseComparisonSign
                 });
             }
         }
@@ -247,5 +251,92 @@ namespace ResearchProgram
 
         }
 
+        /// <summary>
+        /// Применить поставленные фильтры
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void applyFiltersButton_Click(object sender, RoutedEventArgs e)
+        {
+            // Для начала применить новые фильтры
+            UpdateGrantsFilters();
+
+            CRUDDataBase.ConnectByDataBase();
+            // Загрузить снова таблицу
+            CRUDDataBase.LoadGrantsTable(GrantsDataTable);
+            CRUDDataBase.CloseConnect();
+        }
+
+        /// <summary>
+        /// Обновляет статический класс фильтров
+        /// </summary>
+        private void UpdateGrantsFilters()
+        {
+            // Сбрасываем фильтры
+            GrantsFilters.ResetFilters();
+
+            // Поиск фильтров
+            GrantsFilters.grantNumber =         FindGrantHeader(GrantItemsForControlPanel, "grantNumber")           != null     ?   FindGrantHeader(GrantItemsForControlPanel, "grantNumber").FilterElementsData            : null;
+            GrantsFilters.OKVED =               FindGrantHeader(GrantItemsForControlPanel, "OKVED")                 != null     ?   FindGrantHeader(GrantItemsForControlPanel, "OKVED").FilterElementsData                  : null;
+            GrantsFilters.NameNIOKR =           FindGrantHeader(GrantItemsForControlPanel, "NIOKR")                 != null     ?   FindGrantHeader(GrantItemsForControlPanel, "NIOKR").FilterElementsData                  : null;
+            GrantsFilters.Customer =            FindGrantHeader(GrantItemsForControlPanel, "customer")              != null     ?   FindGrantHeader(GrantItemsForControlPanel, "customer").FilterElementsData               : null;
+            GrantsFilters.StartDate =           FindGrantHeader(GrantItemsForControlPanel, "startDate")             != null     ?   FindGrantHeader(GrantItemsForControlPanel, "startDate").FilterElementsData              : null;
+            GrantsFilters.EndDate =             FindGrantHeader(GrantItemsForControlPanel, "endDate")               != null     ?   FindGrantHeader(GrantItemsForControlPanel, "endDate").FilterElementsData                : null;
+            GrantsFilters.Price =               FindGrantHeader(GrantItemsForControlPanel, "price")                 != null     ?   FindGrantHeader(GrantItemsForControlPanel, "price").FilterElementsData                  : null;
+            GrantsFilters.Depositor =           FindGrantHeader(GrantItemsForControlPanel, "deposits")              != null     ?   FindGrantHeader(GrantItemsForControlPanel, "deposits").FilterElementsData               : null;
+            GrantsFilters.LeadNIOKR =           FindGrantHeader(GrantItemsForControlPanel, "leadNIOKR")             != null     ?   FindGrantHeader(GrantItemsForControlPanel, "leadNIOKR").FilterElementsData              : null;
+            GrantsFilters.Executor =            FindGrantHeader(GrantItemsForControlPanel, "executors")             != null     ?   FindGrantHeader(GrantItemsForControlPanel, "executors").FilterElementsData              : null;
+            GrantsFilters.Kafedra =             FindGrantHeader(GrantItemsForControlPanel, "kafedra")               != null     ?   FindGrantHeader(GrantItemsForControlPanel, "kafedra").FilterElementsData                : null;
+            GrantsFilters.Unit =                FindGrantHeader(GrantItemsForControlPanel, "unit")                  != null     ?   FindGrantHeader(GrantItemsForControlPanel, "unit").FilterElementsData                   : null;
+            GrantsFilters.Institution =         FindGrantHeader(GrantItemsForControlPanel, "institution")           != null     ?   FindGrantHeader(GrantItemsForControlPanel, "institution").FilterElementsData            : null;
+            GrantsFilters.GRNTI =               FindGrantHeader(GrantItemsForControlPanel, "GRNTI")                 != null     ?   FindGrantHeader(GrantItemsForControlPanel, "GRNTI").FilterElementsData                  : null;
+            GrantsFilters.ResearchTypes =        FindGrantHeader(GrantItemsForControlPanel, "researchTypes")         != null     ?   FindGrantHeader(GrantItemsForControlPanel, "researchTypes").FilterElementsData          : null;
+            GrantsFilters.PriorityTrands =      FindGrantHeader(GrantItemsForControlPanel, "priorityTrends")        != null     ?   FindGrantHeader(GrantItemsForControlPanel, "priorityTrends").FilterElementsData         : null;
+            GrantsFilters.ExecutorContract =    FindGrantHeader(GrantItemsForControlPanel, "ExecutorsContractItem") != null     ?   FindGrantHeader(GrantItemsForControlPanel, "ExecutorsContractItem").FilterElementsData  : null;
+            GrantsFilters.ScienceTypes =         FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem")       != null     ?   FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem").FilterElementsData        : null;
+            GrantsFilters.NIR =                 FindGrantHeader(GrantItemsForControlPanel, "NIRItem")               != null     ?   FindGrantHeader(GrantItemsForControlPanel, "NIRItem").FilterElementsData                : null;
+            GrantsFilters.NOC =                 FindGrantHeader(GrantItemsForControlPanel, "NOCItem")               != null     ?   FindGrantHeader(GrantItemsForControlPanel, "NOCItem").FilterElementsData                : null;
+        }
+
+        /// <summary>
+        /// Выполняет поиск айтема по найзванию фильтра на английском
+        /// </summary>
+        /// <param name="grantHeaders"></param>
+        /// <param name="elementName"></param>
+        /// <returns></returns>
+        private GrantHeader FindGrantHeader(ObservableCollection<GrantHeader> grantHeaders, string elementName)
+        {
+            foreach (GrantHeader grantHeader in grantHeaders)
+            {
+                if(grantHeader.nameForElement == elementName)
+                {
+                    return grantHeader;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Событие, которое происходит, когда нажимается кнопка сброса фильтров
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void resetAllFilters(object sender, RoutedEventArgs e)
+        {
+            // Удаление всех видов фильтров, которые остались невыбранные в combobox
+            GrantHeaders.Clear();
+            // Восстановить все возможные фильтры в combobox
+            SetGrantHeaders();
+            // Удаление всех фильтров, которые уже пользователь добавил
+            GrantItemsForControlPanel.Clear();
+            // Сброс текущих фильтров у текущего класса
+            GrantsFilters.ResetFilters();
+
+            // Загрузить снова таблицу
+            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.LoadGrantsTable(GrantsDataTable);
+            CRUDDataBase.CloseConnect();
+        }
     }
 }

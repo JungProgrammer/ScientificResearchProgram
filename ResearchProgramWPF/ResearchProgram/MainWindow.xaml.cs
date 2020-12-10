@@ -7,19 +7,38 @@ using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Windows.Controls;
+<<<<<<< HEAD
+=======
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+>>>>>>> filters_future
 namespace ResearchProgram
 {
 
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
+<<<<<<< HEAD
     /// 
 
 
     public partial class MainWindow : Window
+=======
+    public partial class MainWindow : Window, INotifyPropertyChanged
+>>>>>>> filters_future
     {
+        private DataTable _grantsDataTable;
         // Таблица договоров
-        public DataTable GrantsDataTable { get; set; }
+        public DataTable GrantsDataTable
+        {
+            get => _grantsDataTable;
+            set
+            {
+                _grantsDataTable = value;
+                OnPropertyChanged(nameof(GrantsDataTable));
+            }
+        }
         // Таблица людей
         public DataTable PeopleDataTable { get; set; }
 
@@ -29,6 +48,7 @@ namespace ResearchProgram
 
             this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
+            GrantsFilters.ResetFilters();
             // Загружаем данные в таблицу грантов
             LoadGrantsTable();
             // Загружаем данные в таблицу людей
@@ -58,8 +78,13 @@ namespace ResearchProgram
             CRUDDataBase.CreateGrantsHeaders(GrantsDataTable);
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
             CRUDDataBase.CloseConnect();
+        }
 
-
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
 
         /// <summary>
@@ -189,7 +214,7 @@ namespace ResearchProgram
         // Открытые окна фильтров
         private void grantsFiltersButton_Click(object sender, RoutedEventArgs e)
         {
-            FiltersWindow filtersWindow = new FiltersWindow();
+            FiltersWindow filtersWindow = new FiltersWindow(GrantsDataTable);
             filtersWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             filtersWindow.Owner = this;
             filtersWindow.ShowDialog();
@@ -229,6 +254,13 @@ namespace ResearchProgram
             {
                 column.Visibility = Visibility.Visible;
             }
+        }
+
+        private void grantsUpdateButton_Click(object sender, RoutedEventArgs e)
+        {
+            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.LoadGrantsTable(GrantsDataTable);
+            CRUDDataBase.CloseConnect();
         }
     }
 
