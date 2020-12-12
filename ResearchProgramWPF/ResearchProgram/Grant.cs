@@ -31,7 +31,7 @@ namespace ResearchProgram
             NIR = "Не указан";
             NOC = "Не указан";
             LeadNIOKR = new Person();
-            Customer = new Person();  //_________________________________________________________________________________________________________Изменить
+            Customer = new Customer();  
         }
 
         // Id
@@ -43,7 +43,7 @@ namespace ResearchProgram
         // Наименование НИОКР
         public string NameNIOKR { get; set; }
         // Заказчик
-        public Person Customer { get; set; }
+        public Customer Customer { get; set; }
         // Дата начала договора
         public DateTime StartDate { get; set; }
         // Дата окончания договора

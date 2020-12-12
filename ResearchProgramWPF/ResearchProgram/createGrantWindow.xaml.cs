@@ -7,21 +7,80 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace ResearchProgram
 {
     /// <summary>
     /// Логика взаимодействия для createGrantWindow.xaml
     /// </summary>
-    public partial class createGrantWindow : Window
+    public partial class createGrantWindow : Window, INotifyPropertyChanged
     {
         // DataTable для грантов на главной таблице
         private DataTable grantsDataTable;
+
+        // Класс для выбора параметров, характеризующих структуру вуза
+        private WorkerWithUniversityStructure _universityStructure;
+        public WorkerWithUniversityStructure UniversityStructure
+        {
+            get => _universityStructure;
+            set
+            {
+                _universityStructure = value;
+                OnPropertyChanged(nameof(UniversityStructure));
+            }
+        }
+
+        private Institution selectedInstitution;
+        public Institution SelectedInstitution
+        {
+            get => selectedInstitution;
+            set
+            {
+                selectedInstitution = value;
+                OnPropertyChanged(nameof(SelectedInstitution));
+            }
+        }
+
+        private Unit selectedUnit;
+        public Unit SelectedUnit
+        {
+            get => selectedUnit;
+            set
+            {
+                selectedUnit = value;
+                OnPropertyChanged(nameof(SelectedUnit));
+            }
+        }
+
+        private Kafedra selectedKafedra;
+        public Kafedra SelectedKafedra
+        {
+            get => selectedKafedra;
+            set
+            {
+                selectedKafedra = value;
+                OnPropertyChanged(nameof(SelectedKafedra));
+            }
+        }
+
+        private Laboratory selectedLaboratory;
+        public Laboratory SelectedLaboratory
+        {
+            get => selectedLaboratory;
+            set
+            {
+                selectedLaboratory = value;
+                OnPropertyChanged(nameof(SelectedLaboratory));
+            }
+        }
 
 
         //Списки данных из БД
         public ObservableCollection<string> NIOKRList { get; set; }
         public List<Person> personsList { get; set; }
+        public List<Customer> customersList { get; set; }
         public List<string> selectedItems { get; set; }
         public List<string> selectedValues { get; set; }
 
@@ -54,6 +113,14 @@ namespace ResearchProgram
         AutoCompleteComboBox researchTypeAutoCompleteComboBox;
 
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
+
+
         public createGrantWindow(DataTable grantsDataTable)
         {
             NIOKRList = new ObservableCollection<string>();
@@ -68,7 +135,10 @@ namespace ResearchProgram
             // Подключение к базе данных
             CRUDDataBase.ConnectByDataBase();
 
+
             personsList = CRUDDataBase.GetPersons();
+            UniversityStructure = CRUDDataBase.GetUniversityStructure();
+            customersList = CRUDDataBase.GetCustomers();
             depositsList = CRUDDataBase.GetDeposits();
             kafedrasList = CRUDDataBase.GetKafedras();
             unitsList = CRUDDataBase.GetUnits();
@@ -84,13 +154,19 @@ namespace ResearchProgram
 
             addCustomerAutoCompleteComboBox();
             addLeadNIOKRAutoCompleteComboBox();
-            addInstitutionAutoCompleteComboBox();
             addUnitAutoCompleteComboBox();
             addKafedraAutoCompleteComboBox();
             addResearchTypeAutoCompleteComboBox();
 
+            //// Добавление комбобоксов для структуры вуза
+            //addUniversityStructureComboBoxes();
+
+
             // Закрытие подключения к базе данных
             CRUDDataBase.CloseConnect();
+
+
+            DataContext = this;
         }
         /// <summary>
         /// Добавление комбо бокса к заказчику
@@ -101,7 +177,7 @@ namespace ResearchProgram
             customerAutoCompleteComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<Person>(personsList),
+                ItemsSource = new List<Customer>(customersList),
                 MinWidth = 300
             };
             customerGrid.Children.Add(customerAutoCompleteComboBox);
@@ -151,19 +227,19 @@ namespace ResearchProgram
             Grid.SetRow(unitAutoCompleteComboBox, 1);
         }
         /// <summary>
-        /// Добавление комбо бокса к учреждению
+        /// Добавление комбо боксов для связки структуры универа
         /// </summary>
-        private void addInstitutionAutoCompleteComboBox()
-        {
-            institutionAutoCompleteComboBox = new AutoCompleteComboBox()
-            {
-                Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<Institution>(instituionsList),
-                MinWidth = 300
-            };
-            institutionGrid.Children.Add(institutionAutoCompleteComboBox);
-            Grid.SetRow(institutionAutoCompleteComboBox, 1);
-        }
+        //private void addUniversityStructureComboBoxes()
+        //{
+        //    institutionAutoCompleteComboBox = new AutoCompleteComboBox()
+        //    {
+        //        Margin = new Thickness(5, 0, 5, 0),
+        //        ItemsSource = new List<Institution>(instituionsList),
+        //        MinWidth = 300
+        //    };
+        //    institutionGrid.Children.Add(institutionAutoCompleteComboBox);
+        //    Grid.SetRow(institutionAutoCompleteComboBox, 1);
+        //}
 
         /// <summary>
         /// Добавление комбо бокса к типу
@@ -404,12 +480,12 @@ namespace ResearchProgram
                 newGrant.NameNIOKR = "";
             }
 
-            if ((Person)customerAutoCompleteComboBox.SelectedItem != null)
+            if ((Customer)customerAutoCompleteComboBox.SelectedItem != null)
             {
-                newGrant.Customer = new Person()
+                newGrant.Customer = new Customer()
                 {
-                    Id = ((Person)customerAutoCompleteComboBox.SelectedItem).Id,
-                    FIO = ((Person)customerAutoCompleteComboBox.SelectedItem).FIO
+                    Id = ((Customer)customerAutoCompleteComboBox.SelectedItem).Id,
+                    Title = ((Customer)customerAutoCompleteComboBox.SelectedItem).Title
                 };
             }
             else

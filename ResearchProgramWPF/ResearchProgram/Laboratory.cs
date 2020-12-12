@@ -8,8 +8,10 @@ namespace ResearchProgram
 {
     public class Laboratory: IContainer
     {
+        // Id лаборатории
         public int Id { get; set; }
 
+        // Название лаборатории
         public string Title { get; set; }
 
         public Laboratory()

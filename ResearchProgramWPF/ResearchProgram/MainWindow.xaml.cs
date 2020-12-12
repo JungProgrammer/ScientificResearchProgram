@@ -103,7 +103,7 @@ namespace ResearchProgram
 
             newGrantWindow.Owner = this;
 
-            newGrantWindow.ShowDialog();
+            newGrantWindow.Show();
         }
 
         // Открытие окна с созданием людей

@@ -127,7 +127,7 @@ namespace ResearchProgram
                 IsAllOkey = false;
                 foreach (FilterElement _customer in Customer)
                 {
-                    if (_customer.Data == grant.Customer.FIO) IsAllOkey = true;
+                    if (_customer.Data == grant.Customer.Title) IsAllOkey = true;
                 }
             }
 

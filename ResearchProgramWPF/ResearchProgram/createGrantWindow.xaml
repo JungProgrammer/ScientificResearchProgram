@@ -7,6 +7,11 @@
         xmlns:dotNetKitControls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
         mc:Ignorable="d"
         Title="Создать новый договор" Height="605" Width="670">
+
+    <Window.Resources>
+        <local:LaboratoryConverter x:Key="laboratoryConverter"/>
+    </Window.Resources>
+    
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -422,18 +427,64 @@
                 </TabItem>
 
                 <TabItem Name="institution"
-                         Visibility="Collapsed">
+                         Visibility="Visible">
                     <TabItem.Content>
                         <Grid x:Name="institutionGrid">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <Label Content="Учреждение"
+                            <ListView Grid.Row="0">
+                                <Label Content="Учреждение"
                                    Grid.Row="0"
                                    Margin="0 5 0 0"/>
+                                <dotNetKitControls:AutoCompleteComboBox
+                                    MinWidth="300"
+                                    Margin="8 2 0 2"
+                                    ItemsSource="{Binding UniversityStructure.Institutions}"
+                                    SelectedItem="{Binding SelectedInstitution}">
+                                </dotNetKitControls:AutoCompleteComboBox>
+
+                                <Label Content="Подразделение"
+                                   Grid.Row="0"
+                                   Margin="0 5 0 0"/>
+                                <dotNetKitControls:AutoCompleteComboBox
+                                    MinWidth="300"
+                                    Margin="8 2 0 2"
+                                    ItemsSource="{Binding SelectedInstitution.Units}"
+                                    SelectedItem="{Binding SelectedUnit}">
+                                </dotNetKitControls:AutoCompleteComboBox>
+
+                                <Label Content="Кафедра"
+                                   Grid.Row="0"
+                                   Margin="0 5 0 0"/>
+                                <dotNetKitControls:AutoCompleteComboBox
+                                    MinWidth="300"
+                                    Margin="8 2 0 2"
+                                    ItemsSource="{Binding SelectedUnit.Kafedras}"
+                                    SelectedItem="{Binding SelectedKafedra}">
+                                </dotNetKitControls:AutoCompleteComboBox>
+
+                                <Label Content="Лаборатория"
+                                         Grid.Row="0"
+                                   Margin="0 5 0 0"/>
+                                <dotNetKitControls:AutoCompleteComboBox
+                                    MinWidth="300"
+                                    Margin="8 2 0 2"
+                                    Visibility="{Binding SelectedKafedra, ConverterParameter=KafedraSelected, Converter={StaticResource laboratoryConverter}}"
+                                    ItemsSource="{Binding SelectedKafedra.Laboratories}"
+                                    SelectedItem="{Binding SelectedLaboratory}">
+                                </dotNetKitControls:AutoCompleteComboBox>
+                                <dotNetKitControls:AutoCompleteComboBox
+                                    MinWidth="300"
+                                    Margin="8 2 0 2"
+                                    Visibility="{Binding SelectedKafedra, ConverterParameter=KafedraNotSelected, Converter={StaticResource laboratoryConverter}}"
+                                    ItemsSource="{Binding SelectedUnit.Laboratories}"
+                                    SelectedItem="{Binding SelectedLaboratory}">
+                                </dotNetKitControls:AutoCompleteComboBox>
+                            </ListView>
+                            
                         </Grid>
                     </TabItem.Content>
                 </TabItem>

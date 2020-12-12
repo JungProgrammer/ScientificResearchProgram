@@ -235,8 +235,8 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение остальных столбцов
-            cmd = new NpgsqlCommand("SELECT grants.id, grants.grantnumber, OKVED, nameNIOKR, p.FIO, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC FROM grants " +
-                                                        "JOIN persons p on grants.customerId = p.id " +
+            cmd = new NpgsqlCommand("SELECT grants.id, grants.grantnumber, OKVED, nameNIOKR, p.title, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC FROM grants " +
+                                                        "JOIN customers p on grants.customerId = p.customerid " +
                                                         "JOIN persons p2 on grants.leadNIOKRId = p2.id " +
                                                         "JOIN kafedras k on grants.kafedraId = k.id " +
                                                         "JOIN units u on grants.unitId = u.id " +
@@ -254,7 +254,7 @@ namespace ResearchProgram
                     grants[grant_index].grantNumber = reader[1].ToString();
                     grants[grant_index].OKVED = reader[2].ToString();
                     grants[grant_index].NameNIOKR = reader[3].ToString();
-                    grants[grant_index].Customer = new Person() { FIO = reader[4].ToString() };
+                    grants[grant_index].Customer = new Customer() { Title = reader[4].ToString() };
                     grants[grant_index].StartDate = Convert.ToDateTime(reader[5]);
                     grants[grant_index].EndDate = Convert.ToDateTime(reader[6]);
                     grants[grant_index].Price = float.Parse(reader[7].ToString());
@@ -278,6 +278,194 @@ namespace ResearchProgram
             {
                 WorkerWithTablesOnMainForm.AddRowToGrantTable(dataTable, grants[i]);
             }
+        }
+
+        internal static WorkerWithUniversityStructure GetUniversityStructure()
+        {
+            WorkerWithUniversityStructure universityStructure = new WorkerWithUniversityStructure();
+
+            // Сначала получаем всю структуру, где лаборатории привязаны к кафедрам
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT institutions.id, institutions.title, units.id, units.title, kafedras.id, kafedras.title, l1.id, l1.title FROM institutions " +
+                                                    "JOIN units ON institutions.id = units.institutionid " +
+                                                    "JOIN kafedras ON units.id = kafedras.unitid " +
+                                                    "JOIN laboratories l1 ON kafedras.id = l1.kafedraid " +
+                                                    "ORDER BY institutions.id; ", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+
+            if (reader.HasRows)
+            {
+                int institutionId;
+                int unitId;
+                int kafedraId;
+                int laboratoryId;
+
+                string institutionTitle;
+                string unitTitle;
+                string kafedraTitle;
+                string laboratoryTitle;
+
+                Institution institutionFound;
+                Unit unitFound;
+                Kafedra kafedraFound;
+                Laboratory laboratoryFound;
+
+                while (reader.Read())
+                {
+                    institutionId = Convert.ToInt32(reader[0]);
+                    institutionTitle = reader[1].ToString();
+                    unitId = Convert.ToInt32(reader[2]);
+                    unitTitle = reader[3].ToString();
+                    kafedraId = Convert.ToInt32(reader[4]);
+                    kafedraTitle = reader[5].ToString();
+                    laboratoryId = Convert.ToInt32(reader[6]);
+                    laboratoryTitle = reader[7].ToString();
+
+                    institutionFound = universityStructure.FindInstitution(institutionId);
+                    // Если такого учреждения еще нет
+                    if(institutionFound == null)
+                    {
+                        institutionFound = new Institution()
+                        {
+                            Id = institutionId,
+                            Title = institutionTitle
+                        };
+
+                        // Добавляем в список учреждений
+                        universityStructure.Institutions.Add(institutionFound);
+                    }
+
+                    unitFound = universityStructure.FindUnit(institutionFound, unitId);
+                    // Если такого подразделения еще нет
+                    if(unitFound == null)
+                    {
+                        unitFound = new Unit()
+                        {
+                            Id = unitId,
+                            Title = unitTitle
+                        };
+
+                        // Добавляем его в список подразделений найденного университета
+                        institutionFound.Units.Add(unitFound);
+                    }
+
+                    kafedraFound = universityStructure.FindKafedra(unitFound, kafedraId);
+                    // Если такой кафедры еще нет
+                    if(kafedraFound == null)
+                    {
+                        kafedraFound = new Kafedra()
+                        {
+                            Id = kafedraId,
+                            Title = kafedraTitle
+                        };
+
+                        // Добавление кафедры в подразделение
+                        unitFound.Kafedras.Add(kafedraFound);
+                    }
+
+                    laboratoryFound = universityStructure.FindLaboratoryInKafedra(kafedraFound, laboratoryId);
+                    // Если такая лаборатория еще не существует
+                    if(laboratoryFound == null)
+                    {
+                        laboratoryFound = new Laboratory()
+                        {
+                            Id = laboratoryId,
+                            Title = laboratoryTitle
+                        };
+
+                        kafedraFound.Laboratories.Add(laboratoryFound);
+                    }
+
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+
+            // Теперь получаем все записи, где лаборатория привязана к подразделению
+            cmd = new NpgsqlCommand("SELECT institutions.id, institutions.title, units.id, units.title, laboratories.id, laboratories.title FROM institutions " +
+                                        "JOIN units ON institutions.id = units.institutionid " +
+                                        "JOIN laboratories ON unitid = units.id " +
+                                        "ORDER BY institutions.id; ", conn);
+            reader = cmd.ExecuteReader();
+
+
+            if (reader.HasRows)
+            {
+                int institutionId;
+                int unitId;
+                int laboratoryId;
+
+                string institutionTitle;
+                string unitTitle;
+                string laboratoryTitle;
+
+                Institution institutionFound;
+                Unit unitFound;
+                Laboratory laboratoryFound;
+
+                while (reader.Read())
+                {
+                    institutionId = Convert.ToInt32(reader[0]);
+                    institutionTitle = reader[1].ToString();
+                    unitId = Convert.ToInt32(reader[2]);
+                    unitTitle = reader[3].ToString();
+                    laboratoryId = Convert.ToInt32(reader[4]);
+                    laboratoryTitle = reader[5].ToString();
+
+                    institutionFound = universityStructure.FindInstitution(institutionId);
+                    // Если такого учреждения еще нет
+                    if (institutionFound == null)
+                    {
+                        institutionFound = new Institution()
+                        {
+                            Id = institutionId,
+                            Title = institutionTitle
+                        };
+
+                        // Добавляем в список учреждений
+                        universityStructure.Institutions.Add(institutionFound);
+                    }
+
+                    unitFound = universityStructure.FindUnit(institutionFound, unitId);
+                    // Если такого подразделения еще нет
+                    if (unitFound == null)
+                    {
+                        unitFound = new Unit()
+                        {
+                            Id = unitId,
+                            Title = unitTitle
+                        };
+
+                        // Добавляем его в список подразделений найденного университета
+                        institutionFound.Units.Add(unitFound);
+                    }
+
+                    laboratoryFound = universityStructure.FindLaboratoryInUnit(unitFound, laboratoryId);
+                    // Если такая лаборатория еще не существует
+                    if (laboratoryFound == null)
+                    {
+                        laboratoryFound = new Laboratory()
+                        {
+                            Id = laboratoryId,
+                            Title = laboratoryTitle
+                        };
+
+                        unitFound.Laboratories.Add(laboratoryFound);
+                    }
+
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+            return universityStructure;
         }
 
         /// <summary>
@@ -444,6 +632,7 @@ namespace ResearchProgram
         {
             ObservableCollection<GrantHeader> grantHeaders = new ObservableCollection<GrantHeader>();
 
+            List<Customer> customerList = GetCustomers();
             List<Unit> unitList = GetUnits();
             List<ScienceType> scienceTypeList = GetScienceTypes();
             List<ResearchType> researchTypeList = GetResearchTypes();
@@ -481,7 +670,7 @@ namespace ResearchProgram
                     switch (curId)
                     {
                         case DataToComboBox.customer:
-                            newGrantHeader.DataToComboBox = new List<IContainer>(peopleList);
+                            newGrantHeader.DataToComboBox = new List<IContainer>(customerList);
                             break;
                         case DataToComboBox.deposits:
                             newGrantHeader.DataToComboBox = depositList.ConvertAll(x => (IContainer)x);
@@ -602,6 +791,33 @@ namespace ResearchProgram
             reader.Close();
             return personsList;
         }
+
+        public static List<Customer> GetCustomers()
+        {
+            List<Customer> customersList = new List<Customer>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT customerid, title FROM customers ORDER BY title;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    customersList.Add(new Customer()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+            return customersList;
+        }
+
         /// <summary>
         /// Получение списка средств
         /// </summary>
@@ -926,7 +1142,7 @@ namespace ResearchProgram
             cmd.Parameters.Add(new NpgsqlParameter("price", grant.Price));
             cmd.Parameters.Add(new NpgsqlParameter("grnti", grant.GRNTI));
             cmd.Parameters.Add(new NpgsqlParameter("nir", grant.NIR));
-            cmd.Parameters.Add(new NpgsqlParameter("noc", grant.NOC));
+            cmd.Parameters.Add(new NpgsqlParameter("noc", grant.NOC == "НОЦ" ? true : false));
 
             cmd.ExecuteNonQuery();
 

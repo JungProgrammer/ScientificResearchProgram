@@ -118,6 +118,7 @@
     <Compile Include="createUnitWindow.xaml.cs">
       <DependentUpon>createUnitWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Customer.cs" />
     <Compile Include="Depositor.cs" />
     <Compile Include="FilterElement.cs" />
     <Compile Include="FiltersWindow.xaml.cs">
@@ -129,6 +130,7 @@
     <Compile Include="Job.cs" />
     <Compile Include="JobConverter.cs" />
     <Compile Include="Laboratory.cs" />
+    <Compile Include="LaboratoryConverter.cs" />
     <Compile Include="NDSConverter.cs" />
     <Compile Include="Nir.cs" />
     <Compile Include="Parser.cs" />
@@ -147,6 +149,7 @@
     <Compile Include="Utilities.cs" />
     <Compile Include="VisibilityConveter.cs" />
     <Compile Include="WorkerWithGrantsTable.cs" />
+    <Compile Include="WorkerWithUniversityStructure.cs" />
     <Page Include="createDepositsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

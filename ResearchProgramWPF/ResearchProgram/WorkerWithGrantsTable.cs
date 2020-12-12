@@ -54,7 +54,7 @@ namespace ResearchProgram
                         grant.grantNumber,
                         grant.OKVED,
                         grant.NameNIOKR,
-                        grant.Customer.shortName(),
+                        grant.Customer.Title,
                         grant.StartDate.ToString("dd.MM.yyyy"),
                         grant.EndDate.ToString("dd.MM.yyyy"),
                         grant.Price,
