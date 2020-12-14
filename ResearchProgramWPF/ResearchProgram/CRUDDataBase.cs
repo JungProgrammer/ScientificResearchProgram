@@ -235,11 +235,12 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение остальных столбцов
-            cmd = new NpgsqlCommand("SELECT grants.id, grants.grantnumber, OKVED, nameNIOKR, p.title, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC FROM grants " +
+            cmd = new NpgsqlCommand("SELECT grants.id, grants.grantnumber, OKVED, nameNIOKR, p.title, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC, l.title FROM grants " +
                                                         "JOIN customers p on grants.customerId = p.customerid " +
                                                         "JOIN persons p2 on grants.leadNIOKRId = p2.id " +
                                                         "JOIN kafedras k on grants.kafedraId = k.id " +
                                                         "JOIN units u on grants.unitId = u.id " +
+                                                        "JOIN laboratories l on grants.laboratoryid = l.id " +
                                                         "JOIN institutions i on grants.institutionId = i.id; ", conn);
             reader = cmd.ExecuteReader();
 
@@ -265,6 +266,7 @@ namespace ResearchProgram
                     grants[grant_index].GRNTI = reader[12].ToString();
                     grants[grant_index].NIR = reader[13].ToString();
                     grants[grant_index].NOC = reader[14].ToString();
+                    grants[grant_index].Laboratory = new Laboratory() { Title = reader[15].ToString() };
                 }
             }
             else
@@ -613,15 +615,15 @@ namespace ResearchProgram
             customer = 4,
             deposits = 8,
             leadNIOKR = 9,
-            executors = 10,
-            kafedra = 11,
-            unit = 12,
-            institution = 13,
+            institution = 10,
+            unit = 11,
+            kafedra = 12,
+            laboratory = 13,
+            executors = 14,
             researchTypes = 15,
             priorityTrends = 16,
-            ExecutorsContractItem = 17,
-            ScienceTypeItem = 18,
-            NIRItem = 19
+            ScienceTypeItem = 17,
+            NIRItem = 18
         }
 
         /// <summary>
@@ -633,12 +635,13 @@ namespace ResearchProgram
             ObservableCollection<GrantHeader> grantHeaders = new ObservableCollection<GrantHeader>();
 
             List<Customer> customerList = GetCustomers();
-            List<Unit> unitList = GetUnits();
             List<ScienceType> scienceTypeList = GetScienceTypes();
             List<ResearchType> researchTypeList = GetResearchTypes();
             List<PriorityTrend> priorityTrendList = GetPriorityTrends();
-            List<Kafedra> kafedraList = GetKafedras();
             List<Institution> institutionList = GetInstitutions();
+            List<Unit> unitList = GetUnits();
+            List<Kafedra> kafedraList = GetKafedras();
+            List<Laboratory> laboratoryList = GetLaboratories();
             List<Person> peopleList = GetPersons();
             List<Depositor> depositList = GetDeposits();
             List<Nir> nirList = new List<Nir>() {
@@ -681,23 +684,23 @@ namespace ResearchProgram
                         case DataToComboBox.executors:
                             newGrantHeader.DataToComboBox = new List<IContainer>(peopleList);
                             break;
-                        case DataToComboBox.kafedra:
-                            newGrantHeader.DataToComboBox = kafedraList.ConvertAll(x => (IContainer)x);
+                        case DataToComboBox.institution:
+                            newGrantHeader.DataToComboBox = institutionList.ConvertAll(x => (IContainer)x);
                             break;
                         case DataToComboBox.unit:
                             newGrantHeader.DataToComboBox = unitList.ConvertAll(x => (IContainer)x);
                             break;
-                        case DataToComboBox.institution:
-                            newGrantHeader.DataToComboBox = institutionList.ConvertAll(x => (IContainer)x);
+                        case DataToComboBox.kafedra:
+                            newGrantHeader.DataToComboBox = kafedraList.ConvertAll(x => (IContainer)x);
+                            break;
+                        case DataToComboBox.laboratory:
+                            newGrantHeader.DataToComboBox = laboratoryList.ConvertAll(x => (IContainer)x);
                             break;
                         case DataToComboBox.researchTypes:
                             newGrantHeader.DataToComboBox = researchTypeList.ConvertAll(x => (IContainer)x);
                             break;
                         case DataToComboBox.priorityTrends:
                             newGrantHeader.DataToComboBox = priorityTrendList.ConvertAll(x => (IContainer)x);
-                            break;
-                        case DataToComboBox.ExecutorsContractItem:
-                            newGrantHeader.DataToComboBox = new List<IContainer>(peopleList);
                             break;
                         case DataToComboBox.ScienceTypeItem:
                             newGrantHeader.DataToComboBox = scienceTypeList.ConvertAll(x => (IContainer)x);
@@ -903,6 +906,37 @@ namespace ResearchProgram
 
             return kafedrasList;
         }
+
+        /// <summary>
+        /// Получение списка лабораторий
+        /// </summary>
+        public static List<Laboratory> GetLaboratories()
+        {
+            List<Laboratory> laboratories = new List<Laboratory>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM laboratories ORDER BY title;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    laboratories.Add(new Laboratory()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+            return laboratories;
+        }
+
         /// <summary>
         /// Получение списка подразделений
         /// </summary>
@@ -1173,30 +1207,12 @@ namespace ResearchProgram
             {
                 cmd = new NpgsqlCommand("insert into executors (" +
                 "grantid, " +
-                "executorid," +
-                "isexecutorcontract) " +
+                "executorid)" +
                 "values(" +
                 ":grantid, " +
-                ":executorid, " +
-                ":isexecutorcontract)", conn);
+                ":executorid)", conn);
                 cmd.Parameters.Add(new NpgsqlParameter("grantid", newMaxGrantId));
                 cmd.Parameters.Add(new NpgsqlParameter("executorid", executor.Id));
-                cmd.Parameters.Add(new NpgsqlParameter("isexecutorcontract", false));
-                cmd.ExecuteNonQuery();
-            }
-            foreach (Person executor in grant.ExecutorContract)
-            {
-                cmd = new NpgsqlCommand("insert into executors (" +
-                "grantid, " +
-                "executorid," +
-                "isexecutorcontract) " +
-                "values(" +
-                ":grantid, " +
-                ":executorid, " +
-                ":isexecutorcontract)", conn);
-                cmd.Parameters.Add(new NpgsqlParameter("grantid", newMaxGrantId));
-                cmd.Parameters.Add(new NpgsqlParameter("executorid", executor.Id));
-                cmd.Parameters.Add(new NpgsqlParameter("isexecutorcontract", true));
                 cmd.ExecuteNonQuery();
             }
 

@@ -15,7 +15,6 @@ namespace ResearchProgram
             Executor = new List<Person>();
             ResearchType = new List<ResearchType>();
             PriorityTrands = new List<PriorityTrend>();
-            ExecutorContract = new List<Person>();
             ScienceType = new List<ScienceType>();
 
             Id = 0;
@@ -72,8 +71,6 @@ namespace ResearchProgram
         public List<ResearchType> ResearchType { get; set; }
         // Приоритетные направления
         public List<PriorityTrend> PriorityTrands { get; set; }
-        // Исполнители по договору
-        public List<Person> ExecutorContract { get; set; }
         // Тип науки
         public List<ScienceType> ScienceType { get; set; }
         // НИР или услуга

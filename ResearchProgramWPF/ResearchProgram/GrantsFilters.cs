@@ -35,14 +35,14 @@ namespace ResearchProgram
         public static ObservableCollection<FilterElement> Unit;
         // Учреждение
         public static ObservableCollection<FilterElement> Institution;
+        // Лаборатория
+        public static ObservableCollection<FilterElement> Laboratory;
         // ГРНТИ
         public static ObservableCollection<FilterElement> GRNTI;
         // Тип исследования
         public static ObservableCollection<FilterElement> ResearchTypes;
         // Приоритетные направления
         public static ObservableCollection<FilterElement> PriorityTrands;
-        // Исполнители по договору
-        public static ObservableCollection<FilterElement> ExecutorContract;
         // Тип науки
         public static ObservableCollection<FilterElement> ScienceTypes;
         // НИР или услуга
@@ -69,10 +69,10 @@ namespace ResearchProgram
             Kafedra = null;
             Unit = null;
             Institution = null;
+            Laboratory = null;
             GRNTI = null;
             ResearchTypes = null;
             PriorityTrands = null;
-            ExecutorContract = null;
             ScienceTypes = null;
             NIR = null;
             NOC = null;
@@ -242,41 +242,50 @@ namespace ResearchProgram
                 }
             }
 
+            // Проверка учерждения
+            if (Institution != null && Institution.Count > 0 && IsAllOkey)
+            {
+                IsAllOkey = false;
+
+                foreach (FilterElement institution in Institution)
+                {
+                    if (institution.Data == grant.Institution.Title) IsAllOkey = true;
+                }
+            }
+
+            // Проверка подразделений
+            if (Unit != null && Unit.Count > 0 && IsAllOkey)
+            {
+                IsAllOkey = false;
+
+                foreach (FilterElement unit in Unit)
+                {
+                    if (unit.Data == grant.Unit.Title) IsAllOkey = true;
+                }
+            }
 
             // Проверка кафедр
             if (Kafedra != null && Kafedra.Count > 0 && IsAllOkey)
             {
                 IsAllOkey = false;
 
-                foreach (FilterElement kafedta in Kafedra)
+                foreach (FilterElement kafedra in Kafedra)
                 {
-                    if (kafedta.Data == grant.Kafedra.Title) IsAllOkey = true;
+                    if (kafedra.Data == grant.Kafedra.Title) IsAllOkey = true;
                 }
             }
 
-
-            // Проверка подразделений
-            if(Unit != null && Unit.Count > 0 && IsAllOkey)
+            // Проверка лабораторий
+            if(Laboratory != null && Laboratory.Count > 0 && IsAllOkey)
             {
                 IsAllOkey = false;
 
-                foreach(FilterElement unit in Unit)
+                foreach(FilterElement laboratory in Laboratory)
                 {
-                    if (unit.Data == grant.Unit.Title) IsAllOkey = true;
+                    if (laboratory.Data == grant.Laboratory.Title) IsAllOkey = true;
                 }
             }
 
-
-            // Проверка учерждения
-            if (Institution != null && Institution.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach(FilterElement institution in Institution)
-                {
-                    if (institution.Data == grant.Institution.Title) IsAllOkey = true;
-                }
-            }
 
 
             // Проверка ГРНТИ

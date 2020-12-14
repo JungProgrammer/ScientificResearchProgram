@@ -50,7 +50,6 @@ namespace ResearchProgram
         //Списки данных из формы
         public List<ComboBox> enteredExecutorsList { get; set; }
         public List<Object[]> enteredDepositsList { get; set; }
-        public List<ComboBox> enteredExecutorsContractList { get; set; }
         public List<ComboBox> enteredScienceTypesList { get; set; }
 
         public string NirChecker;
@@ -98,7 +97,6 @@ namespace ResearchProgram
             priorityTrendList = CRUDDataBase.GetPriorityTrends();
 
             enteredDepositsList = new List<object[]>();
-            enteredExecutorsContractList = new List<ComboBox>();
             enteredScienceTypesList = new List<ComboBox>();
             enteredExecutorsList = new List<ComboBox>();
 
@@ -274,35 +272,7 @@ namespace ResearchProgram
             }
         }
 
-        private void executorOnContractAddButton_Click(object sender, RoutedEventArgs e)
-        {
 
-            AutoCompleteComboBox executorOnContractComboBox = new AutoCompleteComboBox()
-            {
-                Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<Person>(personsList),
-                MinWidth = 300
-            };
-
-
-            executorOnContractVerticalListView.Items.Add(executorOnContractComboBox);
-        }
-
-        private void executorOnContractDeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            int countSelectedElement = executorOnContractVerticalListView.SelectedItems.Count;
-            if (countSelectedElement > 0)
-            {
-                for (int i = 0; i < countSelectedElement; i++)
-                {
-                    executorOnContractVerticalListView.Items.Remove(executorOnContractVerticalListView.SelectedItems[0]);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Выделите нужный для удаления элемент");
-            }
-        }
 
         private void scienceTypeAddButton_Click(object sender, RoutedEventArgs e)
         {
@@ -549,20 +519,6 @@ namespace ResearchProgram
                         {
                             Id = ((PriorityTrend)cmb.SelectedItem).Id,
                             Title = cmb.SelectedItem.ToString()
-                        });
-                    }
-                }
-            }
-
-            if (executorOnContractVerticalListView.Items != null)
-            {
-                foreach (AutoCompleteComboBox cmb in executorOnContractVerticalListView.Items.OfType<AutoCompleteComboBox>())
-                {
-                    if (cmb.SelectedItem != null)
-                    {
-                        newGrant.ExecutorContract.Add(new Person() {
-                            Id = ((Person)cmb.SelectedItem).Id,
-                            FIO = cmb.SelectedItem.ToString()
                         });
                     }
                 }

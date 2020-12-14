@@ -18,74 +18,6 @@ using System.Data;
 
 namespace ResearchProgram
 {
-    public class GrantHeader : INotifyPropertyChanged
-    {
-        private string _nameOnRussia;
-        public string nameOnRussia {
-            get => _nameOnRussia;
-            set
-            {
-                _nameOnRussia = value;
-                OnPropertyChanged(nameof(nameOnRussia));
-            }
-        }
-        public string nameForElement { get; set; }
-
-        // Нужен вывод комбобокса
-        public bool Is_combobox_needed { get; set; }
-        // Данные для ItemSource этого комбобокса
-        public List<IContainer> DataToComboBox { get; set; }
-        // Выбранное значение для этого комбобокса
-        public IContainer ChooseDataFromCombobox { get; set; }
-
-
-        // Нужен вывод текстбокса
-        public bool Is_textbox_needed { get; set; }
-        // Текст для текстбоксового поля
-        public string ChooseDataFromTextBox { get; set; }
-
-
-        // Нужен вывод сравнимого выражения
-        public bool Is_comparison_needed { get; set; }
-        // Выбранный знак сравнения
-        public string ChooseComparisonSign { get; set; }
-        // Выбранная общая сумма
-        public string ChooseAllSum { get; set; }
-
-
-        // Нужен вывод датапикера
-        public bool Is_date_needed { get; set; }
-        // Выбранная дата
-        public DateTime ChooseDateFromDatePicker { get; set; }
-
-
-        public ObservableCollection<FilterElement> FilterElementsData { get; set; }
-
-
-        public GrantHeader()
-        {
-            nameOnRussia = "";
-            nameForElement = "";
-            FilterElementsData = new ObservableCollection<FilterElement>();
-            DataToComboBox = new List<IContainer>();
-            ChooseDateFromDatePicker = DateTime.Now;
-        }
-
-
-        public override string ToString()
-        {
-            return nameOnRussia;
-        }
-
-        // Реализация интерфейса
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
-        }
-    }
-
 
     /// <summary>
     /// Логика взаимодействия для FiltersWindow.xaml
@@ -288,12 +220,12 @@ namespace ResearchProgram
             GrantsFilters.Executor =            FindGrantHeader(GrantItemsForControlPanel, "executors")             != null     ?   FindGrantHeader(GrantItemsForControlPanel, "executors").FilterElementsData              : null;
             GrantsFilters.Kafedra =             FindGrantHeader(GrantItemsForControlPanel, "kafedra")               != null     ?   FindGrantHeader(GrantItemsForControlPanel, "kafedra").FilterElementsData                : null;
             GrantsFilters.Unit =                FindGrantHeader(GrantItemsForControlPanel, "unit")                  != null     ?   FindGrantHeader(GrantItemsForControlPanel, "unit").FilterElementsData                   : null;
+            GrantsFilters.Laboratory =          FindGrantHeader(GrantItemsForControlPanel, "laboratory")            != null     ?   FindGrantHeader(GrantItemsForControlPanel, "laboratory").FilterElementsData             : null;
             GrantsFilters.Institution =         FindGrantHeader(GrantItemsForControlPanel, "institution")           != null     ?   FindGrantHeader(GrantItemsForControlPanel, "institution").FilterElementsData            : null;
             GrantsFilters.GRNTI =               FindGrantHeader(GrantItemsForControlPanel, "GRNTI")                 != null     ?   FindGrantHeader(GrantItemsForControlPanel, "GRNTI").FilterElementsData                  : null;
-            GrantsFilters.ResearchTypes =        FindGrantHeader(GrantItemsForControlPanel, "researchTypes")         != null     ?   FindGrantHeader(GrantItemsForControlPanel, "researchTypes").FilterElementsData          : null;
+            GrantsFilters.ResearchTypes =       FindGrantHeader(GrantItemsForControlPanel, "researchTypes")         != null     ?   FindGrantHeader(GrantItemsForControlPanel, "researchTypes").FilterElementsData          : null;
             GrantsFilters.PriorityTrands =      FindGrantHeader(GrantItemsForControlPanel, "priorityTrends")        != null     ?   FindGrantHeader(GrantItemsForControlPanel, "priorityTrends").FilterElementsData         : null;
-            GrantsFilters.ExecutorContract =    FindGrantHeader(GrantItemsForControlPanel, "ExecutorsContractItem") != null     ?   FindGrantHeader(GrantItemsForControlPanel, "ExecutorsContractItem").FilterElementsData  : null;
-            GrantsFilters.ScienceTypes =         FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem")       != null     ?   FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem").FilterElementsData        : null;
+            GrantsFilters.ScienceTypes =        FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem")       != null     ?   FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem").FilterElementsData        : null;
             GrantsFilters.NIR =                 FindGrantHeader(GrantItemsForControlPanel, "NIRItem")               != null     ?   FindGrantHeader(GrantItemsForControlPanel, "NIRItem").FilterElementsData                : null;
             GrantsFilters.NOC =                 FindGrantHeader(GrantItemsForControlPanel, "NOCItem")               != null     ?   FindGrantHeader(GrantItemsForControlPanel, "NOCItem").FilterElementsData                : null;
         }

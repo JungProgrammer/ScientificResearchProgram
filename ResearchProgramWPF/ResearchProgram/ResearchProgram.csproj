@@ -124,6 +124,7 @@
     <Compile Include="FiltersWindow.xaml.cs">
       <DependentUpon>FiltersWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="GrantHeader.cs" />
     <Compile Include="GrantsFilters.cs" />
     <Compile Include="IContainer.cs" />
     <Compile Include="Institution.cs" />

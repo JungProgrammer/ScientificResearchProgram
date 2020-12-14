@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ResearchProgram"
         xmlns:dotNetKitControls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
         mc:Ignorable="d"
-        Title="Создать новый договор" Height="605" Width="670">
+        Title="Создать новый договор" Height="567" Width="670">
 
     <Window.Resources>
         <local:LaboratoryConverter x:Key="laboratoryConverter"/>
@@ -19,99 +19,95 @@
             <ColumnDefinition Width="auto" />
             <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      Margin="0 5 0 0">
             <StackPanel Grid.Column="0" 
                         Margin="5 2"
                         x:Name="grantParametersButtonStackPanel">
                 <Button Content="ОКВЭД"
                         Margin="0 0 0 3"
-                        FontSize="17"
+                        FontSize="15"
                         Tag="OKVED"
                         Click="grantParametersButtonClick"
                         Background="#BBB"/>
                 <Button Content="Номер договора"
                         Margin="0 0 0 3"
-                        FontSize="17"
+                        FontSize="15"
                         Tag="grantNumber"
                         Click="grantParametersButtonClick"/>
                 <Button Content="Наименование НИОКР"
                         Margin="0 0 0 3"
-                        FontSize="17"
+                        FontSize="15"
                         Tag="NIOKR"
                         Click="grantParametersButtonClick"/>
                 <Button  Content="Заказчик"
                          Margin="0 0 0 3"
-                         FontSize="17"
+                         FontSize="15"
                          Tag="customer"
                          Click="grantParametersButtonClick"/>
                 <Button  Content="Дата начала"
                          Margin="0 0 0 3"
-                         FontSize="17"
+                         FontSize="15"
                          Tag="startDate"
                          Click="grantParametersButtonClick"/>
                 <Button  Content="Дата завершения"
                          Margin="0 0 0 3"
-                         FontSize="17"
+                         FontSize="15"
                          Tag="endDate"
                          Click="grantParametersButtonClick"/>
                 <Button  Content="Общая сумма договора"
                          Margin="0 0 0 3"
-                         FontSize="17"
+                         FontSize="15"
                          Tag="price"
                          Click="grantParametersButtonClick"/>
                 <Button  Content="Средства"
                          Margin="0 0 0 3"
-                         FontSize="17"
+                         FontSize="15"
                          Tag="deposits"
                          Click="grantParametersButtonClick"/>
                 <Button  Content="Руководитель НИОКР"
                          Margin="0 0 0 3"
-                         FontSize="17"
+                         FontSize="15"
                          Tag="leadNIOKR"
                          Click="grantParametersButtonClick"/>
                 <Button  Content="Исполнители"
                          Margin="0 0 0 3"
-                         FontSize="17"
+                         FontSize="15"
                          Tag="executors"
                          Click="grantParametersButtonClick"/>
                 <Button  Content="Учреждение"
                          Margin="0 0 0 3"
-                         FontSize="17"
+                         FontSize="15"
                          Tag="institution"
                          Click="grantParametersButtonClick"/>
                 <Button  Content="ГРНТИ"
                          Margin="0 0 0 3"
-                         FontSize="17"
+                         FontSize="15"
                          Tag="GRNTI"
                          Click="grantParametersButtonClick"/>
                 <Button  Content="Тип исследования"
                          Margin="0 0 0 3"
-                         FontSize="17"
+                         FontSize="15"
                          Tag="researchTypes"
                          Click="grantParametersButtonClick"/>
                 <Button  Content="Приоритетные направления"
                          Margin="0 0 0 3"
-                         FontSize="17"
+                         FontSize="15"
                          Tag="priorityTrends"
-                         Click="grantParametersButtonClick"/>
-                <Button  Content="Исполнители по договору"
-                         Margin="0 0 0 3"
-                         FontSize="17"
-                         Tag="ExecutorsContractItem"
                          Click="grantParametersButtonClick"/>
                 <Button  Content="Тип науки"
                          Margin="0 0 0 3"
-                         FontSize="17"
+                         FontSize="15"
                          Tag="ScienceTypeItem"
                          Click="grantParametersButtonClick"/>
                 <Button  Content="НИР или УСЛУГА"
                          Margin="0 0 0 3"
-                         FontSize="17"
+                         FontSize="15"
                          Tag="NIRItem"
                          Click="grantParametersButtonClick"/>
                 <Button  Content="НОЦ"
                          Margin="0 0 0 3"
-                         FontSize="17"
+                         FontSize="15"
                          Tag="NOCItem"
                          Click="grantParametersButtonClick"/>
             </StackPanel>
@@ -123,12 +119,13 @@
                       VerticalAlignment="Stretch" />
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition Height="95*" />
-                <RowDefinition Height="5*" />
+                <RowDefinition  />
+                <RowDefinition Height="27" />
             </Grid.RowDefinitions>
 
             <TabControl Grid.Row="0"
-                        x:Name="createGrantTabControl"  >
+                        x:Name="createGrantTabControl"
+                        Margin="5 5 4 2">
                 
                 <TabItem Name="OKVED"
                          Visibility="Collapsed">
@@ -184,10 +181,11 @@
                             <Label Content="Наименование НИОКР"
                                    Grid.Row="0"
                                    Margin="0 5 0 0"/>
-                            <ComboBox Grid.Row="1"
-                                     Name="NIOKRComboBox"
-                                      Margin="5 0"
-                                      ItemsSource="{Binding NIOKRList}"/>
+                            <dotNetKitControls:AutoCompleteComboBox Grid.Row="1"
+                                                                    x:Name="NIOKRComboBox"
+                                                                    Margin="5 0"
+                                                                    ItemsSource="{Binding NIOKRList}">
+                            </dotNetKitControls:AutoCompleteComboBox>
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
@@ -518,53 +516,9 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <Label Content="Тип"
+                            <Label Content="Тип исследования"
                                    Grid.Row="0"
                                    Margin="0 5 0 0"/>
-
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-
-                <TabItem x:Name="ExecutorsContractItem"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid Name="executorsContractGrid">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="15*"/>
-                                <RowDefinition Height="1.2*"/>
-                            </Grid.RowDefinitions>
-
-                            <Label Content="Исполнители по договору"
-                                    Grid.Row="0"
-                                    Margin="0 5 0 0" 
-                                   Grid.ColumnSpan="3"/>
-
-
-                            <ListView Grid.Row="1"
-                                      Grid.ColumnSpan="5"
-                                      x:Name="executorOnContractVerticalListView">
-                            </ListView>
-
-
-                            <Button Content="Добавить"
-                                    Name="executorOnContractAddButton"
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Margin="2 5 10 5"
-                                    Width="Auto" Click="executorOnContractAddButton_Click"/>
-                            <Button Content="Удалить"
-                                    Name="executorOnContractDeleteButton"
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    Margin="0 5 20 5"
-                                    Width="Auto" Click="executorOnContractDeleteButton_Click"/>
 
                         </Grid>
                     </TabItem.Content>
@@ -664,7 +618,11 @@
 
             <Button Content="Создать договор"
                     Grid.Row="1"
-                    Margin="280 3 10 3" Click="createGrantButtonClick"
+                    MinWidth="118"
+                    MinHeight="20"
+                    MaxWidth="140"
+                    MaxHeight="25"
+                    Margin="280 3 4 3" Click="createGrantButtonClick"
                     x:Name="createGrantButton"></Button>
         </Grid>
     </Grid>
