@@ -32,50 +32,6 @@ namespace ResearchProgram
             }
         }
 
-        private Institution selectedInstitution;
-        public Institution SelectedInstitution
-        {
-            get => selectedInstitution;
-            set
-            {
-                selectedInstitution = value;
-                OnPropertyChanged(nameof(SelectedInstitution));
-            }
-        }
-
-        private Unit selectedUnit;
-        public Unit SelectedUnit
-        {
-            get => selectedUnit;
-            set
-            {
-                selectedUnit = value;
-                OnPropertyChanged(nameof(SelectedUnit));
-            }
-        }
-
-        private Kafedra selectedKafedra;
-        public Kafedra SelectedKafedra
-        {
-            get => selectedKafedra;
-            set
-            {
-                selectedKafedra = value;
-                OnPropertyChanged(nameof(SelectedKafedra));
-            }
-        }
-
-        private Laboratory selectedLaboratory;
-        public Laboratory SelectedLaboratory
-        {
-            get => selectedLaboratory;
-            set
-            {
-                selectedLaboratory = value;
-                OnPropertyChanged(nameof(SelectedLaboratory));
-            }
-        }
-
 
         //Списки данных из БД
         public ObservableCollection<string> NIOKRList { get; set; }

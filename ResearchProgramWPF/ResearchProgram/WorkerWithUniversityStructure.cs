@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -13,15 +15,66 @@ namespace ResearchProgram
     /// Учреждение -> Подразделение -> Кафедра -> Лаборатория
     /// либо Учреждение -> Подразделение -> Лаборатория
     /// </summary>
-    public class WorkerWithUniversityStructure
+    public class WorkerWithUniversityStructure: INotifyPropertyChanged
     {
+
+        private Institution selectedInstitution;
+        public Institution SelectedInstitution
+        {
+            get => selectedInstitution;
+            set
+            {
+                selectedInstitution = value;
+                OnPropertyChanged(nameof(SelectedInstitution));
+            }
+        }
+
+        private Unit selectedUnit;
+        public Unit SelectedUnit
+        {
+            get => selectedUnit;
+            set
+            {
+                selectedUnit = value;
+                OnPropertyChanged(nameof(SelectedUnit));
+            }
+        }
+
+        private Kafedra selectedKafedra;
+        public Kafedra SelectedKafedra
+        {
+            get => selectedKafedra;
+            set
+            {
+                selectedKafedra = value;
+                OnPropertyChanged(nameof(SelectedKafedra));
+            }
+        }
+
+        private Laboratory selectedLaboratory;
+        public Laboratory SelectedLaboratory
+        {
+            get => selectedLaboratory;
+            set
+            {
+                selectedLaboratory = value;
+                OnPropertyChanged(nameof(SelectedLaboratory));
+            }
+        }
+
+        public ObservableCollection<Institution> Institutions { get; set; }
 
         public WorkerWithUniversityStructure()
         {
             Institutions = new ObservableCollection<Institution>();
         }
 
-        public ObservableCollection<Institution> Institutions { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+        }
 
         public Institution FindInstitution(int institutionId)
         {
