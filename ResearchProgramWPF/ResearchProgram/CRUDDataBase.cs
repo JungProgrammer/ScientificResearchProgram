@@ -1111,6 +1111,7 @@ namespace ResearchProgram
                 "kafedraid, " +
                 "unitid, " +
                 "institutionid, " +
+                "laboratoryid, " +
                 "grnti, " +
                 "nir, " +
                 "noc) " +
@@ -1126,6 +1127,7 @@ namespace ResearchProgram
                 ":kafedraid, " +
                 ":unitid, " +
                 ":institutionid, " +
+                ":laboratoryid, " +
                 ":grnti, " +
                 ":nir, " +
                 ":noc)", conn);
@@ -1136,9 +1138,10 @@ namespace ResearchProgram
             cmd.Parameters.Add(new NpgsqlParameter("startdate", grant.StartDate));
             cmd.Parameters.Add(new NpgsqlParameter("enddate", grant.EndDate));
             cmd.Parameters.Add(new NpgsqlParameter("leadniokrid", grant.LeadNIOKR.Id));
-            cmd.Parameters.Add(new NpgsqlParameter("kafedraid", grant.Kafedra.Id));
-            cmd.Parameters.Add(new NpgsqlParameter("unitid", grant.Unit.Id));
-            cmd.Parameters.Add(new NpgsqlParameter("institutionid", grant.Institution.Id));
+            cmd.Parameters.Add(new NpgsqlParameter("institutionid", grant.Institution != null ? grant.Institution.Id : 0));
+            cmd.Parameters.Add(new NpgsqlParameter("unitid", grant.Unit != null ? grant.Unit.Id : 0));
+            cmd.Parameters.Add(new NpgsqlParameter("kafedraid", grant.Kafedra != null ? grant.Kafedra.Id : 0));
+            cmd.Parameters.Add(new NpgsqlParameter("laboratoryid", grant.Laboratory != null ? grant.Laboratory.Id : 0));
             cmd.Parameters.Add(new NpgsqlParameter("price", grant.Price));
             cmd.Parameters.Add(new NpgsqlParameter("grnti", grant.GRNTI));
             cmd.Parameters.Add(new NpgsqlParameter("nir", grant.NIR));

@@ -59,12 +59,6 @@ namespace ResearchProgram
         AutoCompleteComboBox customerAutoCompleteComboBox;
         // Combobox для руководителя
         AutoCompleteComboBox LeadNIOKRAutoCompleteComboBox;
-        // Combobox для кафедры
-        AutoCompleteComboBox kafedraAutoCompleteComboBox;
-        // Combobox для подразделения
-        AutoCompleteComboBox unitAutoCompleteComboBox;
-        // Combobox для подразделения
-        AutoCompleteComboBox institutionAutoCompleteComboBox;
         // Combobox для типа исследования
         AutoCompleteComboBox researchTypeAutoCompleteComboBox;
 
@@ -110,12 +104,7 @@ namespace ResearchProgram
 
             addCustomerAutoCompleteComboBox();
             addLeadNIOKRAutoCompleteComboBox();
-            addUnitAutoCompleteComboBox();
-            addKafedraAutoCompleteComboBox();
             addResearchTypeAutoCompleteComboBox();
-
-            //// Добавление комбобоксов для структуры вуза
-            //addUniversityStructureComboBoxes();
 
 
             // Закрытие подключения к базе данных
@@ -154,52 +143,12 @@ namespace ResearchProgram
             leadNIOKRGrid.Children.Add(LeadNIOKRAutoCompleteComboBox);
             Grid.SetRow(LeadNIOKRAutoCompleteComboBox, 1);
         }
-        /// <summary>
-        /// Добавление комбо бокса к кафедре
-        /// </summary>
-        private void addKafedraAutoCompleteComboBox()
-        {
-            kafedraAutoCompleteComboBox = new AutoCompleteComboBox()
-            {
-                Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<Kafedra>(kafedrasList),
-                MinWidth = 300
-            };
-            kafedraGrid.Children.Add(kafedraAutoCompleteComboBox);
-            Grid.SetRow(kafedraAutoCompleteComboBox, 1);
-        }
-        /// <summary>
-        /// Добавление комбо бокса к подразделению
-        /// </summary>
-        private void addUnitAutoCompleteComboBox()
-        {
-            unitAutoCompleteComboBox = new AutoCompleteComboBox()
-            {
-                Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<Unit>(unitsList),
-                MinWidth = 300
-            };
-            unitGrid.Children.Add(unitAutoCompleteComboBox);
-            Grid.SetRow(unitAutoCompleteComboBox, 1);
-        }
-        /// <summary>
-        /// Добавление комбо боксов для связки структуры универа
-        /// </summary>
-        //private void addUniversityStructureComboBoxes()
-        //{
-        //    institutionAutoCompleteComboBox = new AutoCompleteComboBox()
-        //    {
-        //        Margin = new Thickness(5, 0, 5, 0),
-        //        ItemsSource = new List<Institution>(instituionsList),
-        //        MinWidth = 300
-        //    };
-        //    institutionGrid.Children.Add(institutionAutoCompleteComboBox);
-        //    Grid.SetRow(institutionAutoCompleteComboBox, 1);
-        //}
+
 
         /// <summary>
         /// Добавление комбо бокса к типу
         /// </summary>
+        
         private void addResearchTypeAutoCompleteComboBox()
         {
             researchTypeAutoCompleteComboBox = new AutoCompleteComboBox()
@@ -417,7 +366,7 @@ namespace ResearchProgram
                 newGrant.OKVED = "";
             }
 
-            if(grantNumberTextBox.Text.ToString() != "")
+            if (grantNumberTextBox.Text.ToString() != "")
             {
                 newGrant.grantNumber = grantNumberTextBox.Text;
             }
@@ -515,48 +464,63 @@ namespace ResearchProgram
                 }
             }
 
-            if (kafedraAutoCompleteComboBox.SelectedItem != null)
-            {
-                newGrant.Kafedra = new Kafedra()
-                {
-                    Id = ((Kafedra)kafedraAutoCompleteComboBox.SelectedItem).Id,
-                    Title = kafedraAutoCompleteComboBox.SelectedItem.ToString()
-                };
-            }
-            else
-            {
-                MessageBox.Show("Необходимо указать кафедру");
-                isAllOkey = false;
-            }
 
-
-            if (unitAutoCompleteComboBox.SelectedItem != null)
-            {
-                newGrant.Unit = new Unit()
-                {
-                    Id = ((Unit)unitAutoCompleteComboBox.SelectedItem).Id,
-                    Title = unitAutoCompleteComboBox.SelectedItem.ToString()
-                };
-            }
-            else
-            {
-                MessageBox.Show("Необходимо указать подразделение");
-                isAllOkey = false;
-            }
-
-            if (institutionAutoCompleteComboBox.SelectedItem != null)
+            // Добавление учреждения в новый договор
+            if (UniversityStructure.SelectedInstitution != null)
             {
                 newGrant.Institution = new Institution()
                 {
-                    Id = ((Institution)institutionAutoCompleteComboBox.SelectedItem).Id,
-                    Title = institutionAutoCompleteComboBox.SelectedItem.ToString()
+                    Id = UniversityStructure.SelectedInstitution.Id,
+                    Title = UniversityStructure.SelectedInstitution.Title
                 };
             }
             else
             {
-                MessageBox.Show("Необходимо указать учреждение");
-                isAllOkey = false;
+                newGrant.Institution = null;
             }
+
+            // Добавление подразделения в договор
+            if (UniversityStructure.SelectedUnit != null)
+            {
+                newGrant.Unit = new Unit()
+                {
+                    Id = UniversityStructure.SelectedUnit.Id,
+                    Title = UniversityStructure.SelectedUnit.Title
+                };
+            }
+            else
+            {
+                newGrant.Unit = null;
+            }
+
+            // Добавление кафедры в договор
+            if (UniversityStructure.SelectedKafedra != null)
+            {
+                newGrant.Kafedra = new Kafedra()
+                {
+                    Id = UniversityStructure.SelectedKafedra.Id,
+                    Title = UniversityStructure.SelectedKafedra.Title
+                };
+            }
+            else
+            {
+                newGrant.Kafedra = null;
+            }
+
+            // Добавление лаборатории в договор
+            if (UniversityStructure.SelectedLaboratory != null)
+            {
+                newGrant.Laboratory = new Laboratory()
+                {
+                    Id = UniversityStructure.SelectedLaboratory.Id,
+                    Title = UniversityStructure.SelectedLaboratory.Title
+                };
+            }
+            else
+            {
+                newGrant.Laboratory = null;
+            }
+
 
             if (GRNTITextBox.Text != "")
             {

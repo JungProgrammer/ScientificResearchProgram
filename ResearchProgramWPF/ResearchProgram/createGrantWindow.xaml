@@ -74,16 +74,6 @@
                          FontSize="17"
                          Tag="executors"
                          Click="grantParametersButtonClick"/>
-                <Button  Content="Кафедра"
-                         Margin="0 0 0 3"
-                         FontSize="17"
-                         Tag="kafedra"
-                         Click="grantParametersButtonClick"/>
-                <Button  Content="Подразделение"
-                         Margin="0 0 0 3"
-                         FontSize="17"
-                         Tag="unit"
-                         Click="grantParametersButtonClick"/>
                 <Button  Content="Учреждение"
                          Margin="0 0 0 3"
                          FontSize="17"
@@ -390,44 +380,8 @@
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="kafedra"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid x:Name="kafedraGrid">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Label Content="Кафедра"
-                                   Grid.Row="0"
-                                   Margin="0 5 0 0"/>
-
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-
-                <TabItem Name="unit"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid x:Name="unitGrid">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Label Content="Подразделение"
-                                   Grid.Row="0"
-                                   Margin="0 5 0 0"/>
-
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-
                 <TabItem Name="institution"
-                         Visibility="Visible">
+                         Visibility="Collapsed">
                     <TabItem.Content>
                         <Grid x:Name="institutionGrid">
                             <Grid.RowDefinitions>
@@ -435,11 +389,11 @@
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
-                            <ListView Grid.Row="0"
+                            <StackPanel Grid.Row="0"
                                       DataContext="{Binding UniversityStructure}">
                                 <Label Content="Учреждение"
                                    Grid.Row="0"
-                                   Margin="0 5 0 0"/>
+                                   Margin="3 5 0 0"/>
                                 <dotNetKitControls:AutoCompleteComboBox
                                     MinWidth="300"
                                     Margin="8 2 0 2"
@@ -449,7 +403,7 @@
 
                                 <Label Content="Подразделение"
                                    Grid.Row="0"
-                                   Margin="0 5 0 0"/>
+                                   Margin="3 10 0 0"/>
                                 <dotNetKitControls:AutoCompleteComboBox
                                     MinWidth="300"
                                     Margin="8 2 0 2"
@@ -459,7 +413,7 @@
 
                                 <Label Content="Кафедра"
                                    Grid.Row="0"
-                                   Margin="0 5 0 0"/>
+                                   Margin="3 10 0 0"/>
                                 <dotNetKitControls:AutoCompleteComboBox
                                     MinWidth="300"
                                     Margin="8 2 0 2"
@@ -469,7 +423,7 @@
 
                                 <Label Content="Лаборатория"
                                          Grid.Row="0"
-                                   Margin="0 5 0 0"/>
+                                   Margin="3 10 0 0"/>
                                 <dotNetKitControls:AutoCompleteComboBox
                                     MinWidth="300"
                                     Margin="8 2 0 2"
@@ -484,7 +438,7 @@
                                     ItemsSource="{Binding SelectedUnit.Laboratories}"
                                     SelectedItem="{Binding SelectedLaboratory}">
                                 </dotNetKitControls:AutoCompleteComboBox>
-                            </ListView>
+                            </StackPanel>
                             
                         </Grid>
                     </TabItem.Content>
