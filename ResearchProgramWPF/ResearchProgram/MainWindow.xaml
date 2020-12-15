@@ -36,6 +36,7 @@
               FontSize="13">
             <MenuItem Header="Файл">
                 <MenuItem Header="Создать договор" Click="CreateGrantMenuItem_Click"/>
+                <MenuItem Header="Структура университета" Click="StructureOfUniversity_Click"/>
                 <MenuItem Header="Добавить">
                     <MenuItem Header="Человек" Click="CreatePersonMenuItem_Click"/>
                     <MenuItem Header="Средства" Click="CreateDepositsMenuItem_Click"/>

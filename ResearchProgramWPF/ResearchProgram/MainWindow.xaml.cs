@@ -256,6 +256,14 @@ namespace ResearchProgram
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
             CRUDDataBase.CloseConnect();
         }
+
+        private void StructureOfUniversity_Click(object sender, RoutedEventArgs e)
+        {
+            UniversityStructureWindow universityStructureWindow = new UniversityStructureWindow();
+            universityStructureWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            universityStructureWindow.Owner = this;
+            universityStructureWindow.Show();
+        }
     }
 
 }
