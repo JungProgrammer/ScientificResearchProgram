@@ -124,6 +124,7 @@ namespace ResearchProgram
             return laboratoryFound;
         }
 
+
         public Laboratory FindLaboratoryInUnit(Unit unitFound, int laboratoryId)
         {
             Laboratory laboratoryFound = null;

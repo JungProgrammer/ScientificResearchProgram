@@ -135,7 +135,9 @@
     <Compile Include="NDSConverter.cs" />
     <Compile Include="Nir.cs" />
     <Compile Include="Parser.cs" />
+    <Compile Include="Phone.cs" />
     <Compile Include="PriorityTrend.cs" />
+    <Compile Include="RelayComand.cs" />
     <Compile Include="ResearchType.cs" />
     <Compile Include="ScienceType.cs" />
     <Compile Include="Settings.Designer.cs">
@@ -147,6 +149,7 @@
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Unit.cs" />
+    <Compile Include="UniversityStructureViewModel.cs" />
     <Compile Include="UniversityStructureWindow.xaml.cs">
       <DependentUpon>UniversityStructureWindow.xaml</DependentUpon>
     </Compile>

@@ -10,7 +10,7 @@ using System.Collections.ObjectModel;
 
 namespace ResearchProgram
 {
-    class CRUDDataBase
+    public class CRUDDataBase
     {
         //public static string loginFromDB = Environment.GetEnvironmentVariable("PGUSER");
         //public static string passwordFromDB = Environment.GetEnvironmentVariable("PGPASSWORD");

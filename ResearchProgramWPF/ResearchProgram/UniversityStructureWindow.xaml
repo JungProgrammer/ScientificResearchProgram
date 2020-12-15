@@ -16,19 +16,15 @@
 
         <TreeView Grid.Row="0"
                   x:Name="treeUniversityStructure"
-                  ItemsSource="{Binding Companies}">
+                  ItemsSource="{Binding RootNode}">
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Path=Phones}">
-                    <TextBlock Text="{Binding Name}" />
-                    <HierarchicalDataTemplate.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Title}" />
-                        </DataTemplate>
-                    </HierarchicalDataTemplate.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}" >
+                    <TextBlock Text="{Binding Path=TitleNode}"  />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
 
+        
 
     </Grid>
 </Window>
