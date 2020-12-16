@@ -149,10 +149,14 @@
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Unit.cs" />
+    <Compile Include="UniversityStructureCommandWindows\AddTreeNodeWindow.xaml.cs">
+      <DependentUpon>AddTreeNodeWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UniversityStructureViewModel.cs" />
     <Compile Include="UniversityStructureWindow.xaml.cs">
       <DependentUpon>UniversityStructureWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UniversityStructureWindowComands.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="VisibilityConveter.cs" />
     <Compile Include="WorkerWithGrantsTable.cs" />
@@ -216,6 +220,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="SettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UniversityStructureCommandWindows\AddTreeNodeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

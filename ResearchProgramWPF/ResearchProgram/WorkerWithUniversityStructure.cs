@@ -136,5 +136,20 @@ namespace ResearchProgram
 
             return laboratoryFound;
         }
+
+
+        public static Institution CreateNewInstitution(string institutionTitle)
+        {
+            Institution newInstitution = new Institution() { Title = institutionTitle };
+
+            return newInstitution;
+        }
+
+        public static Unit CreateNewUnit(string unitTitle)
+        {
+            Unit newUnit = new Unit() { Title = unitTitle };
+
+            return newUnit;
+        }
     }
 }

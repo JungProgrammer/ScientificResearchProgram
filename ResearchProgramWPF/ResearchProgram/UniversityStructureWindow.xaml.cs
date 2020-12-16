@@ -24,5 +24,26 @@ namespace ResearchProgram
 
             DataContext = new UniversityStructureViewModel();
         }
+
+        public static void ShowAddTreeNodeWindow(string showedNameStructure, ref string inputNameStructure)
+        {
+            UniversityStructureCommandWindows.AddTreeNodeWindow addTreeNodeWindow  = new UniversityStructureCommandWindows.AddTreeNodeWindow(showedNameStructure);
+            addTreeNodeWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            
+            if (addTreeNodeWindow.ShowDialog() == true)
+            {
+                inputNameStructure = addTreeNodeWindow.StructureTitle;
+                MessageBox.Show("Вершина успешно добавлена");
+            }
+            else
+            {
+                MessageBox.Show("Все изменения в этом окне будут сброшены");
+            }
+        }
+
+        public static void ShowAlertAboutUnselectedTreeNode()
+        {
+            MessageBox.Show("Необходимо выделить вершину");
+        }
     }
 }
