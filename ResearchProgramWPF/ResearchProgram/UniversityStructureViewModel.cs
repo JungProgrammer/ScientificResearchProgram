@@ -272,30 +272,78 @@ namespace ResearchProgram
                           string showedNameStructure = string.Empty;
                           string inputNameStructure = string.Empty;
 
+                          bool isAllOkey = true;
+
                           // Если нужно добавить вуз
                           if (selectedNode.IsRootNode)
                           {
                               showedNameStructure = "Название учреждения";
                               UniversityStructureWindow.ShowAddTreeNodeWindow(showedNameStructure, ref inputNameStructure);
-                              newNode = UniversityStructureTreeNode.CreateNewTreeNode(WorkerWithUniversityStructure.CreateNewInstitution(inputNameStructure), selectedNode);
+                              if (inputNameStructure != string.Empty) newNode = UniversityStructureTreeNode.CreateNewTreeNode(WorkerWithUniversityStructure.CreateNewInstitution(inputNameStructure), selectedNode);
                           }
                           // Нужно добавить подразделение
                           else if (selectedNode.IsInstitutionNode)
                           {
                               showedNameStructure = "Название подразделения";
                               UniversityStructureWindow.ShowAddTreeNodeWindow(showedNameStructure, ref inputNameStructure);
-                              newNode = UniversityStructureTreeNode.CreateNewTreeNode(WorkerWithUniversityStructure.CreateNewUnit(inputNameStructure), selectedNode);
+                              if (inputNameStructure != string.Empty) 
+                              {
+                                  newNode = UniversityStructureTreeNode.CreateNewTreeNode(WorkerWithUniversityStructure.CreateNewUnit(inputNameStructure), selectedNode);
+
+                                  // Создание ноды кафедр
+                                  UniversityStructureTreeNode kafedrasNode = new UniversityStructureTreeNode(null);
+                                  kafedrasNode.TitleNode = "Кафедры";
+                                  kafedrasNode.IsKafedrasFolder = true;
+                                  newNode.Children.Add(kafedrasNode);
+                                  kafedrasNode.Parent = newNode;
+
+                                  // Создание ноды лабораторий
+                                  UniversityStructureTreeNode laboratoriesNode = new UniversityStructureTreeNode(null);
+                                  laboratoriesNode.TitleNode = "Лаборатории";
+                                  laboratoriesNode.IsLaboratoriesFolder = true;
+                                  newNode.Children.Add(laboratoriesNode);
+                                  laboratoriesNode.Parent = newNode;
+                              }
                           }
                           // Нужно добавить кафедру
                           else if (selectedNode.IsKafedrasFolder)
                           {
                               showedNameStructure = "Название кафедры";
                               UniversityStructureWindow.ShowAddTreeNodeWindow(showedNameStructure, ref inputNameStructure);
-                              newNode = UniversityStructureTreeNode.CreateNewTreeNode(WorkerWithUniversityStructure.CreateNewU(inputNameStructure), selectedNode);
+                              if(inputNameStructure != string.Empty) newNode = UniversityStructureTreeNode.CreateNewTreeNode(WorkerWithUniversityStructure.CreateNewKafedra(inputNameStructure), selectedNode);
+                          }
+                          // Если нужно добавить лабораторию в подразделение
+                          else if (selectedNode.IsLaboratoriesFolder)
+                          {
+                              showedNameStructure = "Название лаборатории";
+                              UniversityStructureWindow.ShowAddTreeNodeWindow(showedNameStructure, ref inputNameStructure);
+                              if (inputNameStructure != string.Empty) newNode = UniversityStructureTreeNode.CreateNewTreeNode(WorkerWithUniversityStructure.CreateNewLaboratory(inputNameStructure), selectedNode);
+                          }
+                          // Если нужно добавить лабораторию в кафедру
+                          else if (selectedNode.IsKafedraNode)
+                          {
+                              showedNameStructure = "Название лаборатории";
+                              UniversityStructureWindow.ShowAddTreeNodeWindow(showedNameStructure, ref inputNameStructure);
+                              if (inputNameStructure != string.Empty)  newNode = UniversityStructureTreeNode.CreateNewTreeNode(WorkerWithUniversityStructure.CreateNewLaboratory(inputNameStructure), selectedNode);
+                          }
+                          else if(selectedNode.IsLaboratoryNode)
+                          {
+                              UniversityStructureWindow.ShowAlert("Невозможно добавить в лабораторию что-либо");
+                              isAllOkey = false;
+                          }
+                          else
+                          {
+                              UniversityStructureWindow.ShowAlert("Нужно уточнить: кафедру или лабораторию");
+                              isAllOkey = false;
                           }
 
-
-                          selectedNode.Children.Add(newNode);
+                          if (isAllOkey)
+                          {
+                              if(newNode != null)
+                              {
+                                  selectedNode.Children.Add(newNode);
+                              }
+                          }
                       }
                       else
                       {

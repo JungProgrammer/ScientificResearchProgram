@@ -37,6 +37,7 @@ namespace ResearchProgram
             }
             else
             {
+                inputNameStructure = string.Empty;
                 MessageBox.Show("Все изменения в этом окне будут сброшены");
             }
         }
@@ -44,6 +45,11 @@ namespace ResearchProgram
         public static void ShowAlertAboutUnselectedTreeNode()
         {
             MessageBox.Show("Необходимо выделить вершину");
+        }
+
+        public static void ShowAlert(string message)
+        {
+            MessageBox.Show(message);
         }
     }
 }

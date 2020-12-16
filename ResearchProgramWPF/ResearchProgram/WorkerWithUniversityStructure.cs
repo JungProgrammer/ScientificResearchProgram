@@ -151,5 +151,19 @@ namespace ResearchProgram
 
             return newUnit;
         }
+
+        public static Kafedra CreateNewKafedra(string kafedraTitle)
+        {
+            Kafedra newKafedra = new Kafedra() { Title = kafedraTitle };
+
+            return newKafedra;
+        }
+
+        public static Laboratory CreateNewLaboratory(string laboratoryTitle)
+        {
+            Laboratory newLaboratory = new Laboratory() { Title = laboratoryTitle };
+
+            return newLaboratory;
+        }
     }
 }
