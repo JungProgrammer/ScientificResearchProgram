@@ -147,6 +147,9 @@
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Unit.cs" />
+    <Compile Include="UniversityStructureWindow.xaml.cs">
+      <DependentUpon>UniversityStructureWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utilities.cs" />
     <Compile Include="VisibilityConveter.cs" />
     <Compile Include="WorkerWithGrantsTable.cs" />
@@ -210,6 +213,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="SettingWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UniversityStructureWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

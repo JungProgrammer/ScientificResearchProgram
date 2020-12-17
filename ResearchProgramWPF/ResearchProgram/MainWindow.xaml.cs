@@ -260,6 +260,7 @@ namespace ResearchProgram
             CRUDDataBase.CloseConnect();
         }
 
+<<<<<<< HEAD
         public DataRowView selectedGrantRow;
         public DataRowView SelectedGrantRow
         {
@@ -271,6 +272,15 @@ namespace ResearchProgram
             Console.WriteLine(SelectedGrantRow.Row.ItemArray[0]);
         }
 
+=======
+        private void StructureOfUniversity_Click(object sender, RoutedEventArgs e)
+        {
+            UniversityStructureWindow universityStructureWindow = new UniversityStructureWindow();
+            universityStructureWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            universityStructureWindow.Owner = this;
+            universityStructureWindow.Show();
+        }
+>>>>>>> 7e55182a63be0e386431281215a0cd2fc4fa7e7f
     }
 
 }
