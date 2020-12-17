@@ -152,6 +152,9 @@
     <Compile Include="UniversityStructureCommandWindows\AddTreeNodeWindow.xaml.cs">
       <DependentUpon>AddTreeNodeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UniversityStructureCommandWindows\RenameNodeWindow.xaml.cs">
+      <DependentUpon>RenameNodeWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UniversityStructureViewModel.cs" />
     <Compile Include="UniversityStructureWindow.xaml.cs">
       <DependentUpon>UniversityStructureWindow.xaml</DependentUpon>
@@ -224,6 +227,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UniversityStructureCommandWindows\AddTreeNodeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UniversityStructureCommandWindows\RenameNodeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

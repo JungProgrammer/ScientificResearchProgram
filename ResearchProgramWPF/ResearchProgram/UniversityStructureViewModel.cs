@@ -131,6 +131,7 @@ namespace ResearchProgram
                 {
                     UniversityStructureTreeNode institutionNode = new UniversityStructureTreeNode(institution);
                     rootNode.Children.Add(institutionNode);
+                    institutionNode.Parent = rootNode;
 
                     foreach(Unit unit in institution.Units)
                     {
@@ -189,6 +190,67 @@ namespace ResearchProgram
 
                 return newTreeNode;
             }
+
+
+            /// <summary>
+            /// Поиск выделенной вершины
+            /// </summary>
+            /// <returns></returns>
+            public static UniversityStructureTreeNode GetSelectedNode(ObservableCollection<UniversityStructureTreeNode> RootNode)
+            {
+                UniversityStructureTreeNode selectedTreeNode = null;
+
+                // Перебираем корень
+                foreach (UniversityStructureTreeNode treeNode in RootNode)
+                {
+                    if (treeNode.IsSelected) selectedTreeNode = treeNode;
+                    // Перебираем университеты
+                    foreach (UniversityStructureTreeNode treeNode1 in treeNode.Children)
+                    {
+                        if (treeNode1.IsSelected) selectedTreeNode = treeNode1;
+                        else
+                        {
+                            // Перебираем подразделения
+                            foreach (UniversityStructureTreeNode treeNode2 in treeNode1.Children)
+                            {
+                                if (treeNode2.IsSelected) selectedTreeNode = treeNode2;
+                                else
+                                {
+                                    // Перебираем папки кафедры и лаборатории в подразделении
+                                    foreach (UniversityStructureTreeNode treeNode3 in treeNode2.Children)
+                                    {
+                                        if (treeNode3.IsSelected) selectedTreeNode = treeNode3;
+                                        else
+                                        {
+                                            // Перебираем кафедры в подразделении
+                                            foreach (UniversityStructureTreeNode treeNode4 in treeNode3.Children)
+                                            {
+                                                if (treeNode4.IsSelected) selectedTreeNode = treeNode4;
+                                                else
+                                                {
+                                                    // Перебираем лаборатории в кафедре
+                                                    foreach (UniversityStructureTreeNode treeNode5 in treeNode4.Children)
+                                                    {
+                                                        if (treeNode5.IsSelected) selectedTreeNode = treeNode5;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return selectedTreeNode;
+            }
+
+
+            public static void DeleteNode(UniversityStructureTreeNode deleteNode)
+            {
+                deleteNode.Parent.Children.Remove(deleteNode);
+            }
         }
 
 
@@ -204,55 +266,6 @@ namespace ResearchProgram
             RootNode = new ObservableCollection<UniversityStructureTreeNode>() { UniversityStructureTreeNode.ConvertUsualStructureToTreeElement(UniversityStructure) };
         }
 
-        private UniversityStructureTreeNode GetSelectedNode()
-        {
-            UniversityStructureTreeNode selectedTreeNode = null;
-
-            // Перебираем корень
-            foreach(UniversityStructureTreeNode treeNode in RootNode)
-            {
-                if (treeNode.IsSelected) selectedTreeNode = treeNode;
-                // Перебираем университеты
-                foreach (UniversityStructureTreeNode treeNode1 in treeNode.Children)
-                {
-                    if (treeNode1.IsSelected) selectedTreeNode = treeNode1;
-                    else
-                    {
-                        // Перебираем подразделения
-                        foreach(UniversityStructureTreeNode treeNode2 in treeNode1.Children)
-                        {
-                            if (treeNode2.IsSelected) selectedTreeNode = treeNode2;
-                            else
-                            {
-                                // Перебираем папки кафедры и лаборатории в подразделении
-                                foreach(UniversityStructureTreeNode treeNode3 in treeNode2.Children)
-                                {
-                                    if (treeNode3.IsSelected) selectedTreeNode = treeNode3;
-                                    else
-                                    {
-                                        // Перебираем кафедры в подразделении
-                                        foreach(UniversityStructureTreeNode treeNode4 in treeNode3.Children)
-                                        {
-                                            if (treeNode4.IsSelected) selectedTreeNode = treeNode4;
-                                            else
-                                            {
-                                                // Перебираем лаборатории в кафедре
-                                                foreach (UniversityStructureTreeNode treeNode5 in treeNode4.Children)
-                                                {
-                                                    if (treeNode5.IsSelected) selectedTreeNode = treeNode5;
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            return selectedTreeNode;
-        }
 
         // команда добавления нового объекта
         private RelayCommand addCommand;
@@ -263,8 +276,9 @@ namespace ResearchProgram
                 return addCommand ??
                   (addCommand = new RelayCommand(obj =>
                   {
-                      UniversityStructureTreeNode selectedNode = GetSelectedNode();
-                      if(selectedNode != null)
+                      UniversityStructureTreeNode selectedNode = UniversityStructureTreeNode.GetSelectedNode(RootNode);
+
+                      if (selectedNode != null)
                       {
                           // Новая нода
                           UniversityStructureTreeNode newNode = null;
@@ -349,6 +363,138 @@ namespace ResearchProgram
                       {
                           UniversityStructureWindow.ShowAlertAboutUnselectedTreeNode();
                       }
+                  }));
+            }
+        }
+
+
+        // Команда переименования
+        private RelayCommand renameCommand;
+        public RelayCommand RenameCommand
+        {
+            get
+            {
+                return renameCommand ??
+                  (renameCommand = new RelayCommand(obj =>
+                  {
+                      UniversityStructureTreeNode selectedNode = UniversityStructureTreeNode.GetSelectedNode(RootNode);
+
+
+                      string newInputName = string.Empty;
+
+                      if (selectedNode != null)
+                      {
+                          // Если был переименован университет
+                          if (selectedNode.IsInstitutionNode)
+                          {
+                              UniversityStructureWindow.ShowRenameWindow(ref newInputName);
+                              WorkerWithUniversityStructure.RenameInstitution(selectedNode.InstitutionNode);
+                              selectedNode.TitleNode = newInputName;
+                          }
+                          // Если было переименовано подразделение
+                          else if (selectedNode.IsUnitNode)
+                          {
+                              UniversityStructureWindow.ShowRenameWindow(ref newInputName);
+                              WorkerWithUniversityStructure.RenameUnit(selectedNode.UnitNode);
+                              selectedNode.TitleNode = newInputName;
+                          }
+                          // Если была переименована кафедра
+                          else if (selectedNode.IsKafedraNode)
+                          {
+                              UniversityStructureWindow.ShowRenameWindow(ref newInputName);
+                              WorkerWithUniversityStructure.RenameKafedra(selectedNode.KafedraNode);
+                              selectedNode.TitleNode = $"Кафедра \"{newInputName}\"";
+                          }
+                          // Если была переименована лаборатория
+                          else if (selectedNode.IsLaboratoryNode)
+                          {
+                              UniversityStructureWindow.ShowRenameWindow(ref newInputName);
+                              WorkerWithUniversityStructure.RenameLaboratory(selectedNode.LaboratoryNode);
+                              selectedNode.TitleNode = newInputName;
+                          }
+                          // Если другая вершина, то предупреждение
+                          else
+                          {
+                              UniversityStructureWindow.ShowAlert("Эту вершину невозможно переименовать");
+                          }
+                      }
+                      else
+                      {
+                          UniversityStructureWindow.ShowAlertAboutUnselectedTreeNode();
+                      }
+
+                  }));
+            }
+        }
+
+
+        // Команда удаления
+        private RelayCommand deleteCommand;
+        public RelayCommand DeleteCommand
+        {
+            get
+            {
+                return deleteCommand ??
+                  (deleteCommand = new RelayCommand(obj =>
+                  {
+                      UniversityStructureTreeNode selectedNode = UniversityStructureTreeNode.GetSelectedNode(RootNode);
+
+
+                      if (selectedNode != null)
+                      {
+                          bool result = false;
+
+                          // Если был удален университет
+                          if (selectedNode.IsInstitutionNode)
+                          {
+                              UniversityStructureWindow.ShowWarning("Вы действительно хотите удалить университет?", ref result);
+                              if (result)
+                              {
+                                  WorkerWithUniversityStructure.DeleteInstitution(selectedNode.InstitutionNode);
+                                  UniversityStructureTreeNode.DeleteNode(selectedNode);
+                              }
+                          }
+                          // Если было удалено подразделение
+                          else if (selectedNode.IsUnitNode)
+                          {
+                              UniversityStructureWindow.ShowWarning("Вы действительно хотите удалить подразделение?", ref result);
+                              if (result)
+                              {
+                                  WorkerWithUniversityStructure.DeleteUnit(selectedNode.UnitNode);
+                                  UniversityStructureTreeNode.DeleteNode(selectedNode);
+                              }
+                          }
+                          // Если была удалена кафедра
+                          else if (selectedNode.IsKafedraNode)
+                          {
+                              UniversityStructureWindow.ShowWarning("Вы действительно хотите удалить кафедру?", ref result);
+                              if (result)
+                              {
+                                  WorkerWithUniversityStructure.DeleteKafedra(selectedNode.KafedraNode);
+                                  UniversityStructureTreeNode.DeleteNode(selectedNode);
+                              }
+                          }
+                          // Если была удалена лаборатория
+                          else if (selectedNode.IsLaboratoryNode)
+                          {
+                              UniversityStructureWindow.ShowWarning("Вы действительно хотите удалить лабораторию?", ref result);
+                              if (result)
+                              {
+                                  WorkerWithUniversityStructure.DeleteLaboratory(selectedNode.LaboratoryNode);
+                                  UniversityStructureTreeNode.DeleteNode(selectedNode);
+                              }
+                          }
+                          // Если другая вершина, то предупреждение
+                          else
+                          {
+                              UniversityStructureWindow.ShowAlert("Эту вершину невозможно удалить");
+                          }
+                      }
+                      else
+                      {
+                          UniversityStructureWindow.ShowAlertAboutUnselectedTreeNode();
+                      }
+
                   }));
             }
         }

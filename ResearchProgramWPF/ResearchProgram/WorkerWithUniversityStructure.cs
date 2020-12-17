@@ -165,5 +165,37 @@ namespace ResearchProgram
 
             return newLaboratory;
         }
+
+        internal static void RenameInstitution(Institution institutionNode)
+        {
+        }
+
+        internal static void RenameUnit(Unit unitNode)
+        {
+        }
+
+        internal static void RenameKafedra(Kafedra kafedraNode)
+        {
+        }
+
+        internal static void RenameLaboratory(Laboratory laboratoryNode)
+        {
+        }
+
+        internal static void DeleteInstitution(Institution institutionNode)
+        {
+        }
+
+        internal static void DeleteUnit(Unit unitNode)
+        {
+        }
+
+        internal static void DeleteKafedra(Kafedra kafedraNode)
+        {
+        }
+
+        internal static void DeleteLaboratory(Laboratory laboratoryNode)
+        {
+        }
     }
 }

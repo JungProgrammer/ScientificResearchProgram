@@ -19,8 +19,8 @@
             <TreeView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Добавить" Command="{Binding AddCommand}"/>
-                    <MenuItem Header="Переименовать"/>
-                    <MenuItem Header="Удалить"/>
+                    <MenuItem Header="Переименовать" Command="{Binding RenameCommand}"/>
+                    <MenuItem Header="Удалить" Command="{Binding DeleteCommand}"/>
                 </ContextMenu>
             </TreeView.ContextMenu>
 
