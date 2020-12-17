@@ -34,5 +34,17 @@ namespace ResearchProgram {
                 this["NDSKey"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.2")]
+        public float NDSValue {
+            get {
+                return ((float)(this["NDSValue"]));
+            }
+            set {
+                this["NDSValue"] = value;
+            }
+        }
     }
 }

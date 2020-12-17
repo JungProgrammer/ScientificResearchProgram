@@ -65,13 +65,12 @@
                     </Grid.RowDefinitions>
 
 
-                    <!--<Label Content="{local:SettingBinding NDSKey}" 
-                           Grid.Row="0"
-                           FontSize="12"/>-->
+                    
                     <Label Content="{Binding settings.NDSKey, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource NDSConverter}}" 
                            Grid.Row="0"
                            FontSize="12"/>
-                    
+
+
                     <Button Grid.Row="0"
                             x:Name="grantsUpdateButton"
                             Margin="0 0 2 2"
@@ -88,9 +87,19 @@
                               AutoGenerateColumns="True"
                               ItemsSource="{Binding GrantsDataTable}"
                               Grid.Row="1"
-                              SelectionUnit="CellOrRowHeader">
+                              SelectionUnit="CellOrRowHeader"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              IsReadOnly="True"
+                              CurrentItem="{Binding Path=SelectedGrantRow, Mode=TwoWay}">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
+                                <MenuItem Header="Редактировать" 
+                                          Click="editGrant">
+                                    <MenuItem.Icon>
+                                        <Image Source="/ResearchProgram;component/Icons/edit.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
                                 <MenuItem Header="Скрыть выделенные столбцы" 
                                           Click="hideSelectedColumns">
                                     <MenuItem.Icon>
@@ -126,7 +135,10 @@
                 <Grid Background="#FFE5E5E5">
                     <DataGrid x:Name="PeopleTable"
                               AutoGenerateColumns="True"
-                              ItemsSource="{Binding PeopleDataTable}">
+                              ItemsSource="{Binding PeopleDataTable}"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              IsReadOnly="True">
                     </DataGrid>
                 </Grid>
             </TabItem>

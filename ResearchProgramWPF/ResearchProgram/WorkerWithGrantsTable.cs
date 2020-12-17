@@ -49,29 +49,29 @@ namespace ResearchProgram
                 if (grantsDataTable.Rows.Count == 0) countOfGrantRows = 0;
                 countOfGrantRows++;
                 Console.WriteLine(grant.Customer);
-             grantsDataTable.Rows.Add(
-                        countOfGrantRows.ToString(),
-                        grant.grantNumber,
-                        grant.OKVED,
-                        grant.NameNIOKR,
-                        grant.Customer.Title,
-                        grant.StartDate.ToString("dd.MM.yyyy"),
-                        grant.EndDate.ToString("dd.MM.yyyy"),
-                        grant.Price,
-                        String.Join("\n", grant.Depositor),
-                        String.Join("\n", grant.DepositorSum),
-                        grant.LeadNIOKR.shortName(),
-                        String.Join("\n", grant.Executor.Select(x => x.shortName()).ToArray()),
-                        grant.Institution,
-                        grant.Unit,
-                        grant.Kafedra,
-                        grant.Laboratory,
-                        grant.GRNTI,
-                        String.Join("\n", grant.ResearchType),
-                        String.Join("\n", grant.PriorityTrands),
-                        String.Join("\n", grant.ScienceType),
-                        grant.NIR,
-                        grant.NOC);
+                grantsDataTable.Rows.Add(
+                           countOfGrantRows.ToString(),
+                           grant.grantNumber,
+                           grant.OKVED,
+                           grant.NameNIOKR,
+                           grant.Customer.Title,
+                           grant.StartDate.ToString("dd.MM.yyyy"),
+                           grant.EndDate.ToString("dd.MM.yyyy"),
+                           grant.Price * (Settings.Default.NDSKey ? 1 : 1 / Settings.Default.NDSValue),
+                           String.Join("\n", grant.Depositor),
+                           String.Join("\n", grant.DepositorSum.Select(x => x * (Settings.Default.NDSKey ? 1 : 1 / Settings.Default.NDSValue)).ToArray()),
+                           grant.LeadNIOKR.shortName(),
+                           String.Join("\n", grant.Executor.Select(x => x.shortName()).ToArray()),
+                           grant.Institution,
+                           grant.Unit,
+                           grant.Kafedra,
+                           grant.Laboratory,
+                           grant.GRNTI,
+                           String.Join("\n", grant.ResearchType),
+                           String.Join("\n", grant.PriorityTrands),
+                           String.Join("\n", grant.ScienceType),
+                           grant.NIR,
+                           grant.NOC == "True" ? "Да" : grant.NOC == "False" ? "Нет" : "");
             }
         }
 

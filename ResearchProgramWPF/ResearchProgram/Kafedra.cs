@@ -20,8 +20,8 @@ namespace ResearchProgram
 
         public Kafedra()
         {
-            Title = "Не указан";
-
+            //Title = "Не указан";
+            Title = "";
             Laboratories = new ObservableCollection<Laboratory>();
         }
 

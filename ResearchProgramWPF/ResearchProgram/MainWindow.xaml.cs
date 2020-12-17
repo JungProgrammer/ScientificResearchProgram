@@ -24,6 +24,7 @@ namespace ResearchProgram
     {
         private DataTable _grantsDataTable;
         // Таблица договоров
+
         public DataTable GrantsDataTable
         {
             get => _grantsDataTable;
@@ -35,7 +36,6 @@ namespace ResearchProgram
         }
         // Таблица людей
         public DataTable PeopleDataTable { get; set; }
-
         public MainWindow()
         {
             InitializeComponent();
@@ -102,6 +102,8 @@ namespace ResearchProgram
             newGrantWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             newGrantWindow.Owner = this;
+            // Эта штука нужна чтобы родительское окно не скрывалось, когда дочернее закрывается
+            newGrantWindow.Closing += (senders, args) => { newGrantWindow.Owner = null; };
 
             newGrantWindow.Show();
         }
@@ -198,6 +200,7 @@ namespace ResearchProgram
         private void SettingsTypeMenuItem_Click(object sender, RoutedEventArgs e)
         {
             SettingWindow newSettingWindow = new SettingWindow();
+            newSettingWindow.reloadGrantsTable += new EventHandler(grantsUpdateButton_Click);
             newSettingWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             newSettingWindow.Owner = this;
@@ -250,12 +253,24 @@ namespace ResearchProgram
             }
         }
 
-        private void grantsUpdateButton_Click(object sender, RoutedEventArgs e)
+        private void grantsUpdateButton_Click(object sender, EventArgs e)
         {
             CRUDDataBase.ConnectByDataBase();
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
             CRUDDataBase.CloseConnect();
         }
+
+        public DataRowView selectedGrantRow;
+        public DataRowView SelectedGrantRow
+        {
+            get { return selectedGrantRow; }
+            set {selectedGrantRow = value;}
+        }
+        private void editGrant(object sender, RoutedEventArgs e)
+        {
+            Console.WriteLine(SelectedGrantRow.Row.ItemArray[0]);
+        }
+
     }
 
 }

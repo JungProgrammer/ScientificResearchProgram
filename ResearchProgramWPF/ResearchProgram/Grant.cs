@@ -18,17 +18,17 @@ namespace ResearchProgram
             ScienceType = new List<ScienceType>();
 
             Id = 0;
-            grantNumber = "Не указан";
-            OKVED = "Не указан";
-            NameNIOKR = "Не указан";
+            //grantNumber = "Не указан";
+            //OKVED = "Не указан";
+            //NameNIOKR = "Не указан";
             Price = 0;
             Institution = new Institution();
             Unit = new Unit();
             Kafedra = new Kafedra();
             Laboratory = new Laboratory();
-            GRNTI = "Не указан";
-            NIR = "Не указан";
-            NOC = "Не указан";
+            //GRNTI = "Не указан";
+            //NIR = "Не указан";
+            //NOC = "Не указан";
             LeadNIOKR = new Person();
             Customer = new Customer();  
         }

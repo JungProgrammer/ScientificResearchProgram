@@ -24,6 +24,7 @@ namespace ResearchProgram
             InitializeComponent();
 
         }
+        public event EventHandler reloadGrantsTable;
         public bool isNDSCheckBoxChecked;
         public bool IsNDSCheckBoxChecked {get; set;} = Settings.Default.NDSKey;
 
@@ -31,6 +32,9 @@ namespace ResearchProgram
         {
             Settings.Default.NDSKey = NDSCheckBox.IsChecked.Value;
             Settings.Default.Save();
+            applyButton.IsEnabled = false;
+            EventHandler handler = reloadGrantsTable;
+            handler(this, EventArgs.Empty);
         }
 
         private void closeButton_Click(object sender, RoutedEventArgs e)

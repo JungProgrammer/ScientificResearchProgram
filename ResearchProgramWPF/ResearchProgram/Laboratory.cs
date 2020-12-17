@@ -16,7 +16,8 @@ namespace ResearchProgram
 
         public Laboratory()
         {
-            Title = "Не указан";
+            //Title = "Не указан";
+            Title = "";
         }
 
         public string GetTitle()

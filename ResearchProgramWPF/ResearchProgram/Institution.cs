@@ -20,8 +20,8 @@ namespace ResearchProgram
 
         public Institution()
         {
-            Title = "Не указан";
-
+            //Title = "Не указан";
+            Title = "";
             Units = new ObservableCollection<Unit>();
         }
 

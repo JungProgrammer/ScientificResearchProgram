@@ -23,14 +23,24 @@
                   Grid.ColumnSpan="2"
                   Margin="5 0">
             <GroupBox.Header>
-                <Label Content="Параметры отображения"/>
+                <Label Content="Параметры НДС"/>
             </GroupBox.Header>
-            <CheckBox Grid.Row="0" 
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
+                <CheckBox Grid.Row="0" 
+                      Grid.Column="0"
                     Content="Отображение с НДС"
                     Margin="7 3"
                     x:Name="NDSCheckBox"
                     IsChecked="{Binding ElementName=settingWindow, Path=IsNDSCheckBoxChecked}"
                       Click="NDSCheckBox_Click"/>
+            </Grid>
+
         </GroupBox>
         <Grid
             Grid.Row="5"

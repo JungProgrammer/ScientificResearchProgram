@@ -51,8 +51,7 @@ namespace ResearchProgram
             int countOfGrants = 0;
             // массив договоров
             Grant[] grants = null;
-
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, (SELECT COUNT(*) FROM grants) FROM grants;", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, (SELECT COUNT(*) FROM grants) FROM grants ORDER BY id;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -236,12 +235,12 @@ namespace ResearchProgram
 
             // Получение остальных столбцов
             cmd = new NpgsqlCommand("SELECT grants.id, grants.grantnumber, OKVED, nameNIOKR, p.title, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC, l.title FROM grants " +
-                                                        "JOIN customers p on grants.customerId = p.customerid " +
-                                                        "JOIN persons p2 on grants.leadNIOKRId = p2.id " +
-                                                        "JOIN kafedras k on grants.kafedraId = k.id " +
-                                                        "JOIN units u on grants.unitId = u.id " +
-                                                        "JOIN laboratories l on grants.laboratoryid = l.id " +
-                                                        "JOIN institutions i on grants.institutionId = i.id; ", conn);
+                                                        "LEFT JOIN customers p on grants.customerId = p.customerid " +
+                                                        "LEFT JOIN persons p2 on grants.leadNIOKRId = p2.id " +
+                                                        "LEFT JOIN kafedras k on grants.kafedraId = k.id " +
+                                                        "LEFT JOIN units u on grants.unitId = u.id " +
+                                                        "LEFT JOIN laboratories l on grants.laboratoryid = l.id " +
+                                                        "LEFT JOIN institutions i on grants.institutionId = i.id ORDER BY grants.id;", conn);
             reader = cmd.ExecuteReader();
 
 

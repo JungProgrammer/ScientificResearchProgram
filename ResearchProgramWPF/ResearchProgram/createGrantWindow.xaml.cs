@@ -323,7 +323,7 @@ namespace ResearchProgram
         private void createGrantButtonClick(object sender, RoutedEventArgs e)
         {
             Grant newGrant = new Grant();
-
+            string incorrectDataString = "";
             // Булевская переменная, которая отвечает за правильное создание договора. Если все необходимые данные были внесены, то договор создается
             bool isAllOkey = true;
 
@@ -342,7 +342,8 @@ namespace ResearchProgram
             }
             else
             {
-                MessageBox.Show("Необходимо указать номер договора");
+                //MessageBox.Show("Необходимо указать номер договора");
+                incorrectDataString += "Необходимо указать номер договора\n";
                 isAllOkey = false;
             }
 
@@ -365,7 +366,8 @@ namespace ResearchProgram
             }
             else
             {
-                MessageBox.Show("Необходимо указать заказчика");
+                //MessageBox.Show("Необходимо указать заказчика");
+                incorrectDataString += "Необходимо указать заказчика\n";
                 isAllOkey = false;
             }
 
@@ -415,7 +417,8 @@ namespace ResearchProgram
             }
             else
             {
-                MessageBox.Show("Необходимо указать руководителя проекта");
+                incorrectDataString += "Необходимо указать руководителя НИОКР\n";
+                //MessageBox.Show("Необходимо указать руководителя проекта");
                 isAllOkey = false;
             }
 
@@ -569,7 +572,12 @@ namespace ResearchProgram
                 // Закрываем соединение с БД
                 CRUDDataBase.CloseConnect();
 
-                MessageBox.Show("Договор успешно создан");
+                MessageBox.Show("Договор успешно создан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                Close();
+            }
+            else
+            {
+                MessageBox.Show(incorrectDataString, "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

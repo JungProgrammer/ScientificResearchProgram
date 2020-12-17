@@ -23,8 +23,8 @@ namespace ResearchProgram
 
         public Unit()
         {
-            Title = "Не указан";
-
+            //Title = "Не указан";
+            Title = "";
             Kafedras = new ObservableCollection<Kafedra>();
             Laboratories = new ObservableCollection<Laboratory>();
         }
