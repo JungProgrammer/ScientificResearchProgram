@@ -282,6 +282,250 @@ namespace ResearchProgram
             }
         }
 
+        internal static Institution AddNewInstitution(string institutionTitle)
+        {
+            Institution newInstitution = null;
+
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into institutions (" +
+                "title) " +
+                "values(:title)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", institutionTitle));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("SELECT id FROM institutions ORDER BY id DESC ", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Read();
+                newInstitution = new Institution()
+                {
+                    Id = Convert.ToInt32(reader[0]),
+                    Title = institutionTitle
+                };
+            }
+
+            return newInstitution;
+        }
+
+        internal static Unit AddNewUnit(string unitTitle, int institutionId)
+        {
+            Unit newUnit = null;
+
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into units (institutionid," +
+                "title) " +
+                "values(:institutionid," +
+                ":title)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", unitTitle));
+            cmd.Parameters.Add(new NpgsqlParameter("institutionid", institutionId));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("SELECT id FROM units ORDER BY id DESC ", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Read();
+                newUnit = new Unit()
+                {
+                    Id = Convert.ToInt32(reader[0]),
+                    Title = unitTitle
+                };
+            }
+
+
+            return newUnit;
+        }
+
+        internal static Kafedra AddNewKafedra(string kafedraTitle, int unitId)
+        {
+            Kafedra newKafedra = null;
+
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into kafedras (unitid," +
+                "title) " +
+                "values(:unitid," +
+                ":title)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", kafedraTitle));
+            cmd.Parameters.Add(new NpgsqlParameter("unitid", unitId));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("SELECT id FROM kafedras ORDER BY id DESC ", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Read();
+                newKafedra = new Kafedra()
+                {
+                    Id = Convert.ToInt32(reader[0]),
+                    Title = kafedraTitle
+                };
+            }
+
+            return newKafedra;
+        }
+
+        /// <summary>
+        /// Добавление лаборатории в подразделение
+        /// </summary>
+        /// <param name="laboratoryTitle"></param>
+        /// <param name="unitId"></param>
+        /// <returns></returns>
+        internal static Laboratory AddNewLaboratoryToUnit(string laboratoryTitle, int unitId)
+        {
+            Laboratory newLaboratory = null;
+
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into laboratories (unitid," +
+                "title) " +
+                "values(:unitid," +
+                ":title)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", laboratoryTitle));
+            cmd.Parameters.Add(new NpgsqlParameter("unitid", unitId));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("SELECT id FROM laboratories ORDER BY id DESC ", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Read();
+                newLaboratory = new Laboratory()
+                {
+                    Id = Convert.ToInt32(reader[0]),
+                    Title = laboratoryTitle
+                };
+            }
+
+            return newLaboratory;
+        }
+
+        /// <summary>
+        /// Добавление лаборатории в кафедру
+        /// </summary>
+        /// <param name="laboratoryTitle"></param>
+        /// <param name="unitId"></param>
+        /// <returns></returns>
+        internal static Laboratory AddNewLaboratoryToKafedra(string laboratoryTitle, int kafedraId)
+        {
+            Laboratory newLaboratory = null;
+
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into laboratories (kafedraid," +
+                "title) " +
+                "values(:kafedraid," +
+                ":title)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", laboratoryTitle));
+            cmd.Parameters.Add(new NpgsqlParameter("kafedraid", kafedraId));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("SELECT id FROM laboratories ORDER BY id DESC ", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Read();
+                newLaboratory = new Laboratory()
+                {
+                    Id = Convert.ToInt32(reader[0]),
+                    Title = laboratoryTitle
+                };
+            }
+
+            return newLaboratory;
+        }
+
+        /// <summary>
+        /// Переименование универа
+        /// </summary>
+        /// <param name="institution"></param>
+        internal static void RenameInstitution(Institution institution, string newTitle)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE institutions SET title = :title WHERE id = :institutionid;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", newTitle));
+            cmd.Parameters.Add(new NpgsqlParameter("institutionid", institution.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Переименование подразделение
+        /// </summary>
+        /// <param name="institution"></param>
+        internal static void RenameUnit(Unit unit, string newTitle)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE units SET title = :title WHERE id = :unitid;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", newTitle));
+            cmd.Parameters.Add(new NpgsqlParameter("unitid", unit.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Переименование кафедры
+        /// </summary>
+        /// <param name="institution"></param>
+        internal static void RenameKafedra(Kafedra kafedra, string newTitle)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE kafedras SET title = :title WHERE id = :kafedraid;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", newTitle));
+            cmd.Parameters.Add(new NpgsqlParameter("kafedraid", kafedra.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Переименование лаборатории
+        /// </summary>
+        /// <param name="institution"></param>
+        internal static void RenameLaboratory(Laboratory laboratory, string newTitle)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE laboratories SET title = :title WHERE id = :laboratoryid;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", newTitle));
+            cmd.Parameters.Add(new NpgsqlParameter("laboratoryid", laboratory.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Удаление университета
+        /// </summary>
+        /// <param name="institutionId"></param>
+        internal static void DeleteInstitution(int institutionId)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM institutions WHERE id = :institutionid;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("institutionid", institutionId));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Удаление подразделения
+        /// </summary>
+        /// <param name="unitId"></param>
+        internal static void DeleteUnit(int unitId)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM units WHERE id = :unitid;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("unitid", unitId));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Удаление кафедры
+        /// </summary>
+        /// <param name="kafedraId"></param>
+        internal static void DeleteKafedra(int kafedraId)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM kafedras WHERE id = :kafedraid;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("kafedraid", kafedraId));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Удаление лаборатории
+        /// </summary>
+        /// <param name="laboratoryId"></param>
+        internal static void DeleteLaboratory(int laboratoryId)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM laboratories WHERE id = :laboratoryid;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("laboratoryid", laboratoryId));
+            cmd.ExecuteNonQuery();
+        }
+
+
         internal static WorkerWithUniversityStructure GetUniversityStructure()
         {
             WorkerWithUniversityStructure universityStructure = new WorkerWithUniversityStructure();

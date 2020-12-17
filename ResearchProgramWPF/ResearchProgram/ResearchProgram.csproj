@@ -135,7 +135,6 @@
     <Compile Include="NDSConverter.cs" />
     <Compile Include="Nir.cs" />
     <Compile Include="Parser.cs" />
-    <Compile Include="Phone.cs" />
     <Compile Include="PriorityTrend.cs" />
     <Compile Include="RelayComand.cs" />
     <Compile Include="ResearchType.cs" />
