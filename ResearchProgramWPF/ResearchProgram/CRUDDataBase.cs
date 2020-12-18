@@ -46,9 +46,9 @@ namespace ResearchProgram
         {
             dataTable.Rows.Clear();
 
-            int grant_index = 0;
-            int grant_id = 0;
-            int countOfGrants = 0;
+            int grant_index;
+            int grant_id;
+            int countOfGrants;
             // массив договоров
             Grant[] grants = null;
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, (SELECT COUNT(*) FROM grants) FROM grants ORDER BY id;", conn);
@@ -212,12 +212,10 @@ namespace ResearchProgram
 
             if (reader.HasRows)
             {
-                string FIO;
                 while (reader.Read())
                 {
                     grant_id = Convert.ToInt32(reader[0]);
                     grant_index = ShowGrantIndex(grants, grant_id);
-                    FIO = reader[1].ToString();
 
                     grants[grant_index].Executor.Add(new Person()
                     {
@@ -719,9 +717,9 @@ namespace ResearchProgram
         /// <param name="dataTable"></param>
         public static void LoadPersonsTable(DataTable dataTable)
         {
-            int personIndex = 0;
-            int personId = 0;
-            int countOfPeople = 0;
+            int personIndex;
+            int personId;
+            int countOfPeople;
 
             // массив людей
             Person[] persons = null;
@@ -1422,7 +1420,7 @@ namespace ResearchProgram
             cmd.Parameters.Add(new NpgsqlParameter("price", grant.Price));
             cmd.Parameters.Add(new NpgsqlParameter("grnti", grant.GRNTI));
             cmd.Parameters.Add(new NpgsqlParameter("nir", grant.NIR));
-            cmd.Parameters.Add(new NpgsqlParameter("noc", grant.NOC == "НОЦ" ? true : false));
+            cmd.Parameters.Add(new NpgsqlParameter("noc", grant.NOC == "НОЦ"));
 
             cmd.ExecuteNonQuery();
 
