@@ -126,4 +126,11 @@ C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\Resea
 C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\ResearchProgram.csprojAssemblyReference.cache
 C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\UniversityStructureWindow.g.cs
 C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\UniversityStructureWindow.baml
+<<<<<<< HEAD
 >>>>>>> 7e55182a63be0e386431281215a0cd2fc4fa7e7f
+=======
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\UniversityStructureCommandWindows\AddTreeNodeWindow.g.cs
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\UniversityStructureCommandWindows\AddTreeNodeWindow.baml
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\UniversityStructureCommandWindows\RenameNodeWindow.g.cs
+C:\Users\User\Desktop\Work\ВУЗ 2020\WindowsFormsApp1\ResearchProgramWPF\ResearchProgram\obj\Debug\UniversityStructureCommandWindows\RenameNodeWindow.baml
+>>>>>>> university_structure_future

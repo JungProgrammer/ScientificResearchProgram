@@ -8,7 +8,6 @@
         Title="UniversityStructureWindow" Height="450" Width="800">
     <Grid>
 
-
         <Grid.RowDefinitions>
             <RowDefinition Height="14*"/>
             <RowDefinition Height="1*"/>
@@ -16,19 +15,40 @@
 
         <TreeView Grid.Row="0"
                   x:Name="treeUniversityStructure"
-                  ItemsSource="{Binding Companies}">
+                  ItemsSource="{Binding RootNode}">
+            <TreeView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Добавить" Command="{Binding AddCommand}"/>
+                    <MenuItem Header="Переименовать" Command="{Binding RenameCommand}"/>
+                    <MenuItem Header="Удалить" Command="{Binding DeleteCommand}"/>
+                </ContextMenu>
+            </TreeView.ContextMenu>
+
+            <TreeView.ItemContainerStyle>
+                <!-- 
+                This Style binds a TreeViewItem to a PersonViewModel. 
+                -->
+                <Style TargetType="{x:Type TreeViewItem}">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="FontWeight" Value="Normal" />
+                    <Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </Trigger>
+                        <Trigger Property="IsExpanded" Value="True">
+                            <Setter Property="FontWeight" Value="Bold" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </TreeView.ItemContainerStyle>
+            
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Path=Phones}">
-                    <TextBlock Text="{Binding Name}" />
-                    <HierarchicalDataTemplate.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Title}" />
-                        </DataTemplate>
-                    </HierarchicalDataTemplate.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}" >
+                    <TextBlock Text="{Binding Path=TitleNode}"/>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
-
 
     </Grid>
 </Window>

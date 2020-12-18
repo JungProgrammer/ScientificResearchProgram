@@ -12,63 +12,85 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using ResearchProgram.UniversityStructureCommandWindows;
 
 namespace ResearchProgram
 {
-    public class Company
-    {
-        public string Name { get; set; }
-        public ObservableCollection<Smartphone> Phones { get; set; }
-        public Company()
-        {
-            Phones = new ObservableCollection<Smartphone>();
-        }
-    }
-    public class Smartphone
-    {
-        public string Title { get; set; }
-    }
-
     public partial class UniversityStructureWindow : Window
     {
-        public ObservableCollection<Company> Companies { get; set; }
-
         public UniversityStructureWindow()
         {
             InitializeComponent();
 
-            Companies = new ObservableCollection<Company>()
-            {
-                new Company
-                {
-                    Name = "Samsung",
-                    Phones = new ObservableCollection<Smartphone>
-                    {
-                        new Smartphone {Title = "Galaxy Note 7" },
-                        new Smartphone {Title = "Galaxy S 7" }
-                    }
-                },
-                new Company
-                {
-                    Name = "Apple",
-                    Phones = new ObservableCollection<Smartphone>
-                    {
-                        new Smartphone { Title="iPhone 7" },
-                        new Smartphone { Title="iPhone 6S"}
-                    }
-                },
-                new Company
-                {
-                    Name="Xiaomi",
-                    Phones = new ObservableCollection<Smartphone>
-                    {
-                        new Smartphone {Title="Redmi Note 2" },
-                        new Smartphone {Title="Mi5" }
-                    }
-                }
-            };
 
-            DataContext = this;
+            DataContext = new UniversityStructureViewModel();
+        }
+
+        /// <summary>
+        /// Открытие окна создания новой ноды
+        /// </summary>
+        /// <param name="showedNameStructure"></param>
+        /// <param name="inputNameStructure"></param>
+        public static void ShowAddTreeNodeWindow(string showedNameStructure, ref string inputNameStructure)
+        {
+            AddTreeNodeWindow addTreeNodeWindow  = new AddTreeNodeWindow(showedNameStructure);
+            addTreeNodeWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            
+            if (addTreeNodeWindow.ShowDialog() == true)
+            {
+                inputNameStructure = addTreeNodeWindow.StructureTitle;
+                MessageBox.Show("Вершина успешно добавлена");
+            }
+            else
+            {
+                inputNameStructure = string.Empty;
+                MessageBox.Show("Все изменения в этом окне будут сброшены");
+            }
+        }
+
+        /// <summary>
+        /// Открытие окна переименования вершины
+        /// </summary>
+        /// <param name="newInputName"></param>
+        public static void ShowRenameWindow(ref string newInputName)
+        {
+            RenameNodeWindow renameNodeWindow = new RenameNodeWindow();
+            renameNodeWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+
+            if (renameNodeWindow.ShowDialog() == true)
+            {
+                newInputName = renameNodeWindow.StructureTitle;
+                MessageBox.Show("Вершина успешно изменена");
+            }
+            else
+            {
+                newInputName = string.Empty;
+                MessageBox.Show("Все изменения в этом окне будут сброшены");
+            }
+        }
+
+        internal static void ShowWarning(string message, ref bool result)
+        {
+            MessageBoxResult messageBoxResult = MessageBox.Show(message, "Предупреждение", MessageBoxButton.YesNo);
+            if (messageBoxResult == MessageBoxResult.Yes)
+            {
+                result = true;
+            }
+            else
+            {
+                result = false;
+            }
+        }
+
+
+        public static void ShowAlertAboutUnselectedTreeNode()
+        {
+            MessageBox.Show("Необходимо выделить вершину");
+        }
+
+        public static void ShowAlert(string message)
+        {
+            MessageBox.Show(message);
         }
     }
 }

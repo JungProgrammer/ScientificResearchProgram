@@ -124,6 +124,7 @@ namespace ResearchProgram
             return laboratoryFound;
         }
 
+
         public Laboratory FindLaboratoryInUnit(Unit unitFound, int laboratoryId)
         {
             Laboratory laboratoryFound = null;
@@ -134,6 +135,128 @@ namespace ResearchProgram
             }
 
             return laboratoryFound;
+        }
+
+
+        public static Institution CreateNewInstitution(string institutionTitle)
+        {
+            Institution newInstitution = null;
+
+            CRUDDataBase.ConnectByDataBase();
+            newInstitution = CRUDDataBase.AddNewInstitution(institutionTitle);
+            CRUDDataBase.CloseConnect();
+
+            return newInstitution;
+        }
+
+        public static Unit CreateNewUnit(string unitTitle, Institution parent)
+        {
+            Unit newUnit = null;
+
+            CRUDDataBase.ConnectByDataBase();
+            newUnit = CRUDDataBase.AddNewUnit(unitTitle, parent.Id);
+            CRUDDataBase.CloseConnect();
+
+            return newUnit;
+        }
+
+        public static Kafedra CreateNewKafedra(string kafedraTitle, Unit parent)
+        {
+            Kafedra newKafedra = null;
+
+            CRUDDataBase.ConnectByDataBase();
+            newKafedra = CRUDDataBase.AddNewKafedra(kafedraTitle, parent.Id);
+            CRUDDataBase.CloseConnect();
+
+            return newKafedra;
+        }
+
+        /// <summary>
+        /// Создание лаборатории для подразделения
+        /// </summary>
+        /// <param name="laboratoryTitle"></param>
+        /// <returns></returns>
+        public static Laboratory CreateNewLaboratory(string laboratoryTitle, Unit parent)
+        {
+            Laboratory newLaboratory = null;
+
+            CRUDDataBase.ConnectByDataBase();
+            newLaboratory = CRUDDataBase.AddNewLaboratoryToUnit(laboratoryTitle, parent.Id);
+            CRUDDataBase.CloseConnect();
+
+            return newLaboratory;
+        }
+
+        /// <summary>
+        /// Создание лаборатории для кафедры
+        /// </summary>
+        /// <param name="laboratoryTitle"></param>
+        /// <returns></returns>
+        public static Laboratory CreateNewLaboratory(string laboratoryTitle, Kafedra parent)
+        {
+            Laboratory newLaboratory = null;
+
+            CRUDDataBase.ConnectByDataBase();
+            newLaboratory = CRUDDataBase.AddNewLaboratoryToKafedra(laboratoryTitle, parent.Id);
+            CRUDDataBase.CloseConnect();
+
+            return newLaboratory;
+        }
+
+        internal static void RenameInstitution(Institution institutionNode, string newTitle)
+        {
+            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.RenameInstitution(institutionNode, newTitle);
+            CRUDDataBase.CloseConnect();
+        }
+
+        internal static void RenameUnit(Unit unitNode, string newTitle)
+        {
+            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.RenameUnit(unitNode, newTitle);
+            CRUDDataBase.CloseConnect();
+        }
+
+        internal static void RenameKafedra(Kafedra kafedraNode, string newTitle)
+        {
+            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.RenameKafedra(kafedraNode, newTitle);
+            CRUDDataBase.CloseConnect();
+        }
+
+        internal static void RenameLaboratory(Laboratory laboratoryNode, string newTitle)
+        {
+            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.RenameLaboratory(laboratoryNode, newTitle);
+            CRUDDataBase.CloseConnect();
+        }
+
+        internal static void DeleteInstitution(Institution institutionNode)
+        {
+            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.DeleteInstitution(institutionNode.Id);
+            CRUDDataBase.CloseConnect();
+        }
+
+        internal static void DeleteUnit(Unit unitNode)
+        {
+            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.DeleteUnit(unitNode.Id);
+            CRUDDataBase.CloseConnect();
+        }
+
+        internal static void DeleteKafedra(Kafedra kafedraNode)
+        {
+            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.DeleteKafedra(kafedraNode.Id);
+            CRUDDataBase.CloseConnect();
+        }
+
+        internal static void DeleteLaboratory(Laboratory laboratoryNode)
+        {
+            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.DeleteLaboratory(laboratoryNode.Id);
+            CRUDDataBase.CloseConnect();
         }
     }
 }
