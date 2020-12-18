@@ -54,6 +54,16 @@ namespace ResearchProgram
         }
 
 
+        private GrantHeader _selectedGrantHeaderOnTabControl;
+        public GrantHeader SelectedGrantHeaderOnTabControl
+        {
+            get { return _selectedGrantHeaderOnTabControl; }
+            set
+            {
+                _selectedGrantHeaderOnTabControl = value;
+                OnPropertyChanged(nameof(SelectedGrantHeaderOnTabControl));
+            }
+        }
 
 
         public FiltersWindow(DataTable grantsDataTable)
@@ -180,7 +190,7 @@ namespace ResearchProgram
         /// <param name="e"></param>
         private void deleteFilterParameter(object sender, RoutedEventArgs e)
         {
-
+            SelectedGrantHeaderOnTabControl.FilterElementsData.Remove(SelectedGrantHeaderOnTabControl.SelectedFilter);
         }
 
         /// <summary>

@@ -39,22 +39,31 @@
                 </Grid.ColumnDefinitions>
 
                 <ListView Grid.Row="0"
-                                  Grid.ColumnSpan="5"
-                                  ItemsSource="{Binding FilterElementsData}">
+                          Grid.ColumnSpan="5"
+                          ItemsSource="{Binding FilterElementsData}"
+                          SelectedItem="{Binding SelectedFilter}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal">
-                                <TextBlock MinWidth="50"
-                                           Margin="20 5"
-                                           Text="Фильтр:"/>
-                                <TextBlock MinWidth="20"
-                                           Margin="20 5"
-                                           Text="{Binding Sign}"
-                                           Visibility="{Binding Is_comparison_needed, Converter={StaticResource visibilityConveter}}"/>
-                                <TextBlock MinWidth="300"
-                                           Margin="5 5"
-                                           Text="{Binding Data}"/>
-                            </StackPanel>
+                            <Border BorderThickness="0 0 0 0.5" BorderBrush="Gray" Width="860">
+
+                                <DockPanel>
+                                    <TextBlock DockPanel.Dock="Left"
+                                               MinWidth="50"
+                                               Margin="20 5"
+                                               FontSize="12"
+                                               Text="Фильтр:"/>
+                                    <TextBlock MinWidth="20"
+                                               Margin="20 5"
+                                               Text="{Binding Sign}"
+                                               FontSize="12"
+                                               Visibility="{Binding Is_comparison_needed, Converter={StaticResource visibilityConveter}}"/>
+                                    <TextBlock DockPanel.Dock="Right"
+                                               MinWidth="300"
+                                               Margin="5 5"
+                                               Text="{Binding Data}"
+                                               FontSize="12"/>
+                                </DockPanel>
+                            </Border>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -72,9 +81,11 @@
                 
                 <!--Если нужен текстбокс-->
                 <TextBox Grid.Row="1"
-                        Grid.Column="0"
-                        Margin="10 5 0 5"
-                        MaxWidth="400"
+                         Grid.Column="0"
+                         Margin="10 5 0 5"
+                         TextAlignment="Justify"
+                         FontSize="14"
+                         MaxWidth="400"
                          Text="{Binding ChooseDataFromTextBox}"
                          Visibility="{Binding Is_textbox_needed, Converter={StaticResource visibilityConveter}}"/>
                 
@@ -168,7 +179,8 @@
                     x:Name="filtersTabControl"
                     ItemsSource="{Binding GrantItemsForControlPanel}"
                     ContentTemplate="{StaticResource templateForTheContent}"
-                    ItemTemplate="{StaticResource templateForTheHeader}">
+                    ItemTemplate="{StaticResource templateForTheHeader}"
+                    SelectedItem="{Binding SelectedGrantHeaderOnTabControl}">
         </TabControl>
 
 
@@ -177,12 +189,14 @@
                     HorizontalAlignment="Right">
             <Button x:Name="resetAllFiltersButton"
                     Content="Сбросить фильтры"
+                    MinWidth="115"
                     MaxHeight="45"
                     Margin="0 8 10 8"
                     Click="resetAllFilters">
             </Button>
             <Button x:Name="applyFiltersButton"
                     Content="Применить фильтры"
+                    MinWidth="120"
                     MaxHeight="45"
                     Margin="0 8 10 8" 
                     Click="applyFiltersButton_Click">
