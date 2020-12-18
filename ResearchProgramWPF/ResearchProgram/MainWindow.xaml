@@ -4,7 +4,6 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResearchProgram"
-        xmlns:properties="clr-namespace:ResearchProgram.Properties" 
         mc:Ignorable="d"
         Title="MainWindow"
         Height="900"
@@ -12,6 +11,7 @@
         x:Name="mainWindow">
     <Window.Resources>
         <local:NDSConverter x:Key="NDSConverter" />
+        <local:DepositsConverter x:Key="DepositsConverter"/>
     </Window.Resources>
     <Grid>
 
@@ -66,8 +66,8 @@
                     </Grid.RowDefinitions>
 
 
-                    
-                    <Label Content="{Binding settings.NDSKey, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource NDSConverter}}" 
+
+                    <Label Content="{Binding Source={x:Static local:Settings.Default},Path=NDSKey, Converter={StaticResource NDSConverter}}" 
                            Grid.Row="0"
                            FontSize="12"/>
 
@@ -93,6 +93,11 @@
                               CanUserDeleteRows="False"
                               IsReadOnly="True"
                               CurrentItem="{Binding Path=SelectedGrantRow, Mode=TwoWay}">
+                        <DataGrid.RowStyle>
+                            <Style TargetType="DataGridRow">
+                                <Setter Property="Background" Value="{Binding Path=Средства, Converter={StaticResource DepositsConverter}}"/>
+                            </Style>
+                        </DataGrid.RowStyle>
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Редактировать" 

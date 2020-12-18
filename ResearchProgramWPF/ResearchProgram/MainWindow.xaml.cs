@@ -51,13 +51,12 @@ namespace ResearchProgram
             DataContext = this;
         }
 
-        private Settings settings
-        {
-            get { return (Settings)GetValue(SettingsProperty); }
-            set { SetValue(SettingsProperty, value); }
-        }
-        public static readonly DependencyProperty SettingsProperty = DependencyProperty.Register("settings", typeof(Settings), typeof(MainWindow), new PropertyMetadata(Settings.Default));
-
+        //private Settings settings
+        //{
+        //    get { return (Settings)GetValue(SettingsProperty); }
+        //    set { SetValue(SettingsProperty, value); }
+        //}
+        //public static readonly DependencyProperty SettingsProperty = DependencyProperty.Register("settings", typeof(Settings), typeof(MainWindow), new PropertyMetadata(Settings.Default));
 
         /// <summary>
         /// Загрузка данных в таблицу договоров

@@ -8,5 +8,26 @@
     <Setting Name="NDSValue" Type="System.Single" Scope="User">
       <Value Profile="(Default)">1.2</Value>
     </Setting>
+    <Setting Name="RowColor0" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFAAF</Value>
+    </Setting>
+    <Setting Name="RowColor1" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFF</Value>
+    </Setting>
+    <Setting Name="RowColor2" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFF</Value>
+    </Setting>
+    <Setting Name="RowColor3" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFF</Value>
+    </Setting>
+    <Setting Name="RowColor4" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFF</Value>
+    </Setting>
+    <Setting Name="RowColor5" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFF</Value>
+    </Setting>
+    <Setting Name="RowColor6" Type="System.String" Scope="User">
+      <Value Profile="(Default)">#FFFFFF</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

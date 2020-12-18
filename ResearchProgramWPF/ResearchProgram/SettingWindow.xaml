@@ -4,72 +4,215 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResearchProgram"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
         x:Name="settingWindow"
         Title="Настройки" Height="450" Width="450">
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition/>
             <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
-            <RowDefinition/>
+            <RowDefinition Height="90*"/>
+            <RowDefinition Height="10*"/>
         </Grid.RowDefinitions>
-        <GroupBox Grid.Row="0"
-                  Grid.ColumnSpan="2"
-                  Margin="5 0">
-            <GroupBox.Header>
-                <Label Content="Параметры НДС"/>
-            </GroupBox.Header>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition/>
-                </Grid.RowDefinitions>
-                <CheckBox Grid.Row="0" 
+        <TabControl Grid.ColumnSpan="10"
+                    Grid.Row="0">
+            <TabItem Header="Основные">
+                    <GroupBox Margin="5 0">
+                        <GroupBox.Header>
+                            <Label Content="Параметры НДС"/>
+                        </GroupBox.Header>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <CheckBox Grid.Row="0" 
                       Grid.Column="0"
                     Content="Отображение с НДС"
                     Margin="7 3"
                     x:Name="NDSCheckBox"
                     IsChecked="{Binding ElementName=settingWindow, Path=IsNDSCheckBoxChecked}"
                       Click="NDSCheckBox_Click"/>
-            </Grid>
+                        </Grid>
+                    </GroupBox>
+            </TabItem>
+            <TabItem Header="Отображение">
+                <GroupBox
+                  Margin="5 0">
+                    <GroupBox.Header>
+                        <Label Content="Параметры выделения цветом"/>
+                    </GroupBox.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="50*"/>
+                            <ColumnDefinition Width="25*"/>
+                            <ColumnDefinition Width="25*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                            <RowDefinition/>
+                        </Grid.RowDefinitions>
+                        <TextBlock Text="ФЦП мин обра или иные источники госзаказа(бюджет)"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   TextWrapping="Wrap"
+                                   Margin="5 0"/>
+                        <TextBlock Text="Средства Российских фондов поддержки науки"
+                                   Grid.Row="1"
+                                   Grid.Column="0"
+                                   TextWrapping="Wrap"
+                                   Margin="5 0"/>
+                        <TextBlock Text="Средства бюджета субъекта Федерации"
+                                   Grid.Row="2"
+                                   Grid.Column="0"
+                                   TextWrapping="Wrap"
+                                   Margin="5 0"/>
+                        <TextBlock Text="Средства хозяйствующих субъектов"
+                                   Grid.Row="3"
+                                   Grid.Column="0"
+                                   TextWrapping="Wrap"
+                                   Margin="5 0"/>
+                        <TextBlock Text="Собственные средства"
+                                   Grid.Row="4"
+                                   Grid.Column="0"
+                                   TextWrapping="Wrap"
+                                   Margin="5 0"/>
+                        <TextBlock Text="Физ. лица"
+                                   Grid.Row="5"
+                                   Grid.Column="0"
+                                   TextWrapping="Wrap"
+                                   Margin="5 0"/>
+                        <TextBlock Text="Иностранные стредства"
+                                   Grid.Row="6"
+                                   Grid.Column="0"
+                                   TextWrapping="Wrap"
+                                   Margin="5 0"/>
+                        <xctk:ColorPicker x:Name="colorPicker0"
+                                          Grid.Row="0"
+                                          Grid.Column="1"
+                                          Margin="5 2"
+                                          AdvancedTabHeader="Дополнительно"
+                                          AvailableColorsHeader="Доступные цвета"
+                                          RecentColorsHeader="Недавние"
+                                          StandardColorsHeader="Стандартные"
+                                          StandardTabHeader="Стандартные"
+                                          Height="25"
+                                          SelectedColorChanged="colorPicker_SelectedColorChanged"
+                                          SelectedColor="{Binding Source={x:Static local:Settings.Default}, Path=RowColor0, Mode=OneWay}">
+                        </xctk:ColorPicker>
+                        <xctk:ColorPicker x:Name="colorPicker1"
+                                          Grid.Row="1"
+                                          Grid.Column="1"
+                                          Margin="5 2"
+                                          AdvancedTabHeader="Дополнительно"
+                                          AvailableColorsHeader="Доступные цвета"
+                                          RecentColorsHeader="Недавние"
+                                          StandardColorsHeader="Стандартные"
+                                          StandardTabHeader="Стандартные"
+                                          Height="25"
+                                          SelectedColorChanged="colorPicker_SelectedColorChanged"
+                                          SelectedColor="{Binding Source={x:Static local:Settings.Default}, Path=RowColor1, Mode=OneWay}">
+                        </xctk:ColorPicker>
+                        <xctk:ColorPicker x:Name="colorPicker2"
+                                          Grid.Row="2"
+                                          Grid.Column="1"
+                                          Margin="5 2"
+                                          AdvancedTabHeader="Дополнительно"
+                                          AvailableColorsHeader="Доступные цвета"
+                                          RecentColorsHeader="Недавние"
+                                          StandardColorsHeader="Стандартные"
+                                          StandardTabHeader="Стандартные"
+                                          Height="25"
+                                          SelectedColorChanged="colorPicker_SelectedColorChanged"
+                                          SelectedColor="{Binding Source={x:Static local:Settings.Default}, Path=RowColor2, Mode=OneWay}">
+                        </xctk:ColorPicker>
+                        <xctk:ColorPicker x:Name="colorPicker3"
+                                          Grid.Row="3"
+                                          Grid.Column="1"
+                                          Margin="5 2"
+                                          AdvancedTabHeader="Дополнительно"
+                                          AvailableColorsHeader="Доступные цвета"
+                                          RecentColorsHeader="Недавние"
+                                          StandardColorsHeader="Стандартные"
+                                          StandardTabHeader="Стандартные"
+                                          Height="25"
+                                          SelectedColorChanged="colorPicker_SelectedColorChanged"
+                                          SelectedColor="{Binding Source={x:Static local:Settings.Default}, Path=RowColor3, Mode=OneWay}">
+                        </xctk:ColorPicker>
+                        <xctk:ColorPicker x:Name="colorPicker4"
+                                          Grid.Row="4"
+                                          Grid.Column="1"
+                                          Margin="5 2"
+                                          AdvancedTabHeader="Дополнительно"
+                                          AvailableColorsHeader="Доступные цвета"
+                                          RecentColorsHeader="Недавние"
+                                          StandardColorsHeader="Стандартные"
+                                          StandardTabHeader="Стандартные"
+                                          Height="25"
+                                          SelectedColorChanged="colorPicker_SelectedColorChanged"
+                                          SelectedColor="{Binding Source={x:Static local:Settings.Default}, Path=RowColor4, Mode=OneWay}">
+                        </xctk:ColorPicker>
+                        <xctk:ColorPicker x:Name="colorPicker5"
+                                          Grid.Row="5"
+                                          Grid.Column="1"
+                                          Margin="5 2"
+                                          AdvancedTabHeader="Дополнительно"
+                                          AvailableColorsHeader="Доступные цвета"
+                                          RecentColorsHeader="Недавние"
+                                          StandardColorsHeader="Стандартные"
+                                          StandardTabHeader="Стандартные"
+                                          Height="25"
+                                          SelectedColorChanged="colorPicker_SelectedColorChanged"
+                                          SelectedColor="{Binding Source={x:Static local:Settings.Default}, Path=RowColor5, Mode=OneWay}">
+                        </xctk:ColorPicker>
+                        <xctk:ColorPicker x:Name="colorPicker6"
+                                          Grid.Row="6"
+                                          Grid.Column="1"
+                                          Margin="5 2"
+                                          AdvancedTabHeader="Дополнительно"
+                                          AvailableColorsHeader="Доступные цвета"
+                                          RecentColorsHeader="Недавние"
+                                          StandardColorsHeader="Стандартные"
+                                          StandardTabHeader="Стандартные"
+                                          Height="25"
+                                          SelectedColorChanged="colorPicker_SelectedColorChanged"
+                                          SelectedColor="{Binding Source={x:Static local:Settings.Default}, Path=RowColor6, Mode=OneWay}">
+                        </xctk:ColorPicker>
 
-        </GroupBox>
-        <Grid
-            Grid.Row="5"
-            Grid.ColumnSpan="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
-
+                    </Grid>
+                </GroupBox>
+            </TabItem>
+        </TabControl>
+    
             <Button Content="Применить"
                     x:Name="applyButton"
-                    Grid.Row="0"
+                    Grid.Row="1"
                     Grid.Column="2"
-                    Margin="30 45 0 10"
                     Click="applyButton_Click"
-                    IsEnabled="False"/>
+                    IsEnabled="False"
+                    Width="100"
+                    Height="25"/>
 
-            <Button Content="Закрыть"
+        <Button Content="Закрыть"
                     x:Name="closeButton"
-                    Grid.Row="0"
+                    Grid.Row="1"
                     Grid.Column="3"
-                    Margin="20 45 10 10"
-                    Click="closeButton_Click"/>
-        </Grid>
+                    Click="closeButton_Click"
+                    Width="100"
+                    Height="25"/>
     </Grid>
     
 </Window>

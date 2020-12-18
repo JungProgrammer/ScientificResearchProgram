@@ -48,7 +48,7 @@ namespace ResearchProgram
             {
                 if (grantsDataTable.Rows.Count == 0) countOfGrantRows = 0;
                 countOfGrantRows++;
-                Console.WriteLine(grant.Customer);
+
                 grantsDataTable.Rows.Add(
                            countOfGrantRows.ToString(),
                            grant.grantNumber,
