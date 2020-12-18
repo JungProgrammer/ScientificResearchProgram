@@ -15,11 +15,8 @@ namespace ResearchProgram
     /// <summary>
     /// Логика взаимодействия для createGrantWindow.xaml
     /// </summary>
-    public partial class createGrantWindow : Window, INotifyPropertyChanged
+    public partial class CreateGrantWindow : Window, INotifyPropertyChanged
     {
-        // DataTable для грантов на главной таблице
-        private DataTable grantsDataTable;
-
         // Класс для выбора параметров, характеризующих структуру вуза
         private WorkerWithUniversityStructure _universityStructure;
         public WorkerWithUniversityStructure UniversityStructure
@@ -35,22 +32,22 @@ namespace ResearchProgram
 
         //Списки данных из БД
         public ObservableCollection<string> NIOKRList { get; set; }
-        public List<Person> personsList { get; set; }
-        public List<Customer> customersList { get; set; }
-        public List<string> selectedItems { get; set; }
-        public List<string> selectedValues { get; set; }
+        public List<Person> PersonsList { get; set; }
+        public List<Customer> CustomersList { get; set; }
+        public List<string> SelectedItems { get; set; }
+        public List<string> SelectedValues { get; set; }
 
-        public List<Depositor> depositsList { get; set; }
-        public List<ScienceType> scienceTypeList { get; set; }
-        public List<Kafedra> kafedrasList { get; set; }
-        public List<Unit> unitsList { get; set; }
-        public List<Institution> instituionsList { get; set; }
-        public List<ResearchType> researchTypesList { get; set; }
-        public List<PriorityTrend> priorityTrendList { get; set; }
+        public List<Depositor> DepositsList { get; set; }
+        public List<ScienceType> ScienceTypeList { get; set; }
+        public List<Kafedra> KafedrasList { get; set; }
+        public List<Unit> UnitsList { get; set; }
+        public List<Institution> InstituionsList { get; set; }
+        public List<ResearchType> ResearchTypesList { get; set; }
+        public List<PriorityTrend> PriorityTrendList { get; set; }
         //Списки данных из формы
-        public List<ComboBox> enteredExecutorsList { get; set; }
-        public List<Object[]> enteredDepositsList { get; set; }
-        public List<ComboBox> enteredScienceTypesList { get; set; }
+        public List<ComboBox> EnteredExecutorsList { get; set; }
+        public List<Object[]> EnteredDepositsList { get; set; }
+        public List<ComboBox> EnteredScienceTypesList { get; set; }
 
         public string NirChecker;
 
@@ -65,48 +62,47 @@ namespace ResearchProgram
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
-            if (PropertyChanged != null)
-                PropertyChanged(this, new PropertyChangedEventArgs(prop));
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
 
-        public createGrantWindow(DataTable grantsDataTable)
+        public CreateGrantWindow(DataTable grantsDataTable)
         {
-            NIOKRList = new ObservableCollection<string>();
-            NIOKRList.Add("19");
-            NIOKRList.Add("20");
+            NIOKRList = new ObservableCollection<string>
+            {
+                "19",
+                "20"
+            };
 
             InitializeComponent();
 
-            this.grantsDataTable = grantsDataTable;
-
 
             // Подключение к базе данных
-            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.ConnectToDataBase();
 
 
-            personsList = CRUDDataBase.GetPersons();
+            PersonsList = CRUDDataBase.GetPersons();
             UniversityStructure = CRUDDataBase.GetUniversityStructure();
-            customersList = CRUDDataBase.GetCustomers();
-            depositsList = CRUDDataBase.GetDeposits();
-            kafedrasList = CRUDDataBase.GetKafedras();
-            unitsList = CRUDDataBase.GetUnits();
-            instituionsList = CRUDDataBase.GetInstitutions();
-            researchTypesList = CRUDDataBase.GetResearchTypes();
-            scienceTypeList = CRUDDataBase.GetScienceTypes();
-            priorityTrendList = CRUDDataBase.GetPriorityTrends();
+            CustomersList = CRUDDataBase.GetCustomers();
+            DepositsList = CRUDDataBase.GetDeposits();
+            KafedrasList = CRUDDataBase.GetKafedras();
+            UnitsList = CRUDDataBase.GetUnits();
+            InstituionsList = CRUDDataBase.GetInstitutions();
+            ResearchTypesList = CRUDDataBase.GetResearchTypes();
+            ScienceTypeList = CRUDDataBase.GetScienceTypes();
+            PriorityTrendList = CRUDDataBase.GetPriorityTrends();
 
-            enteredDepositsList = new List<object[]>();
-            enteredScienceTypesList = new List<ComboBox>();
-            enteredExecutorsList = new List<ComboBox>();
+            EnteredDepositsList = new List<object[]>();
+            EnteredScienceTypesList = new List<ComboBox>();
+            EnteredExecutorsList = new List<ComboBox>();
 
-            addCustomerAutoCompleteComboBox();
-            addLeadNIOKRAutoCompleteComboBox();
-            addResearchTypeAutoCompleteComboBox();
+            AddCustomerAutoCompleteComboBox();
+            AddLeadNIOKRAutoCompleteComboBox();
+            AddResearchTypeAutoCompleteComboBox();
 
 
             // Закрытие подключения к базе данных
-            CRUDDataBase.CloseConnect();
+            CRUDDataBase.CloseConnection();
 
 
             DataContext = this;
@@ -114,13 +110,13 @@ namespace ResearchProgram
         /// <summary>
         /// Добавление комбо бокса к заказчику
         /// </summary>
-        private void addCustomerAutoCompleteComboBox()
+        private void AddCustomerAutoCompleteComboBox()
         {
 
             customerAutoCompleteComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<Customer>(customersList),
+                ItemsSource = new List<Customer>(CustomersList),
                 MinWidth = 300
             };
             customerGrid.Children.Add(customerAutoCompleteComboBox);
@@ -129,12 +125,12 @@ namespace ResearchProgram
         /// <summary>
         /// Добавление комбо бокса к руководителю НИОКР
         /// </summary>
-        private void addLeadNIOKRAutoCompleteComboBox()
+        private void AddLeadNIOKRAutoCompleteComboBox()
         {
             LeadNIOKRAutoCompleteComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<Person>(personsList),
+                ItemsSource = new List<Person>(PersonsList),
                 MinWidth = 300,
 
             };
@@ -147,12 +143,12 @@ namespace ResearchProgram
         /// Добавление комбо бокса к типу
         /// </summary>
         
-        private void addResearchTypeAutoCompleteComboBox()
+        private void AddResearchTypeAutoCompleteComboBox()
         {
             researchTypeAutoCompleteComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<ResearchType>(researchTypesList),
+                ItemsSource = new List<ResearchType>(ResearchTypesList),
                 MinWidth = 300
             };
             researchTypesGrid.Children.Add(researchTypeAutoCompleteComboBox);
@@ -164,7 +160,7 @@ namespace ResearchProgram
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void depositsAddButton_Click_1(object sender, RoutedEventArgs e)
+        private void DepositsAddButton_Click_1(object sender, RoutedEventArgs e)
         {
 
             StackPanel horizontalStackPanel = new StackPanel()
@@ -175,7 +171,7 @@ namespace ResearchProgram
             ComboBox depositorComboBox = new ComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 10),
-                ItemsSource = depositsList,
+                ItemsSource = DepositsList,
                 Width = 240
             };
 
@@ -197,7 +193,7 @@ namespace ResearchProgram
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void depositsDeleteButton_Click(object sender, RoutedEventArgs e)
+        private void DepositsDeleteButton_Click(object sender, RoutedEventArgs e)
         {
 
             int countSelectedElement = depositsVerticalListView.SelectedItems.Count;
@@ -214,20 +210,20 @@ namespace ResearchProgram
             }
         }
 
-        private void executorAddButton_Click(object sender, RoutedEventArgs e)
+        private void ExecutorAddButton_Click(object sender, RoutedEventArgs e)
         {
 
             AutoCompleteComboBox executorComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<Person>(personsList),
+                ItemsSource = new List<Person>(PersonsList),
                 MinWidth = 300
             };
 
             executorsVerticalListView.Items.Add(executorComboBox);
         }
 
-        private void executorDeleteButton_Click(object sender, RoutedEventArgs e)
+        private void ExecutorDeleteButton_Click(object sender, RoutedEventArgs e)
         {
             int countSelectedElement = executorsVerticalListView.SelectedItems.Count;
             if (countSelectedElement > 0)
@@ -243,12 +239,12 @@ namespace ResearchProgram
             }
         }
 
-        private void priorityTrendAddButton_Click(object sender, RoutedEventArgs e)
+        private void PriorityTrendAddButton_Click(object sender, RoutedEventArgs e)
         {
             AutoCompleteComboBox priorityTrendComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<PriorityTrend>(priorityTrendList),
+                ItemsSource = new List<PriorityTrend>(PriorityTrendList),
                 MinWidth = 300
             };
 
@@ -256,7 +252,7 @@ namespace ResearchProgram
             priorityTrendsVerticalListView.Items.Add(priorityTrendComboBox);
         }
 
-        private void priorityTrendDeleteButton_Click(object sender, RoutedEventArgs e)
+        private void PriorityTrendDeleteButton_Click(object sender, RoutedEventArgs e)
         {
             int countSelectedElement = priorityTrendsVerticalListView.SelectedItems.Count;
             if (countSelectedElement > 0)
@@ -274,18 +270,18 @@ namespace ResearchProgram
 
 
 
-        private void scienceTypeAddButton_Click(object sender, RoutedEventArgs e)
+        private void ScienceTypeAddButton_Click(object sender, RoutedEventArgs e)
         {
             AutoCompleteComboBox scienceTypeComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<ScienceType>(scienceTypeList),
+                ItemsSource = new List<ScienceType>(ScienceTypeList),
                 MinWidth = 300
             };
             scienceTypeVerticalListView.Items.Add(scienceTypeComboBox);
         }
 
-        private void scienceTypeDeleteButton_Click(object sender, RoutedEventArgs e)
+        private void ScienceTypeDeleteButton_Click(object sender, RoutedEventArgs e)
         {
             int countSelectedElement = scienceTypeVerticalListView.SelectedItems.Count;
             if (countSelectedElement > 0)
@@ -305,7 +301,7 @@ namespace ResearchProgram
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void grantParametersButtonClick(object sender, RoutedEventArgs e)
+        private void GrantParametersButtonClick(object sender, RoutedEventArgs e)
         {
             createGrantTabControl.SelectedItem = createGrantTabControl.Items.OfType<TabItem>().SingleOrDefault(n => n.Name == ((Button)sender).Tag.ToString());
             foreach (Button button in grantParametersButtonStackPanel.Children.OfType<Button>()) {
@@ -320,7 +316,7 @@ namespace ResearchProgram
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void createGrantButtonClick(object sender, RoutedEventArgs e)
+        private void CreateGrantButtonClick(object sender, RoutedEventArgs e)
         {
             Grant newGrant = new Grant();
             string incorrectDataString = "";
@@ -338,7 +334,13 @@ namespace ResearchProgram
 
             if (grantNumberTextBox.Text.ToString() != "")
             {
-                newGrant.grantNumber = grantNumberTextBox.Text;
+                if (CRUDDataBase.IsGrantNumberAvailable(grantNumberTextBox.Text))
+                    newGrant.grantNumber = grantNumberTextBox.Text;
+                else
+                {
+                    incorrectDataString += "Догово с таким номером уже существует. Пожалуйста, укажите уникальный номер договора.\n\n";
+                    isAllOkey = false;
+                }
             }
             else
             {
@@ -565,12 +567,12 @@ namespace ResearchProgram
             if (isAllOkey)
             {
                 // Подключаюсь к БД
-                CRUDDataBase.ConnectByDataBase();
+                CRUDDataBase.ConnectToDataBase();
 
                 CRUDDataBase.InsertNewGrantToDB(newGrant);
 
                 // Закрываем соединение с БД
-                CRUDDataBase.CloseConnect();
+                CRUDDataBase.CloseConnection();
 
                 MessageBox.Show("Договор успешно создан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
                 Close();

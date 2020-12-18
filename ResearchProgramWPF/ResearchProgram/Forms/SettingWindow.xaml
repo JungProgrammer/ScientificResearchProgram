@@ -110,7 +110,7 @@
                                           StandardColorsHeader="Стандартные"
                                           StandardTabHeader="Стандартные"
                                           Height="25"
-                                          SelectedColorChanged="colorPicker_SelectedColorChanged"
+                                          SelectedColorChanged="ColorPicker_SelectedColorChanged"
                                           SelectedColor="{Binding Source={x:Static local:Settings.Default}, Path=RowColor0, Mode=OneWay}">
                         </xctk:ColorPicker>
                         <xctk:ColorPicker x:Name="colorPicker1"
@@ -123,7 +123,7 @@
                                           StandardColorsHeader="Стандартные"
                                           StandardTabHeader="Стандартные"
                                           Height="25"
-                                          SelectedColorChanged="colorPicker_SelectedColorChanged"
+                                          SelectedColorChanged="ColorPicker_SelectedColorChanged"
                                           SelectedColor="{Binding Source={x:Static local:Settings.Default}, Path=RowColor1, Mode=OneWay}">
                         </xctk:ColorPicker>
                         <xctk:ColorPicker x:Name="colorPicker2"
@@ -136,7 +136,7 @@
                                           StandardColorsHeader="Стандартные"
                                           StandardTabHeader="Стандартные"
                                           Height="25"
-                                          SelectedColorChanged="colorPicker_SelectedColorChanged"
+                                          SelectedColorChanged="ColorPicker_SelectedColorChanged"
                                           SelectedColor="{Binding Source={x:Static local:Settings.Default}, Path=RowColor2, Mode=OneWay}">
                         </xctk:ColorPicker>
                         <xctk:ColorPicker x:Name="colorPicker3"
@@ -149,7 +149,7 @@
                                           StandardColorsHeader="Стандартные"
                                           StandardTabHeader="Стандартные"
                                           Height="25"
-                                          SelectedColorChanged="colorPicker_SelectedColorChanged"
+                                          SelectedColorChanged="ColorPicker_SelectedColorChanged"
                                           SelectedColor="{Binding Source={x:Static local:Settings.Default}, Path=RowColor3, Mode=OneWay}">
                         </xctk:ColorPicker>
                         <xctk:ColorPicker x:Name="colorPicker4"
@@ -162,7 +162,7 @@
                                           StandardColorsHeader="Стандартные"
                                           StandardTabHeader="Стандартные"
                                           Height="25"
-                                          SelectedColorChanged="colorPicker_SelectedColorChanged"
+                                          SelectedColorChanged="ColorPicker_SelectedColorChanged"
                                           SelectedColor="{Binding Source={x:Static local:Settings.Default}, Path=RowColor4, Mode=OneWay}">
                         </xctk:ColorPicker>
                         <xctk:ColorPicker x:Name="colorPicker5"
@@ -175,7 +175,7 @@
                                           StandardColorsHeader="Стандартные"
                                           StandardTabHeader="Стандартные"
                                           Height="25"
-                                          SelectedColorChanged="colorPicker_SelectedColorChanged"
+                                          SelectedColorChanged="ColorPicker_SelectedColorChanged"
                                           SelectedColor="{Binding Source={x:Static local:Settings.Default}, Path=RowColor5, Mode=OneWay}">
                         </xctk:ColorPicker>
                         <xctk:ColorPicker x:Name="colorPicker6"
@@ -188,7 +188,7 @@
                                           StandardColorsHeader="Стандартные"
                                           StandardTabHeader="Стандартные"
                                           Height="25"
-                                          SelectedColorChanged="colorPicker_SelectedColorChanged"
+                                          SelectedColorChanged="ColorPicker_SelectedColorChanged"
                                           SelectedColor="{Binding Source={x:Static local:Settings.Default}, Path=RowColor6, Mode=OneWay}">
                         </xctk:ColorPicker>
 
@@ -201,7 +201,7 @@
                     x:Name="applyButton"
                     Grid.Row="1"
                     Grid.Column="2"
-                    Click="applyButton_Click"
+                    Click="ApplyButton_Click"
                     IsEnabled="False"
                     Width="100"
                     Height="25"/>
@@ -210,7 +210,7 @@
                     x:Name="closeButton"
                     Grid.Row="1"
                     Grid.Column="3"
-                    Click="closeButton_Click"
+                    Click="CloseButton_Click"
                     Width="100"
                     Height="25"/>
     </Grid>

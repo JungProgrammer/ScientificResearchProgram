@@ -79,7 +79,7 @@
                             MinHeight="20"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
-                            Click="grantsUpdateButton_Click">
+                            Click="GrantsUpdateButton_Click">
                         <Image Source="/ResearchProgram;component/Icons/update.png"
                                    Width="25"/>
                     </Button>
@@ -101,19 +101,19 @@
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Редактировать" 
-                                          Click="editGrant">
+                                          Click="EditGrant">
                                     <MenuItem.Icon>
                                         <Image Source="/ResearchProgram;component/Icons/edit.png"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="Скрыть выделенные столбцы" 
-                                          Click="hideSelectedColumns">
+                                          Click="HideSelectedColumns">
                                     <MenuItem.Icon>
                                         <Image Source="/ResearchProgram;component/Icons/hide.png"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="Показать скрытые столбцы" 
-                                          Click="showHiddenColumns">
+                                          Click="ShowHiddenColumns">
                                     <MenuItem.Icon>
                                         <Image Source="/ResearchProgram;component/Icons/show.png"/>
                                     </MenuItem.Icon>
@@ -132,7 +132,7 @@
                             Content="Фильтры"
                             
                             HorizontalAlignment="Left"
-                            FontSize="14" Click="grantsFiltersButton_Click"/>
+                            FontSize="14" Click="GrantsFiltersButton_Click"/>
 
                 </Grid>
             </TabItem>

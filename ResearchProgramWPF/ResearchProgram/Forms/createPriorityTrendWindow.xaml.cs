@@ -31,11 +31,11 @@ namespace ResearchProgram
             {
                 priorityTrend.Title = priorityTrendTextBox.Text;
                 // Покдлючение к бд
-                CRUDDataBase.ConnectByDataBase();
+                CRUDDataBase.ConnectToDataBase();
                 // Внесение нового человека в бд
                 CRUDDataBase.InsertNewPriorityTrendsToDB(priorityTrend);
                 // Закрытие соединения с бд
-                CRUDDataBase.CloseConnect();
+                CRUDDataBase.CloseConnection();
 
                 MessageBox.Show("Добавление успешно");
 

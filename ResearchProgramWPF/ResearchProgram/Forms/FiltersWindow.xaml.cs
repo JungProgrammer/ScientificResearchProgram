@@ -90,9 +90,9 @@ namespace ResearchProgram
         /// </summary>
         private void SetGrantHeaders()
         {
-            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.ConnectToDataBase();
             GrantHeaders = CRUDDataBase.GetGrantsHeadersForFilters();
-            CRUDDataBase.CloseConnect();
+            CRUDDataBase.CloseConnection();
         }
 
 
@@ -203,10 +203,10 @@ namespace ResearchProgram
             // Для начала применить новые фильтры
             UpdateGrantsFilters();
 
-            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.ConnectToDataBase();
             // Загрузить снова таблицу
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
-            CRUDDataBase.CloseConnect();
+            CRUDDataBase.CloseConnection();
         }
 
         /// <summary>
@@ -276,9 +276,9 @@ namespace ResearchProgram
             GrantsFilters.ResetFilters();
 
             // Загрузить снова таблицу
-            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
-            CRUDDataBase.CloseConnect();
+            CRUDDataBase.CloseConnection();
         }
     }
 }

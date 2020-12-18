@@ -1,4 +1,4 @@
-﻿<Window x:Class="ResearchProgram.createGrantWindow"
+﻿<Window x:Class="ResearchProgram.CreateGrantWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -28,88 +28,88 @@
                         Margin="0 0 0 3"
                         FontSize="15"
                         Tag="OKVED"
-                        Click="grantParametersButtonClick"
+                        Click="GrantParametersButtonClick"
                         Background="#BBB"/>
                 <Button Content="Номер договора"
                         Margin="0 0 0 3"
                         FontSize="15"
                         Tag="grantNumber"
-                        Click="grantParametersButtonClick"/>
+                        Click="GrantParametersButtonClick"/>
                 <Button Content="Наименование НИОКР"
                         Margin="0 0 0 3"
                         FontSize="15"
                         Tag="NIOKR"
-                        Click="grantParametersButtonClick"/>
+                        Click="GrantParametersButtonClick"/>
                 <Button  Content="Заказчик"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="customer"
-                         Click="grantParametersButtonClick"/>
+                         Click="GrantParametersButtonClick"/>
                 <Button  Content="Дата начала"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="startDate"
-                         Click="grantParametersButtonClick"/>
+                         Click="GrantParametersButtonClick"/>
                 <Button  Content="Дата завершения"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="endDate"
-                         Click="grantParametersButtonClick"/>
+                         Click="GrantParametersButtonClick"/>
                 <Button  Content="Общая сумма договора"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="price"
-                         Click="grantParametersButtonClick"/>
+                         Click="GrantParametersButtonClick"/>
                 <Button  Content="Средства"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="deposits"
-                         Click="grantParametersButtonClick"/>
+                         Click="GrantParametersButtonClick"/>
                 <Button  Content="Руководитель НИОКР"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="leadNIOKR"
-                         Click="grantParametersButtonClick"/>
+                         Click="GrantParametersButtonClick"/>
                 <Button  Content="Исполнители"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="executors"
-                         Click="grantParametersButtonClick"/>
+                         Click="GrantParametersButtonClick"/>
                 <Button  Content="Учреждение"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="institution"
-                         Click="grantParametersButtonClick"/>
+                         Click="GrantParametersButtonClick"/>
                 <Button  Content="ГРНТИ"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="GRNTI"
-                         Click="grantParametersButtonClick"/>
+                         Click="GrantParametersButtonClick"/>
                 <Button  Content="Тип исследования"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="researchTypes"
-                         Click="grantParametersButtonClick"/>
+                         Click="GrantParametersButtonClick"/>
                 <Button  Content="Приоритетные направления"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="priorityTrends"
-                         Click="grantParametersButtonClick"/>
+                         Click="GrantParametersButtonClick"/>
                 <Button  Content="Тип науки"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="ScienceTypeItem"
-                         Click="grantParametersButtonClick"/>
+                         Click="GrantParametersButtonClick"/>
                 <Button  Content="НИР или УСЛУГА"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="NIRItem"
-                         Click="grantParametersButtonClick"/>
+                         Click="GrantParametersButtonClick"/>
                 <Button  Content="НОЦ"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="NOCItem"
-                         Click="grantParametersButtonClick"/>
+                         Click="GrantParametersButtonClick"/>
             </StackPanel>
         </ScrollViewer>
         <GridSplitter Grid.Column="1" 
@@ -304,13 +304,13 @@
                                     Grid.Row="2"
                                     Grid.Column="0"
                                     Margin="10 5"
-                                    Width="Auto" Click="depositsAddButton_Click_1"/>
+                                    Width="Auto" Click="DepositsAddButton_Click_1"/>
                             <Button Content="Удалить"
                                     Name="depositsDeleteButton"
                                     Grid.Row="2"
                                     Grid.Column="1"
                                     Margin="10 5"
-                                    Width="Auto" Click="depositsDeleteButton_Click"/>
+                                    Width="Auto" Click="DepositsDeleteButton_Click"/>
 
                         </Grid>
                     </TabItem.Content>
@@ -366,13 +366,13 @@
                                     Grid.Row="2"
                                     Grid.Column="0"
                                     Margin="10 5"
-                                    Width="Auto" Click="executorAddButton_Click"/>
+                                    Width="Auto" Click="ExecutorAddButton_Click"/>
                             <Button Content="Удалить"
                                     Name="executorDeleteButton"
                                     Grid.Row="2"
                                     Grid.Column="1"
                                     Margin="10 5"
-                                    Width="Auto" Click="executorDeleteButton_Click"/>
+                                    Width="Auto" Click="ExecutorDeleteButton_Click"/>
 
                         </Grid>
                     </TabItem.Content>
@@ -494,13 +494,13 @@
                                     Grid.Row="2"
                                     Grid.Column="0"
                                     Margin="2 5 10 5"
-                                    Width="Auto" Click="priorityTrendAddButton_Click"/>
+                                    Width="Auto" Click="PriorityTrendAddButton_Click"/>
                             <Button Content="Удалить"
                                     Name="priorityTrendDeleteButton"
                                     Grid.Row="2"
                                     Grid.Column="1"
                                     Margin="0 5 20 5"
-                                    Width="Auto" Click="priorityTrendDeleteButton_Click"/>
+                                    Width="Auto" Click="PriorityTrendDeleteButton_Click"/>
 
                         </Grid>
                     </TabItem.Content>
@@ -558,13 +558,13 @@
                                     Grid.Row="2"
                                     Grid.Column="0"
                                     Margin="2 5 10 5"
-                                    Width="Auto" Click="scienceTypeAddButton_Click"/>
+                                    Width="Auto" Click="ScienceTypeAddButton_Click"/>
                             <Button Content="Удалить"
                                     Name="scienceTypeDeleteButton"
                                     Grid.Row="2"
                                     Grid.Column="1"
                                     Margin="0 5 20 5"
-                                    Width="Auto" Click="scienceTypeDeleteButton_Click"/>
+                                    Width="Auto" Click="ScienceTypeDeleteButton_Click"/>
 
                         </Grid>
                     </TabItem.Content>
@@ -622,7 +622,7 @@
                     MinHeight="20"
                     MaxWidth="140"
                     MaxHeight="25"
-                    Margin="280 3 4 3" Click="createGrantButtonClick"
+                    Margin="280 3 4 3" Click="CreateGrantButtonClick"
                     x:Name="createGrantButton"></Button>
         </Grid>
     </Grid>

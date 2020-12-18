@@ -42,9 +42,9 @@ namespace ResearchProgram
 
             peopleDataTable = personsDataTable;
 
-            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.ConnectToDataBase();
             jobsList = CRUDDataBase.GetJobs();
-            CRUDDataBase.CloseConnect();
+            CRUDDataBase.CloseConnection();
 
             DataContext = this;
         }
@@ -213,11 +213,11 @@ namespace ResearchProgram
 
 
             // Покдлючение к бд
-            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.ConnectToDataBase();
             // Внесение нового человека в бд
             CRUDDataBase.InsertNewPersonToDB(newPerson);
             // Закрытие соединения с бд
-            CRUDDataBase.CloseConnect();
+            CRUDDataBase.CloseConnection();
 
             WorkerWithTablesOnMainForm.AddRowToPersonsTable(peopleDataTable, newPerson);
 

@@ -31,11 +31,11 @@ namespace ResearchProgram
             {
                 scienceType.Title = scienceTypeTextBox.Text;
                 // Покдлючение к бд
-                CRUDDataBase.ConnectByDataBase();
+                CRUDDataBase.ConnectToDataBase();
                 // Внесение нового человека в бд
                 CRUDDataBase.InsertNewScienceTypeToDB(scienceType);
                 // Закрытие соединения с бд
-                CRUDDataBase.CloseConnect();
+                CRUDDataBase.CloseConnection();
 
                 MessageBox.Show("Добавление успешно");
 

@@ -32,11 +32,11 @@ namespace ResearchProgram
             {
                 kafedra.Title = kafedraComboBox.Text;
                 // Покдлючение к бд
-                CRUDDataBase.ConnectByDataBase();
+                CRUDDataBase.ConnectToDataBase();
                 // Внесение нового человека в бд
                 CRUDDataBase.InsertNewKafedraToDB(kafedra);
                 // Закрытие соединения с бд
-                CRUDDataBase.CloseConnect();
+                CRUDDataBase.CloseConnection();
 
                 MessageBox.Show("Добавление успешно");
 

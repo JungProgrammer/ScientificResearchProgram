@@ -31,11 +31,11 @@ namespace ResearchProgram
             {
                 institution.Title = institutionTextBox.Text;
                 // Покдлючение к бд
-                CRUDDataBase.ConnectByDataBase();
+                CRUDDataBase.ConnectToDataBase();
                 // Внесение нового человека в бд
                 CRUDDataBase.InsertNewInstituitonToDB(institution);
                 // Закрытие соединения с бд
-                CRUDDataBase.CloseConnect();
+                CRUDDataBase.CloseConnection();
 
                 MessageBox.Show("Добавление успешно");
 

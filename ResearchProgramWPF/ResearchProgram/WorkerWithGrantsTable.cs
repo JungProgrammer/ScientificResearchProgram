@@ -21,9 +21,16 @@ namespace ResearchProgram
         /// </summary>
         /// <param name="grantsDataTable"></param>
         /// <param name="header"></param>
-        public static void AddHeadersToGrantTable(DataTable grantsDataTable, string header)
+        public static void AddHeadersToGrantTable(DataTable grantsDataTable, string header, string id)
         {
-            grantsDataTable.Columns.Add(header);
+            //grantsDataTable.Columns.Add(header);
+            DataColumn column = new DataColumn
+            {
+                DataType = Type.GetType("System.String"),
+                ColumnName = header,
+                Caption = id
+            };
+            grantsDataTable.Columns.Add(column);
         }
 
         /// <summary>
@@ -33,7 +40,13 @@ namespace ResearchProgram
         /// <param name="header"></param>
         public static void AddHeadersToPersonTable(DataTable personsDataTable, string header)
         {
-            personsDataTable.Columns.Add(header);
+            DataColumn column = new DataColumn
+            {
+                DataType = Type.GetType("System.String"),
+                ColumnName = header,
+                Caption = header
+            };
+            personsDataTable.Columns.Add(column);
         }
 
         /// <summary>
@@ -48,30 +61,30 @@ namespace ResearchProgram
             {
                 if (grantsDataTable.Rows.Count == 0) countOfGrantRows = 0;
                 countOfGrantRows++;
-
-                grantsDataTable.Rows.Add(
-                           countOfGrantRows.ToString(),
-                           grant.grantNumber,
-                           grant.OKVED,
-                           grant.NameNIOKR,
-                           grant.Customer.Title,
-                           grant.StartDate.ToString("dd.MM.yyyy"),
-                           grant.EndDate.ToString("dd.MM.yyyy"),
-                           grant.Price * (Settings.Default.NDSKey ? 1 : 1 / Settings.Default.NDSValue),
-                           String.Join("\n", grant.Depositor),
-                           String.Join("\n", grant.DepositorSum.Select(x => x * (Settings.Default.NDSKey ? 1 : 1 / Settings.Default.NDSValue)).ToArray()),
-                           grant.LeadNIOKR.shortName(),
-                           String.Join("\n", grant.Executor.Select(x => x.shortName()).ToArray()),
-                           grant.Institution,
-                           grant.Unit,
-                           grant.Kafedra,
-                           grant.Laboratory,
-                           grant.GRNTI,
-                           String.Join("\n", grant.ResearchType),
-                           String.Join("\n", grant.PriorityTrands),
-                           String.Join("\n", grant.ScienceType),
-                           grant.NIR,
-                           grant.NOC == "True" ? "Да" : grant.NOC == "False" ? "Нет" : "");
+                DataRow row = grantsDataTable.NewRow();
+                row["№"]                        = countOfGrantRows.ToString();
+                row["Номер договора"]           = grant.grantNumber;
+                row["ОКВЭД"]                    = grant.OKVED;
+                row["Наименование НИОКР"]       = grant.NameNIOKR;
+                row["Заказчик"]                 = grant.Customer.Title;
+                row["Дата начала"]              = grant.StartDate.ToString("dd.MM.yyyy");
+                row["Дата завершения"]          = grant.EndDate.ToString("dd.MM.yyyy");
+                row["Общая сумма договора"]     = grant.Price * (Settings.Default.NDSKey ? 1 : 1 / Settings.Default.NDSValue);
+                row["Средства"]                 = string.Join("\n", grant.Depositor);
+                row["Подробное финансирование"] = string.Join("\n", grant.DepositorSum.Select(x => x * (Settings.Default.NDSKey ? 1 : 1 / Settings.Default.NDSValue)).ToArray());
+                row["Руководитель НИОКР"]       = grant.LeadNIOKR.shortName();
+                row["Исполнители"]              = string.Join("\n", grant.Executor.Select(x => x.shortName()).ToArray()); 
+                row["Учреждение"]               = grant.Institution;
+                row["Подразделение"]            = grant.Unit;
+                row["Кафедра"]                  = grant.Kafedra;
+                row["Лаборатория"]              = grant.Laboratory;
+                row["ГРНТИ"]                    = string.Join("\n", grant.ResearchType);
+                row["Тип исследования"]         = string.Join("\n", grant.ResearchType);
+                row["Приоритетные направления"] = string.Join("\n", grant.PriorityTrands);
+                row["Тип науки"]                = string.Join("\n", grant.ScienceType);
+                row["НИР или УСЛУГА"]           = grant.NIR;
+                row["НОЦ"]                      = grant.NOC == "True" ? "Да" : grant.NOC == "False" ? "Нет" : "";
+                grantsDataTable.Rows.Add(row);
             }
         }
 
@@ -83,20 +96,20 @@ namespace ResearchProgram
         public static void AddRowToPersonsTable(DataTable personsDataTable, Person person)
         {
             countOfPersonRows++;
+            DataRow row = personsDataTable.NewRow();
+            row["#"]                            = countOfPersonRows.ToString();
+            row["ФИО"]                          = person.FIO;
+            row["Дата рождения"]                = person.BitrhDate;
+            row["Пол"]                          = person.Sex ? "M" : "Ж";
+            row["Место работы"]                 = person.PlaceOfWork;
+            row["Категория"]                    = person.Category;
+            row["Степень"]                      = person.Degree;
+            row["Звание"]                       = person.Rank;
+            row["Должность"]                    = string.Join("\n", person.Jobs);
+            row["Оклад"]                        = string.Join("\n", Job.GetSalariesFromPerson(person.Jobs));
+            row["Ставка"]                       = string.Join("\n", Job.GetSalaryRatesFromPerson(person.Jobs));
+            personsDataTable.Rows.Add(row);
 
-            personsDataTable.Rows.Add(
-                    countOfPersonRows.ToString(),
-                    person.FIO,
-                    person.BitrhDate,
-                    person.Sex ? "M" : "Ж",
-                    person.PlaceOfWork,
-                    person.Category,
-                    person.Degree,
-                    person.Rank,
-                    String.Join("\n", person.Jobs),
-                    String.Join("\n", Job.GetSalariesFromPerson(person.Jobs)),
-                    String.Join("\n", Job.GetSalaryRatesFromPerson(person.Jobs))
-                    );
         }
     }
 }

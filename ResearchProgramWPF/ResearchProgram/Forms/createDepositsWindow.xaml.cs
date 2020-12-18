@@ -31,11 +31,11 @@ namespace ResearchProgram
             {
                 depositor.Title = depositsTextBox.Text;
                 // Покдлючение к бд
-                CRUDDataBase.ConnectByDataBase();
+                CRUDDataBase.ConnectToDataBase();
                 // Внесение нового человека в бд
                 CRUDDataBase.InsertNewDepositToDB(depositor);
                 // Закрытие соединения с бд
-                CRUDDataBase.CloseConnect();
+                CRUDDataBase.CloseConnection();
 
                 MessageBox.Show("Добавление успешно");
 

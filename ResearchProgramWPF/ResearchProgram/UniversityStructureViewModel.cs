@@ -259,9 +259,9 @@ namespace ResearchProgram
         public UniversityStructureViewModel()
         {
             // Получение структуры бд
-            CRUDDataBase.ConnectByDataBase();
+            CRUDDataBase.ConnectToDataBase();
             UniversityStructure = CRUDDataBase.GetUniversityStructure();
-            CRUDDataBase.CloseConnect();
+            CRUDDataBase.CloseConnection();
 
             RootNode = new ObservableCollection<UniversityStructureTreeNode>() { UniversityStructureTreeNode.ConvertUsualStructureToTreeElement(UniversityStructure) };
         }

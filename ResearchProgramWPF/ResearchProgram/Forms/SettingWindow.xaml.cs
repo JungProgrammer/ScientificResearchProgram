@@ -24,11 +24,11 @@ namespace ResearchProgram
             InitializeComponent();
 
         }
-        public event EventHandler reloadGrantsTable;
+        public event EventHandler ReloadGrantsTable;
         public bool isNDSCheckBoxChecked;
         public bool IsNDSCheckBoxChecked {get; set;} = Settings.Default.NDSKey;
 
-        private void applyButton_Click(object sender, RoutedEventArgs e)
+        private void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
             Settings.Default.NDSKey = NDSCheckBox.IsChecked.Value;
             Settings.Default.RowColor0 = colorPicker0.SelectedColor.Value.ToString();
@@ -43,11 +43,11 @@ namespace ResearchProgram
 
             applyButton.IsEnabled = false;
 
-            EventHandler handler = reloadGrantsTable;
+            EventHandler handler = ReloadGrantsTable;
             handler(this, EventArgs.Empty);
         }
 
-        private void closeButton_Click(object sender, RoutedEventArgs e)
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
             if (applyButton.IsEnabled)
             {
@@ -56,7 +56,7 @@ namespace ResearchProgram
                 switch (close)
                 {
                     case MessageBoxResult.Yes:
-                        applyButton_Click(sender, e);
+                        ApplyButton_Click(sender, e);
                         Close();
                         break;
                     case MessageBoxResult.No:
@@ -74,7 +74,7 @@ namespace ResearchProgram
             applyButton.IsEnabled = true;
         }
 
-        private void colorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
+        private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {   
             if (applyButton != null)
                 applyButton.IsEnabled = true;

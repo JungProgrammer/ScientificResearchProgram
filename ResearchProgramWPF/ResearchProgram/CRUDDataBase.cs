@@ -24,7 +24,7 @@ namespace ResearchProgram
         /// <summary>
         /// Подключение к БД
         /// </summary>
-        public static void ConnectByDataBase()
+        public static void ConnectToDataBase()
         {
             conn = new NpgsqlConnection($"Server=212.192.88.14; Port=5432; User Id={loginFromDB}; Password={passwordFromDB}; Database=postgres");
             conn.Open();
@@ -33,7 +33,7 @@ namespace ResearchProgram
         /// <summary>
         /// Закрытия соединения с БД
         /// </summary>
-        public static void CloseConnect()
+        public static void CloseConnection()
         {
             conn.Close();
         }
@@ -971,14 +971,14 @@ namespace ResearchProgram
         /// </summary>
         public static void CreateGrantsHeaders(DataTable dataTable)
         {
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, field_title FROM fieldslist ORDER BY id", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, field_title, field_id FROM fieldslist ORDER BY id", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    WorkerWithTablesOnMainForm.AddHeadersToGrantTable(dataTable, reader[1].ToString());
+                    WorkerWithTablesOnMainForm.AddHeadersToGrantTable(dataTable, reader[1].ToString(), reader[2].ToString());
                 }
             }
             else
@@ -1611,6 +1611,24 @@ namespace ResearchProgram
             cmd.Parameters.Add(new NpgsqlParameter("title", scienceType.Title));
 
             cmd.ExecuteNonQuery();
+        }
+
+        public static bool IsGrantNumberAvailable(string grantNumber)
+        {
+            ConnectToDataBase();
+            // Проверяем не занят ли номер договора, который пытаются вставлять/изменять
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT grantNumber FROM grants WHERE grantNumber = :grantNumber", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantNumber", grantNumber));
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+            bool answer;
+            if (reader.HasRows)
+                answer =  false;
+            else
+                answer =  true;
+            CloseConnection();
+
+            return answer;
+
         }
 
     }
