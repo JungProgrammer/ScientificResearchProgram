@@ -109,62 +109,62 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="createDepositsWindow.xaml.cs">
+    <Compile Include="Forms\createDepositsWindow.xaml.cs">
       <DependentUpon>createDepositsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="createInstitutionWindow.xaml.cs">
+    <Compile Include="Forms\createInstitutionWindow.xaml.cs">
       <DependentUpon>createInstitutionWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="createKafedraWindow.xaml.cs">
+    <Compile Include="Forms\createKafedraWindow.xaml.cs">
       <DependentUpon>createKafedraWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="createPersonWindow.xaml.cs">
+    <Compile Include="Forms\createPersonWindow.xaml.cs">
       <DependentUpon>createPersonWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="createPriorityTrendWindow.xaml.cs">
+    <Compile Include="Forms\createPriorityTrendWindow.xaml.cs">
       <DependentUpon>createPriorityTrendWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="createResearchType.xaml.cs">
+    <Compile Include="Forms\createResearchType.xaml.cs">
       <DependentUpon>createResearchType.xaml</DependentUpon>
     </Compile>
-    <Compile Include="createScienceTypeWindow.xaml.cs">
+    <Compile Include="Forms\createScienceTypeWindow.xaml.cs">
       <DependentUpon>createScienceTypeWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="createUnitWindow.xaml.cs">
+    <Compile Include="Forms\createUnitWindow.xaml.cs">
       <DependentUpon>createUnitWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Customer.cs" />
-    <Compile Include="Depositor.cs" />
-    <Compile Include="DepositsConverter.cs" />
+    <Compile Include="Classes\Customer.cs" />
+    <Compile Include="Classes\Depositor.cs" />
+    <Compile Include="Converters\DepositsConverter.cs" />
     <Compile Include="FilterElement.cs" />
-    <Compile Include="FiltersWindow.xaml.cs">
+    <Compile Include="Forms\FiltersWindow.xaml.cs">
       <DependentUpon>FiltersWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="GrantHeader.cs" />
     <Compile Include="GrantsFilters.cs" />
     <Compile Include="IContainer.cs" />
-    <Compile Include="Institution.cs" />
-    <Compile Include="Job.cs" />
-    <Compile Include="JobConverter.cs" />
-    <Compile Include="Laboratory.cs" />
-    <Compile Include="LaboratoryConverter.cs" />
-    <Compile Include="NDSConverter.cs" />
-    <Compile Include="Nir.cs" />
+    <Compile Include="Classes\Institution.cs" />
+    <Compile Include="Classes\Job.cs" />
+    <Compile Include="Converters\JobConverter.cs" />
+    <Compile Include="Classes\Laboratory.cs" />
+    <Compile Include="Converters\LaboratoryConverter.cs" />
+    <Compile Include="Converters\NDSConverter.cs" />
+    <Compile Include="Classes\Nir.cs" />
     <Compile Include="Parser.cs" />
-    <Compile Include="PriorityTrend.cs" />
+    <Compile Include="Classes\PriorityTrend.cs" />
     <Compile Include="RelayComand.cs" />
-    <Compile Include="ResearchType.cs" />
-    <Compile Include="ScienceType.cs" />
+    <Compile Include="Classes\ResearchType.cs" />
+    <Compile Include="Classes\ScienceType.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="SettingWindow.xaml.cs">
+    <Compile Include="Forms\SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Unit.cs" />
+    <Compile Include="Classes\Unit.cs" />
     <Compile Include="UniversityStructureCommandWindows\AddTreeNodeWindow.xaml.cs">
       <DependentUpon>AddTreeNodeWindow.xaml</DependentUpon>
     </Compile>
@@ -172,51 +172,51 @@
       <DependentUpon>RenameNodeWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UniversityStructureViewModel.cs" />
-    <Compile Include="UniversityStructureWindow.xaml.cs">
+    <Compile Include="Forms\UniversityStructureWindow.xaml.cs">
       <DependentUpon>UniversityStructureWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="UniversityStructureWindowComands.cs" />
     <Compile Include="Utilities.cs" />
-    <Compile Include="VisibilityConveter.cs" />
+    <Compile Include="Converters\VisibilityConveter.cs" />
     <Compile Include="WorkerWithGrantsTable.cs" />
     <Compile Include="WorkerWithUniversityStructure.cs" />
-    <Page Include="createDepositsWindow.xaml">
+    <Page Include="Forms\createDepositsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="createGrantWindow.xaml">
+    <Page Include="Forms\createGrantWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="createInstitutionWindow.xaml">
+    <Page Include="Forms\createInstitutionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="createKafedraWindow.xaml">
+    <Page Include="Forms\createKafedraWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="createPersonWindow.xaml">
+    <Page Include="Forms\createPersonWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="createPriorityTrendWindow.xaml">
+    <Page Include="Forms\createPriorityTrendWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="createResearchType.xaml">
+    <Page Include="Forms\createResearchType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="createScienceTypeWindow.xaml">
+    <Page Include="Forms\createScienceTypeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="createUnitWindow.xaml">
+    <Page Include="Forms\createUnitWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="FiltersWindow.xaml">
+    <Page Include="Forms\FiltersWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -228,17 +228,17 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="createGrantWindow.xaml.cs">
+    <Compile Include="Forms\createGrantWindow.xaml.cs">
       <DependentUpon>createGrantWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="CRUDDataBase.cs" />
-    <Compile Include="Grant.cs" />
-    <Compile Include="Kafedra.cs" />
+    <Compile Include="Classes\Grant.cs" />
+    <Compile Include="Classes\Kafedra.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="SettingWindow.xaml">
+    <Page Include="Forms\SettingWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -250,13 +250,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="UniversityStructureWindow.xaml">
+    <Page Include="Forms\UniversityStructureWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Person.cs" />
+    <Compile Include="Classes\Person.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
