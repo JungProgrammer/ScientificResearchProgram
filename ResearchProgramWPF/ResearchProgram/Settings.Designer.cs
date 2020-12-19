@@ -49,7 +49,7 @@ namespace ResearchProgram {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("#FFFAAF")]
+        [global::System.Configuration.DefaultSettingValueAttribute("#FFFFFF")]
         public string RowColor0 {
             get {
                 return ((string)(this["RowColor0"]));
