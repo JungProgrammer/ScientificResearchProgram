@@ -211,11 +211,14 @@ namespace ResearchProgram
         // Открытые окна фильтров
         private void GrantsFiltersButton_Click(object sender, RoutedEventArgs e)
         {
+
             FiltersWindow filtersWindow = new FiltersWindow(GrantsDataTable)
             {
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+
+            WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Owner = this
             };
+            filtersWindow.Closing += (senders, args) => { filtersWindow.Owner = null; };
             filtersWindow.Show();
         }
 
@@ -270,7 +273,19 @@ namespace ResearchProgram
         }
         private void EditGrant(object sender, RoutedEventArgs e)
         {
-            Console.WriteLine(SelectedGrantRow.Row.Field<String>("Номер договора"));
+            string grantNumber = SelectedGrantRow.Row.Field<String>("Номер договора");
+            Console.WriteLine(grantNumber);
+            Grant grant = CRUDDataBase.GetGrantByGrantNumber(grantNumber);
+
+            CreateGrantWindow newGrantWindow = new CreateGrantWindow(GrantsDataTable, grant)
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Owner = this
+            };
+            // Эта штука нужна чтобы родительское окно не скрывалось, когда дочернее закрывается
+            newGrantWindow.Closing += (senders, args) => { newGrantWindow.Owner = null; };
+
+            newGrantWindow.Show();
         }
 
         private void StructureOfUniversity_Click(object sender, RoutedEventArgs e)

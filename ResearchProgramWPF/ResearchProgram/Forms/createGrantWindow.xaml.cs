@@ -29,6 +29,12 @@ namespace ResearchProgram
             }
         }
 
+        public string selectedNameNIOKR;
+        public string SelectedNameNIOKR
+        {
+            get { return selectedNameNIOKR; }
+            set { selectedNameNIOKR = value; Console.WriteLine((string)value); }
+        }
 
         //Списки данных из БД
         public ObservableCollection<string> NIOKRList { get; set; }
@@ -50,6 +56,7 @@ namespace ResearchProgram
         public List<ComboBox> EnteredScienceTypesList { get; set; }
 
         public string NirChecker;
+        public string NOCChecker;
 
         // Combobox для заказчика
         AutoCompleteComboBox customerAutoCompleteComboBox;
@@ -66,7 +73,7 @@ namespace ResearchProgram
         }
 
 
-        public CreateGrantWindow(DataTable grantsDataTable)
+        public CreateGrantWindow(DataTable grantsDataTable, Grant grantToEdit=null)
         {
             NIOKRList = new ObservableCollection<string>
             {
@@ -104,6 +111,144 @@ namespace ResearchProgram
             // Закрытие подключения к базе данных
             CRUDDataBase.CloseConnection();
 
+            // Если открыта форма редактирования, то вставим в нее данные
+            if (grantToEdit != null)
+            {
+                Title = "Редактирование договора";
+                createGrantButton.Content = "Редактировать";
+                OKVEDTextBox.Text = grantToEdit.OKVED;
+                grantNumberTextBox.Text = grantToEdit.grantNumber;
+                switch (grantToEdit.NameNIOKR)
+                {
+                    case "19":
+                        NIOKRComboBox.SelectedIndex = 0;
+                        break;
+                    case "20":
+                        NIOKRComboBox.SelectedIndex = 1;
+                        break;
+                }
+                for (int i = 0; i < CustomersList.Count; i++)
+                    if (CustomersList[i].Title == grantToEdit.Customer.Title)
+                        customerAutoCompleteComboBox.SelectedIndex = i;
+
+                startDateDatePicker.SelectedDate = grantToEdit.StartDate;
+                endDateDatePicker.SelectedDate = grantToEdit.EndDate;
+                priceTextBox.Text = grantToEdit.Price.ToString();
+
+                for(int i = 0;i < grantToEdit.Depositor.Count; i++)
+                {
+                    StackPanel horizontalStackPanel = new StackPanel()
+                    {
+                        Orientation = Orientation.Horizontal,
+                    };
+
+                    ComboBox depositorComboBox = new ComboBox()
+                    {
+                        Margin = new Thickness(5, 0, 5, 10),
+                        ItemsSource = DepositsList,
+                        Width = 240,
+                    };
+                    for (int j = 0; j < DepositsList.Count; j++)
+                        if (DepositsList[j].Title == grantToEdit.Depositor[i].Title)
+                            depositorComboBox.SelectedIndex = j;
+
+
+                    TextBox sumTextBox = new TextBox()
+                    {
+                        Margin = new Thickness(5, 0, 5, 10),
+                        MinWidth = 90,
+                        Text = grantToEdit.DepositorSum[i].ToString()
+                    };
+
+                    horizontalStackPanel.Children.Add(depositorComboBox);
+                    horizontalStackPanel.Children.Add(sumTextBox);
+
+
+                    depositsVerticalListView.Items.Add(horizontalStackPanel);
+                }
+                for (int i = 0; i < PersonsList.Count; i++)
+                    if (PersonsList[i].FIO == grantToEdit.LeadNIOKR.FIO)
+                        LeadNIOKRAutoCompleteComboBox.SelectedIndex = i;
+                for (int i = 0; i < grantToEdit.Executor.Count; i++)
+                {
+                    AutoCompleteComboBox executorComboBox = new AutoCompleteComboBox()
+                    {
+                        Margin = new Thickness(5, 0, 5, 0),
+                        ItemsSource = new List<Person>(PersonsList),
+                        MinWidth = 300
+                    };
+                    for (int j = 0; j < PersonsList.Count; j++)
+                        if (PersonsList[j].FIO == grantToEdit.Executor[i].FIO)
+                            executorComboBox.SelectedIndex = j;
+
+                    executorsVerticalListView.Items.Add(executorComboBox);
+                }
+                //АРТЁМ СЮДА
+                //АРТЁМ СЮДА
+                //АРТЁМ СЮДА
+                //АРТЁМ СЮДА
+                //UniversityStructure.SelectedInstitution = grantToEdit.Institution;
+                //АРТЁМ СЮДА
+                //АРТЁМ СЮДА
+                //АРТЁМ СЮДА
+
+                GRNTITextBox.Text = grantToEdit.GRNTI;
+
+                for (int j = 0; j < ResearchTypesList.Count; j++)
+                    if (ResearchTypesList[j].Title == grantToEdit.ResearchType[0].Title)
+                        researchTypeAutoCompleteComboBox.SelectedIndex = j;
+
+                for (int i = 0;i<grantToEdit.PriorityTrands.Count; i++)
+                {
+                    AutoCompleteComboBox priorityTrendComboBox = new AutoCompleteComboBox()
+                    {
+                        Margin = new Thickness(5, 0, 5, 0),
+                        ItemsSource = new List<PriorityTrend>(PriorityTrendList),
+                        MinWidth = 300
+                    };
+                    for (int j = 0; j < PriorityTrendList.Count; j++)
+                        if (PriorityTrendList[j].Title == grantToEdit.PriorityTrands[i].Title)
+                            priorityTrendComboBox.SelectedIndex = j;
+
+
+                    priorityTrendsVerticalListView.Items.Add(priorityTrendComboBox);
+                }
+                for (int i = 0; i < grantToEdit.ScienceType.Count; i++)
+                {
+                    AutoCompleteComboBox scienceTypeComboBox = new AutoCompleteComboBox()
+                    {
+                        Margin = new Thickness(5, 0, 5, 0),
+                        ItemsSource = new List<ScienceType>(ScienceTypeList),
+                        MinWidth = 300
+                    };
+
+                    for (int j = 0; j < ScienceTypeList.Count; j++)
+                        if (ScienceTypeList[j].Title == grantToEdit.ScienceType[i].Title)
+                            scienceTypeComboBox.SelectedIndex = j;
+
+                    scienceTypeVerticalListView.Items.Add(scienceTypeComboBox);
+                }
+
+                switch (grantToEdit.NIR)
+                {
+                    case "НИР":
+                        NIR.IsChecked = true;
+                        break;
+                    case "УСЛУГА":
+                        USLUGA.IsChecked = true;
+                        break;
+                }
+
+                switch (grantToEdit.NOC)
+                {
+                    case "True":
+                        NOC.IsChecked = true;
+                        break;
+                    case "False":
+                        NotNOC.IsChecked = true;
+                        break;
+                }
+            }
 
             DataContext = this;
         }
@@ -206,7 +351,7 @@ namespace ResearchProgram
             }
             else
             {
-                MessageBox.Show("Выделите нужный для удаления элемент");
+                MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -235,7 +380,7 @@ namespace ResearchProgram
             }
             else
             {
-                MessageBox.Show("Выделите нужный для удаления элемент");
+                MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -264,7 +409,7 @@ namespace ResearchProgram
             }
             else
             {
-                MessageBox.Show("Выделите нужный для удаления элемент");
+                MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -293,7 +438,7 @@ namespace ResearchProgram
             }
             else
             {
-                MessageBox.Show("Выделите нужный для удаления элемент");
+                MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
         /// <summary>
@@ -553,15 +698,14 @@ namespace ResearchProgram
                 newGrant.NIR = "";
             }
 
-            if (NOCTextBox.Text != "")
+            if (NOCChecker != null)
             {
-                newGrant.NOC = NOCTextBox.Text;
+                newGrant.NOC = NOCChecker;
             }
             else
             {
                 newGrant.NOC = "";
             }
-
 
             // Если данные введены корректно
             if (isAllOkey)
@@ -583,10 +727,16 @@ namespace ResearchProgram
             }
         }
 
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        private void NIRRadioChecked(object sender, RoutedEventArgs e)
         {
             RadioButton pressed = (RadioButton)sender;
             NirChecker = pressed.Content.ToString();
+        }
+
+        private void NOCRadioChecked(object sender, RoutedEventArgs e)
+        {
+            RadioButton pressed = (RadioButton)sender;
+            NOCChecker = pressed.Content.ToString();
         }
 
     }

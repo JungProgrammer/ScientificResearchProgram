@@ -78,7 +78,7 @@ namespace ResearchProgram
                 row["Подразделение"]            = grant.Unit;
                 row["Кафедра"]                  = grant.Kafedra;
                 row["Лаборатория"]              = grant.Laboratory;
-                row["ГРНТИ"]                    = string.Join("\n", grant.ResearchType);
+                row["ГРНТИ"]                    = grant.GRNTI;
                 row["Тип исследования"]         = string.Join("\n", grant.ResearchType);
                 row["Приоритетные направления"] = string.Join("\n", grant.PriorityTrands);
                 row["Тип науки"]                = string.Join("\n", grant.ScienceType);

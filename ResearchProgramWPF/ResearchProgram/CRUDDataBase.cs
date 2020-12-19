@@ -38,14 +38,8 @@ namespace ResearchProgram
             conn.Close();
         }
 
-        /// <summary>
-        /// Выгружает таблицу договоров на гланый экран
-        /// </summary>
-        /// <param name="dataTable"></param>
-        public static void LoadGrantsTable(DataTable dataTable)
+        public static Grant[] GetAllGrants()
         {
-            dataTable.Rows.Clear();
-
             int grant_index;
             int grant_id;
             int countOfGrants;
@@ -131,7 +125,8 @@ namespace ResearchProgram
                     grant_index = ShowGrantIndex(grants, grant_id);
 
                     priorityTrend = reader[1].ToString();
-                    grants[grant_index].PriorityTrands.Add(new PriorityTrend() {
+                    grants[grant_index].PriorityTrands.Add(new PriorityTrend()
+                    {
                         Title = priorityTrend
                     });
                 }
@@ -159,7 +154,8 @@ namespace ResearchProgram
                     grant_index = ShowGrantIndex(grants, grant_id);
 
                     scienceType = reader[1].ToString();
-                    grants[grant_index].ScienceType.Add(new ScienceType() {
+                    grants[grant_index].ScienceType.Add(new ScienceType()
+                    {
                         Title = scienceType
                     });
                 }
@@ -271,13 +267,25 @@ namespace ResearchProgram
                 Debug.WriteLine("No rows found.");
             }
             reader.Close();
+            return grants;
+        }
 
+        /// <summary>
+        /// Выгружает таблицу договоров на гланый экран
+        /// </summary>
+        /// <param name="dataTable"></param>
+        public static void LoadGrantsTable(DataTable dataTable)
+        {
+            dataTable.Rows.Clear();
+
+            Grant[] grants = GetAllGrants();
 
             for (int i = 0; i < grants.Length; i++)
             {
                 WorkerWithTablesOnMainForm.AddRowToGrantTable(dataTable, grants[i]);
             }
         }
+
 
         internal static Institution AddNewInstitution(string institutionTitle)
         {
@@ -1420,7 +1428,7 @@ namespace ResearchProgram
             cmd.Parameters.Add(new NpgsqlParameter("price", grant.Price));
             cmd.Parameters.Add(new NpgsqlParameter("grnti", grant.GRNTI));
             cmd.Parameters.Add(new NpgsqlParameter("nir", grant.NIR));
-            cmd.Parameters.Add(new NpgsqlParameter("noc", grant.NOC == "НОЦ"));
+            cmd.Parameters.Add(new NpgsqlParameter("noc", grant.NOC == "Да"));
 
             cmd.ExecuteNonQuery();
 
@@ -1627,6 +1635,22 @@ namespace ResearchProgram
 
             return answer;
 
+        }
+
+        public static Grant GetGrantByGrantNumber(string grantNumber)
+        {
+            ConnectToDataBase();
+            Grant[] grants = GetAllGrants();
+            CloseConnection();
+            Grant grant = new Grant();
+            for(int i = 0;i < grants.Length; i++)
+            {
+                if (grants[i].grantNumber == grantNumber){
+                    grant = grants[i];
+                    break;
+                }
+            }
+            return grant;
         }
 
     }

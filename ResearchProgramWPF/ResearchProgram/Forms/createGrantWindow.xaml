@@ -587,8 +587,13 @@
                             <StackPanel Name="nirStackPanel"
                                       Grid.Row="1">
                                 <RadioButton GroupName="NIRRadio" 
-                                             Content="НИР"   Checked="RadioButton_Checked" />
-                                <RadioButton GroupName="NIRRadio" Content="Услуга" Checked="RadioButton_Checked" />
+                                             Content="НИР"   
+                                             Checked="NIRRadioChecked"
+                                             x:Name="NIR"/>
+                                <RadioButton GroupName="NIRRadio"
+                                             Content="Услуга"
+                                             Checked="NIRRadioChecked"
+                                             x:Name="USLUGA"/>
                             </StackPanel>
                         </Grid>
                     </TabItem.Content>
@@ -607,9 +612,17 @@
                             <Label Content="НОЦ"
                            Grid.Row="0"
                            Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="1"
-                                     Name="NOCTextBox"
-                                     Margin="5 0"/>
+                            <StackPanel Name="NOCStackPanel"
+                                      Grid.Row="1">
+                                <RadioButton GroupName="NOCRadio" 
+                                             Content="Да"   
+                                             Checked="NOCRadioChecked"
+                                             x:Name="NOC"/>
+                                <RadioButton GroupName="NOCRadio"
+                                             Content="Нет"
+                                             Checked="NOCRadioChecked"
+                                             x:Name="NotNOC"/>
+                            </StackPanel>
                         </Grid>
                     </TabItem.Content>
                 </TabItem>

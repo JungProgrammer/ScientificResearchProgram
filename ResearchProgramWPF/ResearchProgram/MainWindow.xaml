@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResearchProgram"
         mc:Ignorable="d"
-        Title="MainWindow"
+        Title="Гранты НИЧ"
         Height="900"
         Width="1300"
         x:Name="mainWindow">
@@ -39,13 +39,10 @@
                 <MenuItem Header="Структура университета" Click="StructureOfUniversity_Click"/>
                 <MenuItem Header="Добавить">
                     <MenuItem Header="Человек" Click="CreatePersonMenuItem_Click"/>
-                    <MenuItem Header="Средства" Click="CreateDepositsMenuItem_Click"/>
-                    <MenuItem Header="Кафедра" Click="CreateKafedraMenuItem_Click"/>
-                    <MenuItem Header="Подразделение" Click="CreateUnitMenuItem_Click"/>
-                    <MenuItem Header="Учреждение" Click="CreateInstitutionMenuItem_Click"/>
-                    <MenuItem Header="Тип исследования" Click="CreateResearchTypeMenuItem_Click"/>
-                    <MenuItem Header="Приоритетные направления" Click="CreatePriorityTrendsMenuItem_Click"/>
-                    <MenuItem Header="Тип науки" Click="CreateScienceTypeMenuItem_Click"/>
+                    <!--<MenuItem Header="Средства" Click="CreateDepositsMenuItem_Click"/>-->
+                    <!--<MenuItem Header="Тип исследования" Click="CreateResearchTypeMenuItem_Click"/>-->
+                    <!--<MenuItem Header="Приоритетные направления" Click="CreatePriorityTrendsMenuItem_Click"/>-->
+                    <!--<MenuItem Header="Тип науки" Click="CreateScienceTypeMenuItem_Click"/>-->
                 </MenuItem>
 
                 <Separator />
