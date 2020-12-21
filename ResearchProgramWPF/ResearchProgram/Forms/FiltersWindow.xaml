@@ -155,21 +155,21 @@
             <RowDefinition Height="50"/>
         </Grid.RowDefinitions>
 
-        <DockPanel LastChildFill="True"
-                   Grid.Row="0"
-                   MaxHeight="45">
-            <Button DockPanel.Dock="Left" 
-                    x:Name="addFilterButton"
+        <StackPanel Grid.Row="0"
+                   MaxHeight="45"
+                    Orientation="Horizontal">
+            <Button x:Name="addFilterButton"
                     Content="Добавить фильтр"
+                    Width="100"
                     Margin="10 8 10 8" Click="addFilterButton_Click"
                     />
-            <dotNetKitControls:AutoCompleteComboBox DockPanel.Dock="Right" 
-                                                    x:Name="filterComboBox"
+            <dotNetKitControls:AutoCompleteComboBox x:Name="filterComboBox"
                                                     ItemsSource="{Binding Path=GrantHeaders}"
                                                     SelectedItem="{Binding Path=SelectedGrantHeader}"
                                                     Margin="5 8 250 8"
+                                                    Width="300"
                                                     FontSize="13"/>
-        </DockPanel>
+        </StackPanel>
 
 
 

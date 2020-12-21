@@ -125,7 +125,7 @@
 
             <TabControl Grid.Row="0"
                         x:Name="createGrantTabControl"
-                        Margin="5 5 4 2">
+                        Margin="5 5 4 2" >
                 
                 <TabItem Name="OKVED"
                          Visibility="Collapsed">
