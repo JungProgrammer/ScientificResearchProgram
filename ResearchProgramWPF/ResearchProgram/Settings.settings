@@ -9,7 +9,7 @@
       <Value Profile="(Default)">1.2</Value>
     </Setting>
     <Setting Name="RowColor0" Type="System.String" Scope="User">
-      <Value Profile="(Default)">#FFFAAF</Value>
+      <Value Profile="(Default)">#FFFFFF</Value>
     </Setting>
     <Setting Name="RowColor1" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FFFFFF</Value>
