@@ -228,7 +228,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение остальных столбцов
-            cmd = new NpgsqlCommand("SELECT grants.id, grants.grantnumber, OKVED, nameNIOKR, p.title, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC, l.title FROM grants " +
+            cmd = new NpgsqlCommand("SELECT grants.id, grants.grantnumber, OKVED, nameNIOKR, p.title, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC, l.title, i.id, u.id, k.id, l.id FROM grants " +
                                                         "LEFT JOIN customers p on grants.customerId = p.customerid " +
                                                         "LEFT JOIN persons p2 on grants.leadNIOKRId = p2.id " +
                                                         "LEFT JOIN kafedras k on grants.kafedraId = k.id " +
@@ -253,13 +253,13 @@ namespace ResearchProgram
                     grants[grant_index].EndDate = Convert.ToDateTime(reader[6]);
                     grants[grant_index].Price = float.Parse(reader[7].ToString());
                     grants[grant_index].LeadNIOKR = new Person() { FIO = reader[8].ToString() };
-                    grants[grant_index].Kafedra = new Kafedra() { Title = reader[9].ToString() };
-                    grants[grant_index].Unit = new Unit() { Title = reader[10].ToString() };
-                    grants[grant_index].Institution = new Institution() { Title = reader[11].ToString() };
+                    grants[grant_index].Kafedra = new Kafedra() { Id = reader[18] != DBNull.Value ? Convert.ToInt32(reader[18]) : 0, Title = reader[9].ToString() };
+                    grants[grant_index].Unit = new Unit() { Id = reader[17] != DBNull.Value ? Convert.ToInt32(reader[17]) : 0, Title = reader[10].ToString() };
+                    grants[grant_index].Institution = new Institution() { Id = reader[16] != DBNull.Value ? Convert.ToInt32(reader[16]) : 0, Title = reader[11].ToString() };
                     grants[grant_index].GRNTI = reader[12].ToString();
                     grants[grant_index].NIR = reader[13].ToString();
                     grants[grant_index].NOC = reader[14].ToString();
-                    grants[grant_index].Laboratory = new Laboratory() { Title = reader[15].ToString() };
+                    grants[grant_index].Laboratory = new Laboratory() { Id = reader[19] != DBNull.Value ? Convert.ToInt32(reader[19]) : 0, Title = reader[15].ToString() };
                 }
             }
             else
@@ -386,6 +386,40 @@ namespace ResearchProgram
                 ":title)", conn);
             cmd.Parameters.Add(new NpgsqlParameter("title", laboratoryTitle));
             cmd.Parameters.Add(new NpgsqlParameter("unitid", unitId));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("SELECT id FROM laboratories ORDER BY id DESC ", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Read();
+                newLaboratory = new Laboratory()
+                {
+                    Id = Convert.ToInt32(reader[0]),
+                    Title = laboratoryTitle
+                };
+            }
+
+            return newLaboratory;
+        }
+
+        /// <summary>
+        /// Добавление лаборатории в учреждение
+        /// </summary>
+        /// <param name="laboratoryTitle"></param>
+        /// <param name="unitId"></param>
+        /// <returns></returns>
+        internal static Laboratory AddNewLaboratoryToInstitution(string laboratoryTitle, int institutionId)
+        {
+            Laboratory newLaboratory = null;
+
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into laboratories (institutionid," +
+                "title) " +
+                "values(:institutionid," +
+                ":title)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", laboratoryTitle));
+            cmd.Parameters.Add(new NpgsqlParameter("institutionid", institutionId));
             cmd.ExecuteNonQuery();
 
             cmd = new NpgsqlCommand("SELECT id FROM laboratories ORDER BY id DESC ", conn);
@@ -537,9 +571,10 @@ namespace ResearchProgram
 
             // Сначала получаем всю структуру, где лаборатории привязаны к кафедрам
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT institutions.id, institutions.title, units.id, units.title, kafedras.id, kafedras.title, l1.id, l1.title FROM institutions " +
-                                                    "JOIN units ON institutions.id = units.institutionid " +
-                                                    "JOIN kafedras ON units.id = kafedras.unitid " +
-                                                    "JOIN laboratories l1 ON kafedras.id = l1.kafedraid " +
+                                                    "LEFT JOIN units ON institutions.id = units.institutionid " +
+                                                    "LEFT JOIN kafedras ON units.id = kafedras.unitid " +
+                                                    "LEFT JOIN laboratories l1 ON kafedras.id = l1.kafedraid " +
+                                                    "WHERE institutions.id > 0 " +
                                                     "ORDER BY institutions.id; ", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
@@ -556,25 +591,25 @@ namespace ResearchProgram
                 string kafedraTitle;
                 string laboratoryTitle;
 
-                Institution institutionFound;
-                Unit unitFound;
-                Kafedra kafedraFound;
-                Laboratory laboratoryFound;
-
+                Institution institutionFound = null;
+                Unit unitFound = null;
+                Kafedra kafedraFound = null;
+                Laboratory laboratoryFound = null;
+                
                 while (reader.Read())
                 {
-                    institutionId = Convert.ToInt32(reader[0]);
+                    institutionId = reader[0] != DBNull.Value ? Convert.ToInt32(reader[0]) : 0;
                     institutionTitle = reader[1].ToString();
-                    unitId = Convert.ToInt32(reader[2]);
+                    unitId = reader[2] != DBNull.Value ? Convert.ToInt32(reader[2]) : 0;
                     unitTitle = reader[3].ToString();
-                    kafedraId = Convert.ToInt32(reader[4]);
+                    kafedraId = reader[4] != DBNull.Value ? Convert.ToInt32(reader[4]) : 0;
                     kafedraTitle = reader[5].ToString();
-                    laboratoryId = Convert.ToInt32(reader[6]);
+                    laboratoryId = reader[6] != DBNull.Value ? Convert.ToInt32(reader[6]) : 0;
                     laboratoryTitle = reader[7].ToString();
 
                     institutionFound = universityStructure.FindInstitution(institutionId);
                     // Если такого учреждения еще нет
-                    if(institutionFound == null)
+                    if(institutionFound == null && institutionId != 0)
                     {
                         institutionFound = new Institution()
                         {
@@ -586,9 +621,9 @@ namespace ResearchProgram
                         universityStructure.Institutions.Add(institutionFound);
                     }
 
-                    unitFound = universityStructure.FindUnit(institutionFound, unitId);
+                    if(institutionFound != null) unitFound = universityStructure.FindUnit(institutionFound, unitId);
                     // Если такого подразделения еще нет
-                    if(unitFound == null)
+                    if(unitFound == null && unitId != 0)
                     {
                         unitFound = new Unit()
                         {
@@ -600,9 +635,9 @@ namespace ResearchProgram
                         institutionFound.Units.Add(unitFound);
                     }
 
-                    kafedraFound = universityStructure.FindKafedra(unitFound, kafedraId);
+                    if(unitFound != null) kafedraFound = universityStructure.FindKafedra(unitFound, kafedraId);
                     // Если такой кафедры еще нет
-                    if(kafedraFound == null)
+                    if(kafedraFound == null && kafedraId != 0)
                     {
                         kafedraFound = new Kafedra()
                         {
@@ -614,9 +649,9 @@ namespace ResearchProgram
                         unitFound.Kafedras.Add(kafedraFound);
                     }
 
-                    laboratoryFound = universityStructure.FindLaboratoryInKafedra(kafedraFound, laboratoryId);
+                    if(kafedraFound != null) laboratoryFound = universityStructure.FindLaboratoryInKafedra(kafedraFound, laboratoryId);
                     // Если такая лаборатория еще не существует
-                    if(laboratoryFound == null)
+                    if(laboratoryFound == null && laboratoryId != 0)
                     {
                         laboratoryFound = new Laboratory()
                         {
@@ -638,8 +673,8 @@ namespace ResearchProgram
 
             // Теперь получаем все записи, где лаборатория привязана к подразделению
             cmd = new NpgsqlCommand("SELECT institutions.id, institutions.title, units.id, units.title, laboratories.id, laboratories.title FROM institutions " +
-                                        "JOIN units ON institutions.id = units.institutionid " +
-                                        "JOIN laboratories ON unitid = units.id " +
+                                        "LEFT JOIN units ON institutions.id = units.institutionid " +
+                                        "LEFT JOIN laboratories ON unitid = units.id " +
                                         "ORDER BY institutions.id; ", conn);
             reader = cmd.ExecuteReader();
 
@@ -654,22 +689,22 @@ namespace ResearchProgram
                 string unitTitle;
                 string laboratoryTitle;
 
-                Institution institutionFound;
-                Unit unitFound;
-                Laboratory laboratoryFound;
+                Institution institutionFound = null;
+                Unit unitFound = null;
+                Laboratory laboratoryFound = null;
 
                 while (reader.Read())
                 {
-                    institutionId = Convert.ToInt32(reader[0]);
+                    institutionId = reader[0] != DBNull.Value ? Convert.ToInt32(reader[0]) : 0;
                     institutionTitle = reader[1].ToString();
-                    unitId = Convert.ToInt32(reader[2]);
+                    unitId = reader[2] != DBNull.Value ? Convert.ToInt32(reader[2]) : 0;
                     unitTitle = reader[3].ToString();
-                    laboratoryId = Convert.ToInt32(reader[4]);
+                    laboratoryId = reader[4] != DBNull.Value ? Convert.ToInt32(reader[4]) : 0;
                     laboratoryTitle = reader[5].ToString();
 
                     institutionFound = universityStructure.FindInstitution(institutionId);
                     // Если такого учреждения еще нет
-                    if (institutionFound == null)
+                    if (institutionFound == null && institutionId != 0)
                     {
                         institutionFound = new Institution()
                         {
@@ -681,9 +716,9 @@ namespace ResearchProgram
                         universityStructure.Institutions.Add(institutionFound);
                     }
 
-                    unitFound = universityStructure.FindUnit(institutionFound, unitId);
+                    if (institutionFound != null) unitFound = universityStructure.FindUnit(institutionFound, unitId);
                     // Если такого подразделения еще нет
-                    if (unitFound == null)
+                    if (unitFound == null && unitId != 0)
                     {
                         unitFound = new Unit()
                         {
@@ -695,9 +730,9 @@ namespace ResearchProgram
                         institutionFound.Units.Add(unitFound);
                     }
 
-                    laboratoryFound = universityStructure.FindLaboratoryInUnit(unitFound, laboratoryId);
+                    if (unitFound != null) laboratoryFound = universityStructure.FindLaboratoryInUnit(unitFound, laboratoryId);
                     // Если такая лаборатория еще не существует
-                    if (laboratoryFound == null)
+                    if (laboratoryFound == null && laboratoryId != 0)
                     {
                         laboratoryFound = new Laboratory()
                         {
@@ -713,6 +748,61 @@ namespace ResearchProgram
             else
             {
                 Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+            // Получение лабораторий, которые привязаны напрямую к учреждению
+            cmd = new NpgsqlCommand("SELECT institutions.title, institutions.id, laboratories.title, laboratories.id FROM institutions " +
+                                        "LEFT JOIN laboratories ON institutions.id = laboratories.institutionid " +
+                                        "WHERE institutions.id > 0; ", conn);
+            reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                int institutionId;
+                int laboratoryId;
+
+                string institutionTitle;
+                string laboratoryTitle;
+
+                Institution institutionFound = null;
+                Laboratory laboratoryFound = null;
+
+                while (reader.Read())
+                {
+                    institutionId = reader[1] != DBNull.Value ? Convert.ToInt32(reader[1]) : 0;
+                    institutionTitle = reader[0].ToString();
+                    laboratoryId = reader[3] != DBNull.Value ? Convert.ToInt32(reader[3]) : 0;
+                    laboratoryTitle = reader[2].ToString();
+
+
+                    institutionFound = universityStructure.FindInstitution(institutionId);
+                    // Если такого учреждения еще нет
+                    if (institutionFound == null && institutionId != 0)
+                    {
+                        institutionFound = new Institution()
+                        {
+                            Id = institutionId,
+                            Title = institutionTitle
+                        };
+
+                        // Добавляем в список учреждений
+                        universityStructure.Institutions.Add(institutionFound);
+                    }
+
+                    if (institutionFound != null) laboratoryFound = universityStructure.FindLaboratoryInInstitution(institutionFound, laboratoryId);
+                    // Если такая лаборатория еще не существует
+                    if (laboratoryFound == null && laboratoryId != 0)
+                    {
+                        laboratoryFound = new Laboratory()
+                        {
+                            Id = laboratoryId,
+                            Title = laboratoryTitle
+                        };
+
+                        institutionFound.Laboratories.Add(laboratoryFound);
+                    }
+                }
             }
             reader.Close();
 

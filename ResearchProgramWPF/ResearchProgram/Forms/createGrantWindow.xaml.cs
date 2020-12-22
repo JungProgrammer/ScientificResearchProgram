@@ -183,14 +183,26 @@ namespace ResearchProgram
 
                     executorsVerticalListView.Items.Add(executorComboBox);
                 }
-                //АРТЁМ СЮДА
-                //АРТЁМ СЮДА
-                //АРТЁМ СЮДА
-                //АРТЁМ СЮДА
-                //UniversityStructure.SelectedInstitution = grantToEdit.Institution;
-                //АРТЁМ СЮДА
-                //АРТЁМ СЮДА
-                //АРТЁМ СЮДА
+
+                // Привязка для структуры университета
+                UniversityStructure.SelectedInstitution = UniversityStructure.FindInstitution(grantToEdit.Institution.Id);
+                if(UniversityStructure.SelectedInstitution != null)
+                {
+                    UniversityStructure.SelectedUnit = UniversityStructure.FindUnit(UniversityStructure.SelectedInstitution, grantToEdit.Unit.Id);
+                    if(UniversityStructure.SelectedUnit != null)
+                    {
+                        UniversityStructure.SelectedKafedra = UniversityStructure.FindKafedra(UniversityStructure.SelectedUnit, grantToEdit.Kafedra.Id);
+                        if (UniversityStructure.SelectedKafedra != null)
+                        {
+                            UniversityStructure.SelectedLaboratory = UniversityStructure.FindLaboratoryInKafedra(UniversityStructure.SelectedKafedra, grantToEdit.Laboratory.Id);
+                        }
+                        if(UniversityStructure.SelectedLaboratory == null)
+                        {
+                            UniversityStructure.SelectedLaboratory = UniversityStructure.FindLaboratoryInUnit(UniversityStructure.SelectedUnit, grantToEdit.Laboratory.Id);
+                        }
+                    }
+                }
+                
 
                 GRNTITextBox.Text = grantToEdit.GRNTI;
 
@@ -251,7 +263,12 @@ namespace ResearchProgram
             }
 
             DataContext = this;
+            //kafedraLaboratoryCombobox.DataContext = this;
+            //unitLaboratoryCombobox.DataContext = this;
+            //institutionLaboratoryCombobox.DataContext = this;
         }
+
+
         /// <summary>
         /// Добавление комбо бокса к заказчику
         /// </summary>

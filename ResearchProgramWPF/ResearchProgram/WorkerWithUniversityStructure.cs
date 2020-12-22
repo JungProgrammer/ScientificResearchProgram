@@ -112,11 +112,24 @@ namespace ResearchProgram
             return kafedraFound;
         }
 
-        public Laboratory FindLaboratoryInKafedra(Kafedra kafedraFound, int laboratoryId)
+
+        public Laboratory FindLaboratoryInInstitution(Institution institution, int laboratoryid)
         {
             Laboratory laboratoryFound = null;
 
-            foreach(Laboratory laboratory in kafedraFound.Laboratories)
+            foreach(Laboratory laboratory in institution.Laboratories)
+            {
+                if (laboratoryid == laboratory.Id) laboratoryFound = laboratory;
+            }
+
+            return laboratoryFound;
+        }
+
+        public Laboratory FindLaboratoryInUnit(Unit unitFound, int laboratoryId)
+        {
+            Laboratory laboratoryFound = null;
+
+            foreach (Laboratory laboratory in unitFound.Laboratories)
             {
                 if (laboratory.Id == laboratoryId) laboratoryFound = laboratory;
             }
@@ -124,12 +137,11 @@ namespace ResearchProgram
             return laboratoryFound;
         }
 
-
-        public Laboratory FindLaboratoryInUnit(Unit unitFound, int laboratoryId)
+        public Laboratory FindLaboratoryInKafedra(Kafedra kafedraFound, int laboratoryId)
         {
             Laboratory laboratoryFound = null;
 
-            foreach (Laboratory laboratory in unitFound.Laboratories)
+            foreach (Laboratory laboratory in kafedraFound.Laboratories)
             {
                 if (laboratory.Id == laboratoryId) laboratoryFound = laboratory;
             }
@@ -182,6 +194,22 @@ namespace ResearchProgram
 
             CRUDDataBase.ConnectToDataBase();
             newLaboratory = CRUDDataBase.AddNewLaboratoryToUnit(laboratoryTitle, parent.Id);
+            CRUDDataBase.CloseConnection();
+
+            return newLaboratory;
+        }
+
+        /// <summary>
+        /// Создание лаборатории для учреждения
+        /// </summary>
+        /// <param name="laboratoryTitle"></param>
+        /// <returns></returns>
+        public static Laboratory CreateNewLaboratory(string laboratoryTitle, Institution parent)
+        {
+            Laboratory newLaboratory = null;
+
+            CRUDDataBase.ConnectToDataBase();
+            newLaboratory = CRUDDataBase.AddNewLaboratoryToInstitution(laboratoryTitle, parent.Id);
             CRUDDataBase.CloseConnection();
 
             return newLaboratory;

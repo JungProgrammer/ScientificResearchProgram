@@ -419,23 +419,58 @@
                                     SelectedItem="{Binding SelectedKafedra}">
                                 </dotNetKitControls:AutoCompleteComboBox>
 
+
                                 <Label Content="Лаборатория"
                                          Grid.Row="0"
                                    Margin="3 10 0 0"/>
+
                                 <dotNetKitControls:AutoCompleteComboBox
+                                    x:Name="institutionLaboratoryCombobox"
                                     MinWidth="300"
                                     Margin="8 2 0 2"
-                                    Visibility="{Binding SelectedKafedra, ConverterParameter=KafedraSelected, Converter={StaticResource laboratoryConverter}}"
-                                    ItemsSource="{Binding SelectedKafedra.Laboratories}"
+                                    ItemsSource="{Binding SelectedInstitution.Laboratories}"
                                     SelectedItem="{Binding SelectedLaboratory}">
+                                    <dotNetKitControls:AutoCompleteComboBox.Visibility>
+                                        <MultiBinding Converter="{StaticResource laboratoryConverter}"
+                                                      ConverterParameter="InstitutionLab">
+                                            <Binding Path = "SelectedUnit"/>
+                                            <Binding Path = "SelectedKafedra" />
+                                        </MultiBinding>
+                                    </dotNetKitControls:AutoCompleteComboBox.Visibility>
                                 </dotNetKitControls:AutoCompleteComboBox>
+
                                 <dotNetKitControls:AutoCompleteComboBox
+                                    x:Name="unitLaboratoryCombobox"
                                     MinWidth="300"
                                     Margin="8 2 0 2"
-                                    Visibility="{Binding SelectedKafedra, ConverterParameter=KafedraNotSelected, Converter={StaticResource laboratoryConverter}}"
                                     ItemsSource="{Binding SelectedUnit.Laboratories}"
                                     SelectedItem="{Binding SelectedLaboratory}">
+                                    <dotNetKitControls:AutoCompleteComboBox.Visibility>
+                                        <MultiBinding Converter="{StaticResource laboratoryConverter}"
+                                                      ConverterParameter="UnitLab">
+                                            <Binding Path = "SelectedUnit"/>
+                                            <Binding Path = "SelectedKafedra" />
+                                        </MultiBinding>
+                                    </dotNetKitControls:AutoCompleteComboBox.Visibility>
                                 </dotNetKitControls:AutoCompleteComboBox>
+
+                                <dotNetKitControls:AutoCompleteComboBox
+                                    x:Name="kafedraLaboratoryCombobox"
+                                    MinWidth="300"
+                                    Margin="8 2 0 2"
+                                    ItemsSource="{Binding SelectedKafedra.Laboratories}"
+                                    SelectedItem="{Binding SelectedLaboratory}">
+                                    <dotNetKitControls:AutoCompleteComboBox.Visibility>
+                                        <MultiBinding Converter="{StaticResource laboratoryConverter}"
+                                                      ConverterParameter="KafedraLab">
+                                            <Binding Path = "SelectedUnit"/>
+                                            <Binding Path = "SelectedKafedra" />
+                                        </MultiBinding>
+                                    </dotNetKitControls:AutoCompleteComboBox.Visibility>
+                                </dotNetKitControls:AutoCompleteComboBox>
+                                
+
+
                             </StackPanel>
                             
                         </Grid>
