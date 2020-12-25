@@ -58,13 +58,16 @@ namespace ResearchProgram
         public string NirChecker;
         public string NOCChecker;
 
-        // Combobox для заказчика
-        AutoCompleteComboBox customerAutoCompleteComboBox;
         // Combobox для руководителя
         AutoCompleteComboBox LeadNIOKRAutoCompleteComboBox;
         // Combobox для типа исследования
         AutoCompleteComboBox researchTypeAutoCompleteComboBox;
 
+
+        // Если это окно отрыто для редактирования.
+        private bool _isEditGrant = false;
+        // id гранта, который получен для редактирования.
+        private int grantEditId = 0;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -87,7 +90,6 @@ namespace ResearchProgram
             // Подключение к базе данных
             CRUDDataBase.ConnectToDataBase();
 
-
             PersonsList = CRUDDataBase.GetPersons();
             UniversityStructure = CRUDDataBase.GetUniversityStructure();
             CustomersList = CRUDDataBase.GetCustomers();
@@ -103,17 +105,18 @@ namespace ResearchProgram
             EnteredScienceTypesList = new List<ComboBox>();
             EnteredExecutorsList = new List<ComboBox>();
 
-            AddCustomerAutoCompleteComboBox();
             AddLeadNIOKRAutoCompleteComboBox();
             AddResearchTypeAutoCompleteComboBox();
-
 
             // Закрытие подключения к базе данных
             CRUDDataBase.CloseConnection();
 
+
             // Если открыта форма редактирования, то вставим в нее данные
             if (grantToEdit != null)
             {
+                _isEditGrant = true;
+                grantEditId = grantToEdit.Id;
                 Title = "Редактирование договора";
                 createGrantButton.Content = "Редактировать";
                 OKVEDTextBox.Text = grantToEdit.OKVED;
@@ -127,9 +130,23 @@ namespace ResearchProgram
                         NIOKRComboBox.SelectedIndex = 1;
                         break;
                 }
-                for (int i = 0; i < CustomersList.Count; i++)
-                    if (CustomersList[i].Title == grantToEdit.Customer.Title)
-                        customerAutoCompleteComboBox.SelectedIndex = i;
+
+                for(int i = 0; i < grantToEdit.Customer.Count; i++)
+                {
+                    AutoCompleteComboBox customerComboBox = new AutoCompleteComboBox()
+                    {
+                        Margin = new Thickness(5, 0, 5, 0),
+                        ItemsSource = new List<Customer>(CustomersList),
+                        MinWidth = 300
+                    };
+
+                    for (int j = 0; j < CustomersList.Count; j++)
+                        if (CustomersList[j].Title == grantToEdit.Customer[i].Title)
+                            customerComboBox.SelectedIndex = j;
+
+                    customersVerticalListView.Items.Add(customerComboBox);
+                }
+
 
                 startDateDatePicker.SelectedDate = grantToEdit.StartDate;
                 endDateDatePicker.SelectedDate = grantToEdit.EndDate;
@@ -160,8 +177,18 @@ namespace ResearchProgram
                         Text = grantToEdit.DepositorSum[i].ToString()
                     };
 
+                    DateTime selectedDate;
+                    DateTime.TryParse(grantToEdit.ReceiptDate[i], out selectedDate);
+                    DatePicker dateComboBox = new DatePicker()
+                    {
+                        Margin = new Thickness(5, 0, 5, 10),
+                        MinWidth = 90,
+                        SelectedDate = selectedDate
+                    };
+
                     horizontalStackPanel.Children.Add(depositorComboBox);
                     horizontalStackPanel.Children.Add(sumTextBox);
+                    horizontalStackPanel.Children.Add(dateComboBox);
 
 
                     depositsVerticalListView.Items.Add(horizontalStackPanel);
@@ -206,11 +233,14 @@ namespace ResearchProgram
 
                 GRNTITextBox.Text = grantToEdit.GRNTI;
 
-                for (int j = 0; j < ResearchTypesList.Count; j++)
-                    if (ResearchTypesList[j].Title == grantToEdit.ResearchType[0].Title)
-                        researchTypeAutoCompleteComboBox.SelectedIndex = j;
+                if(grantToEdit.ResearchType.Count > 0)
+                {
+                    for (int j = 0; j < ResearchTypesList.Count; j++)
+                        if (ResearchTypesList[j].Title == grantToEdit.ResearchType[0].Title)
+                            researchTypeAutoCompleteComboBox.SelectedIndex = j;
+                }
 
-                for (int i = 0;i<grantToEdit.PriorityTrands.Count; i++)
+                for (int i = 0; i < grantToEdit.PriorityTrands.Count; i++)
                 {
                     AutoCompleteComboBox priorityTrendComboBox = new AutoCompleteComboBox()
                     {
@@ -225,6 +255,7 @@ namespace ResearchProgram
 
                     priorityTrendsVerticalListView.Items.Add(priorityTrendComboBox);
                 }
+
                 for (int i = 0; i < grantToEdit.ScienceType.Count; i++)
                 {
                     AutoCompleteComboBox scienceTypeComboBox = new AutoCompleteComboBox()
@@ -263,27 +294,47 @@ namespace ResearchProgram
             }
 
             DataContext = this;
-            //kafedraLaboratoryCombobox.DataContext = this;
-            //unitLaboratoryCombobox.DataContext = this;
-            //institutionLaboratoryCombobox.DataContext = this;
         }
 
 
         /// <summary>
-        /// Добавление комбо бокса к заказчику
+        /// Кнопка добавления у заказчика
         /// </summary>
-        private void AddCustomerAutoCompleteComboBox()
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void customerAddButton_Click(object sender, RoutedEventArgs e)
         {
-
-            customerAutoCompleteComboBox = new AutoCompleteComboBox()
+            AutoCompleteComboBox customerComboBox = new AutoCompleteComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 0),
                 ItemsSource = new List<Customer>(CustomersList),
                 MinWidth = 300
             };
-            customerGrid.Children.Add(customerAutoCompleteComboBox);
-            Grid.SetRow(customerAutoCompleteComboBox, 1);
+
+            customersVerticalListView.Items.Add(customerComboBox);
         }
+
+        /// <summary>
+        /// Кнопка удаления у заказчика
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void customerDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            int countSelectedElement = customersVerticalListView.SelectedItems.Count;
+            if (countSelectedElement > 0)
+            {
+                for (int i = 0; i < countSelectedElement; i++)
+                {
+                    customersVerticalListView.Items.Remove(customersVerticalListView.SelectedItems[0]);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         /// <summary>
         /// Добавление комбо бокса к руководителю НИОКР
         /// </summary>
@@ -343,8 +394,15 @@ namespace ResearchProgram
                 MinWidth = 90
             };
 
+            DatePicker datePicker = new DatePicker()
+            {
+                Margin = new Thickness(5, 0, 5, 10),
+                MinWidth = 90
+            };
+
             horizontalStackPanel.Children.Add(depositorComboBox);
             horizontalStackPanel.Children.Add(sumTextBox);
+            horizontalStackPanel.Children.Add(datePicker);
 
 
             depositsVerticalListView.Items.Add(horizontalStackPanel);
@@ -481,6 +539,8 @@ namespace ResearchProgram
         private void CreateGrantButtonClick(object sender, RoutedEventArgs e)
         {
             Grant newGrant = new Grant();
+            newGrant.Id = grantEditId;
+
             string incorrectDataString = "";
             // Булевская переменная, которая отвечает за правильное создание договора. Если все необходимые данные были внесены, то договор создается
             bool isAllOkey = true;
@@ -496,11 +556,11 @@ namespace ResearchProgram
 
             if (grantNumberTextBox.Text.ToString() != "")
             {
-                if (CRUDDataBase.IsGrantNumberAvailable(grantNumberTextBox.Text))
-                    newGrant.grantNumber = grantNumberTextBox.Text;
-                else
+                newGrant.grantNumber = grantNumberTextBox.Text;
+
+                if (!CRUDDataBase.IsGrantNumberAvailable(newGrant))
                 {
-                    incorrectDataString += "Догово с таким номером уже существует. Пожалуйста, укажите уникальный номер договора.\n\n";
+                    incorrectDataString += "Договор с таким номером уже существует. Пожалуйста, укажите уникальный номер договора.\n\n";
                     isAllOkey = false;
                 }
             }
@@ -520,13 +580,19 @@ namespace ResearchProgram
                 newGrant.NameNIOKR = "";
             }
 
-            if ((Customer)customerAutoCompleteComboBox.SelectedItem != null)
+            if (customersVerticalListView.Items != null)
             {
-                newGrant.Customer = new Customer()
+                foreach(AutoCompleteComboBox cmb in customersVerticalListView.Items.OfType<AutoCompleteComboBox>())
                 {
-                    Id = ((Customer)customerAutoCompleteComboBox.SelectedItem).Id,
-                    Title = ((Customer)customerAutoCompleteComboBox.SelectedItem).Title
-                };
+                    if(cmb.SelectedItem != null)
+                    {
+                        newGrant.Customer.Add(new Customer()
+                        {
+                            Id = ((Customer)cmb.SelectedItem).Id,
+                            Title = ((Customer)cmb.SelectedItem).Title
+                        });
+                    }
+                }
             }
             else
             {
@@ -554,20 +620,26 @@ namespace ResearchProgram
             {
                 ComboBox cmb;
                 TextBox partSum;
+                DatePicker datePicker;
 
                 foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
                 {
                     cmb = (ComboBox)sp.Children[0];
                     partSum = (TextBox)sp.Children[1];
+                    datePicker = (DatePicker)sp.Children[2];
+
+                    DateTime selectedDate;
+                    DateTime.TryParse(datePicker.SelectedDate.ToString(), out selectedDate);
 
                     if (cmb.SelectedItem != null && partSum.Text.ToString() != "")
                     {
                         newGrant.Depositor.Add(new Depositor()
                         {
                             Id = ((Depositor)cmb.SelectedItem).Id,
-                            Title = cmb.SelectedItem.ToString()
+                            Title = cmb.SelectedItem.ToString(),
                         });
                         newGrant.DepositorSum.Add(Parser.ConvertToRightFloat(partSum.Text));
+                        newGrant.ReceiptDate.Add(selectedDate.ToShortDateString());
                     }
                 }
             }
@@ -582,7 +654,6 @@ namespace ResearchProgram
             else
             {
                 incorrectDataString += "Необходимо указать руководителя НИОКР\n";
-                //MessageBox.Show("Необходимо указать руководителя проекта");
                 isAllOkey = false;
             }
 
@@ -727,15 +798,51 @@ namespace ResearchProgram
             // Если данные введены корректно
             if (isAllOkey)
             {
-                // Подключаюсь к БД
-                CRUDDataBase.ConnectToDataBase();
+                // Если редактирование договора
+                if (_isEditGrant)
+                {
+                    // Подключаюсь к БД
+                    CRUDDataBase.ConnectToDataBase();
 
-                CRUDDataBase.InsertNewGrantToDB(newGrant);
+                    CRUDDataBase.UpdateGrantNumber(newGrant);
+                    CRUDDataBase.UpdateOKVED(newGrant);
+                    CRUDDataBase.UpdateNameNIOKR(newGrant);
+                    CRUDDataBase.UpdateCustomers(newGrant);
+                    CRUDDataBase.UpdateStartDate(newGrant);
+                    CRUDDataBase.UpdateEndDate(newGrant);
+                    CRUDDataBase.UpdatePrice(newGrant);
+                    CRUDDataBase.UpdateDeposits(newGrant);
+                    CRUDDataBase.UpdateLeadNiokr(newGrant);
+                    CRUDDataBase.UpdateExecutors(newGrant);
+                    CRUDDataBase.UpdateInstitution(newGrant);
+                    CRUDDataBase.UpdateUnit(newGrant);
+                    CRUDDataBase.UpdateKafedra(newGrant);
+                    CRUDDataBase.UpdateLaboratory(newGrant);
+                    CRUDDataBase.UpdateGRNTI(newGrant);
+                    CRUDDataBase.UpdateResearchType(newGrant);
+                    CRUDDataBase.UpdatePriorityTrends(newGrant);
+                    CRUDDataBase.UpdateScienceTypes(newGrant);
+                    CRUDDataBase.UpdateNIR(newGrant);
+                    CRUDDataBase.UpdateNOC(newGrant);
 
-                // Закрываем соединение с БД
-                CRUDDataBase.CloseConnection();
+                    // Закрываем соединение с БД
+                    CRUDDataBase.CloseConnection();
 
-                MessageBox.Show("Договор успешно создан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Договор успешно изменен", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                // Если создание нового договора
+                else
+                {
+                    // Подключаюсь к БД
+                    CRUDDataBase.ConnectToDataBase();
+
+                    CRUDDataBase.InsertNewGrantToDB(newGrant);
+
+                    // Закрываем соединение с БД
+                    CRUDDataBase.CloseConnection();
+
+                    MessageBox.Show("Договор успешно создан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
                 Close();
             }
             else

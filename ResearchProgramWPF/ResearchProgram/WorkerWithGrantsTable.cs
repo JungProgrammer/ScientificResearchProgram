@@ -66,7 +66,7 @@ namespace ResearchProgram
                 row["Номер договора"]           = grant.grantNumber;
                 row["ОКВЭД"]                    = grant.OKVED;
                 row["Наименование НИОКР"]       = grant.NameNIOKR;
-                row["Заказчик"]                 = grant.Customer.Title;
+                row["Заказчик"]                 = string.Join("\n", grant.Customer);
                 row["Дата начала"]              = grant.StartDate.ToString("dd.MM.yyyy");
                 row["Дата завершения"]          = grant.EndDate.ToString("dd.MM.yyyy");
                 row["Общая сумма договора"]     = grant.Price * (Settings.Default.NDSKey ? 1 : 1 / Settings.Default.NDSValue);

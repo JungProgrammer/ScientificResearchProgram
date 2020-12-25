@@ -168,7 +168,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение спонсоров
-            cmd = new NpgsqlCommand("SELECT grantId, title, PartSum FROM grantDeposits " +
+            cmd = new NpgsqlCommand("SELECT grantId, title, PartSum, receiptDate FROM grantDeposits " +
                                         "JOIN depositors d on grantDeposits.sourceId = d.id " +
                                         "JOIN grants g on grantDeposits.grantId = g.id " +
                                         "ORDER BY grantId; ", conn);
@@ -178,6 +178,7 @@ namespace ResearchProgram
             {
                 string grantDeposit;
                 string grantDepositSum;
+                string receiptDate;
                 while (reader.Read())
                 {
                     grant_id = Convert.ToInt32(reader[0]);
@@ -185,11 +186,13 @@ namespace ResearchProgram
 
                     grantDeposit = reader[1].ToString();
                     grantDepositSum = reader[2].ToString();
+                    receiptDate = reader[3] != DBNull.Value ? DateTime.Parse(reader[3].ToString()).ToShortDateString() : string.Empty;
                     grants[grant_index].Depositor.Add(new Depositor()
                     {
-                        Title = grantDeposit
+                        Title = grantDeposit,
                     });
                     grants[grant_index].DepositorSum.Add(float.Parse(grantDepositSum));
+                    grants[grant_index].ReceiptDate.Add(receiptDate);
                 }
             }
             else
@@ -198,6 +201,36 @@ namespace ResearchProgram
             }
 
             reader.Close();
+
+
+            // Получение заказчиков
+            cmd = new NpgsqlCommand("SELECT grant_id, customer_id, customers.title FROM grants " +
+                                        "JOIN grants_customers ON grants.id = grants_customers.grant_id " +
+                                        "JOIN customers ON customers.customerid = grants_customers.customer_id; ", conn);
+            reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    grant_id = Convert.ToInt32(reader[0]);
+                    grant_index = ShowGrantIndex(grants, grant_id);
+
+                    grants[grant_index].Customer.Add(new Customer()
+                    {
+                        Id = Convert.ToInt32(reader[1]),
+                        Title = reader[2].ToString()
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+
+            reader.Close();
+
+
 
             // Получение исполнителей
             cmd = new NpgsqlCommand("SELECT grantId, FIO, executorId FROM executors " +
@@ -228,8 +261,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение остальных столбцов
-            cmd = new NpgsqlCommand("SELECT grants.id, grants.grantnumber, OKVED, nameNIOKR, p.title, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC, l.title, i.id, u.id, k.id, l.id FROM grants " +
-                                                        "LEFT JOIN customers p on grants.customerId = p.customerid " +
+            cmd = new NpgsqlCommand("SELECT grants.id, grants.grantnumber, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC, l.title, i.id, u.id, k.id, l.id FROM grants " +
                                                         "LEFT JOIN persons p2 on grants.leadNIOKRId = p2.id " +
                                                         "LEFT JOIN kafedras k on grants.kafedraId = k.id " +
                                                         "LEFT JOIN units u on grants.unitId = u.id " +
@@ -248,18 +280,17 @@ namespace ResearchProgram
                     grants[grant_index].grantNumber = reader[1].ToString();
                     grants[grant_index].OKVED = reader[2].ToString();
                     grants[grant_index].NameNIOKR = reader[3].ToString();
-                    grants[grant_index].Customer = new Customer() { Title = reader[4].ToString() };
-                    grants[grant_index].StartDate = Convert.ToDateTime(reader[5]);
-                    grants[grant_index].EndDate = Convert.ToDateTime(reader[6]);
-                    grants[grant_index].Price = float.Parse(reader[7].ToString());
-                    grants[grant_index].LeadNIOKR = new Person() { FIO = reader[8].ToString() };
-                    grants[grant_index].Kafedra = new Kafedra() { Id = reader[18] != DBNull.Value ? Convert.ToInt32(reader[18]) : 0, Title = reader[9].ToString() };
-                    grants[grant_index].Unit = new Unit() { Id = reader[17] != DBNull.Value ? Convert.ToInt32(reader[17]) : 0, Title = reader[10].ToString() };
-                    grants[grant_index].Institution = new Institution() { Id = reader[16] != DBNull.Value ? Convert.ToInt32(reader[16]) : 0, Title = reader[11].ToString() };
-                    grants[grant_index].GRNTI = reader[12].ToString();
-                    grants[grant_index].NIR = reader[13].ToString();
-                    grants[grant_index].NOC = reader[14].ToString();
-                    grants[grant_index].Laboratory = new Laboratory() { Id = reader[19] != DBNull.Value ? Convert.ToInt32(reader[19]) : 0, Title = reader[15].ToString() };
+                    grants[grant_index].StartDate = Convert.ToDateTime(reader[4]);
+                    grants[grant_index].EndDate = Convert.ToDateTime(reader[5]);
+                    grants[grant_index].Price = float.Parse(reader[6].ToString());
+                    grants[grant_index].LeadNIOKR = new Person() { FIO = reader[7].ToString() };
+                    grants[grant_index].Kafedra = new Kafedra() { Id = reader[17] != DBNull.Value ? Convert.ToInt32(reader[17]) : 0, Title = reader[8].ToString() };
+                    grants[grant_index].Unit = new Unit() { Id = reader[16] != DBNull.Value ? Convert.ToInt32(reader[16]) : 0, Title = reader[9].ToString() };
+                    grants[grant_index].Institution = new Institution() { Id = reader[15] != DBNull.Value ? Convert.ToInt32(reader[15]) : 0, Title = reader[10].ToString() };
+                    grants[grant_index].GRNTI = reader[11].ToString();
+                    grants[grant_index].NIR = reader[12].ToString();
+                    grants[grant_index].NOC = reader[13].ToString();
+                    grants[grant_index].Laboratory = new Laboratory() { Id = reader[18] != DBNull.Value ? Convert.ToInt32(reader[18]) : 0, Title = reader[14].ToString() };
                 }
             }
             else
@@ -1463,6 +1494,257 @@ namespace ResearchProgram
 
 
         /// <summary>
+        /// Обновление номера гранта в бд
+        /// </summary>
+        public static void UpdateGrantNumber(Grant fixedGrant)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET grantnumber = :grantnumber WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantnumber", fixedGrant.grantNumber));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Обновление ОКВЕДА в бд
+        /// </summary>
+        public static void UpdateOKVED(Grant fixedGrant)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET okved = :okved WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("okved", fixedGrant.OKVED));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Обновление НИОКРа в бд
+        /// </summary>
+        public static void UpdateNameNIOKR(Grant fixedGrant)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET nameniokr = :nameniokr WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("nameniokr", fixedGrant.NameNIOKR));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Обновление заказчиков в бд
+        /// </summary>
+        public static void UpdateCustomers(Grant fixedGrant)
+        {
+            // Сначала удаление прошлых приоритетных направлений
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM grants_customers WHERE grant_id = :grant_id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grant_id", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+
+            // Вставка новых источников средств
+            CRUDDataBase.AddCustomers(fixedGrant, fixedGrant.Id);
+        }
+
+        /// <summary>
+        /// Обновление даты начала в бд
+        /// </summary>
+        public static void UpdateStartDate(Grant fixedGrant)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET startdate = :startdate WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("startdate", fixedGrant.StartDate));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Обновление даты окончания в бд
+        /// </summary>
+        public static void UpdateEndDate(Grant fixedGrant)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET enddate = :enddate WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("enddate", fixedGrant.EndDate));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Обновление общей суммы в бд
+        /// </summary>
+        public static void UpdatePrice(Grant fixedGrant)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET price = :price WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("price", fixedGrant.Price));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Обновление источников средств в бд
+        /// </summary>
+        public static void UpdateDeposits(Grant fixedGrant)
+        {
+            // Сначала удаление прошлых источников средств
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM grantdeposits WHERE grantid = :grantid", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantid", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+
+            // Вставка новых источников средств
+            CRUDDataBase.AddDeposits(fixedGrant, fixedGrant.Id);
+        }
+
+        /// <summary>
+        /// Обновление руководителя проекта в бд
+        /// </summary>
+        public static void UpdateLeadNiokr(Grant fixedGrant)
+        {
+            // Сначала удаление прошлых источников средств
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET leadniokrid = :leadniokrid WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("leadniokrid", fixedGrant.LeadNIOKR.Id));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Обновление исполнителей в бд
+        /// </summary>
+        public static void UpdateExecutors(Grant fixedGrant)
+        {
+            // Сначала удаление прошлых исполнителей
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM executors WHERE grantid = :grantid", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantid", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+
+            // Вставка новых источников средств
+            CRUDDataBase.AddExecutors(fixedGrant, fixedGrant.Id);
+        }
+
+        /// <summary>
+        /// Обновление учреждения в бд
+        /// </summary>
+        public static void UpdateInstitution(Grant fixedGrant)
+        {
+            if(fixedGrant.Institution != null)
+            {
+                NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET institutionid = :institutionid WHERE id = :id", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("institutionid", fixedGrant.Institution.Id));
+                cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Обновление подразделения в бд
+        /// </summary>
+        public static void UpdateUnit(Grant fixedGrant)
+        {
+            if(fixedGrant.Unit != null)
+            {
+                NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET unitid = :unitid WHERE id = :id", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("unitid", fixedGrant.Unit.Id));
+                cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Обновление кафедры в бд
+        /// </summary>
+        public static void UpdateKafedra(Grant fixedGrant)
+        {
+            if(fixedGrant.Kafedra != null)
+            {
+                NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET kafedraid = :kafedraid WHERE id = :id", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("kafedraid", fixedGrant.Kafedra.Id));
+                cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Обновление лаборатории в бд
+        /// </summary>
+        public static void UpdateLaboratory(Grant fixedGrant)
+        {
+            if(fixedGrant.Laboratory != null)
+            {
+                NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET laboratoryid = :laboratoryid WHERE id = :id", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("laboratoryid", fixedGrant.Laboratory.Id));
+                cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Обновление ГРНТИ в бд
+        /// </summary>
+        public static void UpdateGRNTI(Grant fixedGrant)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET grnti = :grnti WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grnti", fixedGrant.GRNTI));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Обновление типа исследования в бд
+        /// </summary>
+        public static void UpdateResearchType(Grant fixedGrant)
+        {
+            if(fixedGrant.ResearchType.Count > 0)
+            {
+                NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grantresearchtype SET grantid = :grantid WHERE researchtypeid = :researchtypeid", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("grantid", fixedGrant.Id));
+                cmd.Parameters.Add(new NpgsqlParameter("researchtypeid", fixedGrant.ResearchType[0].Id));
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Обновление приоритетных направлений в бд
+        /// </summary>
+        public static void UpdatePriorityTrends(Grant fixedGrant)
+        {
+            // Сначала удаление прошлых приоритетных направлений
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM grantprioritytrends WHERE grantid = :grantid", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantid", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+
+            // Вставка новых источников средств
+            CRUDDataBase.AddPriorityTrends(fixedGrant, fixedGrant.Id);
+        }
+
+        /// <summary>
+        /// Обновление типов науки в бд
+        /// </summary>
+        public static void UpdateScienceTypes(Grant fixedGrant)
+        {
+            // Сначала удаление прошлых типов науки
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM grantsciencetypes WHERE grantid = :grantid", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantid", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+
+            // Вставка новых источников средств
+            CRUDDataBase.AddScienceTypes(fixedGrant, fixedGrant.Id);
+        }
+
+        /// <summary>
+        /// Обновление НИР в бд
+        /// </summary>
+        public static void UpdateNIR(Grant fixedGrant)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET nir = :nir WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("nir", fixedGrant.NIR));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Обновление НОЦ в бд
+        /// </summary>
+        public static void UpdateNOC(Grant fixedGrant)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET noc = :noc WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("noc", fixedGrant.NOC == "Да" ? true : false));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
         /// Загрузка в БД нового договора
         /// </summary>
         /// <param name="grant"></param>
@@ -1476,7 +1758,6 @@ namespace ResearchProgram
                 "grantnumber, " +
                 "okved, " +
                 "nameniokr, " +
-                "customerid, " +
                 "startdate, " +
                 "enddate, " +
                 "price, " +
@@ -1492,7 +1773,6 @@ namespace ResearchProgram
                 ":grantnumber, " +
                 ":okved, " +
                 ":nameniokr, " +
-                ":customerid, " +
                 ":startdate, " +
                 ":enddate, " +
                 ":price, " +
@@ -1507,7 +1787,6 @@ namespace ResearchProgram
             cmd.Parameters.Add(new NpgsqlParameter("grantnumber", grant.grantNumber));
             cmd.Parameters.Add(new NpgsqlParameter("okved", grant.OKVED));
             cmd.Parameters.Add(new NpgsqlParameter("nameniokr", grant.NameNIOKR));
-            cmd.Parameters.Add(new NpgsqlParameter("customerid", grant.Customer.Id));
             cmd.Parameters.Add(new NpgsqlParameter("startdate", grant.StartDate));
             cmd.Parameters.Add(new NpgsqlParameter("enddate", grant.EndDate));
             cmd.Parameters.Add(new NpgsqlParameter("leadniokrid", grant.LeadNIOKR.Id));
@@ -1540,38 +1819,14 @@ namespace ResearchProgram
             reader.Close();
 
 
+            // Вставляем заказчиков
+            CRUDDataBase.AddCustomers(grant, newMaxGrantId);
 
             // Вставляем исполнителей
-            foreach(Person executor in grant.Executor)
-            {
-                cmd = new NpgsqlCommand("insert into executors (" +
-                "grantid, " +
-                "executorid)" +
-                "values(" +
-                ":grantid, " +
-                ":executorid)", conn);
-                cmd.Parameters.Add(new NpgsqlParameter("grantid", newMaxGrantId));
-                cmd.Parameters.Add(new NpgsqlParameter("executorid", executor.Id));
-                cmd.ExecuteNonQuery();
-            }
-
+            CRUDDataBase.AddExecutors(grant, newMaxGrantId);
 
             // Добавление источников средств в БД
-            for(int i = 0; i < grant.Depositor.Count(); i++)
-            {
-                cmd = new NpgsqlCommand("insert into grantdeposits (" +
-                "grantid, " +
-                "sourceid," +
-                "partsum) " +
-                "values(" +
-                ":grantid, " +
-                ":sourceid, " +
-                ":partsum)", conn);
-                cmd.Parameters.Add(new NpgsqlParameter("grantid", newMaxGrantId));
-                cmd.Parameters.Add(new NpgsqlParameter("sourceid", grant.Depositor[i].Id));
-                cmd.Parameters.Add(new NpgsqlParameter("partsum", grant.DepositorSum[i]));
-                cmd.ExecuteNonQuery();
-            }
+            CRUDDataBase.AddDeposits(grant, newMaxGrantId);
 
             // Добавление типов исследования
             foreach(ResearchType rType in grant.ResearchType)
@@ -1588,33 +1843,113 @@ namespace ResearchProgram
             }
 
             // Добавление типов науки
-            foreach(ScienceType sType in grant.ScienceType)
-            {
-                cmd = new NpgsqlCommand("insert into grantsciencetypes (" +
-                "grantid, " +
-                "sciencetypesid) " +
-                "values(" +
-                ":grantid, " +
-                ":sciencetypesid)", conn);
-                cmd.Parameters.Add(new NpgsqlParameter("grantid", newMaxGrantId));
-                cmd.Parameters.Add(new NpgsqlParameter("sciencetypesid", sType.Id));
-                cmd.ExecuteNonQuery();
-            }
+            CRUDDataBase.AddScienceTypes(grant, newMaxGrantId);
 
             // Добавление приоритетных направлений
+            CRUDDataBase.AddPriorityTrends(grant, newMaxGrantId);
+        }
+
+        /// <summary>
+        /// Добавление заказчиков в бд
+        /// </summary>
+        /// <param name="grant"></param>
+        /// <param name="grantId"></param>
+        public static void AddCustomers(Grant grant, int grantId)
+        {
+            foreach (Customer customer in grant.Customer)
+            {
+                NpgsqlCommand cmd = new NpgsqlCommand("insert into grants_customers (" +
+                "grant_id, " +
+                "customer_id)" +
+                "values(" +
+                ":grant_id, " +
+                ":customer_id)", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("grant_id", grantId));
+                cmd.Parameters.Add(new NpgsqlParameter("customer_id", customer.Id));
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Добавление исполнителей в бд
+        /// </summary>
+        /// <param name="grant"></param>
+        /// <param name="grantId"></param>
+        public static void AddExecutors(Grant grant, int grantId)
+        {
+            foreach (Person executor in grant.Executor)
+            {
+                NpgsqlCommand cmd = new NpgsqlCommand("insert into executors (" +
+                "grantid, " +
+                "executorid)" +
+                "values(" +
+                ":grantid, " +
+                ":executorid)", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("grantid", grantId));
+                cmd.Parameters.Add(new NpgsqlParameter("executorid", executor.Id));
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        /// <summary>
+        /// Добавление источников средств в бд
+        /// </summary>
+        /// <param name="grant"></param>
+        /// <param name="grantId"></param>
+        public static void AddDeposits(Grant grant, int grantId)
+        {
+            for (int i = 0; i < grant.Depositor.Count(); i++)
+            {
+                NpgsqlCommand cmd = new NpgsqlCommand("insert into grantdeposits (" +
+                "grantid, " +
+                "sourceid," +
+                "partsum," +
+                "receiptDate) " +
+                "values(" +
+                ":grantid, " +
+                ":sourceid, " +
+                ":partsum," +
+                ":receiptDate)", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("grantid", grantId));
+                cmd.Parameters.Add(new NpgsqlParameter("sourceid", grant.Depositor[i].Id));
+                cmd.Parameters.Add(new NpgsqlParameter("partsum", grant.DepositorSum[i]));
+                cmd.Parameters.Add(new NpgsqlParameter("receiptDate", grant.ReceiptDate[i] != string.Empty ? DateTime.Parse(grant.ReceiptDate[i]) : DateTime.MinValue));
+                cmd.ExecuteNonQuery();
+            }
+        }
+
+        public static void AddPriorityTrends(Grant grant, int grantId)
+        {
             foreach (PriorityTrend priorityTrend in grant.PriorityTrands)
             {
-                cmd = new NpgsqlCommand("insert into grantprioritytrends (" +
+                NpgsqlCommand cmd = new NpgsqlCommand("insert into grantprioritytrends (" +
                 "grantid, " +
                 "prioritytrendsid) " +
                 "values(" +
                 ":grantid, " +
                 ":prioritytrendsid)", conn);
-                cmd.Parameters.Add(new NpgsqlParameter("grantid", newMaxGrantId));
+                cmd.Parameters.Add(new NpgsqlParameter("grantid", grantId));
                 cmd.Parameters.Add(new NpgsqlParameter("prioritytrendsid", priorityTrend.Id));
                 cmd.ExecuteNonQuery();
             }
         }
+
+        public static void AddScienceTypes(Grant grant, int grantId)
+        {
+            foreach (ScienceType sType in grant.ScienceType)
+            {
+                NpgsqlCommand cmd = new NpgsqlCommand("insert into grantsciencetypes (" +
+                "grantid, " +
+                "sciencetypesid) " +
+                "values(" +
+                ":grantid, " +
+                ":sciencetypesid)", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("grantid", grantId));
+                cmd.Parameters.Add(new NpgsqlParameter("sciencetypesid", sType.Id));
+                cmd.ExecuteNonQuery();
+            }
+        }
+
 
         /// <summary>
         /// Получение списка должностей с их зарплатами из БД
@@ -1709,12 +2044,13 @@ namespace ResearchProgram
             cmd.ExecuteNonQuery();
         }
 
-        public static bool IsGrantNumberAvailable(string grantNumber)
+        public static bool IsGrantNumberAvailable(Grant grant)
         {
             ConnectToDataBase();
             // Проверяем не занят ли номер договора, который пытаются вставлять/изменять
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT grantNumber FROM grants WHERE grantNumber = :grantNumber", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("grantNumber", grantNumber));
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT grantNumber FROM grants WHERE grantNumber = :grantNumber AND id != :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantNumber", grant.grantNumber));
+            cmd.Parameters.Add(new NpgsqlParameter("id", grant.Id));
             NpgsqlDataReader reader = cmd.ExecuteReader();
             bool answer;
             if (reader.HasRows)
