@@ -130,7 +130,16 @@
                             
                             HorizontalAlignment="Left"
                             FontSize="14" Click="GrantsFiltersButton_Click"/>
-
+                    <Button Grid.Row="2"
+                            x:Name="reportButton"
+                            Margin="10 8 10 8"
+                            MinWidth="100"
+                            MinHeight="30"
+                            MaxWidth="150"
+                            Content="Отчёт"
+                            
+                            HorizontalAlignment="Right"
+                            FontSize="14" Click="ReportButton_Click"/>
                 </Grid>
             </TabItem>
             
