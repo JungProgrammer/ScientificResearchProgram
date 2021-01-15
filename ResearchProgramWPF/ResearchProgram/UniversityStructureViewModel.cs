@@ -14,6 +14,7 @@ namespace ResearchProgram
         public class UniversityStructureTreeNode: INotifyPropertyChanged
         {
             public bool IsRootNode { get; set; }
+            public bool IsUnitsFolder { get; set; }
             public bool IsKafedrasFolder { get; set; }
             public bool IsLaboratoriesFolder { get; set; }
             public bool IsInstitutionNode { get; set; }
@@ -133,11 +134,25 @@ namespace ResearchProgram
                     rootNode.Children.Add(institutionNode);
                     institutionNode.Parent = rootNode;
 
-                    foreach(Unit unit in institution.Units)
+                    UniversityStructureTreeNode unitsNode = new UniversityStructureTreeNode(null);
+                    unitsNode.TitleNode = "Подразделения";
+                    unitsNode.IsUnitsFolder = true;
+                    institutionNode.Children.Add(unitsNode);
+                    unitsNode.Parent = institutionNode;
+
+                    // Ноды лабораторий
+                    UniversityStructureTreeNode institutionLaboratoriesNode = new UniversityStructureTreeNode(null);
+                    institutionLaboratoriesNode.TitleNode = "Лаборатории учреждения";
+                    institutionLaboratoriesNode.IsLaboratoriesFolder = true;
+                    institutionNode.Children.Add(institutionLaboratoriesNode);
+                    institutionLaboratoriesNode.Parent = institutionNode;
+
+                    // Добавления списка подразделений к учреждению
+                    foreach (Unit unit in institution.Units)
                     {
                         UniversityStructureTreeNode unitNode = new UniversityStructureTreeNode(unit);
-                        institutionNode.Children.Add(unitNode);
-                        unitNode.Parent = institutionNode;
+                        unitsNode.Children.Add(unitNode);
+                        unitNode.Parent = unitsNode;
 
                         // Создание ноды кафедр
                         UniversityStructureTreeNode kafedrasNode = new UniversityStructureTreeNode(null);
@@ -146,8 +161,9 @@ namespace ResearchProgram
                         unitNode.Children.Add(kafedrasNode);
                         kafedrasNode.Parent = unitNode;
 
+                        // Ноды лабораторий
                         UniversityStructureTreeNode laboratoriesNode = new UniversityStructureTreeNode(null);
-                        laboratoriesNode.TitleNode = "Лаборатории";
+                        laboratoriesNode.TitleNode = "Лаборатории подразделения";
                         laboratoriesNode.IsLaboratoriesFolder = true;
                         unitNode.Children.Add(laboratoriesNode);
                         laboratoriesNode.Parent = unitNode;
@@ -171,6 +187,14 @@ namespace ResearchProgram
                             laboratoriesNode.Children.Add(laboratoryNode);
                             laboratoryNode.Parent = laboratoriesNode;
                         }
+                    }
+
+                    // Добавление списка лабораторий к учреждению
+                    foreach (Laboratory laboratory1 in institution.Laboratories)
+                    {
+                        UniversityStructureTreeNode laboratoryNode = new UniversityStructureTreeNode(laboratory1);
+                        institutionLaboratoriesNode.Children.Add(laboratoryNode);
+                        laboratoryNode.Parent = institutionLaboratoriesNode;
                     }
                 }
 
@@ -293,17 +317,38 @@ namespace ResearchProgram
                           {
                               showedNameStructure = "Название учреждения";
                               UniversityStructureWindow.ShowAddTreeNodeWindow(showedNameStructure, ref inputNameStructure);
-                              if (inputNameStructure != string.Empty) newNode = UniversityStructureTreeNode.CreateNewTreeNode(WorkerWithUniversityStructure.CreateNewInstitution(inputNameStructure), selectedNode);
+                              if (inputNameStructure != string.Empty)
+                              {
+                                  newNode = UniversityStructureTreeNode.CreateNewTreeNode(WorkerWithUniversityStructure.CreateNewInstitution(inputNameStructure), selectedNode);
+
+                                  // Создание ноды подразделений
+                                  UniversityStructureTreeNode unitsNode = new UniversityStructureTreeNode(null);
+                                  unitsNode.TitleNode = "Подразделения";
+                                  unitsNode.IsUnitsFolder = true;
+                                  newNode.Children.Add(unitsNode);
+                                  unitsNode.Parent = newNode;
+
+                                  // Создание ноды лабораторий
+                                  UniversityStructureTreeNode institutionLaboratoriesNode = new UniversityStructureTreeNode(null);
+                                  institutionLaboratoriesNode.TitleNode = "Лаборатории учреждения";
+                                  institutionLaboratoriesNode.IsLaboratoriesFolder = true;
+                                  newNode.Children.Add(institutionLaboratoriesNode);
+                                  institutionLaboratoriesNode.Parent = newNode;
+                              }
+                          }
+                          else if (selectedNode.IsInstitutionNode)
+                          {
+                              UniversityStructureWindow.ShowAlert("Нужно уточнить: подразделение или лабораторию");
                           }
                           // Нужно добавить подразделение
-                          else if (selectedNode.IsInstitutionNode)
+                          else if (selectedNode.IsUnitsFolder)
                           {
                               showedNameStructure = "Название подразделения";
                               UniversityStructureWindow.ShowAddTreeNodeWindow(showedNameStructure, ref inputNameStructure);
 
                               if (inputNameStructure != string.Empty) 
                               {
-                                  newNode = UniversityStructureTreeNode.CreateNewTreeNode(WorkerWithUniversityStructure.CreateNewUnit(inputNameStructure, selectedNode.InstitutionNode), selectedNode);
+                                  newNode = UniversityStructureTreeNode.CreateNewTreeNode(WorkerWithUniversityStructure.CreateNewUnit(inputNameStructure, selectedNode.Parent.InstitutionNode), selectedNode);
 
                                   // Создание ноды кафедр
                                   UniversityStructureTreeNode kafedrasNode = new UniversityStructureTreeNode(null);
@@ -332,7 +377,19 @@ namespace ResearchProgram
                           {
                               showedNameStructure = "Название лаборатории";
                               UniversityStructureWindow.ShowAddTreeNodeWindow(showedNameStructure, ref inputNameStructure);
-                              if (inputNameStructure != string.Empty) newNode = UniversityStructureTreeNode.CreateNewTreeNode(WorkerWithUniversityStructure.CreateNewLaboratory(inputNameStructure, selectedNode.Parent.UnitNode), selectedNode);
+                              if (inputNameStructure != string.Empty)
+                              {
+                                  // Если добавление в список лабораторий у подразделения
+                                  if(selectedNode.Parent.UnitNode != null)
+                                  {
+                                      newNode = UniversityStructureTreeNode.CreateNewTreeNode(WorkerWithUniversityStructure.CreateNewLaboratory(inputNameStructure, selectedNode.Parent.UnitNode), selectedNode);
+                                  }
+                                  // Если добавление в список лабораторий у учреждения
+                                  else if(selectedNode.Parent.InstitutionNode != null)
+                                  {
+                                      newNode = UniversityStructureTreeNode.CreateNewTreeNode(WorkerWithUniversityStructure.CreateNewLaboratory(inputNameStructure, selectedNode.Parent.InstitutionNode), selectedNode);
+                                  }
+                              }
                           }
                           // Если нужно добавить лабораторию в кафедру
                           else if (selectedNode.IsKafedraNode)

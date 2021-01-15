@@ -7,40 +7,55 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 
+
 namespace ResearchProgram
 {
-    public class LaboratoryConverter : IValueConverter
+    public class LaboratoryConverter : IMultiValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if((Kafedra)value == null)
+            if(parameter.ToString() == "InstitutionLab")
             {
-                // Значит, что нам не нужно этот комбобокс видеть
-                if(parameter.ToString() == "KafedraSelected")
+                if((Unit)values[0] == null)
                 {
-                    return "Collapsed";
+                    return Visibility.Visible;
                 }
                 else
                 {
-                    return "Visible";
+                    return Visibility.Collapsed;
+                }
+            }
+            else if(parameter.ToString() == "UnitLab")
+            {
+                if ((Unit)values[0] != null && (Kafedra)values[1] == null)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Collapsed;
+                }
+            }
+            else if(parameter.ToString() == "KafedraLab")
+            {
+                if((Kafedra)values[1] != null)
+                {
+                    return Visibility.Visible;
+                }
+                else
+                {
+                    return Visibility.Collapsed;
                 }
             }
             else
             {
-                if (parameter.ToString() == "KafedraSelected")
-                {
-                    return "Visible";
-                }
-                else
-                {
-                    return "Collapsed";
-                }
+                return Visibility.Collapsed; 
             }
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
-            return DependencyProperty.UnsetValue;
+            throw new NotImplementedException();
         }
     }
 }

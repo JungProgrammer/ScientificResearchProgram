@@ -93,6 +93,7 @@ namespace ResearchProgram
             CRUDDataBase.ConnectToDataBase();
             GrantHeaders = CRUDDataBase.GetGrantsHeadersForFilters();
             CRUDDataBase.CloseConnection();
+            SelectedGrantHeader = GrantHeaders[0];
         }
 
 
@@ -117,7 +118,7 @@ namespace ResearchProgram
             }
             else
             {
-                MessageBox.Show("Выберите фильтр");
+                MessageBox.Show("Выберите фильтр", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
 
         }

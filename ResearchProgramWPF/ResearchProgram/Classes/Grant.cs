@@ -12,6 +12,7 @@ namespace ResearchProgram
         {
             Depositor = new List<Depositor>();
             DepositorSum = new List<float>();
+            ReceiptDate = new List<string>();
             Executor = new List<Person>();
             ResearchType = new List<ResearchType>();
             PriorityTrands = new List<PriorityTrend>();
@@ -30,7 +31,7 @@ namespace ResearchProgram
             //NIR = "Не указан";
             //NOC = "Не указан";
             LeadNIOKR = new Person();
-            Customer = new Customer();  
+            Customer = new List<Customer>(); 
         }
 
         // Id
@@ -42,7 +43,7 @@ namespace ResearchProgram
         // Наименование НИОКР
         public string NameNIOKR { get; set; }
         // Заказчик
-        public Customer Customer { get; set; }
+        public List<Customer> Customer { get; set; }
         // Дата начала договора
         public DateTime StartDate { get; set; }
         // Дата окончания договора
@@ -53,6 +54,8 @@ namespace ResearchProgram
         public List<Depositor> Depositor { get; set; }
         // Часть средств
         public List<float> DepositorSum { get; set; }
+        // Дата поступления платежа
+        public List<string> ReceiptDate { get; set; }
         // руководитель
         public Person LeadNIOKR { get; set; }
         // Исполнитель

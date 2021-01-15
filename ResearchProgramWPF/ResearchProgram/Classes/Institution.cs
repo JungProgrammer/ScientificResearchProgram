@@ -17,12 +17,14 @@ namespace ResearchProgram
 
         // Список подразделений
         public ObservableCollection<Unit> Units { get; set; }
+        public ObservableCollection<Laboratory> Laboratories { get; set; }
 
         public Institution()
         {
             //Title = "Не указан";
             Title = "";
             Units = new ObservableCollection<Unit>();
+            Laboratories = new ObservableCollection<Laboratory>();
         }
 
         public string GetTitle()

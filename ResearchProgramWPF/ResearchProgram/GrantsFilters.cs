@@ -121,13 +121,18 @@ namespace ResearchProgram
             }
 
 
+
             // Проверка заказчика
             if (Customer != null && Customer.Count > 0 && IsAllOkey)
             {
                 IsAllOkey = false;
-                foreach (FilterElement _customer in Customer)
+
+                foreach(Customer customer in grant.Customer)
                 {
-                    if (_customer.Data == grant.Customer.Title) IsAllOkey = true;
+                    foreach(FilterElement customerFilter in Customer)
+                    {
+                        if (customer.Title == customerFilter.Data) IsAllOkey = true;
+                    }
                 }
             }
 

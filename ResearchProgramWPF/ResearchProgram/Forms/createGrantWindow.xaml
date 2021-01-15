@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ResearchProgram"
         xmlns:dotNetKitControls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
         mc:Ignorable="d"
-        Title="Создать новый договор" Height="567" Width="670">
+        Title="Создать новый договор" Height="577" Width="855">
 
     <Window.Resources>
         <local:LaboratoryConverter x:Key="laboratoryConverter"/>
@@ -195,14 +195,40 @@
                     <TabItem.Content>
                         <Grid x:Name="customerGrid">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="15*"/>
+                                <RowDefinition Height="1.2*"/>
                             </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="3*"/>
+                            </Grid.ColumnDefinitions>
 
                             <Label Content="Заказчик"
                                    Grid.Row="0"
-                                   Margin="0 5 0 0" Grid.ColumnSpan="2"/>
+                                   Grid.ColumnSpan="3"
+                                   Margin="0 5 0 0"/>
 
+
+                            <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="3"
+                                      x:Name="customersVerticalListView">
+                            </ListView>
+
+
+                            <Button Content="Добавить"
+                                    Name="customerAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="10 5"
+                                    Width="Auto" Click="customerAddButton_Click"/>
+                            <Button Content="Удалить"
+                                    Name="customerDeleteButton"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Margin="10 5"
+                                    Width="Auto" Click="customerDeleteButton_Click"/>
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
@@ -277,21 +303,28 @@
                                 <RowDefinition Height="1.2*"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="4*"/>
+                                <ColumnDefinition Width="4*"/>
                                 <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="4*"/>
                             </Grid.ColumnDefinitions>
 
                             <Label Content="Средства"
                                    Grid.Row="0"
                                    Grid.Column="0"
-                                   Margin="0 5 0 0"
-                                   FontSize="13" Grid.ColumnSpan="3"/>
+                                   Margin="0 2 0 0"
+                                   FontSize="13"/>
                             <Label Content="Сумма"
                                    Grid.Row="0"
-                                   Grid.Column="4"
-                                   Margin="0 5 0 0"
+                                   Grid.Column="2"
+                                   Margin="0 2 0 0"
                                    FontSize="13"/>
+                            <Label Content="Дата поступления"
+                                   Grid.Row="0"
+                                   Grid.Column="3"
+                                   Margin="0 2 0 0"
+                                   FontSize="13"/>
+
 
 
                             <ListView Grid.Row="1"
@@ -419,23 +452,58 @@
                                     SelectedItem="{Binding SelectedKafedra}">
                                 </dotNetKitControls:AutoCompleteComboBox>
 
+
                                 <Label Content="Лаборатория"
                                          Grid.Row="0"
                                    Margin="3 10 0 0"/>
+
                                 <dotNetKitControls:AutoCompleteComboBox
+                                    x:Name="institutionLaboratoryCombobox"
                                     MinWidth="300"
                                     Margin="8 2 0 2"
-                                    Visibility="{Binding SelectedKafedra, ConverterParameter=KafedraSelected, Converter={StaticResource laboratoryConverter}}"
-                                    ItemsSource="{Binding SelectedKafedra.Laboratories}"
+                                    ItemsSource="{Binding SelectedInstitution.Laboratories}"
                                     SelectedItem="{Binding SelectedLaboratory}">
+                                    <dotNetKitControls:AutoCompleteComboBox.Visibility>
+                                        <MultiBinding Converter="{StaticResource laboratoryConverter}"
+                                                      ConverterParameter="InstitutionLab">
+                                            <Binding Path = "SelectedUnit"/>
+                                            <Binding Path = "SelectedKafedra" />
+                                        </MultiBinding>
+                                    </dotNetKitControls:AutoCompleteComboBox.Visibility>
                                 </dotNetKitControls:AutoCompleteComboBox>
+
                                 <dotNetKitControls:AutoCompleteComboBox
+                                    x:Name="unitLaboratoryCombobox"
                                     MinWidth="300"
                                     Margin="8 2 0 2"
-                                    Visibility="{Binding SelectedKafedra, ConverterParameter=KafedraNotSelected, Converter={StaticResource laboratoryConverter}}"
                                     ItemsSource="{Binding SelectedUnit.Laboratories}"
                                     SelectedItem="{Binding SelectedLaboratory}">
+                                    <dotNetKitControls:AutoCompleteComboBox.Visibility>
+                                        <MultiBinding Converter="{StaticResource laboratoryConverter}"
+                                                      ConverterParameter="UnitLab">
+                                            <Binding Path = "SelectedUnit"/>
+                                            <Binding Path = "SelectedKafedra" />
+                                        </MultiBinding>
+                                    </dotNetKitControls:AutoCompleteComboBox.Visibility>
                                 </dotNetKitControls:AutoCompleteComboBox>
+
+                                <dotNetKitControls:AutoCompleteComboBox
+                                    x:Name="kafedraLaboratoryCombobox"
+                                    MinWidth="300"
+                                    Margin="8 2 0 2"
+                                    ItemsSource="{Binding SelectedKafedra.Laboratories}"
+                                    SelectedItem="{Binding SelectedLaboratory}">
+                                    <dotNetKitControls:AutoCompleteComboBox.Visibility>
+                                        <MultiBinding Converter="{StaticResource laboratoryConverter}"
+                                                      ConverterParameter="KafedraLab">
+                                            <Binding Path = "SelectedUnit"/>
+                                            <Binding Path = "SelectedKafedra" />
+                                        </MultiBinding>
+                                    </dotNetKitControls:AutoCompleteComboBox.Visibility>
+                                </dotNetKitControls:AutoCompleteComboBox>
+                                
+
+
                             </StackPanel>
                             
                         </Grid>
@@ -587,8 +655,13 @@
                             <StackPanel Name="nirStackPanel"
                                       Grid.Row="1">
                                 <RadioButton GroupName="NIRRadio" 
-                                             Content="НИР"   Checked="RadioButton_Checked" />
-                                <RadioButton GroupName="NIRRadio" Content="Услуга" Checked="RadioButton_Checked" />
+                                             Content="НИР"   
+                                             Checked="NIRRadioChecked"
+                                             x:Name="NIR"/>
+                                <RadioButton GroupName="NIRRadio"
+                                             Content="Услуга"
+                                             Checked="NIRRadioChecked"
+                                             x:Name="USLUGA"/>
                             </StackPanel>
                         </Grid>
                     </TabItem.Content>
@@ -607,9 +680,17 @@
                             <Label Content="НОЦ"
                            Grid.Row="0"
                            Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="1"
-                                     Name="NOCTextBox"
-                                     Margin="5 0"/>
+                            <StackPanel Name="NOCStackPanel"
+                                      Grid.Row="1">
+                                <RadioButton GroupName="NOCRadio" 
+                                             Content="Да"   
+                                             Checked="NOCRadioChecked"
+                                             x:Name="NOC"/>
+                                <RadioButton GroupName="NOCRadio"
+                                             Content="Нет"
+                                             Checked="NOCRadioChecked"
+                                             x:Name="NotNOC"/>
+                            </StackPanel>
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
@@ -622,7 +703,8 @@
                     MinHeight="20"
                     MaxWidth="140"
                     MaxHeight="25"
-                    Margin="280 3 4 3" Click="CreateGrantButtonClick"
+                    HorizontalAlignment="Right"
+                    Margin="0 3 4 3" Click="CreateGrantButtonClick"
                     x:Name="createGrantButton"></Button>
         </Grid>
     </Grid>
