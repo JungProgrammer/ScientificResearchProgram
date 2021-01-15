@@ -362,8 +362,11 @@ namespace ResearchProgram
                     if (depositDict.ContainsKey(depositString[i]))
                         depositDict[depositString[i]] += Convert.ToDouble(depositSummString[i]);
                     else
-                        //если такого средства в словаре еще нет, то добавим
-                        depositDict.Add(depositString[i], Convert.ToDouble(depositSummString[i]));
+                        if(depositString[i] != String.Empty && depositSummString[i] != String.Empty)
+                        {
+                            //если такого средства в словаре еще нет, то добавим
+                            depositDict.Add(depositString[i], Convert.ToDouble(depositSummString[i]));
+                        }
                 }
                 //перебираем словарь со средствами текущей строки
                 foreach (KeyValuePair<string, double> entry in depositDict)
