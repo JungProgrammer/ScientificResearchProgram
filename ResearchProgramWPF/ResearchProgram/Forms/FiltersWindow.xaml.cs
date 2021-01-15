@@ -152,10 +152,17 @@ namespace ResearchProgram
             // Если на странице ComboBox
             if (curGrantHeader.Is_combobox_needed)
             {
-                curGrantHeader.FilterElementsData.Add(new FilterElement()
+                if(curGrantHeader.ChooseDataFromCombobox != null)
                 {
-                    Data = curGrantHeader.ChooseDataFromCombobox.GetTitle()
-                });
+                    curGrantHeader.FilterElementsData.Add(new FilterElement()
+                    {
+                        Data = curGrantHeader.ChooseDataFromCombobox.GetTitle()
+                    });
+                }
+                else
+                {
+                    MessageBox.Show("Выберете значение из списка");
+                }
             }
             // Если на странице textbox
             else if (curGrantHeader.Is_textbox_needed)
