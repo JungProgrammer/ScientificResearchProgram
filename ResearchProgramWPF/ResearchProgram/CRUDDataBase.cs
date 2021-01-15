@@ -1105,7 +1105,7 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    WorkerWithTablesOnMainForm.AddHeadersToGrantTable(dataTable, reader[1].ToString(), reader[2].ToString());
+                    WorkerWithTablesOnMainForm.AddHeadersToGrantTable(dataTable, reader[1].ToString());
                 }
             }
             else

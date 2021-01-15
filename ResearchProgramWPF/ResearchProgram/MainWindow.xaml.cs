@@ -9,7 +9,10 @@ using System.Linq;
 using System.Windows.Controls;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-
+using OfficeOpenXml;
+using System.IO;
+using System.Windows.Forms;
+using OfficeOpenXml.Style;
 
 namespace ResearchProgram
 {
@@ -241,7 +244,7 @@ namespace ResearchProgram
             }
             else
             {
-                MessageBox.Show("Выделите ячейки с нужными столбцами");
+                System.Windows.MessageBox.Show("Выделите ячейки с нужными столбцами");
             }
         }
 
@@ -298,6 +301,102 @@ namespace ResearchProgram
             universityStructureWindow.Owner = this;
             universityStructureWindow.Show();
 
+        }
+
+        private void ReportButton_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Filter = "Excel |*.xlsx";
+            saveFileDialog1.FileName = "Отчёт " + DateTime.Now.ToString("dd-MM-yyyy hh-mm");
+            if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
+                return;
+            string filename = saveFileDialog1.FileName;
+
+            //номер столбца с которого начнут выводиться средства
+            const int EXCEL_DEPOSITS_START_COLUMN = 9;
+
+            //указываем что используем пакет EPPlus в некоммерческих целях, иначе исключение бросит 
+            ExcelPackage.LicenseContext = OfficeOpenXml.LicenseContext.NonCommercial;
+            //инициализируем эксель
+            ExcelPackage excelPackage = new ExcelPackage();
+            //инициализируем страницу
+            ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Лист 1");
+            //грузим все данные из таблицы грантов одним махом
+            worksheet.Cells["A1"].LoadFromDataTable(GrantsDataTable, PrintHeaders: true);
+            //удаляем колонки со средствами
+            worksheet.DeleteColumn(EXCEL_DEPOSITS_START_COLUMN, 2);
+            //получаем список средств
+            CRUDDataBase.ConnectToDataBase();
+            List<Depositor> depositors = CRUDDataBase.GetDeposits();
+            CRUDDataBase.CloseConnection();
+            //вставлям колонки по количеству средств
+            worksheet.InsertColumn(EXCEL_DEPOSITS_START_COLUMN, depositors.Count);
+            //счетчик для добавления заголовков средств в эксель
+            int depositorColumnCount = EXCEL_DEPOSITS_START_COLUMN;
+            //словарь, чтобы запомнить какое средство в каком столбце сидит
+            Dictionary<string, int> depositsColumnId = new Dictionary<string, int>();
+            // перебираем все средства и указываем соответствующие заголовки в таблице
+            foreach (Depositor depositor in depositors)
+            {
+                worksheet.Cells[1, depositorColumnCount].Value = depositor.Title;
+                //запоминаем в каком столбце сидит это средство
+                depositsColumnId.Add(depositor.Title, depositorColumnCount);
+                depositorColumnCount++;
+            }
+            //обнуляем все средства одним махом
+            worksheet.Cells[2, EXCEL_DEPOSITS_START_COLUMN, worksheet.Dimension.End.Row, EXCEL_DEPOSITS_START_COLUMN + depositors.Count].Value = 0;
+            
+            //перебираем все строки в таблице грантов
+            int row_count = 2;
+            foreach (DataRow row in GrantsDataTable.Rows)
+            {
+                //словарь для хранения средства и его значения
+                Dictionary<string, double> depositDict = new Dictionary<string, double>();
+                //получаем строку средств и значений, сразу же делим на массивы
+                string[] depositString = row.ItemArray[8].ToString().Split('\n');
+                string[] depositSummString = row.ItemArray[9].ToString().Split('\n');
+                //проходим по каждому виду средств
+                for (int i = 0; i < depositString.Length; i++)
+                {
+                    //если в словаре средств текущего договора уже есть такое средство, то суммируем их значения
+                    if (depositDict.ContainsKey(depositString[i]))
+                        depositDict[depositString[i]] += Convert.ToDouble(depositSummString[i]);
+                    else
+                        //если такого средства в словаре еще нет, то добавим
+                        depositDict.Add(depositString[i], Convert.ToDouble(depositSummString[i]));
+                }
+                //перебираем словарь со средствами текущей строки
+                foreach (KeyValuePair<string, double> entry in depositDict)
+                {
+                    //добавляем значение средства в соответствующую колонку
+                    worksheet.Cells[row_count, depositsColumnId[entry.Key]].Value = entry.Value;
+                }
+                row_count++;
+            }
+
+
+            worksheet.Cells["A:AA"].AutoFitColumns();
+            worksheet.Cells["A1:AA1"].Style.Font.Bold = true;
+            worksheet.Cells[2,1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column].Style.WrapText = true;
+            worksheet.View.FreezePanes(2, 1);
+            worksheet.Cells[1, 1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column].Style.Border.Top.Style = ExcelBorderStyle.Thin;
+            worksheet.Cells[1, 1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+            worksheet.Cells[1, 1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column].Style.Border.Right.Style = ExcelBorderStyle.Thin;
+            worksheet.Cells[1, 1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column].Style.Border.Left.Style = ExcelBorderStyle.Thin;
+
+
+            FileInfo fi = new FileInfo(filename);
+            try
+            {
+                excelPackage.SaveAs(fi);
+            }
+            catch (System.InvalidOperationException)
+            {
+                System.Windows.MessageBox.Show("Сохранение не удалось. Пожалуйста, закройте файл, подлежащий перезаписи.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            System.Windows.MessageBox.Show("Отчёт успешно сохранён", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
         }
     }
 
