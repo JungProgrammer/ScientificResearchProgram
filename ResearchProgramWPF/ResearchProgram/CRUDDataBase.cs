@@ -990,10 +990,10 @@ namespace ResearchProgram
             kafedra = 12,
             laboratory = 13,
             executors = 14,
-            researchTypes = 16,
-            priorityTrends = 17,
-            ScienceTypeItem = 18,
-            NIRItem = 19
+            researchTypes = 15,
+            priorityTrends = 16,
+            ScienceTypeItem = 17,
+            NIRItem = 18
         }
 
         /// <summary>
@@ -1016,7 +1016,7 @@ namespace ResearchProgram
             List<Depositor> depositList = GetDeposits();
             List<Nir> nirList = new List<Nir>() {
                 new Nir() {Title = "НИР" },
-                new Nir() {Title = "Услуга" }
+                new Nir() {Title = "УСЛУГА" }
             };
 
 
