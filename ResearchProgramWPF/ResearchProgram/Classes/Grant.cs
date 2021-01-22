@@ -12,6 +12,7 @@ namespace ResearchProgram
         {
             Depositor = new List<Depositor>();
             DepositorSum = new List<float>();
+            DepositorSumNoNDS = new List<float>();
             ReceiptDate = new List<string>();
             Executor = new List<Person>();
             ResearchType = new List<ResearchType>();
@@ -23,6 +24,7 @@ namespace ResearchProgram
             //OKVED = "Не указан";
             //NameNIOKR = "Не указан";
             Price = 0;
+            PriceNoNDS = 0;
             Institution = new Institution();
             Unit = new Unit();
             Kafedra = new Kafedra();
@@ -50,10 +52,14 @@ namespace ResearchProgram
         public DateTime EndDate { get; set; }
         // Цена договора
         public float Price { get; set; }
+        // Цена договора без НДС
+        public float PriceNoNDS { get; set; }
         // Средства
         public List<Depositor> Depositor { get; set; }
         // Часть средств
         public List<float> DepositorSum { get; set; }
+        // Часть средств без НДС
+        public List<float> DepositorSumNoNDS { get; set; }
         // Дата поступления платежа
         public List<string> ReceiptDate { get; set; }
         // руководитель

@@ -166,6 +166,7 @@
     <Compile Include="Classes\Nir.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Classes\PriorityTrend.cs" />
+    <Compile Include="PriceNDSConverter.cs" />
     <Compile Include="RelayComand.cs" />
     <Compile Include="Classes\ResearchType.cs" />
     <Compile Include="Classes\ScienceType.cs" />

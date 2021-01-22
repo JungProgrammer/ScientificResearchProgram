@@ -10,14 +10,15 @@
 
     <Window.Resources>
         <local:LaboratoryConverter x:Key="laboratoryConverter"/>
+        <local:PriceNDSConverter x:Key="PriceNDSConverter"/>
     </Window.Resources>
     
     <Grid>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3.2*" />
+            <ColumnDefinition Width="18*" />
             <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="50*"/>
         </Grid.ColumnDefinitions>
         <ScrollViewer VerticalScrollBarVisibility="Auto"
                       Margin="0 5 0 0">
@@ -281,6 +282,7 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
 
                             <Label Content="Общая сумма договора"
@@ -288,7 +290,16 @@
                                    Margin="0 5 0 0"/>
                             <TextBox Grid.Row="1"
                                      Name="priceTextBox"
-                                     Margin="5 0"/>
+                                     Margin="5 0"
+                                     PreviewTextInput="TextBox_PreviewTextInput"/>
+                            <Label Content="Сумма без НДС"
+                                   Grid.Row="2"
+                                   Margin="0 5 0 0"/>
+                            <TextBox Grid.Row="3"
+                                     Name="priceNoNDSTextBox"
+                                     Margin="5 0"
+                                     PreviewTextInput="TextBox_PreviewTextInput"
+                                     Text="{Binding ElementName=priceTextBox, Path=Text, Converter={StaticResource PriceNDSConverter}}"/>
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
@@ -298,15 +309,15 @@
                     <TabItem.Content>
                         <Grid Name="depositsGrid">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="1*"/>
+                                <RowDefinition Height="30"/>
                                 <RowDefinition Height="15*"/>
-                                <RowDefinition Height="1.2*"/>
+                                <RowDefinition Height="35"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="4*"/>
-                                <ColumnDefinition Width="4*"/>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="4*"/>
+                                <ColumnDefinition Width="30*"/>
+                                <ColumnDefinition Width="20*"/>
+                                <ColumnDefinition Width="20*"/>
+                                <ColumnDefinition Width="30*"/>
                             </Grid.ColumnDefinitions>
 
                             <Label Content="Средства"
@@ -316,6 +327,11 @@
                                    FontSize="13"/>
                             <Label Content="Сумма"
                                    Grid.Row="0"
+                                   Grid.Column="1"
+                                   Margin="0 2 0 0"
+                                   FontSize="13"/>
+                            <Label Content="Без НДС"
+                                   Grid.Row="0"
                                    Grid.Column="2"
                                    Margin="0 2 0 0"
                                    FontSize="13"/>
@@ -324,6 +340,7 @@
                                    Grid.Column="3"
                                    Margin="0 2 0 0"
                                    FontSize="13"/>
+
 
 
 

@@ -32,10 +32,10 @@ namespace ResearchProgram
             };
             if (column.ColumnName == "№")
                 column.DataType = System.Type.GetType("System.Int32");
-            if (column.ColumnName == "Общая сумма договора")
-            {
-                column.DataType = System.Type.GetType("System.Double");
-            }
+            //if (column.ColumnName == "Общая сумма договора")
+            //{
+            //    column.DataType = System.Type.GetType("System.Double");
+            //}
 
 
             grantsDataTable.Columns.Add(column);
@@ -77,9 +77,9 @@ namespace ResearchProgram
                 row["Заказчик"]                 = string.Join("\n", grant.Customer);
                 row["Дата начала"]              = grant.StartDate.ToString("dd.MM.yyyy");
                 row["Дата завершения"]          = grant.EndDate.ToString("dd.MM.yyyy");
-                row["Общая сумма договора"]     = string.Format("{0:f1}",(grant.Price * (Settings.Default.NDSKey ? 1 : 1 / Settings.Default.NDSValue)).ToString());
+                row["Общая сумма договора"]     = Settings.Default.NDSKey ? grant.Price : grant.PriceNoNDS;
                 row["Средства"]                 = string.Join("\n", grant.Depositor);
-                row["Подробное финансирование"] = string.Join("\n", grant.DepositorSum.Select(x => x * (Settings.Default.NDSKey ? 1 : 1 / Settings.Default.NDSValue)).ToArray());
+                row["Подробное финансирование"] = string.Join("\n", Settings.Default.NDSKey ? grant.DepositorSum.ToArray() : grant.DepositorSumNoNDS.ToArray());
                 row["Руководитель НИОКР"]       = grant.LeadNIOKR.shortName();
                 row["Исполнители"]              = string.Join("\n", grant.Executor.Select(x => x.shortName()).ToArray()); 
                 row["Учреждение"]               = grant.Institution;

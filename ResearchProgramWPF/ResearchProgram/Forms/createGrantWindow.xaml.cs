@@ -9,6 +9,7 @@ using System.Windows.Media;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows.Input;
 
 namespace ResearchProgram
 {
@@ -297,6 +298,20 @@ namespace ResearchProgram
         }
 
 
+        //Функция для ввода в текст бокс только чисел с одним разделителем
+        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !((Char.IsDigit(e.Text, 0) || ((e.Text == System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0].ToString()) && (DS_Count(((TextBox)sender).Text) < 1))));
+        }
+
+        // функция подсчета разделителя
+        public int DS_Count(string s)
+        {
+            string substr = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0].ToString();
+            int count = (s.Length - s.Replace(substr, "").Length) / substr.Length;
+            return count;
+        }
+
         /// <summary>
         /// Кнопка добавления у заказчика
         /// </summary>
@@ -351,7 +366,6 @@ namespace ResearchProgram
             Grid.SetRow(LeadNIOKRAutoCompleteComboBox, 1);
         }
 
-
         /// <summary>
         /// Добавление комбо бокса к типу
         /// </summary>
@@ -375,37 +389,61 @@ namespace ResearchProgram
         /// <param name="e"></param>
         private void DepositsAddButton_Click_1(object sender, RoutedEventArgs e)
         {
+            TextBox sumTextBox;
+            TextBox sumNdsTextBox;
+
+            void sumTextBoxTextChangedEventHandler(object senderr, TextChangedEventArgs args)
+            {
+                if (sumTextBox.Text.Length > 0)
+                    sumNdsTextBox.Text = (Math.Round(Convert.ToDouble(sumTextBox.Text) * 1/Settings.Default.NDSValue, 2)).ToString();
+                else
+                    sumNdsTextBox.Text = "";
+            }
 
             StackPanel horizontalStackPanel = new StackPanel()
             {
                 Orientation = Orientation.Horizontal,
+                Margin = new Thickness(0, 5, 0, 0)
             };
 
             ComboBox depositorComboBox = new ComboBox()
             {
                 Margin = new Thickness(5, 0, 5, 10),
                 ItemsSource = DepositsList,
-                Width = 240
+                Width = 160,
             };
 
-            TextBox sumTextBox = new TextBox()
+            sumNdsTextBox = new TextBox()
             {
                 Margin = new Thickness(5, 0, 5, 10),
-                MinWidth = 90
+                Width = 110
             };
+
+            sumTextBox = new TextBox()
+            {
+                Margin = new Thickness(5, 0, 5, 10),
+                Width = 110
+            };
+            sumTextBox.PreviewTextInput += TextBox_PreviewTextInput;
+            sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler;
+
+            sumNdsTextBox.PreviewTextInput += TextBox_PreviewTextInput;
+
 
             DatePicker datePicker = new DatePicker()
             {
                 Margin = new Thickness(5, 0, 5, 10),
-                MinWidth = 90
+                Width = 110
             };
 
             horizontalStackPanel.Children.Add(depositorComboBox);
             horizontalStackPanel.Children.Add(sumTextBox);
+            horizontalStackPanel.Children.Add(sumNdsTextBox);
             horizontalStackPanel.Children.Add(datePicker);
 
-
             depositsVerticalListView.Items.Add(horizontalStackPanel);
+
+
         }
 
         /// <summary>
@@ -487,8 +525,6 @@ namespace ResearchProgram
                 MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
-
-
 
         private void ScienceTypeAddButton_Click(object sender, RoutedEventArgs e)
         {
@@ -614,24 +650,39 @@ namespace ResearchProgram
             if (priceTextBox.Text.ToString() != "")
             {
                 newGrant.Price = Parser.ConvertToRightFloat(priceTextBox.Text);
+                newGrant.PriceNoNDS = Parser.ConvertToRightFloat(priceNoNDSTextBox.Text);
+            }
+            else if (depositsVerticalListView.Items != null)
+            {
+                TextBox partSum;
+                float price = 0;
+                foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
+                {
+                    partSum = (TextBox)sp.Children[1];
+                    price += Parser.ConvertToRightFloat(partSum.Text);
+                }
+                newGrant.Price = price;
+
             }
 
             if (depositsVerticalListView.Items != null)
             {
                 ComboBox cmb;
                 TextBox partSum;
+                TextBox partSumNoNDS;
                 DatePicker datePicker;
 
                 foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
                 {
                     cmb = (ComboBox)sp.Children[0];
                     partSum = (TextBox)sp.Children[1];
-                    datePicker = (DatePicker)sp.Children[2];
+                    partSumNoNDS = (TextBox)sp.Children[2];
+                    datePicker = (DatePicker)sp.Children[3];
 
                     DateTime selectedDate;
                     DateTime.TryParse(datePicker.SelectedDate.ToString(), out selectedDate);
 
-                    if (cmb.SelectedItem != null && partSum.Text.ToString() != "")
+                    if (cmb.SelectedItem != null && partSum.Text.ToString() != "" && partSumNoNDS.Text.ToString() != "")
                     {
                         newGrant.Depositor.Add(new Depositor()
                         {
@@ -639,6 +690,7 @@ namespace ResearchProgram
                             Title = cmb.SelectedItem.ToString(),
                         });
                         newGrant.DepositorSum.Add(Parser.ConvertToRightFloat(partSum.Text));
+                        newGrant.DepositorSumNoNDS.Add(Parser.ConvertToRightFloat(partSumNoNDS.Text));
                         newGrant.ReceiptDate.Add(selectedDate.ToShortDateString());
                     }
                 }
@@ -671,7 +723,6 @@ namespace ResearchProgram
                     }
                 }
             }
-
 
             // Добавление учреждения в новый договор
             if (UniversityStructure.SelectedInstitution != null)

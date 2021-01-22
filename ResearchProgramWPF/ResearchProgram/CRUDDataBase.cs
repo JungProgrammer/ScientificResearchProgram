@@ -168,16 +168,17 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение спонсоров
-            cmd = new NpgsqlCommand("SELECT grantId, title, PartSum, receiptDate FROM grantDeposits " +
+            cmd = new NpgsqlCommand("SELECT grantId, title, PartSum, receiptDate, PartSumNoNDS FROM grantDeposits " +
                                         "JOIN depositors d on grantDeposits.sourceId = d.id " +
                                         "JOIN grants g on grantDeposits.grantId = g.id " +
-                                        "ORDER BY grantId; ", conn);
+                                        "ORDER BY grantId, sourceid; ", conn);
             reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
                 string grantDeposit;
                 string grantDepositSum;
+                string grantDepositSumNoNDS;
                 string receiptDate;
                 while (reader.Read())
                 {
@@ -186,12 +187,14 @@ namespace ResearchProgram
 
                     grantDeposit = reader[1].ToString();
                     grantDepositSum = reader[2].ToString();
+                    grantDepositSumNoNDS = reader[4].ToString();
                     receiptDate = reader[3] != DBNull.Value ? DateTime.Parse(reader[3].ToString()).ToShortDateString() : string.Empty;
                     grants[grant_index].Depositor.Add(new Depositor()
                     {
                         Title = grantDeposit,
                     });
                     grants[grant_index].DepositorSum.Add(float.Parse(grantDepositSum));
+                    grants[grant_index].DepositorSumNoNDS.Add(float.Parse(grantDepositSumNoNDS));
                     grants[grant_index].ReceiptDate.Add(receiptDate);
                 }
             }
@@ -261,7 +264,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение остальных столбцов
-            cmd = new NpgsqlCommand("SELECT grants.id, grants.grantnumber, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC, l.title, i.id, u.id, k.id, l.id FROM grants " +
+            cmd = new NpgsqlCommand("SELECT grants.id, grants.grantnumber, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC, l.title, i.id, u.id, k.id, l.id, pricenonds FROM grants " +
                                                         "LEFT JOIN persons p2 on grants.leadNIOKRId = p2.id " +
                                                         "LEFT JOIN kafedras k on grants.kafedraId = k.id " +
                                                         "LEFT JOIN units u on grants.unitId = u.id " +
@@ -283,6 +286,7 @@ namespace ResearchProgram
                     grants[grant_index].StartDate = Convert.ToDateTime(reader[4]);
                     grants[grant_index].EndDate = Convert.ToDateTime(reader[5]);
                     grants[grant_index].Price = float.Parse(reader[6].ToString());
+                    grants[grant_index].PriceNoNDS = float.Parse(reader[19].ToString());
                     grants[grant_index].LeadNIOKR = new Person() { FIO = reader[7].ToString() };
                     grants[grant_index].Kafedra = new Kafedra() { Id = reader[17] != DBNull.Value ? Convert.ToInt32(reader[17]) : 0, Title = reader[8].ToString() };
                     grants[grant_index].Unit = new Unit() { Id = reader[16] != DBNull.Value ? Convert.ToInt32(reader[16]) : 0, Title = reader[9].ToString() };
@@ -1761,6 +1765,7 @@ namespace ResearchProgram
                 "startdate, " +
                 "enddate, " +
                 "price, " +
+                "priceNoNDS, " +
                 "leadniokrid, " +
                 "kafedraid, " +
                 "unitid, " +
@@ -1776,6 +1781,7 @@ namespace ResearchProgram
                 ":startdate, " +
                 ":enddate, " +
                 ":price, " +
+                ":priceNoNDS, " +
                 ":leadniokrid, " +
                 ":kafedraid, " +
                 ":unitid, " +
@@ -1795,6 +1801,7 @@ namespace ResearchProgram
             cmd.Parameters.Add(new NpgsqlParameter("kafedraid", grant.Kafedra != null ? grant.Kafedra.Id : 0));
             cmd.Parameters.Add(new NpgsqlParameter("laboratoryid", grant.Laboratory != null ? grant.Laboratory.Id : 0));
             cmd.Parameters.Add(new NpgsqlParameter("price", grant.Price));
+            cmd.Parameters.Add(new NpgsqlParameter("priceNoNDS", grant.PriceNoNDS));
             cmd.Parameters.Add(new NpgsqlParameter("grnti", grant.GRNTI));
             cmd.Parameters.Add(new NpgsqlParameter("nir", grant.NIR));
             cmd.Parameters.Add(new NpgsqlParameter("noc", grant.NOC == "Да"));
@@ -1904,15 +1911,18 @@ namespace ResearchProgram
                 "grantid, " +
                 "sourceid," +
                 "partsum," +
+                "partsumnonds," +
                 "receiptDate) " +
                 "values(" +
                 ":grantid, " +
                 ":sourceid, " +
                 ":partsum," +
+                ":partsumnonds," +
                 ":receiptDate)", conn);
                 cmd.Parameters.Add(new NpgsqlParameter("grantid", grantId));
                 cmd.Parameters.Add(new NpgsqlParameter("sourceid", grant.Depositor[i].Id));
                 cmd.Parameters.Add(new NpgsqlParameter("partsum", grant.DepositorSum[i]));
+                cmd.Parameters.Add(new NpgsqlParameter("partsumnonds", grant.DepositorSumNoNDS[i]));
                 cmd.Parameters.Add(new NpgsqlParameter("receiptDate", grant.ReceiptDate[i] != string.Empty ? DateTime.Parse(grant.ReceiptDate[i]) : DateTime.MinValue));
                 cmd.ExecuteNonQuery();
             }
