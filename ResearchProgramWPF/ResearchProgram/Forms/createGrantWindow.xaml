@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ResearchProgram"
         xmlns:dotNetKitControls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
         mc:Ignorable="d"
-        Title="Создать новый договор" Height="577" Width="855">
+        Title="Создать новый договор" Height="550" Width="850" ResizeMode="NoResize">
 
     <Window.Resources>
         <local:LaboratoryConverter x:Key="laboratoryConverter"/>
@@ -25,91 +25,36 @@
             <StackPanel Grid.Column="0" 
                         Margin="5 2"
                         x:Name="grantParametersButtonStackPanel">
-                <Button Content="ОКВЭД"
+                <Button Content="Общая информация"
                         Margin="0 0 0 3"
                         FontSize="15"
-                        Tag="OKVED"
+                        Tag="CommonInfo"
                         Click="GrantParametersButtonClick"
                         Background="#BBB"/>
-                <Button Content="Номер договора"
-                        Margin="0 0 0 3"
-                        FontSize="15"
-                        Tag="grantNumber"
-                        Click="GrantParametersButtonClick"/>
-                <Button Content="Наименование НИОКР"
-                        Margin="0 0 0 3"
-                        FontSize="15"
-                        Tag="NIOKR"
-                        Click="GrantParametersButtonClick"/>
-                <Button  Content="Заказчик"
+                <Button  Content="Заказчики/исполнители"
                          Margin="0 0 0 3"
                          FontSize="15"
-                         Tag="customer"
+                         Tag="customersAndExecutors"
                          Click="GrantParametersButtonClick"/>
-                <Button  Content="Дата начала"
+                <Button  Content="Даты"
                          Margin="0 0 0 3"
                          FontSize="15"
-                         Tag="startDate"
-                         Click="GrantParametersButtonClick"/>
-                <Button  Content="Дата завершения"
-                         Margin="0 0 0 3"
-                         FontSize="15"
-                         Tag="endDate"
-                         Click="GrantParametersButtonClick"/>
-                <Button  Content="Общая сумма договора"
-                         Margin="0 0 0 3"
-                         FontSize="15"
-                         Tag="price"
+                         Tag="Dates"
                          Click="GrantParametersButtonClick"/>
                 <Button  Content="Средства"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="deposits"
                          Click="GrantParametersButtonClick"/>
-                <Button  Content="Руководитель НИОКР"
-                         Margin="0 0 0 3"
-                         FontSize="15"
-                         Tag="leadNIOKR"
-                         Click="GrantParametersButtonClick"/>
-                <Button  Content="Исполнители"
-                         Margin="0 0 0 3"
-                         FontSize="15"
-                         Tag="executors"
-                         Click="GrantParametersButtonClick"/>
                 <Button  Content="Учреждение"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="institution"
                          Click="GrantParametersButtonClick"/>
-                <Button  Content="ГРНТИ"
+                <Button  Content="Наука"
                          Margin="0 0 0 3"
                          FontSize="15"
-                         Tag="GRNTI"
-                         Click="GrantParametersButtonClick"/>
-                <Button  Content="Тип исследования"
-                         Margin="0 0 0 3"
-                         FontSize="15"
-                         Tag="researchTypes"
-                         Click="GrantParametersButtonClick"/>
-                <Button  Content="Приоритетные направления"
-                         Margin="0 0 0 3"
-                         FontSize="15"
-                         Tag="priorityTrends"
-                         Click="GrantParametersButtonClick"/>
-                <Button  Content="Тип науки"
-                         Margin="0 0 0 3"
-                         FontSize="15"
-                         Tag="ScienceTypeItem"
-                         Click="GrantParametersButtonClick"/>
-                <Button  Content="НИР или УСЛУГА"
-                         Margin="0 0 0 3"
-                         FontSize="15"
-                         Tag="NIRItem"
-                         Click="GrantParametersButtonClick"/>
-                <Button  Content="НОЦ"
-                         Margin="0 0 0 3"
-                         FontSize="15"
-                         Tag="NOCItem"
+                         Tag="Science"
                          Click="GrantParametersButtonClick"/>
             </StackPanel>
         </ScrollViewer>
@@ -120,19 +65,30 @@
                       VerticalAlignment="Stretch" />
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
-                <RowDefinition  />
-                <RowDefinition Height="27" />
+                <RowDefinition/>
+                <RowDefinition Height="35" />
             </Grid.RowDefinitions>
 
             <TabControl Grid.Row="0"
                         x:Name="createGrantTabControl"
                         Margin="5 5 4 2" >
-                
-                <TabItem Name="OKVED"
+
+                <TabItem Name="CommonInfo"
                          Visibility="Collapsed">
                     <TabItem.Content>
-                        <Grid>
+                        <Grid x:Name="CommonInfoGrid">
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -145,100 +101,170 @@
                                      Name="OKVEDTextBox"
                                      Margin="5 0"></TextBox>
 
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-
-                <TabItem Name="grantNumber"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                            <Label Content="ГРНТИ"
+                                   Grid.Row="2"
+                                   Margin="0 5 0 0"/>
+                            <TextBox Grid.Row="3"
+                                     Name="GRNTITextBox"
+                                     Margin="5 0"/>
 
                             <Label Content="Номер договора"
-                                   Grid.Row="0"
+                                   Grid.Row="4"
                                    Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="1"
+                            <TextBox Grid.Row="5"
                                      Name="grantNumberTextBox"
                                      Margin="5 0"></TextBox>
 
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-
-                <TabItem Name="NIOKR"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
                             <Label Content="Наименование НИОКР"
-                                   Grid.Row="0"
+                                   Grid.Row="6"
                                    Margin="0 5 0 0"/>
-                            <dotNetKitControls:AutoCompleteComboBox Grid.Row="1"
+                            <dotNetKitControls:AutoCompleteComboBox Grid.Row="7"
                                                                     x:Name="NIOKRComboBox"
                                                                     Margin="5 0"
                                                                     ItemsSource="{Binding NIOKRList}">
                             </dotNetKitControls:AutoCompleteComboBox>
+
+                            <Label Content="Руководитель НИОКР"
+                                   Grid.Row="8"
+                                   Margin="0 5 0 0"/>
+
+                            <Label Content="НИР или Услуга"
+                                   Grid.Row="10"
+                                   Margin="0 5 0 0"/>
+
+                            <StackPanel Name="nirStackPanel"
+                                        Grid.Row="11">
+                                <RadioButton GroupName="NIRRadio" 
+                                             Content="НИР"   
+                                             Checked="NIRRadioChecked"
+                                             x:Name="NIR"/>
+                                <RadioButton GroupName="NIRRadio"
+                                             Content="Услуга"
+                                             Checked="NIRRadioChecked"
+                                             x:Name="USLUGA"/>
+                            </StackPanel>
+
+                            <Label Content="НОЦ"
+                                   Grid.Row="12"
+                                   Margin="0 5 0 0"/>
+                            <StackPanel Name="NOCStackPanel"
+                                        Grid.Row="13">
+                                <RadioButton GroupName="NOCRadio" 
+                                             Content="Да"   
+                                             Checked="NOCRadioChecked"
+                                             x:Name="NOC"/>
+                                <RadioButton GroupName="NOCRadio"
+                                             Content="Нет"
+                                             Checked="NOCRadioChecked"
+                                             x:Name="NotNOC"/>
+                            </StackPanel>
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="customer"
+                <TabItem Name="customersAndExecutors"
                          Visibility="Collapsed">
                     <TabItem.Content>
-                        <Grid x:Name="customerGrid">
+                        <Grid x:Name="customersAndExecutorsGrid">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="15*"/>
-                                <RowDefinition Height="1.2*"/>
+                                <RowDefinition />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
 
-                            <Label Content="Заказчик"
+                            <Grid x:Name="customerGrid"
+                                  Grid.Row="0"
+                                  Grid.Column="0"
+                                  Margin="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="15*"/>
+                                    <RowDefinition Height="35"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Content="Заказчики"
                                    Grid.Row="0"
-                                   Grid.ColumnSpan="3"
-                                   Margin="0 5 0 0"/>
+                                   Grid.ColumnSpan="3"/>
 
 
-                            <ListView Grid.Row="1"
+                                <ListView Grid.Row="1"
                                       Grid.ColumnSpan="3"
                                       x:Name="customersVerticalListView">
-                            </ListView>
+                                </ListView>
 
 
-                            <Button Content="Добавить"
+                                <Button Content="Добавить"
                                     Name="customerAddButton"
                                     Grid.Row="2"
                                     Grid.Column="0"
-                                    Margin="10 5"
+                                    Margin="0 5 20 5"
                                     Width="Auto" Click="customerAddButton_Click"/>
-                            <Button Content="Удалить"
+                                <Button Content="Удалить"
                                     Name="customerDeleteButton"
                                     Grid.Row="2"
                                     Grid.Column="1"
-                                    Margin="10 5"
+                                    Margin="0 5 20 5"
                                     Width="Auto" Click="customerDeleteButton_Click"/>
+                            </Grid>
+                            <Grid x:Name="executorsGrid"
+                                  Grid.Row="0"
+                                  Grid.Column="1"
+                                  Margin="2">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="30"/>
+                                    <RowDefinition Height="15*"/>
+                                    <RowDefinition Height="35"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Content="Исполнители"
+                                   Grid.Row="0"
+                                   Grid.ColumnSpan="3"/>
+
+
+                                <ListView Grid.Row="1"
+                                      Grid.ColumnSpan="3"
+                                      x:Name="executorsVerticalListView">
+                                </ListView>
+
+
+                                <Button Content="Добавить"
+                                    Name="executorAddButton"
+                                    Grid.Row="2"
+                                    Grid.Column="0"
+                                    Margin="0 5 20 5"
+                                    Width="Auto" Click="ExecutorAddButton_Click"/>
+                                <Button Content="Удалить"
+                                    Name="executorDeleteButton"
+                                    Grid.Row="2"
+                                    Grid.Column="1"
+                                    Margin="0 5 20 5"
+                                    Width="Auto" Click="ExecutorDeleteButton_Click"/>
+
+                            </Grid>
                         </Grid>
+
+
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="startDate"
+                <TabItem Name="Dates"
                          Visibility="Collapsed">
                     <TabItem.Content>
                         <Grid>
                             <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
@@ -249,58 +275,15 @@
                                    Margin="0 5 0 0"/>
                             <DatePicker Name="startDateDatePicker"
                                         Grid.Row="1"/>
-                        </Grid>
-
-                    </TabItem.Content>
-                </TabItem>
-
-                <TabItem Name="endDate"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
+                            
                             <Label Content="Дата окончания"
-                                   Grid.Row="0"
-                                   Margin="0 5 0 0"/>
-                            <DatePicker Name="endDateDatePicker"
-                                        Grid.Row="1"/>
-                        </Grid>
-
-                    </TabItem.Content>
-                </TabItem>
-
-                <TabItem Name="price"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Label Content="Общая сумма договора"
-                                   Grid.Row="0"
-                                   Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="1"
-                                     Name="priceTextBox"
-                                     Margin="5 0"
-                                     PreviewTextInput="TextBox_PreviewTextInput"/>
-                            <Label Content="Сумма без НДС"
                                    Grid.Row="2"
                                    Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="3"
-                                     Name="priceNoNDSTextBox"
-                                     Margin="5 0"
-                                     PreviewTextInput="TextBox_PreviewTextInput"
-                                     Text="{Binding ElementName=priceTextBox, Path=Text, Converter={StaticResource PriceNDSConverter}}"/>
+                            <DatePicker Name="endDateDatePicker"
+                                        Grid.Row="3"/>
+
                         </Grid>
+
                     </TabItem.Content>
                 </TabItem>
 
@@ -309,120 +292,101 @@
                     <TabItem.Content>
                         <Grid Name="depositsGrid">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="60"/>
+                                <RowDefinition Height="35"/>
                                 <RowDefinition Height="15*"/>
                                 <RowDefinition Height="35"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="30*"/>
+                                <ColumnDefinition Width="25*"/>
+                                <ColumnDefinition Width="25*"/>
                                 <ColumnDefinition Width="20*"/>
-                                <ColumnDefinition Width="20*"/>
-                                <ColumnDefinition Width="30*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Label Content="Средства"
+                            <Grid Grid.Row="0"
+                                  Grid.ColumnSpan="100">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="45*"/>
+                                    <ColumnDefinition Width="5*"/>
+                                    <ColumnDefinition Width="45*"/>
+                                    <ColumnDefinition Width="5*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Content="Общая сумма договора"
                                    Grid.Row="0"
+                                   Grid.Column="0"
+                                   Margin="0 5 0 0"
+                                       />
+                                <TextBox Grid.Row="1"
+                                         Grid.Column="0"
+                                         Name="priceTextBox"
+                                         Margin="5 0"
+                                         PreviewTextInput="TextBox_PreviewTextInput"
+                                         Padding="0 3"/>
+                                <Label Content="руб."
+                                       Grid.Row="1"
+                                       Grid.Column="1"
+                                       Margin="-7 0 0 0"/>
+                                <Label Content="Сумма без НДС"
+                                       Grid.Row="0"
+                                       Grid.Column="2"
+                                       Margin="0 5 0 0"/>
+                                <TextBox Grid.Row="1"
+                                         Name="priceNoNDSTextBox"
+                                         Margin="5 0"
+                                         Grid.Column="2"
+                                         PreviewTextInput="TextBox_PreviewTextInput"
+                                         Padding="0 3"
+                                         Text="{Binding ElementName=priceTextBox, Path=Text, Converter={StaticResource PriceNDSConverter}}"/>
+                                <Label Content="руб."
+                                       Grid.Row="1"
+                                       Grid.Column="3"
+                                       Margin="-7 0 0 0"/>
+                            </Grid>
+
+                            <Label Content="Средства"
+                                   Grid.Row="1"
                                    Grid.Column="0"
                                    Margin="0 2 0 0"
                                    FontSize="13"/>
                             <Label Content="Сумма"
-                                   Grid.Row="0"
+                                   Grid.Row="1"
                                    Grid.Column="1"
                                    Margin="0 2 0 0"
                                    FontSize="13"/>
                             <Label Content="Без НДС"
-                                   Grid.Row="0"
+                                   Grid.Row="1"
                                    Grid.Column="2"
                                    Margin="0 2 0 0"
                                    FontSize="13"/>
                             <Label Content="Дата поступления"
-                                   Grid.Row="0"
+                                   Grid.Row="1"
                                    Grid.Column="3"
                                    Margin="0 2 0 0"
                                    FontSize="13"/>
 
-
-
-
-                            <ListView Grid.Row="1"
+                            <ListView Grid.Row="2"
                                       Grid.ColumnSpan="5"
                                       x:Name="depositsVerticalListView">
                             </ListView>
 
                             <Button Content="Добавить"
                                     Name="depositsAddButton"
-                                    Grid.Row="2"
+                                    Grid.Row="3"
                                     Grid.Column="0"
                                     Margin="10 5"
                                     Width="Auto" Click="DepositsAddButton_Click_1"/>
                             <Button Content="Удалить"
                                     Name="depositsDeleteButton"
-                                    Grid.Row="2"
+                                    Grid.Row="3"
                                     Grid.Column="1"
                                     Margin="10 5"
                                     Width="Auto" Click="DepositsDeleteButton_Click"/>
-
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-
-                <TabItem Name="leadNIOKR"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid x:Name="leadNIOKRGrid">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Label Content="Руководитель НИОКР"
-                                   Grid.Row="0"
-                                   Margin="0 5 0 0"/>
-
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-
-                <TabItem Name="executors"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid Name="executorsGrid">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="15*"/>
-                                <RowDefinition Height="1.2*"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Label Content="Исполнитель"
-                                   Grid.Row="0"
-                                   Grid.ColumnSpan="3"
-                                   Margin="0 5 0 0"/>
-
-
-                            <ListView Grid.Row="1"
-                                      Grid.ColumnSpan="3"
-                                      x:Name="executorsVerticalListView">
-                            </ListView>
-
-
-                            <Button Content="Добавить"
-                                    Name="executorAddButton"
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Margin="10 5"
-                                    Width="Auto" Click="ExecutorAddButton_Click"/>
-                            <Button Content="Удалить"
-                                    Name="executorDeleteButton"
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    Margin="10 5"
-                                    Width="Auto" Click="ExecutorDeleteButton_Click"/>
 
                         </Grid>
                     </TabItem.Content>
@@ -518,196 +482,120 @@
                                         </MultiBinding>
                                     </dotNetKitControls:AutoCompleteComboBox.Visibility>
                                 </dotNetKitControls:AutoCompleteComboBox>
-                                
+
 
 
                             </StackPanel>
-                            
+
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="GRNTI"
+                <TabItem Name="Science"
                          Visibility="Collapsed">
                     <TabItem.Content>
-                        <Grid>
+                        <Grid Name="researchTypesGrid">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="35"/>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition/>
                             </Grid.RowDefinitions>
-
-                            <Label Content="ГРНТИ"
-                                   Grid.Row="0"
-                                   Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="1"
-                                      Name="GRNTITextBox"
-                                      Margin="5 0"/>
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-
-                <TabItem Name="priorityTrends"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid Name="priorityTrendsGrid">
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
 
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="15*"/>
-                                <RowDefinition Height="1.2*"/>
-                            </Grid.RowDefinitions>
+                            <Label Content="Тип исследования"
+                                   Grid.Row="0"
+                                   Margin="0 5 0 0"
+                                   Grid.Column="0"
+                                   Grid.ColumnSpan="2"/>
 
-                            <Label Content="Приоритетные направления"
+                            <Grid Name="priorityTrendsGrid"
+                                  Grid.Row="3"
+                                  Grid.Column="0"
+                                  Margin="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="35"/>
+                                    <RowDefinition Height="15*"/>
+                                    <RowDefinition Height="35"/>
+                                </Grid.RowDefinitions>
+
+                                <Label Content="Приоритетные направления"
                             Grid.Row="0"
                             Margin="0 5 0 0" Grid.ColumnSpan="2"/>
 
 
-                            <ListView Grid.Row="1"
+                                <ListView Grid.Row="1"
                                       Grid.ColumnSpan="5"
                                       x:Name="priorityTrendsVerticalListView">
-                            </ListView>
+                                </ListView>
 
 
-                            <Button Content="Добавить"
+                                <Button Content="Добавить"
                                     Name="priorityTrendAddButton"
                                     Grid.Row="2"
                                     Grid.Column="0"
                                     Margin="2 5 10 5"
                                     Width="Auto" Click="PriorityTrendAddButton_Click"/>
-                            <Button Content="Удалить"
+                                <Button Content="Удалить"
                                     Name="priorityTrendDeleteButton"
                                     Grid.Row="2"
                                     Grid.Column="1"
                                     Margin="0 5 20 5"
                                     Width="Auto" Click="PriorityTrendDeleteButton_Click"/>
 
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
+                            </Grid>
 
-                <TabItem Name="researchTypes"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid Name="researchTypesGrid">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                            <Grid Name ="scienceTypeGrid"
+                                  Grid.Row="3"
+                                  Grid.Column="1"
+                                  Margin="2">
 
-                            <Label Content="Тип исследования"
-                                   Grid.Row="0"
-                                   Margin="0 5 0 0"/>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="3*"/>
+                                </Grid.ColumnDefinitions>
 
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="35"/>
+                                    <RowDefinition Height="15*"/>
+                                    <RowDefinition Height="35"/>
+                                </Grid.RowDefinitions>
 
-
-                <TabItem x:Name="ScienceTypeItem"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid Name ="scienceTypeGrid">
-
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="3*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="1*"/>
-                                <RowDefinition Height="15*"/>
-                                <RowDefinition Height="1.2*"/>
-                            </Grid.RowDefinitions>
-
-                            <Label Content="Тип науки"
+                                <Label Content="Тип науки"
                             Grid.Row="0"
                             Margin="0 5 0 0" Grid.ColumnSpan="2"/>
 
 
-                            <ListView Grid.Row="1"
+                                <ListView Grid.Row="1"
                                       Grid.ColumnSpan="5"
                                       x:Name="scienceTypeVerticalListView">
-                            </ListView>
+                                </ListView>
 
 
-                            <Button Content="Добавить"
+                                <Button Content="Добавить"
                                     Name="scienceTypeAddButton"
                                     Grid.Row="2"
                                     Grid.Column="0"
                                     Margin="2 5 10 5"
                                     Width="Auto" Click="ScienceTypeAddButton_Click"/>
-                            <Button Content="Удалить"
+                                <Button Content="Удалить"
                                     Name="scienceTypeDeleteButton"
                                     Grid.Row="2"
                                     Grid.Column="1"
                                     Margin="0 5 20 5"
                                     Width="Auto" Click="ScienceTypeDeleteButton_Click"/>
 
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
+                            </Grid>
 
-
-                <TabItem Name="NIRItem"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Label Content="НИР или Услуга"
-                           Grid.Row="0"
-                           Margin="0 5 0 0"/>
-
-                            <StackPanel Name="nirStackPanel"
-                                      Grid.Row="1">
-                                <RadioButton GroupName="NIRRadio" 
-                                             Content="НИР"   
-                                             Checked="NIRRadioChecked"
-                                             x:Name="NIR"/>
-                                <RadioButton GroupName="NIRRadio"
-                                             Content="Услуга"
-                                             Checked="NIRRadioChecked"
-                                             x:Name="USLUGA"/>
-                            </StackPanel>
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-
-
-                <TabItem Name="NOCItem"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Label Content="НОЦ"
-                           Grid.Row="0"
-                           Margin="0 5 0 0"/>
-                            <StackPanel Name="NOCStackPanel"
-                                      Grid.Row="1">
-                                <RadioButton GroupName="NOCRadio" 
-                                             Content="Да"   
-                                             Checked="NOCRadioChecked"
-                                             x:Name="NOC"/>
-                                <RadioButton GroupName="NOCRadio"
-                                             Content="Нет"
-                                             Checked="NOCRadioChecked"
-                                             x:Name="NotNOC"/>
-                            </StackPanel>
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
@@ -716,10 +604,8 @@
 
             <Button Content="Создать договор"
                     Grid.Row="1"
-                    MinWidth="118"
-                    MinHeight="20"
-                    MaxWidth="140"
-                    MaxHeight="25"
+                    Height="25"
+                    Width="140"
                     HorizontalAlignment="Right"
                     Margin="0 3 4 3" Click="CreateGrantButtonClick"
                     x:Name="createGrantButton"></Button>

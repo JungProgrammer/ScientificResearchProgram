@@ -159,36 +159,56 @@ namespace ResearchProgram
                     {
                         Orientation = Orientation.Horizontal,
                     };
+                    TextBox sumTextBox;
+                    TextBox sumTextBoxNoNDS;
+                    void sumTextBoxTextChangedEventHandler(object senderr, TextChangedEventArgs args)
+                    {
+                        if (sumTextBox.Text.Length > 0)
+                            sumTextBoxNoNDS.Text = (Math.Round(Convert.ToDouble(sumTextBox.Text) * 1 / Settings.Default.NDSValue, 2)).ToString();
+                        else
+                            sumTextBoxNoNDS.Text = "";
+                    }
 
                     ComboBox depositorComboBox = new ComboBox()
                     {
                         Margin = new Thickness(5, 0, 5, 10),
                         ItemsSource = DepositsList,
-                        Width = 240,
+                        Width = 160,
                     };
                     for (int j = 0; j < DepositsList.Count; j++)
                         if (DepositsList[j].Title == grantToEdit.Depositor[i].Title)
                             depositorComboBox.SelectedIndex = j;
 
-
-                    TextBox sumTextBox = new TextBox()
+                    sumTextBox = new TextBox()
                     {
                         Margin = new Thickness(5, 0, 5, 10),
-                        MinWidth = 90,
+                        MinWidth = 110,
                         Text = grantToEdit.DepositorSum[i].ToString()
                     };
+
+
+                    sumTextBoxNoNDS = new TextBox()
+                    {
+                        Margin = new Thickness(5, 0, 5, 10),
+                        MinWidth = 110,
+                        Text = grantToEdit.DepositorSumNoNDS[i].ToString()
+                    };
+                    sumTextBoxNoNDS.PreviewTextInput += TextBox_PreviewTextInput;
+                    sumTextBox.PreviewTextInput += TextBox_PreviewTextInput;
+                    sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler;
 
                     DateTime selectedDate;
                     DateTime.TryParse(grantToEdit.ReceiptDate[i], out selectedDate);
                     DatePicker dateComboBox = new DatePicker()
                     {
                         Margin = new Thickness(5, 0, 5, 10),
-                        MinWidth = 90,
+                        MinWidth = 110,
                         SelectedDate = selectedDate
                     };
 
                     horizontalStackPanel.Children.Add(depositorComboBox);
                     horizontalStackPanel.Children.Add(sumTextBox);
+                    horizontalStackPanel.Children.Add(sumTextBoxNoNDS);
                     horizontalStackPanel.Children.Add(dateComboBox);
 
 
@@ -230,7 +250,6 @@ namespace ResearchProgram
                         }
                     }
                 }
-                
 
                 GRNTITextBox.Text = grantToEdit.GRNTI;
 
@@ -323,7 +342,7 @@ namespace ResearchProgram
             {
                 Margin = new Thickness(5, 0, 5, 0),
                 ItemsSource = new List<Customer>(CustomersList),
-                MinWidth = 300
+                MinWidth = 270
             };
 
             customersVerticalListView.Items.Add(customerComboBox);
@@ -362,8 +381,8 @@ namespace ResearchProgram
                 MinWidth = 300,
 
             };
-            leadNIOKRGrid.Children.Add(LeadNIOKRAutoCompleteComboBox);
-            Grid.SetRow(LeadNIOKRAutoCompleteComboBox, 1);
+            CommonInfoGrid.Children.Add(LeadNIOKRAutoCompleteComboBox);
+            Grid.SetRow(LeadNIOKRAutoCompleteComboBox, 9);
         }
 
         /// <summary>
@@ -380,6 +399,8 @@ namespace ResearchProgram
             };
             researchTypesGrid.Children.Add(researchTypeAutoCompleteComboBox);
             Grid.SetRow(researchTypeAutoCompleteComboBox, 1);
+            Grid.SetColumn(researchTypeAutoCompleteComboBox, 0);
+            Grid.SetColumnSpan(researchTypeAutoCompleteComboBox, 2);
         }
 
         /// <summary>
@@ -390,14 +411,14 @@ namespace ResearchProgram
         private void DepositsAddButton_Click_1(object sender, RoutedEventArgs e)
         {
             TextBox sumTextBox;
-            TextBox sumNdsTextBox;
+            TextBox sumTextBoxNoNDS;
 
             void sumTextBoxTextChangedEventHandler(object senderr, TextChangedEventArgs args)
             {
                 if (sumTextBox.Text.Length > 0)
-                    sumNdsTextBox.Text = (Math.Round(Convert.ToDouble(sumTextBox.Text) * 1/Settings.Default.NDSValue, 2)).ToString();
+                    sumTextBoxNoNDS.Text = (Math.Round(Convert.ToDouble(sumTextBox.Text) * 1/Settings.Default.NDSValue, 2)).ToString();
                 else
-                    sumNdsTextBox.Text = "";
+                    sumTextBoxNoNDS.Text = "";
             }
 
             StackPanel horizontalStackPanel = new StackPanel()
@@ -413,22 +434,23 @@ namespace ResearchProgram
                 Width = 160,
             };
 
-            sumNdsTextBox = new TextBox()
-            {
-                Margin = new Thickness(5, 0, 5, 10),
-                Width = 110
-            };
-
             sumTextBox = new TextBox()
             {
                 Margin = new Thickness(5, 0, 5, 10),
-                Width = 110
+                Width = 110,
+                Padding = new Thickness(0, 2, 0, 2)
+            };
+
+            sumTextBoxNoNDS = new TextBox()
+            {
+                Margin = new Thickness(5, 0, 5, 10),
+                Width = 110,
+                Padding = new Thickness(0, 2, 0, 2)
             };
             sumTextBox.PreviewTextInput += TextBox_PreviewTextInput;
             sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler;
 
-            sumNdsTextBox.PreviewTextInput += TextBox_PreviewTextInput;
-
+            sumTextBoxNoNDS.PreviewTextInput += TextBox_PreviewTextInput;
 
             DatePicker datePicker = new DatePicker()
             {
@@ -438,12 +460,12 @@ namespace ResearchProgram
 
             horizontalStackPanel.Children.Add(depositorComboBox);
             horizontalStackPanel.Children.Add(sumTextBox);
-            horizontalStackPanel.Children.Add(sumNdsTextBox);
+            horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7,0,0,0) });
+            horizontalStackPanel.Children.Add(sumTextBoxNoNDS);
+            horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7,0,5,0) });
             horizontalStackPanel.Children.Add(datePicker);
 
             depositsVerticalListView.Items.Add(horizontalStackPanel);
-
-
         }
 
         /// <summary>
@@ -475,7 +497,7 @@ namespace ResearchProgram
             {
                 Margin = new Thickness(5, 0, 5, 0),
                 ItemsSource = new List<Person>(PersonsList),
-                MinWidth = 300
+                MinWidth = 270
             };
 
             executorsVerticalListView.Items.Add(executorComboBox);
@@ -503,7 +525,7 @@ namespace ResearchProgram
             {
                 Margin = new Thickness(5, 0, 5, 0),
                 ItemsSource = new List<PriorityTrend>(PriorityTrendList),
-                MinWidth = 300
+                Width = 270
             };
 
 
@@ -532,7 +554,7 @@ namespace ResearchProgram
             {
                 Margin = new Thickness(5, 0, 5, 0),
                 ItemsSource = new List<ScienceType>(ScienceTypeList),
-                MinWidth = 300
+                Width = 270
             };
             scienceTypeVerticalListView.Items.Add(scienceTypeComboBox);
         }
@@ -566,7 +588,6 @@ namespace ResearchProgram
             ((Button)sender).Background = new SolidColorBrush(Color.FromArgb(255, 189, 189, 189));
 
         }
-
         /// <summary>
         /// Создает новый экземпляр договора и загружает его в базу данных
         /// </summary>
