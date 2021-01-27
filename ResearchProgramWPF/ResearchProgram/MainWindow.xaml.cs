@@ -41,6 +41,8 @@ namespace ResearchProgram
         public DataTable PeopleDataTable { get; set; }
         public MainWindow()
         {
+            SplashScreen splash = new SplashScreen("Images\\splashscreen.png");
+            splash.Show(false, true);
             InitializeComponent();
 
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -52,6 +54,7 @@ namespace ResearchProgram
             LoadPeopleTable();
 
             DataContext = this;
+            splash.Close(TimeSpan.FromMilliseconds(0));
         }
 
         /// <summary>
@@ -289,6 +292,29 @@ namespace ResearchProgram
             newGrantWindow.Closing += (senders, args) => { newGrantWindow.Owner = null; };
 
             newGrantWindow.Show();
+        }
+
+        public DataRowView selectedPersonRow;
+        public DataRowView SelectedPersonRow
+        {
+            get { return selectedPersonRow; }
+            set { selectedPersonRow = value; }
+        }
+        private void EditPeople(object sender, RoutedEventArgs e)
+        {
+            string personId = SelectedPersonRow.Row.Field<String>("id");
+            Console.WriteLine(personId);
+            Person person = CRUDDataBase.GetPersonByPersonId(personId);
+
+            createPersonWindow newPersonWindow = new createPersonWindow(GrantsDataTable, person)
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Owner = this
+            };
+            // Эта штука нужна чтобы родительское окно не скрывалось, когда дочернее закрывается
+            newPersonWindow.Closing += (senders, args) => { newPersonWindow.Owner = null; };
+
+            newPersonWindow.Show();
         }
 
         private void StructureOfUniversity_Click(object sender, RoutedEventArgs e)

@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Npgsql;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace ResearchProgram
 {
@@ -27,7 +28,15 @@ namespace ResearchProgram
         public static void ConnectToDataBase()
         {
             conn = new NpgsqlConnection($"Server=212.192.88.14; Port=5432; User Id={loginFromDB}; Password={passwordFromDB}; Database=postgres");
-            conn.Open();
+            try
+            {
+                conn.Open();
+            }
+            catch (Npgsql.NpgsqlException)
+            {
+                MessageBox.Show("Нет подключения к серверу баз данных. Попробуйте позже.\nПрограмма будет закрыта.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                Environment.Exit(0);
+            }
         }
 
         /// <summary>
@@ -630,7 +639,7 @@ namespace ResearchProgram
                 Unit unitFound = null;
                 Kafedra kafedraFound = null;
                 Laboratory laboratoryFound = null;
-                
+
                 while (reader.Read())
                 {
                     institutionId = reader[0] != DBNull.Value ? Convert.ToInt32(reader[0]) : 0;
@@ -644,7 +653,7 @@ namespace ResearchProgram
 
                     institutionFound = universityStructure.FindInstitution(institutionId);
                     // Если такого учреждения еще нет
-                    if(institutionFound == null && institutionId != 0)
+                    if (institutionFound == null && institutionId != 0)
                     {
                         institutionFound = new Institution()
                         {
@@ -656,9 +665,9 @@ namespace ResearchProgram
                         universityStructure.Institutions.Add(institutionFound);
                     }
 
-                    if(institutionFound != null) unitFound = universityStructure.FindUnit(institutionFound, unitId);
+                    if (institutionFound != null) unitFound = universityStructure.FindUnit(institutionFound, unitId);
                     // Если такого подразделения еще нет
-                    if(unitFound == null && unitId != 0)
+                    if (unitFound == null && unitId != 0)
                     {
                         unitFound = new Unit()
                         {
@@ -670,9 +679,9 @@ namespace ResearchProgram
                         institutionFound.Units.Add(unitFound);
                     }
 
-                    if(unitFound != null) kafedraFound = universityStructure.FindKafedra(unitFound, kafedraId);
+                    if (unitFound != null) kafedraFound = universityStructure.FindKafedra(unitFound, kafedraId);
                     // Если такой кафедры еще нет
-                    if(kafedraFound == null && kafedraId != 0)
+                    if (kafedraFound == null && kafedraId != 0)
                     {
                         kafedraFound = new Kafedra()
                         {
@@ -684,9 +693,9 @@ namespace ResearchProgram
                         unitFound.Kafedras.Add(kafedraFound);
                     }
 
-                    if(kafedraFound != null) laboratoryFound = universityStructure.FindLaboratoryInKafedra(kafedraFound, laboratoryId);
+                    if (kafedraFound != null) laboratoryFound = universityStructure.FindLaboratoryInKafedra(kafedraFound, laboratoryId);
                     // Если такая лаборатория еще не существует
-                    if(laboratoryFound == null && laboratoryId != 0)
+                    if (laboratoryFound == null && laboratoryId != 0)
                     {
                         laboratoryFound = new Laboratory()
                         {
@@ -900,7 +909,8 @@ namespace ResearchProgram
                     personId = Convert.ToInt32(reader[0]);
                     personIndex = ShowPersonIndex(persons, personId);
 
-                    persons[personIndex].Jobs.Add(new Job() {
+                    persons[personIndex].Jobs.Add(new Job()
+                    {
                         Title = reader[1].ToString(),
                         Salary = float.Parse(reader[2].ToString()),
                         SalaryRate = float.Parse(reader[3].ToString())
@@ -1126,6 +1136,7 @@ namespace ResearchProgram
         {
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, name_field FROM fields_persons_list ORDER BY id", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
+            WorkerWithTablesOnMainForm.AddHeadersToPersonTable(dataTable, "id");
 
             if (reader.HasRows)
             {
@@ -1147,7 +1158,7 @@ namespace ResearchProgram
         public static List<Person> GetPersons()
         {
             List<Person> personsList = new List<Person>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT Id, FIO FROM persons ORDER BY FIO;", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT Id, FIO, birthdate, sex, placeofwork, category,degree, rank FROM persons ORDER BY FIO;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -1157,13 +1168,40 @@ namespace ResearchProgram
                     personsList.Add(new Person()
                     {
                         Id = Convert.ToInt32(reader[0]),
-                        FIO = reader[1].ToString()
+                        FIO = reader[1].ToString(),
+                        BitrhDate = Convert.ToDateTime(reader[2]),
+                        Sex = Convert.ToBoolean(reader[3]),
+                        PlaceOfWork = reader[4].ToString(),
+                        Category = reader[5].ToString(),
+                        Degree = reader[6].ToString(),
+                        Rank = reader[7].ToString()
                     });
+
                 }
             }
-            else
+            reader.Close();
+
+
+            cmd = new NpgsqlCommand("SELECT personid, j.title, j.salary, salaryrate FROM salaryrates JOIN jobs j on salaryrates.jobid = j.id;", conn);
+            reader = cmd.ExecuteReader();
+            List<Job> jobs = new List<Job>();
+            if (reader.HasRows)
             {
-                Debug.WriteLine("No rows found.");
+                while (reader.Read())
+                {
+                    for(int i = 0;i<personsList.Count; i++)
+                    {
+                        if(reader[0].ToString() == personsList[i].Id.ToString())
+                        {
+                            personsList[i].Jobs.Add(new Job()
+                            {
+                                Title = reader[1].ToString(),
+                                Salary = Convert.ToSingle(reader[2]),
+                                SalaryRate = Convert.ToSingle(reader[3])
+                            });
+                        }
+                    }
+                }
             }
             reader.Close();
             return personsList;
@@ -1209,7 +1247,8 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    depositsList.Add(new Depositor() { 
+                    depositsList.Add(new Depositor()
+                    {
                         Id = Convert.ToInt32(reader[0]),
                         Title = reader[1].ToString()
                     });
@@ -1355,7 +1394,8 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    institutionsList.Add(new Institution() { 
+                    institutionsList.Add(new Institution()
+                    {
                         Id = Convert.ToInt32(reader[0]),
                         Title = reader[1].ToString()
                     });
@@ -1383,7 +1423,8 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    researchTypesList.Add(new ResearchType() { 
+                    researchTypesList.Add(new ResearchType()
+                    {
                         Id = Convert.ToInt32(reader[0]),
                         Title = reader[1].ToString()
                     });
@@ -1411,7 +1452,8 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    scienctTypeTypesList.Add(new ScienceType() { 
+                    scienctTypeTypesList.Add(new ScienceType()
+                    {
                         Id = Convert.ToInt32(reader[0]),
                         Title = reader[1].ToString()
                     });
@@ -1622,7 +1664,7 @@ namespace ResearchProgram
         /// </summary>
         public static void UpdateInstitution(Grant fixedGrant)
         {
-            if(fixedGrant.Institution != null)
+            if (fixedGrant.Institution != null)
             {
                 NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET institutionid = :institutionid WHERE id = :id", conn);
                 cmd.Parameters.Add(new NpgsqlParameter("institutionid", fixedGrant.Institution.Id));
@@ -1636,7 +1678,7 @@ namespace ResearchProgram
         /// </summary>
         public static void UpdateUnit(Grant fixedGrant)
         {
-            if(fixedGrant.Unit != null)
+            if (fixedGrant.Unit != null)
             {
                 NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET unitid = :unitid WHERE id = :id", conn);
                 cmd.Parameters.Add(new NpgsqlParameter("unitid", fixedGrant.Unit.Id));
@@ -1650,7 +1692,7 @@ namespace ResearchProgram
         /// </summary>
         public static void UpdateKafedra(Grant fixedGrant)
         {
-            if(fixedGrant.Kafedra != null)
+            if (fixedGrant.Kafedra != null)
             {
                 NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET kafedraid = :kafedraid WHERE id = :id", conn);
                 cmd.Parameters.Add(new NpgsqlParameter("kafedraid", fixedGrant.Kafedra.Id));
@@ -1664,7 +1706,7 @@ namespace ResearchProgram
         /// </summary>
         public static void UpdateLaboratory(Grant fixedGrant)
         {
-            if(fixedGrant.Laboratory != null)
+            if (fixedGrant.Laboratory != null)
             {
                 NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET laboratoryid = :laboratoryid WHERE id = :id", conn);
                 cmd.Parameters.Add(new NpgsqlParameter("laboratoryid", fixedGrant.Laboratory.Id));
@@ -1689,7 +1731,7 @@ namespace ResearchProgram
         /// </summary>
         public static void UpdateResearchType(Grant fixedGrant)
         {
-            if(fixedGrant.ResearchType.Count > 0)
+            if (fixedGrant.ResearchType.Count > 0)
             {
                 NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grantresearchtype SET grantid = :grantid WHERE researchtypeid = :researchtypeid", conn);
                 cmd.Parameters.Add(new NpgsqlParameter("grantid", fixedGrant.Id));
@@ -1836,7 +1878,7 @@ namespace ResearchProgram
             CRUDDataBase.AddDeposits(grant, newMaxGrantId);
 
             // Добавление типов исследования
-            foreach(ResearchType rType in grant.ResearchType)
+            foreach (ResearchType rType in grant.ResearchType)
             {
                 cmd = new NpgsqlCommand("insert into grantresearchtype (" +
                 "grantid, " +
@@ -2064,9 +2106,9 @@ namespace ResearchProgram
             NpgsqlDataReader reader = cmd.ExecuteReader();
             bool answer;
             if (reader.HasRows)
-                answer =  false;
+                answer = false;
             else
-                answer =  true;
+                answer = true;
             CloseConnection();
 
             return answer;
@@ -2079,14 +2121,32 @@ namespace ResearchProgram
             Grant[] grants = GetAllGrants();
             CloseConnection();
             Grant grant = new Grant();
-            for(int i = 0;i < grants.Length; i++)
+            for (int i = 0; i < grants.Length; i++)
             {
-                if (grants[i].grantNumber == grantNumber){
+                if (grants[i].grantNumber == grantNumber)
+                {
                     grant = grants[i];
                     break;
                 }
             }
             return grant;
+        }
+
+        public static Person GetPersonByPersonId(string personId)
+        {
+            ConnectToDataBase();
+            List<Person> persons = GetPersons();
+            CloseConnection();
+            Person person = new Person();
+            for (int i = 0; i < persons.Count; i++)
+            {
+                if (persons[i].Id == Convert.ToInt32(personId))
+                {
+                    person = persons[i];
+                    break;
+                }
+            }
+            return person;
         }
 
     }

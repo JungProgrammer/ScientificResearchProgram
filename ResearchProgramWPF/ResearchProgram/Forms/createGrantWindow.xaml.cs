@@ -77,7 +77,7 @@ namespace ResearchProgram
         }
 
 
-        public CreateGrantWindow(DataTable grantsDataTable, Grant grantToEdit=null)
+        public CreateGrantWindow(DataTable grantsDataTable, Grant grantToEdit = null)
         {
             NIOKRList = new ObservableCollection<string>
             {
@@ -132,7 +132,7 @@ namespace ResearchProgram
                         break;
                 }
 
-                for(int i = 0; i < grantToEdit.Customer.Count; i++)
+                for (int i = 0; i < grantToEdit.Customer.Count; i++)
                 {
                     AutoCompleteComboBox customerComboBox = new AutoCompleteComboBox()
                     {
@@ -153,7 +153,7 @@ namespace ResearchProgram
                 endDateDatePicker.SelectedDate = grantToEdit.EndDate;
                 priceTextBox.Text = grantToEdit.Price.ToString();
 
-                for(int i = 0;i < grantToEdit.Depositor.Count; i++)
+                for (int i = 0; i < grantToEdit.Depositor.Count; i++)
                 {
                     StackPanel horizontalStackPanel = new StackPanel()
                     {
@@ -193,8 +193,8 @@ namespace ResearchProgram
                         MinWidth = 110,
                         Text = grantToEdit.DepositorSumNoNDS[i].ToString()
                     };
-                    sumTextBoxNoNDS.PreviewTextInput += TextBox_PreviewTextInput;
-                    sumTextBox.PreviewTextInput += TextBox_PreviewTextInput;
+                    sumTextBoxNoNDS.PreviewTextInput += TextBoxNumbersPreviewInput;
+                    sumTextBox.PreviewTextInput += TextBoxNumbersPreviewInput;
                     sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler;
 
                     DateTime selectedDate;
@@ -234,17 +234,17 @@ namespace ResearchProgram
 
                 // Привязка для структуры университета
                 UniversityStructure.SelectedInstitution = UniversityStructure.FindInstitution(grantToEdit.Institution.Id);
-                if(UniversityStructure.SelectedInstitution != null)
+                if (UniversityStructure.SelectedInstitution != null)
                 {
                     UniversityStructure.SelectedUnit = UniversityStructure.FindUnit(UniversityStructure.SelectedInstitution, grantToEdit.Unit.Id);
-                    if(UniversityStructure.SelectedUnit != null)
+                    if (UniversityStructure.SelectedUnit != null)
                     {
                         UniversityStructure.SelectedKafedra = UniversityStructure.FindKafedra(UniversityStructure.SelectedUnit, grantToEdit.Kafedra.Id);
                         if (UniversityStructure.SelectedKafedra != null)
                         {
                             UniversityStructure.SelectedLaboratory = UniversityStructure.FindLaboratoryInKafedra(UniversityStructure.SelectedKafedra, grantToEdit.Laboratory.Id);
                         }
-                        if(UniversityStructure.SelectedLaboratory == null)
+                        if (UniversityStructure.SelectedLaboratory == null)
                         {
                             UniversityStructure.SelectedLaboratory = UniversityStructure.FindLaboratoryInUnit(UniversityStructure.SelectedUnit, grantToEdit.Laboratory.Id);
                         }
@@ -253,7 +253,7 @@ namespace ResearchProgram
 
                 GRNTITextBox.Text = grantToEdit.GRNTI;
 
-                if(grantToEdit.ResearchType.Count > 0)
+                if (grantToEdit.ResearchType.Count > 0)
                 {
                     for (int j = 0; j < ResearchTypesList.Count; j++)
                         if (ResearchTypesList[j].Title == grantToEdit.ResearchType[0].Title)
@@ -318,7 +318,7 @@ namespace ResearchProgram
 
 
         //Функция для ввода в текст бокс только чисел с одним разделителем
-        private void TextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void TextBoxNumbersPreviewInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !((Char.IsDigit(e.Text, 0) || ((e.Text == System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0].ToString()) && (DS_Count(((TextBox)sender).Text) < 1))));
         }
@@ -388,7 +388,7 @@ namespace ResearchProgram
         /// <summary>
         /// Добавление комбо бокса к типу
         /// </summary>
-        
+
         private void AddResearchTypeAutoCompleteComboBox()
         {
             researchTypeAutoCompleteComboBox = new AutoCompleteComboBox()
@@ -416,7 +416,7 @@ namespace ResearchProgram
             void sumTextBoxTextChangedEventHandler(object senderr, TextChangedEventArgs args)
             {
                 if (sumTextBox.Text.Length > 0)
-                    sumTextBoxNoNDS.Text = (Math.Round(Convert.ToDouble(sumTextBox.Text) * 1/Settings.Default.NDSValue, 2)).ToString();
+                    sumTextBoxNoNDS.Text = (Math.Round(Convert.ToDouble(sumTextBox.Text) * 1 / Settings.Default.NDSValue, 2)).ToString();
                 else
                     sumTextBoxNoNDS.Text = "";
             }
@@ -447,10 +447,10 @@ namespace ResearchProgram
                 Width = 110,
                 Padding = new Thickness(0, 2, 0, 2)
             };
-            sumTextBox.PreviewTextInput += TextBox_PreviewTextInput;
+            sumTextBox.PreviewTextInput += TextBoxNumbersPreviewInput;
             sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler;
 
-            sumTextBoxNoNDS.PreviewTextInput += TextBox_PreviewTextInput;
+            sumTextBoxNoNDS.PreviewTextInput += TextBoxNumbersPreviewInput;
 
             DatePicker datePicker = new DatePicker()
             {
@@ -460,9 +460,9 @@ namespace ResearchProgram
 
             horizontalStackPanel.Children.Add(depositorComboBox);
             horizontalStackPanel.Children.Add(sumTextBox);
-            horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7,0,0,0) });
+            horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0) });
             horizontalStackPanel.Children.Add(sumTextBoxNoNDS);
-            horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7,0,5,0) });
+            horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 5, 0) });
             horizontalStackPanel.Children.Add(datePicker);
 
             depositsVerticalListView.Items.Add(horizontalStackPanel);
@@ -582,7 +582,8 @@ namespace ResearchProgram
         private void GrantParametersButtonClick(object sender, RoutedEventArgs e)
         {
             createGrantTabControl.SelectedItem = createGrantTabControl.Items.OfType<TabItem>().SingleOrDefault(n => n.Name == ((Button)sender).Tag.ToString());
-            foreach (Button button in grantParametersButtonStackPanel.Children.OfType<Button>()) {
+            foreach (Button button in grantParametersButtonStackPanel.Children.OfType<Button>())
+            {
                 button.Background = new SolidColorBrush(Color.FromArgb(255, 222, 222, 222));
             }
             ((Button)sender).Background = new SolidColorBrush(Color.FromArgb(255, 189, 189, 189));
@@ -639,9 +640,9 @@ namespace ResearchProgram
 
             if (customersVerticalListView.Items != null)
             {
-                foreach(AutoCompleteComboBox cmb in customersVerticalListView.Items.OfType<AutoCompleteComboBox>())
+                foreach (AutoCompleteComboBox cmb in customersVerticalListView.Items.OfType<AutoCompleteComboBox>())
                 {
-                    if(cmb.SelectedItem != null)
+                    if (cmb.SelectedItem != null)
                     {
                         newGrant.Customer.Add(new Customer()
                         {
@@ -719,7 +720,8 @@ namespace ResearchProgram
 
             if (LeadNIOKRAutoCompleteComboBox.SelectedItem != null)
             {
-                newGrant.LeadNIOKR = new Person() {
+                newGrant.LeadNIOKR = new Person()
+                {
                     Id = ((Person)LeadNIOKRAutoCompleteComboBox.SelectedItem).Id,
                     FIO = ((Person)LeadNIOKRAutoCompleteComboBox.SelectedItem).FIO
                 };

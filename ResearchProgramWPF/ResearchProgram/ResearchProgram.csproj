@@ -317,5 +317,8 @@
   <ItemGroup>
     <Resource Include="Icons\edit.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\splashscreen.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

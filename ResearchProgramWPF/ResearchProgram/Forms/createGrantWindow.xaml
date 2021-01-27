@@ -326,7 +326,7 @@
                                          Grid.Column="0"
                                          Name="priceTextBox"
                                          Margin="5 0"
-                                         PreviewTextInput="TextBox_PreviewTextInput"
+                                         PreviewTextInput="TextBoxNumbersPreviewInput"
                                          Padding="0 3"/>
                                 <Label Content="руб."
                                        Grid.Row="1"
@@ -340,7 +340,7 @@
                                          Name="priceNoNDSTextBox"
                                          Margin="5 0"
                                          Grid.Column="2"
-                                         PreviewTextInput="TextBox_PreviewTextInput"
+                                         PreviewTextInput="TextBoxNumbersPreviewInput"
                                          Padding="0 3"
                                          Text="{Binding ElementName=priceTextBox, Path=Text, Converter={StaticResource PriceNDSConverter}}"/>
                                 <Label Content="руб."

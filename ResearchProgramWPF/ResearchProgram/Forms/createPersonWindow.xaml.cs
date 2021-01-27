@@ -36,7 +36,7 @@ namespace ResearchProgram
 
 
 
-        public createPersonWindow(DataTable personsDataTable)
+        public createPersonWindow(DataTable personsDataTable, Person personToEdit = null)
         {
             InitializeComponent();
 
@@ -46,7 +46,76 @@ namespace ResearchProgram
             jobsList = CRUDDataBase.GetJobs();
             CRUDDataBase.CloseConnection();
 
+            if (personToEdit != null)
+            {
+                FIOTextBox.Text = personToEdit.FIO;
+                placeOfWorkTextBox.Text = personToEdit.PlaceOfWork;
+                degreeTextBox.Text = personToEdit.Degree;
+                categoryTextBox.Text = personToEdit.Category;
+                rankTextBox.Text = personToEdit.Rank;
+                BirthDateDatePicker.SelectedDate = personToEdit.BitrhDate;
+                if (personToEdit.Sex)
+                    sexMan.IsChecked = true;
+                else
+                    sexWoman.IsChecked = true;
+                for(int i = 0; i< personToEdit.Jobs.Count; i++)
+                {
+                    StackPanel horizontalStackPanel = new StackPanel()
+                    {
+                        Orientation = Orientation.Horizontal,
+                    };
+
+
+                    AutoCompleteComboBox jobComboBox = new AutoCompleteComboBox()
+                    {
+                        Margin = new Thickness(0, 0, 0, 0),
+                        ItemsSource = new List<Job>(jobsList),
+                        Width = 130,
+                    };
+                    for (int j = 0; j < jobsList.Count; j++)
+                        if (personToEdit.Jobs[i].Title == jobsList[j].Title)
+                            jobComboBox.SelectedIndex = j;
+
+                    TextBlock salaryTextBlock = new TextBlock()
+                    {
+                        Margin = new Thickness(30, 0, 5, 0),
+                        Width = 80,
+                        IsEnabled = false,
+                        Text = personToEdit.Jobs[i].Salary.ToString()
+                    };
+                    salaryTextBlock.SetBinding(TextBlock.TextProperty, new Binding() { Source = jobComboBox, Path = new PropertyPath(ComboBox.SelectedValueProperty), TargetNullValue = "", Converter = new JobConverter() });
+
+
+                    TextBox salaryRateTextBox = new TextBox()
+                    {
+                        Margin = new Thickness(5, 0, 5, 0),
+                        Width = 75,
+                        Text = personToEdit.Jobs[i].SalaryRate.ToString()
+                    };
+                    salaryRateTextBox.PreviewTextInput += TextBoxNumbersPreviewInput;
+
+                    horizontalStackPanel.Children.Add(jobComboBox);
+                    horizontalStackPanel.Children.Add(salaryRateTextBox);
+                    horizontalStackPanel.Children.Add(salaryTextBlock);
+                    jobsVerticalListView.Items.Add(horizontalStackPanel);
+                }
+            }
+
             DataContext = this;
+        }
+
+        //Функция для ввода в текст бокс только чисел с одним разделителем
+        private void TextBoxNumbersPreviewInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !((Char.IsDigit(e.Text, 0) || ((e.Text == System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0].ToString()) && (DS_Count(((TextBox)sender).Text) < 1))));
+        }
+
+        // функция подсчета разделителя
+        public int DS_Count(string s)
+        {
+            string substr = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0].ToString();
+            int count = (s.Length - s.Replace(substr, "").Length) / substr.Length;
+            return count;
         }
 
         /// <summary>
@@ -81,16 +150,15 @@ namespace ResearchProgram
 
             AutoCompleteComboBox jobComboBox = new AutoCompleteComboBox()
             {
-                Margin = new Thickness(5, 0, 5, 0),
+                Margin = new Thickness(0, 0, 0, 0),
                 ItemsSource = new List<Job>(jobsList),
-                Width = 190,
-                MinWidth = 150
+                Width = 130
             };
 
             TextBlock salaryTextBlock = new TextBlock()
             {
-                Margin = new Thickness(5, 0, 5, 0),
-                Width = 120,
+                Margin = new Thickness(30, 0, 5, 0),
+                Width = 80,
                 IsEnabled = false
             };
             salaryTextBlock.SetBinding(TextBlock.TextProperty, new Binding() { Source = jobComboBox, Path = new PropertyPath(ComboBox.SelectedValueProperty), TargetNullValue = "", Converter = new JobConverter() });
@@ -101,11 +169,11 @@ namespace ResearchProgram
                 Margin = new Thickness(5, 0, 5, 0),
                 Width = 75
             };
+            salaryRateTextBox.PreviewTextInput += TextBoxNumbersPreviewInput;
 
             horizontalStackPanel.Children.Add(jobComboBox);
-            horizontalStackPanel.Children.Add(salaryTextBlock);
             horizontalStackPanel.Children.Add(salaryRateTextBox);
-
+            horizontalStackPanel.Children.Add(salaryTextBlock);
 
             jobsVerticalListView.Items.Add(horizontalStackPanel);
         }
@@ -136,16 +204,6 @@ namespace ResearchProgram
 
         }
 
-        private void personParametersButtonClick(object sender, RoutedEventArgs e)
-        {
-            createPersonTabControl.SelectedItem = createPersonTabControl.Items.OfType<TabItem>().SingleOrDefault(n => n.Name == ((Button)sender).Tag.ToString());
-            foreach (Button button in personParametersButtonStackPanel.Children.OfType<Button>())
-            {
-                button.Background = new SolidColorBrush(Color.FromArgb(255, 222, 222, 222));
-            }
-            ((Button)sender).Background = new SolidColorBrush(Color.FromArgb(255, 189, 189, 189));
-        }
-
         /// <summary>
         /// Добавление человека в бд и строки в таблицу
         /// </summary>
@@ -168,27 +226,27 @@ namespace ResearchProgram
 
             newPerson.Sex = _sexSelected;
 
-            if(placeOfWorkTextBox.Text != null)
+            if (placeOfWorkTextBox.Text != null)
             {
                 newPerson.PlaceOfWork = placeOfWorkTextBox.Text;
             }
 
-            if(categoryTextBox.Text != null)
+            if (categoryTextBox.Text != null)
             {
                 newPerson.Category = categoryTextBox.Text;
             }
 
-            if(degreeTextBox.Text != null)
+            if (degreeTextBox.Text != null)
             {
                 newPerson.Degree = degreeTextBox.Text;
             }
 
-            if(rankTextBox.Text != null)
+            if (rankTextBox.Text != null)
             {
                 newPerson.Rank = rankTextBox.Text;
             }
 
-            if(jobsVerticalListView.Items != null)
+            if (jobsVerticalListView.Items != null)
             {
                 AutoCompleteComboBox jobCmb;
                 TextBox salaryRateTextBox;
@@ -198,7 +256,7 @@ namespace ResearchProgram
                     jobCmb = (AutoCompleteComboBox)jobStackPanel.Children[0];
                     salaryRateTextBox = (TextBox)jobStackPanel.Children[2];
 
-                    if(jobCmb.SelectedItem != null && salaryRateTextBox.Text.ToString() != "")
+                    if (jobCmb.SelectedItem != null && salaryRateTextBox.Text.ToString() != "")
                     {
                         newPerson.Jobs.Add(new Job()
                         {

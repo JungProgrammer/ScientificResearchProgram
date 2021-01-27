@@ -106,6 +106,7 @@ namespace ResearchProgram
             countOfPersonRows++;
             DataRow row = personsDataTable.NewRow();
             row["#"]                            = countOfPersonRows.ToString();
+            row["id"]                           = person.Id;
             row["ФИО"]                          = person.FIO;
             row["Дата рождения"]                = person.BitrhDate;
             row["Пол"]                          = person.Sex ? "M" : "Ж";
