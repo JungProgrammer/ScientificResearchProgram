@@ -319,6 +319,13 @@ namespace ResearchProgram
             CRUDDataBase.CloseConnection();
         }
 
+        private void PersonsUpdateButton_Click(object sender, EventArgs e)
+        {
+            CRUDDataBase.ConnectToDataBase();
+            CRUDDataBase.LoadPersonsTable(PeopleDataTable);
+            CRUDDataBase.CloseConnection();
+        }
+
         public DataRowView selectedGrantRow;
         public DataRowView SelectedGrantRow
         {

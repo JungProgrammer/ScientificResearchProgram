@@ -29,12 +29,13 @@ namespace ResearchProgram
 
         public List<Job> jobsList { get; set; }
 
+        private bool _isEditPerson = false;
+        private int _editedPersonId;
+
         /// <summary>
         /// Выбранный пол человека
         /// </summary>
         private bool _sexSelected = true;
-
-
 
         public createPersonWindow(DataTable personsDataTable, Person personToEdit = null)
         {
@@ -48,6 +49,10 @@ namespace ResearchProgram
 
             if (personToEdit != null)
             {
+                _isEditPerson = true;
+                _editedPersonId = personToEdit.Id;
+                Title = "Редактирование человека";
+                createPersonButton.Content = "Редактировать человека";
                 FIOTextBox.Text = personToEdit.FIO;
                 placeOfWorkTextBox.Text = personToEdit.PlaceOfWork;
                 degreeTextBox.Text = personToEdit.Degree;
@@ -213,10 +218,19 @@ namespace ResearchProgram
         {
             Person newPerson = new Person();
 
+            // Булевская переменная, которая отвечает за правильное создание договора. Если все необходимые данные были внесены, то договор создается
+            bool isAllOkey = true;
+            string incorrectDataString = "";
 
-            if (FIOTextBox.Text != null)
+            newPerson.Id = _editedPersonId;
+            if (FIOTextBox.Text != "")
             {
                 newPerson.FIO = FIOTextBox.Text;
+            }
+            else
+            {
+                isAllOkey = false;
+                incorrectDataString += "Необходимо ввести ФИО\n";
             }
 
             if (BirthDateDatePicker.SelectedDate != null)
@@ -254,7 +268,7 @@ namespace ResearchProgram
                 foreach (StackPanel jobStackPanel in jobsVerticalListView.Items.OfType<StackPanel>())
                 {
                     jobCmb = (AutoCompleteComboBox)jobStackPanel.Children[0];
-                    salaryRateTextBox = (TextBox)jobStackPanel.Children[2];
+                    salaryRateTextBox = (TextBox)jobStackPanel.Children[1];
 
                     if (jobCmb.SelectedItem != null && salaryRateTextBox.Text.ToString() != "")
                     {
@@ -269,17 +283,39 @@ namespace ResearchProgram
                 }
             }
 
+            if (isAllOkey)
+            {
+                CRUDDataBase.ConnectToDataBase();
 
-            // Покдлючение к бд
-            CRUDDataBase.ConnectToDataBase();
-            // Внесение нового человека в бд
-            CRUDDataBase.InsertNewPersonToDB(newPerson);
-            // Закрытие соединения с бд
-            CRUDDataBase.CloseConnection();
+                if (_isEditPerson)
+                {
+                    CRUDDataBase.UpdateFIO(newPerson);
+                    CRUDDataBase.UpdateBirthDate(newPerson);
+                    CRUDDataBase.UpdateSex(newPerson);
+                    CRUDDataBase.UpdatePlaceOfWork(newPerson);
+                    CRUDDataBase.UpdateCategory(newPerson);
+                    CRUDDataBase.UpdateDegree(newPerson);
+                    CRUDDataBase.UpdateRank(newPerson);
+                    CRUDDataBase.UpdateSalary(newPerson);
+                    MessageBox.Show("Человек успешно изменен", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            WorkerWithTablesOnMainForm.AddRowToPersonsTable(peopleDataTable, newPerson);
+                }
+                else
+                {
+                    // Внесение нового человека в бд
+                    CRUDDataBase.InsertNewPersonToDB(newPerson);
 
-            MessageBox.Show("Человек успешно внесен");
+                    WorkerWithTablesOnMainForm.AddRowToPersonsTable(peopleDataTable, newPerson);
+
+                    MessageBox.Show("Человек успешно внесен", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+
+                CRUDDataBase.CloseConnection();
+            }
+            else
+            {
+                MessageBox.Show(incorrectDataString, "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
     }

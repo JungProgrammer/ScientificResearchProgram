@@ -55,6 +55,7 @@ namespace ResearchProgram
                 Caption = header
             };
             personsDataTable.Columns.Add(column);
+
         }
 
         /// <summary>
@@ -123,6 +124,7 @@ namespace ResearchProgram
         /// <param name="person"></param>
         public static void AddRowToPersonsTable(DataTable personsDataTable, Person person)
         {
+            if (personsDataTable.Rows.Count == 0) countOfPersonRows = 0;
             countOfPersonRows++;
             DataRow row = personsDataTable.NewRow();
             row["#"]                            = countOfPersonRows.ToString();

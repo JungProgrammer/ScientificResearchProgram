@@ -164,8 +164,14 @@
             </TabItem>
             
             <TabItem Header="Люди">
+
                 <Grid Background="#FFE5E5E5">
-                    <DataGrid x:Name="PeopleTable"
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                        <DataGrid x:Name="PeopleTable"
+                                  Grid.Row="1"
                               AutoGenerateColumns="True"
                               ItemsSource="{Binding PeopleDataTable}"
                               CanUserAddRows="False"
@@ -183,6 +189,17 @@
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                     </DataGrid>
+                    <Button x:Name="personsUpdateButton"
+                            Grid.Row="0"
+                            Margin="0 0 2 2"
+                            Width="40"
+                            MinHeight="20"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
+                            Click="PersonsUpdateButton_Click">
+                        <Image Source="/ResearchProgram;component/Icons/update.png"
+                               Width="25"/>
+                    </Button>
                 </Grid>
             </TabItem>
         </TabControl>
