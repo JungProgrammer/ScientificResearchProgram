@@ -64,6 +64,26 @@ namespace ResearchProgram
         /// <param name="grant"></param>
         public static void AddRowToGrantTable(DataTable grantsDataTable, Grant grant)
         {
+            string depositors = String.Empty;
+            string depositsSum = String.Empty;
+            for (int i = 0; i < grant.Depositor.Count; i++)
+            {
+                if (GrantsFilters.CheckReceiptDate(grant.ReceiptDate[i]))
+                {
+                    depositors += grant.Depositor[i].Title + "\n";
+                    if (Settings.Default.NDSKey)
+                    {
+                        depositsSum += grant.DepositorSum[i] + "\n";
+                    }
+                    else
+                    {
+                        depositsSum += grant.DepositorSumNoNDS[i] + "\n";
+                    }
+                }
+            }
+
+
+
             // Если договор подходит под фильтр
             if (GrantsFilters.CheckGrantOnCurFilter(grant))
             {
@@ -77,9 +97,9 @@ namespace ResearchProgram
                 row["Заказчик"]                 = string.Join("\n", grant.Customer);
                 row["Дата начала"]              = grant.StartDate.ToString("dd.MM.yyyy");
                 row["Дата завершения"]          = grant.EndDate.ToString("dd.MM.yyyy");
-                row["Общая сумма договора"]     = Settings.Default.NDSKey ? grant.Price : grant.PriceNoNDS;
-                row["Средства"]                 = string.Join("\n", grant.Depositor);
-                row["Подробное финансирование"] = string.Join("\n", Settings.Default.NDSKey ? grant.DepositorSum.ToArray() : grant.DepositorSumNoNDS.ToArray());
+                row["Стоимость договора"]     = Settings.Default.NDSKey ? grant.Price : grant.PriceNoNDS;
+                row["Источник финансирования"]                 = depositors;
+                row["Поступления"] = depositsSum;
                 row["Руководитель НИОКР"]       = grant.LeadNIOKR.shortName();
                 row["Исполнители"]              = string.Join("\n", grant.Executor.Select(x => x.shortName()).ToArray()); 
                 row["Учреждение"]               = grant.Institution;

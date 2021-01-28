@@ -8,7 +8,7 @@
         Title="Гранты НИЧ"
         Height="900"
         Width="1300"
-        x:Name="mainWindow">
+        x:Name="mainWindow" Closing="mainWindow_Closing">
     <Window.Resources>
         <local:NDSConverter x:Key="NDSConverter" />
         <local:DepositsConverter x:Key="DepositsConverter"/>
@@ -63,23 +63,43 @@
                     </Grid.RowDefinitions>
 
 
-
-                    <Label Content="{Binding Source={x:Static local:Settings.Default},Path=NDSKey, Converter={StaticResource NDSConverter}}" 
+                    <Label Content="{Binding Source={x:Static local:Settings.Default},Path=NDSKey, Converter={StaticResource NDSConverter}}"
                            Grid.Row="0"
                            FontSize="12"/>
 
+                    <StackPanel Orientation="Horizontal"
+                                Grid.Row="0"
+                                HorizontalAlignment="Center">
+                        <Label Content="Даты поступления с"
+                                   FontSize="12"/>
+                        <DatePicker FontSize="11"
+                                    Height="24"
+                                    Margin="2 1 2 1"
+                                    BorderThickness="0"
+                                    SelectedDate="{Binding SelectedStartDate}"/>
+                        <Label Content="по"
+                                   FontSize="12"/>
+                        <DatePicker FontSize="11"
+                                    Height="24"
+                                    Margin="2 1 2 1"
+                                    BorderThickness="0"
+                                    SelectedDate="{Binding SelectedEndDate}"/>
+                    </StackPanel>
 
-                    <Button Grid.Row="0"
-                            x:Name="grantsUpdateButton"
+                    <Button x:Name="grantsUpdateButton"
+                            Grid.Row="0"
                             Margin="0 0 2 2"
                             Width="40"
                             MinHeight="20"
-                            HorizontalAlignment="Right"
                             VerticalAlignment="Center"
+                            HorizontalAlignment="Right"
                             Click="GrantsUpdateButton_Click">
                         <Image Source="/ResearchProgram;component/Icons/update.png"
                                    Width="25"/>
                     </Button>
+
+
+
 
                     <DataGrid x:Name="GrantsTable"
                               AutoGenerateColumns="True"

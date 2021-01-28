@@ -26,8 +26,32 @@ namespace ResearchProgram
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private DataTable _grantsDataTable;
-        // Таблица договоров
 
+        // Выбранная начальная дата оплат
+        private DateTime _selectedStartDate;
+        public DateTime SelectedStartDate
+        {
+            get => _selectedStartDate;
+            set
+            {
+                _selectedStartDate = value;
+                OnPropertyChanged(nameof(SelectedStartDate));
+            }
+        }
+
+        // Выбранная конечная дата оплат
+        private DateTime _selectedEndDate;
+        public DateTime SelectedEndDate
+        {
+            get => _selectedEndDate;
+            set
+            {
+                _selectedEndDate = value;
+                OnPropertyChanged(nameof(SelectedEndDate));
+            }
+        }
+        
+        // Таблица договоров
         public DataTable GrantsDataTable
         {
             get => _grantsDataTable;
@@ -39,6 +63,10 @@ namespace ResearchProgram
         }
         // Таблица людей
         public DataTable PeopleDataTable { get; set; }
+
+        // Окно фильтров
+        FiltersWindow filtersWindow;
+
         public MainWindow()
         {
             InitializeComponent();
@@ -46,12 +74,37 @@ namespace ResearchProgram
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             GrantsFilters.ResetFilters();
+
+            // Установка изначальных настроек
+            SetSettings();
+
             // Загружаем данные в таблицу грантов
             LoadGrantsTable();
             // Загружаем данные в таблицу людей
             LoadPeopleTable();
 
+            // Загрука окна фильтров без его открытия
+            LoadFilterWindow();
+
             DataContext = this;
+        }
+
+        private void SetSettings()
+        {
+            SelectedStartDate = DateTime.MinValue;
+            SelectedEndDate = DateTime.Now;
+
+            GrantsFilters.StartDepositDate = new FilterElement() { Data = _selectedStartDate.ToString() };
+            GrantsFilters.EndDepositDate = new FilterElement() { Data = _selectedEndDate.ToString() };
+        }
+
+        private void LoadFilterWindow()
+        {
+            filtersWindow = new FiltersWindow(GrantsDataTable)
+            {
+
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+            };
         }
 
         /// <summary>
@@ -214,14 +267,6 @@ namespace ResearchProgram
         // Открытые окна фильтров
         private void GrantsFiltersButton_Click(object sender, RoutedEventArgs e)
         {
-
-            FiltersWindow filtersWindow = new FiltersWindow(GrantsDataTable)
-            {
-
-            WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                Owner = this
-            };
-            filtersWindow.Closing += (senders, args) => { filtersWindow.Owner = null; };
             filtersWindow.Show();
         }
 
@@ -263,6 +308,9 @@ namespace ResearchProgram
 
         private void GrantsUpdateButton_Click(object sender, EventArgs e)
         {
+            GrantsFilters.StartDepositDate.Data = _selectedStartDate.ToString();
+            GrantsFilters.EndDepositDate.Data = _selectedEndDate.ToString();
+
             CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
             CRUDDataBase.CloseConnection();
@@ -401,6 +449,11 @@ namespace ResearchProgram
 
             System.Windows.MessageBox.Show("Отчёт успешно сохранён", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
         }
-    }
 
+        private void mainWindow_Closing(object sender, CancelEventArgs e)
+        {
+            filtersWindow.WindowCanToBeClose = true;
+            filtersWindow.Close();
+        }
+    }
 }

@@ -10,7 +10,7 @@
         xmlns:col="clr-namespace:System.Collections;assembly=mscorlib"
         
         mc:Ignorable="d"
-        Title="Фильтры" Height="650" Width="900">
+        Title="Фильтры" Height="650" Width="900" Closing="Window_Closing">
 
 
     <Window.Resources>

@@ -25,6 +25,10 @@ namespace ResearchProgram
         public static ObservableCollection<FilterElement> Price;
         // Средства
         public static ObservableCollection<FilterElement> Depositor;
+        // Дата начала поступлений средств
+        public static FilterElement StartDepositDate;
+        // Дата окончания поступлений средств
+        public static FilterElement EndDepositDate;
         // руководитель
         public static ObservableCollection<FilterElement> LeadNIOKR;
         // Исполнитель
@@ -375,6 +379,23 @@ namespace ResearchProgram
 
 
             return IsAllOkey;
+        }
+
+        public static bool CheckReceiptDate(string receiptDate)
+        {
+            DateTime convertedReceiptDate;
+            DateTime startDepositDate;
+            DateTime endDepositDate;
+
+            DateTime.TryParse(receiptDate, out convertedReceiptDate);
+            DateTime.TryParse(StartDepositDate.Data, out startDepositDate);
+            DateTime.TryParse(EndDepositDate.Data, out endDepositDate);
+
+            if (convertedReceiptDate >= startDepositDate && convertedReceiptDate <= endDepositDate)
+            {
+                return true;
+            }
+            else return false;
         }
     }
 }

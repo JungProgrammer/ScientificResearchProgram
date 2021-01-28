@@ -986,6 +986,7 @@ namespace ResearchProgram
         // Для метода GetGrantsHeadersForFilters
         enum DataToComboBox
         {
+            okved = 1,
             customer = 4,
             deposits = 8,
             leadNIOKR = 9,
@@ -1008,6 +1009,11 @@ namespace ResearchProgram
         {
             ObservableCollection<GrantHeader> grantHeaders = new ObservableCollection<GrantHeader>();
 
+            List<OKVED> okvedList = new List<OKVED>
+            {
+                new OKVED() {Title = "72.19"},
+                new OKVED() {Title = "72.20"}
+            };
             List<Customer> customerList = GetCustomers();
             List<ScienceType> scienceTypeList = GetScienceTypes();
             List<ResearchType> researchTypeList = GetResearchTypes();
@@ -1046,6 +1052,9 @@ namespace ResearchProgram
                     };
                     switch (curId)
                     {
+                        case DataToComboBox.okved:
+                            newGrantHeader.DataToComboBox = new List<IContainer>(okvedList);
+                            break;
                         case DataToComboBox.customer:
                             newGrantHeader.DataToComboBox = new List<IContainer>(customerList);
                             break;

@@ -24,6 +24,10 @@ namespace ResearchProgram
     /// </summary>
     public partial class FiltersWindow : Window, INotifyPropertyChanged
     {
+        // Ответает за возможность закрытия окна
+        public bool WindowCanToBeClose = false;
+
+
         // Таблица, которая отвечает за гранты
         DataTable GrantsDataTable { get; set; }
 
@@ -154,7 +158,7 @@ namespace ResearchProgram
             {
                 curGrantHeader.FilterElementsData.Add(new FilterElement()
                 {
-                    Data = curGrantHeader.ChooseDataFromCombobox.GetTitle()
+                    Data = curGrantHeader.ChooseDataFromCombobox != null ? curGrantHeader.ChooseDataFromCombobox.GetTitle() : ""
                 });
             }
             // Если на странице textbox
@@ -280,6 +284,15 @@ namespace ResearchProgram
             CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
             CRUDDataBase.CloseConnection();
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            if (!WindowCanToBeClose)
+            {
+                e.Cancel = true;
+                this.Hide();
+            }
         }
     }
 }

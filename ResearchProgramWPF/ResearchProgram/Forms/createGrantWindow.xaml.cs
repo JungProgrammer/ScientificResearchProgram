@@ -208,7 +208,9 @@ namespace ResearchProgram
 
                     horizontalStackPanel.Children.Add(depositorComboBox);
                     horizontalStackPanel.Children.Add(sumTextBox);
+                    horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0) });
                     horizontalStackPanel.Children.Add(sumTextBoxNoNDS);
+                    horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 5, 0) });
                     horizontalStackPanel.Children.Add(dateComboBox);
 
 
@@ -697,8 +699,8 @@ namespace ResearchProgram
                 {
                     cmb = (ComboBox)sp.Children[0];
                     partSum = (TextBox)sp.Children[1];
-                    partSumNoNDS = (TextBox)sp.Children[2];
-                    datePicker = (DatePicker)sp.Children[3];
+                    partSumNoNDS = (TextBox)sp.Children[3];
+                    datePicker = (DatePicker)sp.Children[5];
 
                     DateTime selectedDate;
                     DateTime.TryParse(datePicker.SelectedDate.ToString(), out selectedDate);

@@ -41,7 +41,7 @@
                          FontSize="15"
                          Tag="Dates"
                          Click="GrantParametersButtonClick"/>
-                <Button  Content="Средства"
+                <Button  Content="Источник финансирования"
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="deposits"
@@ -97,9 +97,12 @@
                             <Label Content="ОКВЭД"
                                    Grid.Row="0"
                                    Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="1"
-                                     Name="OKVEDTextBox"
-                                     Margin="5 0"></TextBox>
+                            <ComboBox Grid.Row="1"
+                                      Name="OKVEDTextBox"
+                                      Margin="5 0">
+                                <TextBlock>72.19</TextBlock>
+                                <TextBlock>72.20</TextBlock>
+                            </ComboBox>
 
                             <Label Content="ГРНТИ"
                                    Grid.Row="2"
@@ -317,7 +320,7 @@
                                     <ColumnDefinition Width="5*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Label Content="Общая сумма договора"
+                                <Label Content="Стоимость договора"
                                    Grid.Row="0"
                                    Grid.Column="0"
                                    Margin="0 5 0 0"
@@ -349,7 +352,7 @@
                                        Margin="-7 0 0 0"/>
                             </Grid>
 
-                            <Label Content="Средства"
+                            <Label Content="Источник"
                                    Grid.Row="1"
                                    Grid.Column="0"
                                    Margin="0 2 0 0"
