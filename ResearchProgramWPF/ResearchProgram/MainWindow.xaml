@@ -170,7 +170,18 @@
                               ItemsSource="{Binding PeopleDataTable}"
                               CanUserAddRows="False"
                               CanUserDeleteRows="False"
-                              IsReadOnly="True">
+                              IsReadOnly="True"
+                              CurrentItem="{Binding Path=SelectedPersonRow, Mode=TwoWay}">
+                        <DataGrid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Редактировать" 
+                                          Click="EditPeople">
+                                    <MenuItem.Icon>
+                                        <Image Source="/ResearchProgram;component/Icons/edit.png"/>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </DataGrid.ContextMenu>
                     </DataGrid>
                 </Grid>
             </TabItem>

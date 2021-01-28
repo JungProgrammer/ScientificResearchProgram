@@ -6,275 +6,178 @@
         xmlns:local="clr-namespace:ResearchProgram"
         xmlns:dotNetKitControls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
         mc:Ignorable="d"
-        Title="Добавить нового человека" Height="280" Width="770">
+        Title="Добавить нового человека" Height="280" Width="770" ResizeMode="NoResize">
     <Grid>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3.2*" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
         </Grid.ColumnDefinitions>
-        <ScrollViewer VerticalScrollBarVisibility="Auto">
-            <StackPanel Grid.Column="0" 
-                        Margin="5 2"
-                        x:Name="personParametersButtonStackPanel">
-                <Button Content="ФИО"
-                        Margin="0 0 0 3"
-                        FontSize="17"
-                        Tag="FIO"
-                        Click="personParametersButtonClick"
-                        Background="#BBB"/>
-                <Button Content="Дата рождения"
-                        Margin="0 0 0 3"
-                        FontSize="17"
-                        Tag="birthDate"
-                        Click="personParametersButtonClick"/>
-                <Button  Content="Пол"
-                         Margin="0 0 0 3"
-                         FontSize="17"
-                         Tag="sex"
-                         Click="personParametersButtonClick"/>
-                <Button  Content="Место работы"
-                         Margin="0 0 0 3"
-                         FontSize="17"
-                         Tag="placeOfWork"
-                         Click="personParametersButtonClick"/>
-                <Button  Content="Категория"
-                         Margin="0 0 0 3"
-                         FontSize="17"
-                         Tag="category"
-                         Click="personParametersButtonClick"/>
-                <Button  Content="Степень"
-                         Margin="0 0 0 3"
-                         FontSize="17"
-                         Tag="degree"
-                         Click="personParametersButtonClick"/>
-                <Button  Content="Звание"
-                         Margin="0 0 0 3"
-                         FontSize="17"
-                         Tag="rank"
-                         Click="personParametersButtonClick"/>
-                <Button  Content="Должность"
-                         Margin="0 0 0 3"
-                         FontSize="17"
-                         Tag="job"
-                         Click="personParametersButtonClick"/>
-            </StackPanel>
-        </ScrollViewer>
-        <GridSplitter Grid.Column="1" 
-                      ShowsPreview="False" 
-                      Width="3"
-                      HorizontalAlignment="Center" 
-                      VerticalAlignment="Stretch" />
-        <Grid Grid.Column="2">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="88*" />
-                <RowDefinition Height="12*" />
-            </Grid.RowDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
 
-            <TabControl Grid.Row="0"
-                        x:Name="createPersonTabControl"  >
-                <TabItem Name="FIO"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+        <Label Content="Фамилия Имя Отчество"               
+               Grid.Row="0"
+               Grid.Column="0"
+               Grid.ColumnSpan="2"
+               Margin="0 5 0 0"/>
 
-                            <Label Content="Фамилия Имя Отчество"
-                                   Grid.Row="0"
-                                   Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="1"
-                                     Name="FIOTextBox"
-                                     Margin="5 0"/>
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
+        <TextBox Grid.Row="1"
+                 Grid.Column="0"
+                 Grid.ColumnSpan="2"
+                 Name="FIOTextBox"
+                 Margin="5 0"/>
 
-                <TabItem Name="birthDate"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+        <Label Content="Дата рождения"
+               Grid.Row="0"
+               Grid.Column="2 "
+               Margin="0 5 0 0"/>
 
-                            <Label Content="Дата рождения"
-                                   Grid.Row="0"
-                                   Margin="0 5 0 0"/>
-                            <DatePicker Name="BirthDateDatePicker"
-                                        Grid.Row="1"/>
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-
-                <TabItem Name="sex"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid x:Name="sexGrid">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Label Content="Пол"
-                                   Grid.Row="0"
-                                   Margin="0 5 0 0" Grid.ColumnSpan="2"/>
-                            <StackPanel Name="sexStackPanel"
-                                      Grid.Row="1">
-                                <RadioButton GroupName="sexRadio"
-                                             Content="Мужчина"
-                                             Checked="RadioButton_Checked"
-                                             IsChecked="true"/>
-                                <RadioButton GroupName="sexRadio"
-                                             Content="Женщина"
-                                             Checked="RadioButton_Checked" />
-                            </StackPanel>
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-
-                <TabItem Name="placeOfWork"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Label Content="Место работы"
-                                   Grid.Row="0"
-                                   Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="1"
-                                     Name="placeOfWorkTextBox"
-                                     Margin="5 0"/>
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-
-                <TabItem Name="category"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Label Content="Категория"
-                                   Grid.Row="0"
-                                   Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="1"
-                                     Name="categoryTextBox"
-                                     Margin="5 0"/>
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-
-                <TabItem Name="degree"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Label Content="Степень"
-                                   Grid.Row="0"
-                                   Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="1"
-                                     Name="degreeTextBox"
-                                     Margin="5 0"/>
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-                
-                <TabItem Name="rank"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Label Content="Звание"
-                                   Grid.Row="0"
-                                   Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="1"
-                                     Name="rankTextBox"
-                                     Margin="5 0"/>
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-
-                <TabItem Name="job"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid Name="depositsGrid">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="3.5*"/>
-                                <RowDefinition Height="15*"/>
-                                <RowDefinition Height="3.5*"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="4*"/>
-                                <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="2*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <Label Content="Должность"
-                                   Grid.Row="0"
-                                   Grid.Column="0"
-                                   Margin="0 5 0 0"
-                                   FontSize="13" Grid.ColumnSpan="3"/>
-                            <Label Content="Оклад"
-                                   Grid.Row="0"
-                                   Grid.Column="1"
-                                   Margin="0 5 0 0"
-                                   FontSize="13"/>
-                            <Label Content="Ставка"
-                                   Grid.Row="0"
-                                   Grid.Column="4"
-                                   Margin="0 5 0 0"
-                                   FontSize="13"/>
-
-                            <ListView Grid.Row="1"
-                                      Grid.ColumnSpan="5"
-                                      x:Name="jobsVerticalListView">
-                            </ListView>
-
-                            <Button Content="Добавить"
-                                    Name="jobsAddButton"
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Margin="10 5"
-                                    Width="Auto" Click="jobsAddButton_Click_1"/>
-                            <Button Content="Удалить"
-                                    Name="jobsDeleteButton"
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    Margin="10 5"
-                                    Width="Auto" Click="jobsDeleteButton_Click"/>
-                        </Grid>
-                    </TabItem.Content>
-                </TabItem>
-            </TabControl>
-
-            <Button Content="Добавить человека"
+        <DatePicker Name="BirthDateDatePicker"
                     Grid.Row="1"
-                    Margin="270 3 10 3" Click="createPersonButtonClick"
-                    x:Name="createPersonButton"></Button>
+                    Grid.Column="2"/>
+
+        <Label Content="Пол"
+               Grid.Row="0"
+               Grid.Column="3"
+               Margin="0 5 0 0" 
+               Grid.ColumnSpan="2"/>
+
+        <StackPanel Name="sexStackPanel"
+                    Grid.Row="1"
+                    Grid.Column="3">
+            <RadioButton GroupName="sexRadio"
+                         x:Name="sexMan"
+                         Content="Мужчина"
+                         Checked="RadioButton_Checked"
+                         IsChecked="true"/>
+
+            <RadioButton GroupName="sexRadio"
+                         x:Name="sexWoman"
+                         Content="Женщина"
+                         Checked="RadioButton_Checked" />
+        </StackPanel>
+
+        <Label Content="Место работы"
+               Grid.Row="2"
+               Grid.Column="0"
+               Grid.ColumnSpan="2"
+               Margin="0 5 0 0"/>
+
+        <TextBox Grid.Row="3"
+                 Grid.Column="0"
+                 Grid.ColumnSpan="2"
+                 Name="placeOfWorkTextBox"
+                 Margin="5 0"/>
+
+        <Label Content="Категория"
+               Grid.Row="2"
+               Grid.Column="2"
+               Grid.ColumnSpan="2"
+               Margin="0 5 0 0"/>
+
+        <TextBox Grid.Row="3"
+                 Grid.Column="2"
+                 Grid.ColumnSpan="2"
+                 Name="categoryTextBox"
+                 Margin="5 0"/>
+
+        <Label Content="Степень"
+                           Grid.Row="4"
+                           Grid.Column="0"
+               Grid.ColumnSpan="2"
+                           Margin="0 5 0 0"/>
+
+        <TextBox Grid.Row="5"
+                             Grid.Column="0"
+                 Grid.ColumnSpan="2"
+                             Name="degreeTextBox"
+                             Margin="5 0"/>
+
+        <Label Content="Звание"
+                           Grid.Row="4"
+                           Grid.Column="2"
+               Grid.ColumnSpan="2"
+                           Margin="0 5 0 0"/>
+
+        <TextBox Grid.Row="5"
+                             Grid.Column="2"
+                 Grid.ColumnSpan="2"
+                             Name="rankTextBox"
+                             Margin="5 0"/>
+
+        <Grid Name="depositsGrid"
+                      Grid.Row="0"
+                      Grid.Column="4"
+                      Grid.ColumnSpan="3"
+                      Grid.RowSpan="7">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3.5*"/>
+                <RowDefinition Height="15*"/>
+                <RowDefinition Height="3.5*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="3*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Content="Должность"
+                           Grid.Row="0"
+                           Grid.Column="0"
+                           Margin="0 5 0 0"
+                           FontSize="13" 
+                           Grid.ColumnSpan="3"/>
+
+            <Label Content="Ставка"
+                           Grid.Row="0"
+                           Grid.Column="1"
+                           Margin="0 5 0 0"
+                           FontSize="13"/>
+
+            <Label Content="Оклад"
+                           Grid.Row="0"
+                           Grid.Column="4"
+                           Margin="0 5 0 0"
+                           FontSize="13"/>
+
+            <ListView Grid.Row="1"
+                      Grid.ColumnSpan="3"
+                      x:Name="jobsVerticalListView">
+            </ListView>
+
+            <Button Content="Добавить"
+                            Name="jobsAddButton"
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Margin="0 5 20 5"
+                            Click="jobsAddButton_Click_1"/>
+
+            <Button Content="Удалить"
+                            Name="jobsDeleteButton"
+                            Grid.Row="2"
+                            Grid.Column="1"
+                    Margin="0 5 20 5"
+                            Width="Auto" 
+                            Click="jobsDeleteButton_Click"/>
         </Grid>
+
+        <Button Content="Добавить человека"
+                Grid.Row="1"
+                Margin="270 3 10 3" 
+                Click="createPersonButtonClick"
+                x:Name="createPersonButton"></Button>
     </Grid>
 </Window>
