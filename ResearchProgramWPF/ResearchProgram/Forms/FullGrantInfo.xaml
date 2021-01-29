@@ -1,0 +1,209 @@
+﻿<Window x:Class="ResearchProgram.Forms.FullGrantInfo"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ResearchProgram.Forms"
+        mc:Ignorable="d"
+        Title="Информация о договоре" Height="450" Width="800">
+    <Grid>
+        <ScrollViewer>
+            <StackPanel Orientation="Vertical">
+
+                <GroupBox Header="Общая информация">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="ОКВЭД:"
+                                   FontWeight="Bold"/>
+                            <Label Content="{Binding OKVED}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="ГРНТИ:"
+                                   FontWeight="Bold"/>
+                            <Label Content="{Binding GRNTI}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Номер договора:"
+                                   FontWeight="Bold"/>
+                            <Label Content="{Binding grantNumber}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Наименование НИОКР:"
+                                   FontWeight="Bold"/>
+                            <Label Content="{Binding NameNIOKR}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Руководитель НИОКР:"
+                                   FontWeight="Bold"/>
+                            <Label Content="{Binding LeadNIOKR}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="НИР или Услуга:"
+                                   FontWeight="Bold"/>
+                            <Label Content="{Binding NIR}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="НОЦ:"
+                                   FontWeight="Bold"/>
+                            <Label Content="{Binding NOC}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+                
+
+                <GroupBox Header="Заказчики">
+                    <ItemsControl x:Name="CustomersItemsControl" 
+                              Grid.Column="0"
+                              ItemsSource="{Binding Customer}">
+                        <ItemsControl.ItemsPanel >
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Title}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </GroupBox>
+
+                <GroupBox Header="Исполнители">
+                    <ItemsControl x:Name="ExecutorsItemsControl" 
+                              Grid.Column="0"
+                              ItemsSource="{Binding Executor}">
+                        <ItemsControl.ItemsPanel >
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Vertical"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding FIO}"/>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </GroupBox>
+
+                <GroupBox Header="Даты">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Дата начала договора:"
+                               FontWeight="Bold"/>
+                            <Label Content="{Binding StartDate}"
+                               ContentStringFormat="dd.MM.yyyy"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Дата окончания договора:"
+                               FontWeight="Bold"/>
+                            <Label Content="{Binding EndDate}"
+                               ContentStringFormat="dd.MM.yyyy"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Источник финансирования">
+                    <StackPanel>
+                        <Label Content="Стоимость договора без НДС:"
+                               FontWeight="Bold"/>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="{Binding PriceNoNDS}"/>
+                            <Label Content="руб."/>
+                        </StackPanel>
+                        <GroupBox Header="Источники"
+                                  FontWeight="Bold">
+                            <StackPanel Orientation="Horizontal">
+                                <ItemsControl x:Name="DepositorsItemsControl" 
+                                              Grid.Column="0"
+                                              ItemsSource="{Binding Depositor}">
+                                    <ItemsControl.ItemsPanel >
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Vertical"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Title}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </GroupBox>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Учреждение">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Учреждение:"
+                                   FontWeight="Bold"/>
+                            <Label Content="{Binding Institution}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Подразделение:"
+                                   FontWeight="Bold"/>
+                            <Label Content="{Binding Unit}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Кафедра:"
+                                   FontWeight="Bold"/>
+                            <Label Content="{Binding Kafedra}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Лаборатория:"
+                                   FontWeight="Bold"/>
+                            <Label Content="{Binding Laboratory}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </GroupBox>
+
+                <GroupBox Header="Наука">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Content="Тип исследования:"
+                                       FontWeight="Bold"/>
+                                <Label Content="{Binding ResearchType[0].Title}"/>
+                            </StackPanel>
+                        </StackPanel>
+
+                        <GroupBox Header="Приоритетные направления">
+                            <ItemsControl x:Name="PriorityTrendsItemsControl" 
+                                              Grid.Column="0"
+                                              ItemsSource="{Binding PriorityTrands}">
+                                <ItemsControl.ItemsPanel >
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Title}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </GroupBox>
+
+                        <GroupBox Header="Типы наук">
+                            <ItemsControl x:Name="ScienceTypeItemsControl" 
+                                              Grid.Column="0"
+                                              ItemsSource="{Binding ScienceType}">
+                                <ItemsControl.ItemsPanel >
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Vertical"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Title}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </GroupBox>
+                    </StackPanel>
+                </GroupBox>
+                
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

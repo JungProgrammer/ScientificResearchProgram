@@ -155,6 +155,9 @@
     <Compile Include="Forms\FiltersWindow.xaml.cs">
       <DependentUpon>FiltersWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\FullGrantInfo.xaml.cs">
+      <DependentUpon>FullGrantInfo.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GrantHeader.cs" />
     <Compile Include="GrantsFilters.cs" />
     <Compile Include="IContainer.cs" />
@@ -233,6 +236,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\FiltersWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\FullGrantInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

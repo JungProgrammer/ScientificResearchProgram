@@ -13,6 +13,7 @@ using OfficeOpenXml;
 using System.IO;
 using System.Windows.Forms;
 using OfficeOpenXml.Style;
+using ResearchProgram.Forms;
 
 namespace ResearchProgram
 {
@@ -328,7 +329,6 @@ namespace ResearchProgram
         private void EditGrant(object sender, RoutedEventArgs e)
         {
             string grantNumber = SelectedGrantRow.Row.Field<String>("Номер договора");
-            Console.WriteLine(grantNumber);
             Grant grant = CRUDDataBase.GetGrantByGrantNumber(grantNumber);
 
             CreateGrantWindow newGrantWindow = new CreateGrantWindow(GrantsDataTable, grant)
@@ -480,6 +480,22 @@ namespace ResearchProgram
         {
             filtersWindow.WindowCanToBeClose = true;
             filtersWindow.Close();
+        }
+
+        private void ShowFullInformation(object sender, RoutedEventArgs e)
+        {
+            string grantNumber = SelectedGrantRow.Row.Field<String>("Номер договора");
+            Grant grant = CRUDDataBase.GetGrantByGrantNumber(grantNumber);
+
+            FullGrantInfo fullGrantInfonewGrantWindow = new FullGrantInfo(grant)
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Owner = this
+            };
+            // Эта штука нужна чтобы родительское окно не скрывалось, когда дочернее закрывается
+            fullGrantInfonewGrantWindow.Closing += (senders, args) => { fullGrantInfonewGrantWindow.Owner = null; };
+
+            fullGrantInfonewGrantWindow.Show();
         }
     }
 }

@@ -117,6 +117,9 @@
                         </DataGrid.RowStyle>
                         <DataGrid.ContextMenu>
                             <ContextMenu>
+                                <MenuItem Header="Показать полную информацию"
+                                          Click="ShowFullInformation">
+                                </MenuItem>
                                 <MenuItem Header="Редактировать" 
                                           Click="EditGrant">
                                     <MenuItem.Icon>
