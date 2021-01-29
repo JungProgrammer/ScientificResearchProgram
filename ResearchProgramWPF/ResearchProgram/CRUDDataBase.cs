@@ -859,6 +859,7 @@ namespace ResearchProgram
         /// <param name="dataTable"></param>
         public static void LoadPersonsTable(DataTable dataTable)
         {
+            dataTable.Rows.Clear();
             int personIndex;
             int personId;
             int countOfPeople;
@@ -951,7 +952,6 @@ namespace ResearchProgram
                 Debug.WriteLine("No rows found.");
             }
             reader.Close();
-
 
             for (int i = 0; i < persons.Length; i++)
             {
@@ -1799,6 +1799,77 @@ namespace ResearchProgram
             cmd.ExecuteNonQuery();
         }
 
+        public static void UpdateFIO(Person fixedPerson)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET fio = :fio WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("fio", fixedPerson.FIO));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedPerson.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void UpdateBirthDate(Person fixedPerson)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET birthdate = :bd WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("bd", fixedPerson.BitrhDate));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedPerson.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void UpdateSex(Person fixedPerson)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET sex = :sex WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("sex", fixedPerson.Sex));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedPerson.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void UpdatePlaceOfWork(Person fixedPerson)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET placeofwork = :placeofwork WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("placeofwork", fixedPerson.PlaceOfWork));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedPerson.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void UpdateCategory(Person fixedPerson)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET category = :category WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("category", fixedPerson.Category));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedPerson.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void UpdateDegree(Person fixedPerson)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET degree = :degree WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("degree", fixedPerson.Degree));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedPerson.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void UpdateRank(Person fixedPerson)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET rank = :rank WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("rank", fixedPerson.Rank));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedPerson.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void UpdateSalary(Person fixedPerson)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM salaryrates WHERE personid = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedPerson.Id));
+            cmd.ExecuteNonQuery();
+            for (int i = 0; i < fixedPerson.Jobs.Count; i++) {
+                cmd = new NpgsqlCommand("INSERT INTO salaryrates(personid, jobid, salaryrate) VALUES(:personid, :jobid, :salaryrate)", conn);
+                Console.WriteLine("id " + fixedPerson.Id.ToString());
+                cmd.Parameters.Add(new NpgsqlParameter("personid", fixedPerson.Id));
+                cmd.Parameters.Add(new NpgsqlParameter("jobid", fixedPerson.Jobs[i].Id));
+                cmd.Parameters.Add(new NpgsqlParameter("salaryrate", fixedPerson.Jobs[i].SalaryRate));
+                cmd.ExecuteNonQuery();
+            }
+        }
+
         /// <summary>
         /// Загрузка в БД нового договора
         /// </summary>
@@ -2010,7 +2081,6 @@ namespace ResearchProgram
                 cmd.ExecuteNonQuery();
             }
         }
-
 
         /// <summary>
         /// Получение списка должностей с их зарплатами из БД
