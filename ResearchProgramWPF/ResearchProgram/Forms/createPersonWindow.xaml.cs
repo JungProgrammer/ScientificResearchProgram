@@ -31,6 +31,7 @@ namespace ResearchProgram
 
         private bool _isEditPerson = false;
         private int _editedPersonId;
+        private string _personFIO;
 
         /// <summary>
         /// Выбранный пол человека
@@ -49,8 +50,10 @@ namespace ResearchProgram
 
             if (personToEdit != null)
             {
+                DeletePersonButton.Visibility = System.Windows.Visibility.Visible;
                 _isEditPerson = true;
                 _editedPersonId = personToEdit.Id;
+                _personFIO = personToEdit.FIO;
                 Title = "Редактирование человека";
                 createPersonButton.Content = "Редактировать человека";
                 FIOTextBox.Text = personToEdit.FIO;
@@ -318,5 +321,18 @@ namespace ResearchProgram
             }
         }
 
+        private void DeletePersonButtonClick(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult sure = MessageBox.Show("Удалить человека с именем " + _personFIO + "?", "Внимание", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+
+            switch (sure)
+            {
+                case MessageBoxResult.Yes:
+                    CRUDDataBase.DeletePerson(_editedPersonId);
+                    MessageBox.Show("Удаление успешно", "Удаление человека", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Close();
+                    break;
+            }
+        }
     }
 }

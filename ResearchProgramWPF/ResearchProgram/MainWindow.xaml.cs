@@ -64,6 +64,8 @@ namespace ResearchProgram
         // Таблица людей
         public DataTable PeopleDataTable { get; set; }
 
+        public DataTable CustomersDataTable { get; set; }
+
         // Окно фильтров
         FiltersWindow filtersWindow;
 
@@ -84,6 +86,8 @@ namespace ResearchProgram
             LoadGrantsTable();
             // Загружаем данные в таблицу людей
             LoadPeopleTable();
+            //Загружаем данные в таблицу заказчиков
+            LoadCustomerTable();
 
             // Загрука окна фильтров без его открытия
             LoadFilterWindow();
@@ -137,11 +141,22 @@ namespace ResearchProgram
         private void LoadPeopleTable()
         {
             var ds = new DataSet("Grants");
-            this.PeopleDataTable = ds.Tables.Add("PeopleTable");
+            PeopleDataTable = ds.Tables.Add("PeopleTable");
 
             CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.CreatePersonsHeaders(PeopleDataTable);
             CRUDDataBase.LoadPersonsTable(PeopleDataTable);
+            CRUDDataBase.CloseConnection();
+        }
+
+        private void LoadCustomerTable()
+        {
+            var ds = new DataSet("Customers");
+            CustomersDataTable = ds.Tables.Add("CustomersTable");
+
+            CRUDDataBase.ConnectToDataBase();
+            CRUDDataBase.CreateCustomersHeaders(CustomersDataTable);
+            CRUDDataBase.LoadCustomersTable(CustomersDataTable);
             CRUDDataBase.CloseConnection();
         }
 
@@ -171,88 +186,16 @@ namespace ResearchProgram
             newPersonWindow.ShowDialog();
         }
 
-        // Открытие окна с созданием кафедр
-        private void CreateKafedraMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            createKafedraWindow newKafedraWindow = new createKafedraWindow
-            {
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                Owner = this
-            };
-
-            newKafedraWindow.ShowDialog();
-        }
-
         // Открытие окна с созданием средств
-        private void CreateDepositsMenuItem_Click(object sender, RoutedEventArgs e)
+        private void CreateCustomerMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            createDepositsWindow newDepositWindow = new createDepositsWindow
+            CreateCustomerWindow newCusomerWindow = new CreateCustomerWindow
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Owner = this
             };
 
-            newDepositWindow.ShowDialog();
-        }
-
-        // Открытие окна с созданием учреждения
-        private void CreateUnitMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            createUnitWindow newUnitWindow = new createUnitWindow
-            {
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                Owner = this
-            };
-
-            newUnitWindow.ShowDialog();
-        }
-
-        // Открытие окна с созданием подразделения
-        private void CreateInstitutionMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            createInstitutionWindow newInstitutionWindow = new createInstitutionWindow
-            {
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                Owner = this
-            };
-
-            newInstitutionWindow.ShowDialog();
-        }
-
-        // Открытие окна с созданием типа исследования
-        private void CreateResearchTypeMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            createResearchType newResearchTypeWindow = new createResearchType
-            {
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                Owner = this
-            };
-
-            newResearchTypeWindow.ShowDialog();
-        }
-
-        // Открытие окна с созданием приоритетных направлений
-        private void CreatePriorityTrendsMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            createPriorityTrendWindow newPriorityTrendWindow = new createPriorityTrendWindow
-            {
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                Owner = this
-            };
-
-            newPriorityTrendWindow.ShowDialog();
-        }
-
-        // Открытие окна с созданием типов науки
-        private void CreateScienceTypeMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            createScienceTypeWindow newScienceTypeWindow = new createScienceTypeWindow
-            {
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                Owner = this
-            };
-
-            newScienceTypeWindow.ShowDialog();
+            newCusomerWindow.ShowDialog();
         }
 
         // Открытие окна настроек
@@ -326,6 +269,13 @@ namespace ResearchProgram
             CRUDDataBase.CloseConnection();
         }
 
+        private void CustomersUpdateButton_Click(object sender, EventArgs e)
+        {
+            CRUDDataBase.ConnectToDataBase();
+            CRUDDataBase.LoadCustomersTable(CustomersDataTable);
+            CRUDDataBase.CloseConnection();
+        }
+
         public DataRowView selectedGrantRow;
         public DataRowView SelectedGrantRow
         {
@@ -334,7 +284,13 @@ namespace ResearchProgram
         }
         private void EditGrant(object sender, RoutedEventArgs e)
         {
-            string grantNumber = SelectedGrantRow.Row.Field<String>("Номер договора");
+            string grantNumber = "";
+            try
+            {
+                grantNumber = SelectedGrantRow.Row.Field<String>("Номер договора");
+            }
+            catch
+            { return; }
             Console.WriteLine(grantNumber);
             Grant grant = CRUDDataBase.GetGrantByGrantNumber(grantNumber);
 
@@ -357,7 +313,12 @@ namespace ResearchProgram
         }
         private void EditPeople(object sender, RoutedEventArgs e)
         {
-            string personId = SelectedPersonRow.Row.Field<String>("id");
+            string personId = "";
+            try
+            {
+                personId = SelectedPersonRow.Row.Field<String>("id");
+            }
+            catch { return; }
             Console.WriteLine(personId);
             Person person = CRUDDataBase.GetPersonByPersonId(personId);
 
@@ -370,6 +331,34 @@ namespace ResearchProgram
             newPersonWindow.Closing += (senders, args) => { newPersonWindow.Owner = null; };
 
             newPersonWindow.Show();
+        }
+
+        public DataRowView selectedCustomerRow;
+        public DataRowView SelectedCustomerRow
+        {
+            get { return selectedPersonRow; }
+            set { selectedPersonRow = value; }
+        }
+        private void EditCustomer(object sender, RoutedEventArgs e)
+        {
+            string CustomerId = "";
+            try
+            {
+                CustomerId = SelectedCustomerRow.Row.Field<String>("id");
+            }
+            catch { return; }
+            Console.WriteLine(CustomerId);
+            Customer customer = CRUDDataBase.GetCustomerByCustomerId(CustomerId);
+
+            CreateCustomerWindow newCustomerWindow = new CreateCustomerWindow(customer)
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Owner = this
+            };
+            // Эта штука нужна чтобы родительское окно не скрывалось, когда дочернее закрывается
+            newCustomerWindow.Closing += (senders, args) => { newCustomerWindow.Owner = null; };
+
+            newCustomerWindow.Show();
         }
 
         private void StructureOfUniversity_Click(object sender, RoutedEventArgs e)

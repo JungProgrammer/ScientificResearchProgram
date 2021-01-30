@@ -960,6 +960,46 @@ namespace ResearchProgram
         }
 
         /// <summary>
+        /// Выгружает таблицу заказчиков
+        /// </summary>
+        /// <param name="dataTable"></param>
+        public static void LoadCustomersTable(DataTable dataTable)
+        {
+            dataTable.Rows.Clear();
+
+            // массив людей
+            List<Customer> customers = new List<Customer>();
+
+            // Получение остальных столбцов
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT customerid, title FROM customers ORDER BY customerid", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    Customer c = new Customer
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    };
+                    customers.Add(c);
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+            for (int i = 0; i < customers.Count; i++)
+            {
+                WorkerWithTablesOnMainForm.AddRowToCustomersTable(dataTable, customers[i]);
+            }
+        }
+
+        /// <summary>
         /// Ищет индекс гранта в массиве по id гранта
         /// </summary>
         /// <param name="grants"></param>
@@ -1152,6 +1192,29 @@ namespace ResearchProgram
                 while (reader.Read())
                 {
                     WorkerWithTablesOnMainForm.AddHeadersToPersonTable(dataTable, reader[1].ToString());
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+        }
+
+        /// <summary>
+        /// Создание заголовков для таблицы заказчиков
+        /// </summary>
+        public static void CreateCustomersHeaders(DataTable dataTable)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, name_field FROM fields_customers_list ORDER BY id", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+            WorkerWithTablesOnMainForm.AddHeadersToCustomersTable(dataTable, "id");
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    WorkerWithTablesOnMainForm.AddHeadersToCustomersTable(dataTable, reader[1].ToString());
                 }
             }
             else
@@ -1870,6 +1933,17 @@ namespace ResearchProgram
             }
         }
 
+        public static void UpdateCustomer(Customer fixedCustomer)
+        {
+            ConnectToDataBase();
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE customers SET title = :title WHERE customerid = :id",conn);
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedCustomer.Id));
+            cmd.Parameters.Add(new NpgsqlParameter("title", fixedCustomer.Title));
+            cmd.ExecuteNonQuery();
+            CloseConnection();
+        }
+
+
         /// <summary>
         /// Загрузка в БД нового договора
         /// </summary>
@@ -2228,5 +2302,105 @@ namespace ResearchProgram
             return person;
         }
 
+        public static Customer GetCustomerByCustomerId(string customerId)
+        {
+            ConnectToDataBase();
+            List<Customer> customers = GetCustomers();
+            CloseConnection();
+            Customer customer = new Customer();
+            for (int i = 0; i < customers.Count; i++)
+            {
+                if (customers[i].Id == Convert.ToInt32(customerId))
+                {
+                    customer = customers[i];
+                    break;
+                }
+            }
+            return customer;
+        }
+
+        public static void DeleteGrant(string grantNumber)
+        {
+            int grantId = -1;
+            ConnectToDataBase();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id FROM grants WHERE grantNumber = :grantNumber;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantNumber", grantNumber));
+
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Read();
+                grantId = Convert.ToInt32(reader[0]);
+            }
+            reader.Close();
+
+            cmd = new NpgsqlCommand("DELETE FROM grants WHERE grantNumber = :grantNumber", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantNumber", grantNumber));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("DELETE FROM grantsciencetypes WHERE grantId = :grantId", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("DELETE FROM grantprioritytrends WHERE grantId = :grantId", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("DELETE FROM grantdeposits WHERE grantId = :grantId", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("DELETE FROM executors WHERE grantId = :grantId", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("DELETE FROM grants_customers WHERE grant_id = :grantId", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("DELETE FROM grantresearchtype WHERE grantId = :grantId", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
+            cmd.ExecuteNonQuery();
+
+            Console.WriteLine(grantNumber);
+            CloseConnection();
+        }
+
+        public static void DeletePerson(int PersonId)
+        {
+            ConnectToDataBase();
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM executors WHERE executorId = :personId", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("personId", PersonId));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("DELETE FROM persons WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("id", PersonId));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("DELETE FROM salaryrates WHERE personId = :personId", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("personId", PersonId));
+            cmd.ExecuteNonQuery();
+            CloseConnection();
+        }
+
+        public static void DeleteCustomer(int customerId)
+        {
+            ConnectToDataBase();
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM customers WHERE customerid = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("id", customerId));
+            cmd.ExecuteNonQuery();
+            CloseConnection();
+        }
+
+        public static void AddNewCustomer(Customer customer)
+        {
+            ConnectToDataBase();
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into customers (title) values(:title)", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", customer.Title));
+            cmd.ExecuteNonQuery();
+            CloseConnection();
+        }
     }
 }
