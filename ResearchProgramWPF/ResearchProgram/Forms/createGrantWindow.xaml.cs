@@ -69,6 +69,7 @@ namespace ResearchProgram
         private bool _isEditGrant = false;
         // id гранта, который получен для редактирования.
         private int grantEditId = 0;
+        private string grantNumber;
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -116,8 +117,10 @@ namespace ResearchProgram
             // Если открыта форма редактирования, то вставим в нее данные
             if (grantToEdit != null)
             {
+                DeleteGrantButton.Visibility = System.Windows.Visibility.Visible;
                 _isEditGrant = true;
                 grantEditId = grantToEdit.Id;
+                grantNumber = grantToEdit.grantNumber;
                 Title = "Редактирование договора";
                 createGrantButton.Content = "Редактировать";
                 OKVEDTextBox.Text = grantToEdit.OKVED;
@@ -924,6 +927,20 @@ namespace ResearchProgram
             else
             {
                 MessageBox.Show(incorrectDataString, "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void DeleteGrantButtonClick(object sender, RoutedEventArgs e)
+        {
+            MessageBoxResult sure = MessageBox.Show("Удалить договор с номером " + grantNumber + "?", "Удаление договора", MessageBoxButton.YesNoCancel, MessageBoxImage.Warning);
+
+            switch (sure)
+            {
+                case MessageBoxResult.Yes:
+                    CRUDDataBase.DeleteGrant(grantNumber);
+                    MessageBox.Show("Удаление успешно", "Удаление договора", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Close();
+                    break;
             }
         }
 

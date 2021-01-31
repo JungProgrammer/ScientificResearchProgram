@@ -42,6 +42,22 @@ namespace ResearchProgram
         }
 
         /// <summary>
+        /// Загружает заголовки в customerssDataTable
+        /// </summary>
+        /// <param name="grantsDataTable"></param>
+        /// <param name="header"></param>
+        public static void AddHeadersToCustomersTable(DataTable customersDataTable, string header)
+        {
+            DataColumn column = new DataColumn
+            {
+                DataType = Type.GetType("System.String"),
+                ColumnName = header,
+                Caption = header
+            };
+            customersDataTable.Columns.Add(column);
+        }
+
+        /// <summary>
         /// Загружает заголовки в personsDataTable
         /// </summary>
         /// <param name="personsDataTable"></param>
@@ -141,6 +157,14 @@ namespace ResearchProgram
             row["Ставка"]                       = string.Join("\n", Job.GetSalaryRatesFromPerson(person.Jobs));
             personsDataTable.Rows.Add(row);
 
+        }
+
+        public static void AddRowToCustomersTable(DataTable customersDataTable, Customer customer)
+        {
+            DataRow row = customersDataTable.NewRow();
+            row["id"] = customer.Id;
+            row["Наименование"] = customer.Title;
+            customersDataTable.Rows.Add(row);
         }
     }
 }

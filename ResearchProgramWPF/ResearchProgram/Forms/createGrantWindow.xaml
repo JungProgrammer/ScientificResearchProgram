@@ -612,6 +612,14 @@
                     HorizontalAlignment="Right"
                     Margin="0 3 4 3" Click="CreateGrantButtonClick"
                     x:Name="createGrantButton"></Button>
+            <Button Content="Удалить договор"
+                    Grid.Row="1"
+                    Height="25"
+                    Width="140"
+                    HorizontalAlignment="Left"
+                    Margin="0 3 4 3" Click="DeleteGrantButtonClick"
+                    x:Name="DeleteGrantButton"
+                    Visibility="Hidden"></Button>
         </Grid>
     </Grid>
 </Window>

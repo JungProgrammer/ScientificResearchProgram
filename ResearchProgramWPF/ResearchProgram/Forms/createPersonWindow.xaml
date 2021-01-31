@@ -182,5 +182,13 @@
                 Margin="50 5 5 5"
                 Click="createPersonButtonClick"
                 x:Name="createPersonButton"></Button>
+        <Button Content="Удалить человека"
+                Grid.Row="7"
+                Grid.ColumnSpan="2"
+                Width="140"
+                HorizontalAlignment="Left"
+                Margin="5" Click="DeletePersonButtonClick"
+                x:Name="DeletePersonButton"
+                Visibility="Hidden"></Button>
     </Grid>
 </Window>
