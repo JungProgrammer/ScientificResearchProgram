@@ -124,6 +124,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\OKVED.cs" />
+    <Compile Include="Converters\NOCConverter.cs" />
     <Compile Include="Forms\CreateCustomerWindow.xaml.cs">
       <DependentUpon>CreateCustomerWindow.xaml</DependentUpon>
     </Compile>
@@ -285,6 +286,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\splashscreen.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\info.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

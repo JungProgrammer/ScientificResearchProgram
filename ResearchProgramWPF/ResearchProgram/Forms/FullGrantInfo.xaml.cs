@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -19,100 +20,71 @@ namespace ResearchProgram.Forms
     /// <summary>
     /// Логика взаимодействия для FullGrantInfo.xaml
     /// </summary>
-    public partial class FullGrantInfo : Window, INotifyPropertyChanged
+    public partial class FullGrantInfo : Window
     {
-        private string _okved;
-        public string OKVED
+        public class DepositorSum: INotifyPropertyChanged
         {
-            get => _okved;
-            set
+            private float _sum;
+            public float sum
             {
-                _okved = value;
-                OnPropertyChanged(nameof(OKVED));
+                get => _sum;
+                set
+                {
+                    _sum = value;
+                    OnPropertyChanged(nameof(sum));
+                }
+            }
+
+            public string sum1 = "21312";
+
+            public override string ToString()
+            {
+                return sum.ToString();
+            }
+
+
+            public event PropertyChangedEventHandler PropertyChanged;
+            public void OnPropertyChanged([CallerMemberName] string prop = "")
+            {
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
             }
         }
 
-        //private string _okved;
-        //public string OKVED
-        //{
-        //    get => _okved;
-        //    set
-        //    {
-        //        _okved = value;
-        //        OnPropertyChanged(nameof(OKVED));
-        //    }
-        //}
-
-        //private string _okved;
-        //public string OKVED
-        //{
-        //    get => _okved;
-        //    set
-        //    {
-        //        _okved = value;
-        //        OnPropertyChanged(nameof(OKVED));
-        //    }
-        //}
-
-        //private string _okved;
-        //public string OKVED
-        //{
-        //    get => _okved;
-        //    set
-        //    {
-        //        _okved = value;
-        //        OnPropertyChanged(nameof(OKVED));
-        //    }
-        //}
-
-        //private string _okved;
-        //public string OKVED
-        //{
-        //    get => _okved;
-        //    set
-        //    {
-        //        _okved = value;
-        //        OnPropertyChanged(nameof(OKVED));
-        //    }
-        //}
-
-        //private string _okved;
-        //public string OKVED
-        //{
-        //    get => _okved;
-        //    set
-        //    {
-        //        _okved = value;
-        //        OnPropertyChanged(nameof(OKVED));
-        //    }
-        //}
-
-        //private string _okved;
-        //public string OKVED
-        //{
-        //    get => _okved;
-        //    set
-        //    {
-        //        _okved = value;
-        //        OnPropertyChanged(nameof(OKVED));
-        //    }
-        //}
-
+        public ObservableCollection<DepositorSum> depositorSums;
+        public ObservableCollection<DepositorSum> depositorSumsNoNDS;
 
 
         public FullGrantInfo(Grant grant)
         {
             InitializeComponent();
 
-            DataContext = grant;
+            CopyDepositors(grant);
+
+            //DataContext = this;
+            DepositorsSumsControl.ItemsSource = depositorSums;
         }
 
 
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        private void CopyDepositors(Grant grant)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+            depositorSums = new ObservableCollection<DepositorSum>();
+            depositorSumsNoNDS = new ObservableCollection<DepositorSum>();
+
+            foreach (float depositorSum in grant.DepositorSum)
+            {
+                depositorSums.Add(new DepositorSum() { sum = depositorSum });
+            }
+
+            foreach (float depositorSumNoNDS in grant.DepositorSumNoNDS)
+            {
+                depositorSumsNoNDS.Add(new DepositorSum() { sum = depositorSumNoNDS });
+            }
         }
+
+        private void SetDataContextDepositors()
+        {
+            DepositorsSumsControl.DataContext = depositorSums;
+        }
+
     }
 }

@@ -116,6 +116,9 @@
                             <ContextMenu>
                                 <MenuItem Header="Показать полную информацию"
                                           Click="ShowFullInformation">
+                                    <MenuItem.Icon>
+                                        <Image Source="/ResearchProgram;component/Icons/info.jpg"/>
+                                    </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="Редактировать" 
                                           Click="EditGrant">

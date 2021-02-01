@@ -8,6 +8,8 @@
         Title="Информация о договоре" Height="450" Width="800">
 
     <Window.Resources>
+        <local:NOCConverter x:Key="NocConverter" />
+
         <Style TargetType="GroupBox">
             <Setter Property="BorderBrush" Value="LightBlue"/>
             <Setter Property="FontSize" Value="16"/>
@@ -30,12 +32,12 @@
             <Setter Property="Label.FontSize" Value="12"/>
         </Style>
     </Window.Resources>
-    
+
     <Grid>
+
 
         <ScrollViewer>
             <StackPanel Orientation="Vertical">
-
                 <GroupBox Header="Общая информация">
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
@@ -77,7 +79,7 @@
                         <StackPanel Orientation="Horizontal">
                             <Label Content="НОЦ:"
                                    Style="{StaticResource BoldLabel}"/>
-                            <Label Content="{Binding NOC}"
+                            <Label Content="{Binding NOC, Converter={StaticResource NocConverter}}"
                                    Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                     </StackPanel>
@@ -163,6 +165,21 @@
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Label Content="{Binding Title}"
+                                                   Style="{StaticResource NormalLabel}"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <ItemsControl Name="DepositorsSumsControl" 
+                                              Grid.Column="0">
+                                    <ItemsControl.ItemsPanel >
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Vertical"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding sum}"
                                                    Style="{StaticResource NormalLabel}"/>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
