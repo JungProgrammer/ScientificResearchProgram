@@ -35,8 +35,6 @@ namespace ResearchProgram.Forms
                 }
             }
 
-            public string sum1 = "21312";
-
             public override string ToString()
             {
                 return sum.ToString();
@@ -60,8 +58,9 @@ namespace ResearchProgram.Forms
 
             CopyDepositors(grant);
 
-            //DataContext = this;
-            DepositorsSumsControl.ItemsSource = depositorSums;
+            DataContext = grant;
+
+            SetDataContextDepositors();
         }
 
 
@@ -83,7 +82,7 @@ namespace ResearchProgram.Forms
 
         private void SetDataContextDepositors()
         {
-            DepositorsSumsControl.DataContext = depositorSums;
+            DepositorsSumsControl.ItemsSource = depositorSums;
         }
 
     }

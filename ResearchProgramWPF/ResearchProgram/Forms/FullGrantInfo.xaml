@@ -30,6 +30,7 @@
         <Style x:Key="NormalLabel">
             <Setter Property="Label.FontWeight" Value="Normal"/>
             <Setter Property="Label.FontSize" Value="12"/>
+            <Setter Property="Label.Margin" Value="10 0 0 0"/>
         </Style>
     </Window.Resources>
 
