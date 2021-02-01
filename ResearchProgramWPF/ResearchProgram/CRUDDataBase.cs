@@ -273,7 +273,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение остальных столбцов
-            cmd = new NpgsqlCommand("SELECT grants.id, grants.grantnumber, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC, l.title, i.id, u.id, k.id, l.id, pricenonds FROM grants " +
+            cmd = new NpgsqlCommand("SELECT grants.id, grants.grantnumber, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC, l.title, i.id, u.id, k.id, l.id, pricenonds, is_with_nds FROM grants " +
                                                         "LEFT JOIN persons p2 on grants.leadNIOKRId = p2.id " +
                                                         "LEFT JOIN kafedras k on grants.kafedraId = k.id " +
                                                         "LEFT JOIN units u on grants.unitId = u.id " +
@@ -304,6 +304,7 @@ namespace ResearchProgram
                     grants[grant_index].NIR = reader[12].ToString();
                     grants[grant_index].NOC = reader[13].ToString();
                     grants[grant_index].Laboratory = new Laboratory() { Id = reader[18] != DBNull.Value ? Convert.ToInt32(reader[18]) : 0, Title = reader[14].ToString() };
+                    grants[grant_index].isWIthNDS = Convert.ToBoolean(reader[20]);
                 }
             }
             else
@@ -1691,6 +1692,14 @@ namespace ResearchProgram
             cmd.ExecuteNonQuery();
         }
 
+        public static void UpdatePriceNoNDS(Grant fixedGrant)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET pricenonds = :price WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("price", fixedGrant.PriceNoNDS));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+        }
+
         /// <summary>
         /// Обновление источников средств в бд
         /// </summary>
@@ -1862,6 +1871,14 @@ namespace ResearchProgram
             cmd.ExecuteNonQuery();
         }
 
+        public static void UpdateIsWithNDS(Grant fixedGrant)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET is_with_nds = :is_with_nds WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("is_with_nds", fixedGrant.isWIthNDS));
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
+        }
+
         public static void UpdateFIO(Person fixedPerson)
         {
             NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET fio = :fio WHERE id = :id", conn);
@@ -1961,7 +1978,7 @@ namespace ResearchProgram
                 "startdate, " +
                 "enddate, " +
                 "price, " +
-                "priceNoNDS, " +
+                "pricenonds, " +
                 "leadniokrid, " +
                 "kafedraid, " +
                 "unitid, " +
@@ -1969,7 +1986,8 @@ namespace ResearchProgram
                 "laboratoryid, " +
                 "grnti, " +
                 "nir, " +
-                "noc) " +
+                "noc," +
+                "is_with_nds) " +
                 "values(" +
                 ":grantnumber, " +
                 ":okved, " +
@@ -1985,7 +2003,8 @@ namespace ResearchProgram
                 ":laboratoryid, " +
                 ":grnti, " +
                 ":nir, " +
-                ":noc)", conn);
+                ":noc," +
+                ":is_with_nds)", conn);
             cmd.Parameters.Add(new NpgsqlParameter("grantnumber", grant.grantNumber));
             cmd.Parameters.Add(new NpgsqlParameter("okved", grant.OKVED));
             cmd.Parameters.Add(new NpgsqlParameter("nameniokr", grant.NameNIOKR));
@@ -2001,6 +2020,7 @@ namespace ResearchProgram
             cmd.Parameters.Add(new NpgsqlParameter("grnti", grant.GRNTI));
             cmd.Parameters.Add(new NpgsqlParameter("nir", grant.NIR));
             cmd.Parameters.Add(new NpgsqlParameter("noc", grant.NOC == "Да"));
+            cmd.Parameters.Add(new NpgsqlParameter("is_with_nds", grant.isWIthNDS));
 
             cmd.ExecuteNonQuery();
 
