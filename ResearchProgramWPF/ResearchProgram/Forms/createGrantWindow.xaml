@@ -95,6 +95,7 @@
                             </Grid.RowDefinitions>
 
                             <Label Content="ОКВЭД"
+                                   FontWeight="Bold"
                                    Grid.Row="0"
                                    Margin="0 5 0 0"/>
                             <ComboBox Grid.Row="1"
@@ -106,6 +107,7 @@
 
                             <Label Content="ГРНТИ"
                                    Grid.Row="2"
+                                   FontWeight="Bold"
                                    Margin="0 5 0 0"/>
                             <TextBox Grid.Row="3"
                                      Name="GRNTITextBox"
@@ -113,6 +115,7 @@
 
                             <Label Content="Номер договора"
                                    Grid.Row="4"
+                                   FontWeight="Bold"
                                    Margin="0 5 0 0"/>
                             <TextBox Grid.Row="5"
                                      Name="grantNumberTextBox"
@@ -120,6 +123,7 @@
 
                             <Label Content="Наименование НИОКР"
                                    Grid.Row="6"
+                                   FontWeight="Bold"
                                    Margin="0 5 0 0"/>
                             <dotNetKitControls:AutoCompleteComboBox Grid.Row="7"
                                                                     x:Name="NIOKRComboBox"
@@ -129,10 +133,12 @@
 
                             <Label Content="Руководитель НИОКР"
                                    Grid.Row="8"
+                                   FontWeight="Bold"
                                    Margin="0 5 0 0"/>
 
                             <Label Content="НИР или Услуга"
                                    Grid.Row="10"
+                                   FontWeight="Bold"
                                    Margin="0 5 0 0"/>
 
                             <StackPanel Name="nirStackPanel"
@@ -149,6 +155,7 @@
 
                             <Label Content="НОЦ"
                                    Grid.Row="12"
+                                   FontWeight="Bold"
                                    Margin="0 5 0 0"/>
                             <StackPanel Name="NOCStackPanel"
                                         Grid.Row="13">
@@ -194,6 +201,7 @@
 
                                 <Label Content="Заказчики"
                                    Grid.Row="0"
+                                       FontWeight="Bold"
                                    Grid.ColumnSpan="3"/>
 
 
@@ -232,8 +240,9 @@
                                 </Grid.ColumnDefinitions>
 
                                 <Label Content="Исполнители"
-                                   Grid.Row="0"
-                                   Grid.ColumnSpan="3"/>
+                                       Grid.Row="0"
+                                       FontWeight="Bold"
+                                       Grid.ColumnSpan="3"/>
 
 
                                 <ListView Grid.Row="1"
@@ -275,12 +284,14 @@
 
                             <Label Content="Дата начала"
                                    Grid.Row="0"
+                                   FontWeight="Bold"
                                    Margin="0 5 0 0"/>
                             <DatePicker Name="startDateDatePicker"
                                         Grid.Row="1"/>
                             
                             <Label Content="Дата окончания"
                                    Grid.Row="2"
+                                   FontWeight="Bold"
                                    Margin="0 5 0 0"/>
                             <DatePicker Name="endDateDatePicker"
                                         Grid.Row="3"/>
@@ -295,7 +306,7 @@
                     <TabItem.Content>
                         <Grid Name="depositsGrid">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="60"/>
+                                <RowDefinition Height="90"/>
                                 <RowDefinition Height="35"/>
                                 <RowDefinition Height="15*"/>
                                 <RowDefinition Height="35"/>
@@ -312,6 +323,7 @@
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="45*"/>
@@ -320,57 +332,79 @@
                                     <ColumnDefinition Width="5*"/>
                                 </Grid.ColumnDefinitions>
 
+                                <CheckBox Content="Договор без НДС"
+                                          Grid.Row="0"
+                                          Margin="5 5 0 -5"
+                                          x:Name="GrantWithoutNDSCheckBox"
+                                          Checked="GrantWithoutNDSCheckBox_Checked"
+                                          Unchecked="GrantWithoutNDSCheckBox_Checked"/>
+
                                 <Label Content="Стоимость договора"
-                                   Grid.Row="0"
-                                   Grid.Column="0"
-                                   Margin="0 5 0 0"
-                                       />
-                                <TextBox Grid.Row="1"
+                                       x:Name="PriceLabel"
+                                       Grid.Row="1"
+                                       FontWeight="Bold"
+                                       Grid.Column="0"
+                                       Margin="0 5 0 0"/>
+                                
+                                <TextBox Grid.Row="2"
                                          Grid.Column="0"
                                          Name="priceTextBox"
                                          Margin="5 0"
                                          PreviewTextInput="TextBoxNumbersPreviewInput"
+                                         PreviewKeyDown="priceNoNDSTextBox_PreviewKeyDown"
                                          Padding="0 3"/>
+                                
                                 <Label Content="руб."
-                                       Grid.Row="1"
+                                       x:Name="PriceRubLabel"
+                                       Grid.Row="2"
                                        Grid.Column="1"
                                        Margin="-7 0 0 0"/>
+                                
                                 <Label Content="Сумма без НДС"
-                                       Grid.Row="0"
+                                       Grid.Row="1"
+                                       FontWeight="Bold"
                                        Grid.Column="2"
                                        Margin="0 5 0 0"/>
-                                <TextBox Grid.Row="1"
+                                
+                                <TextBox Grid.Row="2"
                                          Name="priceNoNDSTextBox"
                                          Margin="5 0"
                                          Grid.Column="2"
                                          PreviewTextInput="TextBoxNumbersPreviewInput"
+                                         PreviewKeyDown="priceNoNDSTextBox_PreviewKeyDown"
                                          Padding="0 3"
                                          Text="{Binding ElementName=priceTextBox, Path=Text, Converter={StaticResource PriceNDSConverter}}"/>
+                                
                                 <Label Content="руб."
-                                       Grid.Row="1"
+                                       Grid.Row="2"
                                        Grid.Column="3"
                                        Margin="-7 0 0 0"/>
                             </Grid>
 
                             <Label Content="Источник"
                                    Grid.Row="1"
+                                   FontWeight="Bold"
                                    Grid.Column="0"
                                    Margin="0 2 0 0"
                                    FontSize="13"/>
                             <Label Content="Сумма"
+                                   x:Name="SummLabel"
                                    Grid.Row="1"
+                                   FontWeight="Bold"
                                    Grid.Column="1"
                                    Margin="0 2 0 0"
                                    FontSize="13"/>
                             <Label Content="Без НДС"
                                    Grid.Row="1"
+                                   FontWeight="Bold"
                                    Grid.Column="2"
                                    Margin="0 2 0 0"
                                    FontSize="13"/>
                             <Label Content="Дата поступления"
                                    Grid.Row="1"
+                                   FontWeight="Bold"
                                    Grid.Column="3"
-                                   Margin="0 2 0 0"
+                                   Margin="-5 2 0 0"
                                    FontSize="13"/>
 
                             <ListView Grid.Row="2"
@@ -612,6 +646,14 @@
                     HorizontalAlignment="Right"
                     Margin="0 3 4 3" Click="CreateGrantButtonClick"
                     x:Name="createGrantButton"></Button>
+            <Button Content="Удалить договор"
+                    Grid.Row="1"
+                    Height="25"
+                    Width="140"
+                    HorizontalAlignment="Left"
+                    Margin="0 3 4 3" Click="DeleteGrantButtonClick"
+                    x:Name="DeleteGrantButton"
+                    Visibility="Hidden"></Button>
         </Grid>
     </Grid>
 </Window>

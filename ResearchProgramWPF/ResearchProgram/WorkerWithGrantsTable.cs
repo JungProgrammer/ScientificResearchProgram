@@ -42,6 +42,22 @@ namespace ResearchProgram
         }
 
         /// <summary>
+        /// Загружает заголовки в customerssDataTable
+        /// </summary>
+        /// <param name="grantsDataTable"></param>
+        /// <param name="header"></param>
+        public static void AddHeadersToCustomersTable(DataTable customersDataTable, string header)
+        {
+            DataColumn column = new DataColumn
+            {
+                DataType = Type.GetType("System.String"),
+                ColumnName = header,
+                Caption = header
+            };
+            customersDataTable.Columns.Add(column);
+        }
+
+        /// <summary>
         /// Загружает заголовки в personsDataTable
         /// </summary>
         /// <param name="personsDataTable"></param>
@@ -74,7 +90,10 @@ namespace ResearchProgram
                     depositors += grant.Depositor[i].Title + "\n";
                     if (Settings.Default.NDSKey)
                     {
-                        depositsSum += grant.DepositorSum[i] + "\n";
+                        if (!grant.isWIthNDS)
+                            depositsSum += "БЕЗ НДС\n";
+                        else
+                            depositsSum += grant.DepositorSum[i] + "\n";
                     }
                     else
                     {
@@ -96,11 +115,11 @@ namespace ResearchProgram
                 row["ОКВЭД"]                    = grant.OKVED;
                 row["Наименование НИОКР"]       = grant.NameNIOKR;
                 row["Заказчик"]                 = string.Join("\n", grant.Customer);
-                row["Дата начала"]              = grant.StartDate.ToString("dd.MM.yyyy");
-                row["Дата завершения"]          = grant.EndDate.ToString("dd.MM.yyyy");
-                row["Стоимость договора"]     = Settings.Default.NDSKey ? grant.Price : grant.PriceNoNDS;
-                row["Источник финансирования"]                 = depositors;
-                row["Поступления"] = depositsSum;
+                row["Дата начала"]              = grant.StartDate == new DateTime(1, 1, 1) ? "": grant.StartDate.ToString("dd.MM.yyyy");
+                row["Дата завершения"]          = grant.EndDate == new DateTime(1, 1, 1) ? "" : grant.EndDate.ToString("dd.MM.yyyy");
+                row["Стоимость договора"]       = (!grant.isWIthNDS && Settings.Default.NDSKey) ? "БЕЗ НДС" :  grant.PriceNoNDS.ToString();
+                row["Источник финансирования"]  = depositors;
+                row["Поступления"]              = depositsSum;
                 row["Руководитель НИОКР"]       = grant.LeadNIOKR.shortName();
                 row["Исполнители"]              = string.Join("\n", grant.Executor.Select(x => x.shortName()).ToArray()); 
                 row["Учреждение"]               = grant.Institution;
@@ -113,6 +132,7 @@ namespace ResearchProgram
                 row["Тип науки"]                = string.Join("\n", grant.ScienceType);
                 row["НИР или УСЛУГА"]           = grant.NIR;
                 row["НОЦ"]                      = grant.NOC == "True" ? "Да" : grant.NOC == "False" ? "Нет" : "";
+                row["Наличие НДС"]              = grant.isWIthNDS ? "Да" : "Нет";
                 grantsDataTable.Rows.Add(row);
             }
         }
@@ -130,7 +150,7 @@ namespace ResearchProgram
             row["#"]                            = countOfPersonRows.ToString();
             row["id"]                           = person.Id;
             row["ФИО"]                          = person.FIO;
-            row["Дата рождения"]                = person.BitrhDate;
+            row["Дата рождения"]                = person.BitrhDate == new DateTime(1, 1, 1) ? "" : person.BitrhDate.ToString("dd.MM.yyyy");
             row["Пол"]                          = person.Sex ? "M" : "Ж";
             row["Место работы"]                 = person.PlaceOfWork;
             row["Категория"]                    = person.Category;
@@ -141,6 +161,14 @@ namespace ResearchProgram
             row["Ставка"]                       = string.Join("\n", Job.GetSalaryRatesFromPerson(person.Jobs));
             personsDataTable.Rows.Add(row);
 
+        }
+
+        public static void AddRowToCustomersTable(DataTable customersDataTable, Customer customer)
+        {
+            DataRow row = customersDataTable.NewRow();
+            row["id"] = customer.Id;
+            row["Наименование"] = customer.Title;
+            customersDataTable.Rows.Add(row);
         }
     }
 }

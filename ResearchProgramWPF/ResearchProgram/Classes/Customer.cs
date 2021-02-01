@@ -14,7 +14,6 @@ namespace ResearchProgram
 
         public Customer()
         {
-            //Title = "Не указан";
             Title = "";
         }
 

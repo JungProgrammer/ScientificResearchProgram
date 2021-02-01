@@ -86,5 +86,7 @@ namespace ResearchProgram
         public string NIR { get; set; }
         // НОЦ
         public string NOC { get; set; }
+        //Есть ли у договора НДС
+        public bool isWIthNDS { get; set; }
     }
 }

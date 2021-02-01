@@ -6,7 +6,33 @@
         xmlns:local="clr-namespace:ResearchProgram.Forms"
         mc:Ignorable="d"
         Title="Информация о договоре" Height="450" Width="800">
+
+    <Window.Resources>
+        <Style TargetType="GroupBox">
+            <Setter Property="BorderBrush" Value="LightBlue"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Margin" Value="15,1,15,5"/>
+            <Setter Property="HeaderTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" FontWeight="Bold"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="BoldLabel">
+            <Setter Property="Label.FontWeight" Value="Bold"/>
+            <Setter Property="Label.FontSize" Value="12"/>
+        </Style>
+        <Style x:Key="NormalLabel">
+            <Setter Property="Label.FontWeight" Value="Normal"/>
+            <Setter Property="Label.FontSize" Value="12"/>
+        </Style>
+    </Window.Resources>
+    
     <Grid>
+
         <ScrollViewer>
             <StackPanel Orientation="Vertical">
 
@@ -14,38 +40,45 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="ОКВЭД:"
-                                   FontWeight="Bold"/>
-                            <Label Content="{Binding OKVED}"/>
+                                   Style="{StaticResource BoldLabel}"/>
+                            <Label Content="{Binding OKVED}"
+                                   Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="ГРНТИ:"
-                                   FontWeight="Bold"/>
-                            <Label Content="{Binding GRNTI}"/>
+                                   Style="{StaticResource BoldLabel}"/>
+                            <Label Content="{Binding GRNTI}"
+                                   Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Номер договора:"
-                                   FontWeight="Bold"/>
-                            <Label Content="{Binding grantNumber}"/>
+                                   Style="{StaticResource BoldLabel}"/>
+                            <Label Content="{Binding grantNumber}"
+                                   Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Наименование НИОКР:"
-                                   FontWeight="Bold"/>
-                            <Label Content="{Binding NameNIOKR}"/>
+                                   Style="{StaticResource BoldLabel}"/>
+                            <Label Content="{Binding NameNIOKR}"
+                                   Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Руководитель НИОКР:"
-                                   FontWeight="Bold"/>
-                            <Label Content="{Binding LeadNIOKR}"/>
+                                   Style="{StaticResource BoldLabel}"/>
+                            <Label Content="{Binding LeadNIOKR}"
+                                   Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="НИР или Услуга:"
-                                   FontWeight="Bold"/>
-                            <Label Content="{Binding NIR}"/>
+                                   Style="{StaticResource BoldLabel}"/>
+                            <Label Content="{Binding NIR}"
+                                   Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="НОЦ:"
-                                   FontWeight="Bold"/>
-                            <Label Content="{Binding NOC}"/>
+                                   Style="{StaticResource BoldLabel}"/>
+                            <Label Content="{Binding NOC}"
+                                   Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
@@ -62,7 +95,8 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Label Content="{Binding Title}"/>
+                                <Label Content="{Binding Title}"
+                                       Style="{StaticResource NormalLabel}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -79,7 +113,8 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Label Content="{Binding FIO}"/>
+                                <Label Content="{Binding FIO}"
+                                       Style="{StaticResource NormalLabel}"/>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
@@ -89,15 +124,17 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Дата начала договора:"
-                               FontWeight="Bold"/>
+                               Style="{StaticResource BoldLabel}"/>
                             <Label Content="{Binding StartDate}"
-                               ContentStringFormat="dd.MM.yyyy"/>
+                               ContentStringFormat="dd.MM.yyyy"
+                                   Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Дата окончания договора:"
-                               FontWeight="Bold"/>
+                               Style="{StaticResource BoldLabel}"/>
                             <Label Content="{Binding EndDate}"
-                               ContentStringFormat="dd.MM.yyyy"/>
+                               ContentStringFormat="dd.MM.yyyy"
+                                   Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
@@ -105,13 +142,15 @@
                 <GroupBox Header="Источник финансирования">
                     <StackPanel>
                         <Label Content="Стоимость договора без НДС:"
-                               FontWeight="Bold"/>
+                               Style="{StaticResource BoldLabel}"/>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="{Binding PriceNoNDS}"/>
-                            <Label Content="руб."/>
+                            <Label Content="{Binding PriceNoNDS}"
+                                   Style="{StaticResource NormalLabel}"/>
+                            <Label Content="руб."
+                                   Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                         <GroupBox Header="Источники"
-                                  FontWeight="Bold">
+                                  Style="{StaticResource BoldLabel}">
                             <StackPanel Orientation="Horizontal">
                                 <ItemsControl x:Name="DepositorsItemsControl" 
                                               Grid.Column="0"
@@ -123,7 +162,8 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Label Content="{Binding Title}"/>
+                                            <Label Content="{Binding Title}"
+                                                   Style="{StaticResource NormalLabel}"/>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>
@@ -136,23 +176,27 @@
                     <StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Учреждение:"
-                                   FontWeight="Bold"/>
-                            <Label Content="{Binding Institution}"/>
+                                   Style="{StaticResource BoldLabel}"/>
+                            <Label Content="{Binding Institution}"
+                                   Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Подразделение:"
-                                   FontWeight="Bold"/>
-                            <Label Content="{Binding Unit}"/>
+                                   Style="{StaticResource BoldLabel}"/>
+                            <Label Content="{Binding Unit}"
+                                   Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Кафедра:"
-                                   FontWeight="Bold"/>
-                            <Label Content="{Binding Kafedra}"/>
+                                   Style="{StaticResource BoldLabel}"/>
+                            <Label Content="{Binding Kafedra}"
+                                   Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Лаборатория:"
-                                   FontWeight="Bold"/>
-                            <Label Content="{Binding Laboratory}"/>
+                                   Style="{StaticResource BoldLabel}"/>
+                            <Label Content="{Binding Laboratory}"
+                                   Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                     </StackPanel>
                 </GroupBox>
@@ -162,8 +206,9 @@
                         <StackPanel Orientation="Horizontal">
                             <StackPanel Orientation="Horizontal">
                                 <Label Content="Тип исследования:"
-                                       FontWeight="Bold"/>
-                                <Label Content="{Binding ResearchType[0].Title}"/>
+                                       Style="{StaticResource BoldLabel}"/>
+                                <Label Content="{Binding ResearchType[0].Title}"
+                                       Style="{StaticResource NormalLabel}"/>
                             </StackPanel>
                         </StackPanel>
 
@@ -178,7 +223,8 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Label Content="{Binding Title}"/>
+                                        <Label Content="{Binding Title}"
+                                               Style="{StaticResource NormalLabel}"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -195,7 +241,8 @@
                                 </ItemsControl.ItemsPanel>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Label Content="{Binding Title}"/>
+                                        <Label Content="{Binding Title}"
+                                               Style="{StaticResource NormalLabel}"/>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
