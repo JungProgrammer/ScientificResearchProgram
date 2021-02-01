@@ -10,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
+using System.Text.RegularExpressions;
 
 namespace ResearchProgram
 {
@@ -154,8 +155,10 @@ namespace ResearchProgram
 
                 startDateDatePicker.SelectedDate = grantToEdit.StartDate;
                 endDateDatePicker.SelectedDate = grantToEdit.EndDate;
-                priceTextBox.Text = grantToEdit.Price.ToString();
-
+                if (grantToEdit.isWIthNDS)
+                    priceTextBox.Text = grantToEdit.Price.ToString();
+                priceNoNDSTextBox.Text = grantToEdit.PriceNoNDS.ToString();
+                GrantWithoutNDSCheckBox.IsChecked = !grantToEdit.isWIthNDS;
                 for (int i = 0; i < grantToEdit.Depositor.Count; i++)
                 {
                     StackPanel horizontalStackPanel = new StackPanel()
@@ -186,7 +189,8 @@ namespace ResearchProgram
                     {
                         Margin = new Thickness(5, 0, 5, 10),
                         MinWidth = 110,
-                        Text = grantToEdit.DepositorSum[i].ToString()
+                        Text = grantToEdit.DepositorSum[i].ToString(),
+                        IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked
                     };
 
 
@@ -197,8 +201,12 @@ namespace ResearchProgram
                         Text = grantToEdit.DepositorSumNoNDS[i].ToString()
                     };
                     sumTextBoxNoNDS.PreviewTextInput += TextBoxNumbersPreviewInput;
+                    sumTextBoxNoNDS.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
+
                     sumTextBox.PreviewTextInput += TextBoxNumbersPreviewInput;
                     sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler;
+                    sumTextBox.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
+
 
                     DateTime selectedDate;
                     DateTime.TryParse(grantToEdit.ReceiptDate[i], out selectedDate);
@@ -211,7 +219,7 @@ namespace ResearchProgram
 
                     horizontalStackPanel.Children.Add(depositorComboBox);
                     horizontalStackPanel.Children.Add(sumTextBox);
-                    horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0) });
+                    horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0), IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked });
                     horizontalStackPanel.Children.Add(sumTextBoxNoNDS);
                     horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 5, 0) });
                     horizontalStackPanel.Children.Add(dateComboBox);
@@ -325,7 +333,7 @@ namespace ResearchProgram
         //Функция для ввода в текст бокс только чисел с одним разделителем
         private void TextBoxNumbersPreviewInput(object sender, TextCompositionEventArgs e)
         {
-            e.Handled = !((Char.IsDigit(e.Text, 0) || ((e.Text == System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0].ToString()) && (DS_Count(((TextBox)sender).Text) < 1))));
+            e.Handled = !(Char.IsDigit(e.Text, 0) || ((e.Text == System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0].ToString()) && (DS_Count(((TextBox)sender).Text) < 1)));
         }
 
         // функция подсчета разделителя
@@ -443,7 +451,8 @@ namespace ResearchProgram
             {
                 Margin = new Thickness(5, 0, 5, 10),
                 Width = 110,
-                Padding = new Thickness(0, 2, 0, 2)
+                Padding = new Thickness(0, 2, 0, 2),
+                IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked,
             };
 
             sumTextBoxNoNDS = new TextBox()
@@ -453,9 +462,11 @@ namespace ResearchProgram
                 Padding = new Thickness(0, 2, 0, 2)
             };
             sumTextBox.PreviewTextInput += TextBoxNumbersPreviewInput;
+            sumTextBox.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
             sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler;
 
             sumTextBoxNoNDS.PreviewTextInput += TextBoxNumbersPreviewInput;
+            sumTextBoxNoNDS.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
 
             DatePicker datePicker = new DatePicker()
             {
@@ -465,7 +476,7 @@ namespace ResearchProgram
 
             horizontalStackPanel.Children.Add(depositorComboBox);
             horizontalStackPanel.Children.Add(sumTextBox);
-            horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0) });
+            horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0), IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked });
             horizontalStackPanel.Children.Add(sumTextBoxNoNDS);
             horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 5, 0) });
             horizontalStackPanel.Children.Add(datePicker);
@@ -677,19 +688,11 @@ namespace ResearchProgram
             if (priceTextBox.Text.ToString() != "")
             {
                 newGrant.Price = Parser.ConvertToRightFloat(priceTextBox.Text);
-                newGrant.PriceNoNDS = Parser.ConvertToRightFloat(priceNoNDSTextBox.Text);
             }
-            else if (depositsVerticalListView.Items != null)
-            {
-                TextBox partSum;
-                float price = 0;
-                foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
-                {
-                    partSum = (TextBox)sp.Children[1];
-                    price += Parser.ConvertToRightFloat(partSum.Text);
-                }
-                newGrant.Price = price;
 
+            if (priceNoNDSTextBox.Text.ToString() != "")
+            {
+                newGrant.PriceNoNDS = Parser.ConvertToRightFloat(priceNoNDSTextBox.Text);
             }
 
             if (depositsVerticalListView.Items != null)
@@ -701,24 +704,64 @@ namespace ResearchProgram
 
                 foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
                 {
+                    Console.WriteLine("111");
                     cmb = (ComboBox)sp.Children[0];
                     partSum = (TextBox)sp.Children[1];
                     partSumNoNDS = (TextBox)sp.Children[3];
                     datePicker = (DatePicker)sp.Children[5];
-
+                    partSum.Text.Replace(" ", "");
+                    partSumNoNDS.Text.Replace(" ", "");
                     DateTime selectedDate;
                     DateTime.TryParse(datePicker.SelectedDate.ToString(), out selectedDate);
 
-                    if (cmb.SelectedItem != null && partSum.Text.ToString() != "" && partSumNoNDS.Text.ToString() != "")
+                    if (cmb.SelectedItem == null)
                     {
-                        newGrant.Depositor.Add(new Depositor()
+                        isAllOkey = false;
+                        incorrectDataString += "Не указаны источники финансирования.\n";
+                    }
+
+                    else
+                    if ((bool)GrantWithoutNDSCheckBox.IsChecked)
+                    {
+                        //БЕЗ НДС
+                        if(partSumNoNDS.Text.ToString() != "")
                         {
-                            Id = ((Depositor)cmb.SelectedItem).Id,
-                            Title = cmb.SelectedItem.ToString(),
-                        });
-                        newGrant.DepositorSum.Add(Parser.ConvertToRightFloat(partSum.Text));
-                        newGrant.DepositorSumNoNDS.Add(Parser.ConvertToRightFloat(partSumNoNDS.Text));
-                        newGrant.ReceiptDate.Add(selectedDate.ToShortDateString());
+                            //ПОЛЯ ЗАПОЛНЕНЫ ПРАВИЛЬНО
+                            newGrant.Depositor.Add(new Depositor()
+                            {
+                                Id = ((Depositor)cmb.SelectedItem).Id,
+                                Title = cmb.SelectedItem.ToString(),
+                            });
+                            newGrant.DepositorSum.Add(0);
+                            newGrant.DepositorSumNoNDS.Add(Parser.ConvertToRightFloat(partSumNoNDS.Text));
+                            newGrant.ReceiptDate.Add(selectedDate.ToShortDateString());
+                        }
+                        else
+                        {
+                            isAllOkey = false;
+                            incorrectDataString += "Не указаны суммы финансирования.\n";
+                        }
+                    }
+                    else
+                    {
+                        // С НДС
+                        if (partSum.Text.ToString() != "" && partSumNoNDS.Text.ToString() != "")
+                        {
+                            //ПОЛЯ ЗАПОЛНЕНЫ ПРАВИЛЬНО
+                            newGrant.Depositor.Add(new Depositor()
+                            {
+                                Id = ((Depositor)cmb.SelectedItem).Id,
+                                Title = cmb.SelectedItem.ToString(),
+                            });
+                            newGrant.DepositorSum.Add(Parser.ConvertToRightFloat(partSum.Text));
+                            newGrant.DepositorSumNoNDS.Add(Parser.ConvertToRightFloat(partSumNoNDS.Text));
+                            newGrant.ReceiptDate.Add(selectedDate.ToShortDateString());
+                        }
+                        else
+                        {
+                            isAllOkey = false;
+                            incorrectDataString += "Не указаны суммы финансирования.\n";
+                        }
                     }
                 }
             }
@@ -874,6 +917,8 @@ namespace ResearchProgram
                 newGrant.NOC = "";
             }
 
+            newGrant.isWIthNDS = !(bool)GrantWithoutNDSCheckBox.IsChecked;
+
             // Если данные введены корректно
             if (isAllOkey)
             {
@@ -890,6 +935,7 @@ namespace ResearchProgram
                     CRUDDataBase.UpdateStartDate(newGrant);
                     CRUDDataBase.UpdateEndDate(newGrant);
                     CRUDDataBase.UpdatePrice(newGrant);
+                    CRUDDataBase.UpdatePriceNoNDS(newGrant);
                     CRUDDataBase.UpdateDeposits(newGrant);
                     CRUDDataBase.UpdateLeadNiokr(newGrant);
                     CRUDDataBase.UpdateExecutors(newGrant);
@@ -903,6 +949,7 @@ namespace ResearchProgram
                     CRUDDataBase.UpdateScienceTypes(newGrant);
                     CRUDDataBase.UpdateNIR(newGrant);
                     CRUDDataBase.UpdateNOC(newGrant);
+                    CRUDDataBase.UpdateIsWithNDS(newGrant);
 
                     // Закрываем соединение с БД
                     CRUDDataBase.CloseConnection();
@@ -956,5 +1003,29 @@ namespace ResearchProgram
             NOCChecker = pressed.Content.ToString();
         }
 
+        private void GrantWithoutNDSCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            priceTextBox.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
+            PriceLabel.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
+            PriceRubLabel.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
+            SummLabel.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
+            if ((bool)GrantWithoutNDSCheckBox.IsChecked)
+                priceTextBox.Text = "";
+            foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
+            {
+                sp.Children[1].IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
+                if ((bool)GrantWithoutNDSCheckBox.IsChecked)
+                    ((TextBox)sp.Children[1]).Text = "";
+                sp.Children[2].IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
+            }
+        }
+
+        private void priceNoNDSTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+            {
+                e.Handled = true;
+            }
+        }
     }
 }
