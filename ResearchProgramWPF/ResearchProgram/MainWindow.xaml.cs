@@ -434,7 +434,7 @@ namespace ResearchProgram
                     if (depositDict.ContainsKey(depositString[i]))
                         depositDict[depositString[i]] += Convert.ToDouble(depositSummString[i]);
                     else
-                        if(depositString[i] != String.Empty && depositSummString[i] != String.Empty)
+                        if(depositString[i] != String.Empty && depositSummString[i] != String.Empty && depositSummString[i] != "БЕЗ НДС")
                         {
                             //если такого средства в словаре еще нет, то добавим
                             depositDict.Add(depositString[i], Convert.ToDouble(depositSummString[i]));
