@@ -9,6 +9,7 @@
 
     <Window.Resources>
         <local:NOCConverter x:Key="NocConverter" />
+        <local:SumConverter x:Key="SumConverter"/>
 
         <Style TargetType="GroupBox">
             <Setter Property="BorderBrush" Value="LightBlue"/>
@@ -30,7 +31,6 @@
         <Style x:Key="NormalLabel">
             <Setter Property="Label.FontWeight" Value="Normal"/>
             <Setter Property="Label.FontSize" Value="12"/>
-            <Setter Property="Label.Margin" Value="10 0 0 0"/>
         </Style>
     </Window.Resources>
 
@@ -83,6 +83,7 @@
                             <Label Content="{Binding NOC, Converter={StaticResource NocConverter}}"
                                    Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
+                        
                     </StackPanel>
                 </GroupBox>
                 
@@ -144,9 +145,15 @@
 
                 <GroupBox Header="Источник финансирования">
                     <StackPanel>
-                        <Label Content="Стоимость договора без НДС:"
-                               Style="{StaticResource BoldLabel}"/>
                         <StackPanel Orientation="Horizontal">
+                            <Label Content="Наличие НДС:"
+                                   Style="{StaticResource BoldLabel}"/>
+                            <Label Content="{Binding isWIthNDS, Converter={StaticResource NocConverter}}"
+                                   Style="{StaticResource NormalLabel}"/>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal">
+                            <Label Content="Стоимость договора без НДС:"
+                               Style="{StaticResource BoldLabel}"/>
                             <Label Content="{Binding PriceNoNDS}"
                                    Style="{StaticResource NormalLabel}"/>
                             <Label Content="руб."
@@ -180,8 +187,25 @@
                                     </ItemsControl.ItemsPanel>
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Label Content="{Binding sum}"
-                                                   Style="{StaticResource NormalLabel}"/>
+                                            <Label Content="{Binding Sum, Converter={StaticResource SumConverter}}"
+                                                   Style="{StaticResource NormalLabel}"
+                                                   Margin="40 0 0 0"/>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+
+                                <ItemsControl Name="RecieptDatesControl" 
+                                              Grid.Column="0">
+                                    <ItemsControl.ItemsPanel >
+                                        <ItemsPanelTemplate>
+                                            <StackPanel Orientation="Vertical"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Date}"
+                                                   Style="{StaticResource NormalLabel}"
+                                                   Margin="40 0 0 0"/>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                 </ItemsControl>

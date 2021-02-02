@@ -125,6 +125,7 @@
     </ApplicationDefinition>
     <Compile Include="Classes\OKVED.cs" />
     <Compile Include="Converters\NOCConverter.cs" />
+    <Compile Include="Converters\SumConverter.cs" />
     <Compile Include="Forms\CreateCustomerWindow.xaml.cs">
       <DependentUpon>CreateCustomerWindow.xaml</DependentUpon>
     </Compile>
