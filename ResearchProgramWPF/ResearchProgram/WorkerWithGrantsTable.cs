@@ -30,12 +30,15 @@ namespace ResearchProgram
                 ColumnName = header,
                 Caption = header
             };
-            if (column.ColumnName == "№")
-                column.DataType = System.Type.GetType("System.Int32");
-            //if (column.ColumnName == "Общая сумма договора")
-            //{
-            //    column.DataType = System.Type.GetType("System.Double");
-            //}
+            switch (column.ColumnName)
+            {
+                case "№":
+                    column.DataType = Type.GetType("System.Int32");
+                    break;
+                case "Стоимость договора":
+                    column.DataType = Type.GetType("System.Double");
+                    break;
+            }
 
 
             grantsDataTable.Columns.Add(column);
@@ -88,16 +91,13 @@ namespace ResearchProgram
                 if (GrantsFilters.CheckReceiptDate(grant.ReceiptDate[i]))
                 {
                     depositors += grant.Depositor[i].Title + "\n";
-                    if (Settings.Default.NDSKey)
+                    if (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey)
                     {
-                        if (!grant.isWIthNDS)
-                            depositsSum += "БЕЗ НДС\n";
-                        else
-                            depositsSum += grant.DepositorSum[i] + "\n";
+                            depositsSum += grant.DepositorSumNoNDS[i] + "\n";
                     }
                     else
                     {
-                        depositsSum += grant.DepositorSumNoNDS[i] + "\n";
+                        depositsSum += grant.DepositorSum[i] + "\n";
                     }
                 }
             }
@@ -117,7 +117,7 @@ namespace ResearchProgram
                 row["Заказчик"]                 = string.Join("\n", grant.Customer);
                 row["Дата начала"]              = grant.StartDate == new DateTime(1, 1, 1) ? "": grant.StartDate.ToString("dd.MM.yyyy");
                 row["Дата завершения"]          = grant.EndDate == new DateTime(1, 1, 1) ? "" : grant.EndDate.ToString("dd.MM.yyyy");
-                row["Стоимость договора"]       = (!grant.isWIthNDS && Settings.Default.NDSKey) ? "БЕЗ НДС" :  grant.PriceNoNDS.ToString();
+                row["Стоимость договора"]       = (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey) ? grant.PriceNoNDS.ToString() : grant.Price.ToString();
                 row["Источник финансирования"]  = depositors;
                 row["Поступления"]              = depositsSum;
                 row["Руководитель НИОКР"]       = grant.LeadNIOKR.shortName();

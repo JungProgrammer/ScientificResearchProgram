@@ -8,7 +8,9 @@
         Title="Гранты НИЧ"
         Height="900"
         Width="1300"
-        x:Name="mainWindow" Closing="mainWindow_Closing">
+        x:Name="mainWindow" 
+        Closing="mainWindow_Closing"
+        WindowState="Maximized">
     <Window.Resources>
         <local:NDSConverter x:Key="NDSConverter" />
         <local:DepositsConverter x:Key="DepositsConverter"/>
