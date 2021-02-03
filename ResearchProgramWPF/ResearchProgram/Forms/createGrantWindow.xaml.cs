@@ -31,13 +31,6 @@ namespace ResearchProgram
             }
         }
 
-        public string selectedNameNIOKR;
-        public string SelectedNameNIOKR
-        {
-            get { return selectedNameNIOKR; }
-            set { selectedNameNIOKR = value; Console.WriteLine((string)value); }
-        }
-
         //Списки данных из БД
         public ObservableCollection<string> NIOKRList { get; set; }
         public List<Person> PersonsList { get; set; }
@@ -81,12 +74,6 @@ namespace ResearchProgram
 
         public CreateGrantWindow(DataTable grantsDataTable, Grant grantToEdit = null)
         {
-            NIOKRList = new ObservableCollection<string>
-            {
-                "19",
-                "20"
-            };
-
             InitializeComponent();
 
 
@@ -126,15 +113,7 @@ namespace ResearchProgram
                 createGrantButton.Content = "Редактировать";
                 OKVEDTextBox.Text = grantToEdit.OKVED;
                 grantNumberTextBox.Text = grantToEdit.grantNumber;
-                switch (grantToEdit.NameNIOKR)
-                {
-                    case "19":
-                        NIOKRComboBox.SelectedIndex = 0;
-                        break;
-                    case "20":
-                        NIOKRComboBox.SelectedIndex = 1;
-                        break;
-                }
+                NIOKRTextBox.Text = grantToEdit.NameNIOKR;
 
                 for (int i = 0; i < grantToEdit.Customer.Count; i++)
                 {
@@ -645,9 +624,9 @@ namespace ResearchProgram
                 isAllOkey = false;
             }
 
-            if (NIOKRComboBox.SelectedItem != null)
+            if (NIOKRTextBox.Text.ToString() != "")
             {
-                newGrant.NameNIOKR = NIOKRComboBox.SelectedItem.ToString();
+                newGrant.NameNIOKR = NIOKRTextBox.Text.ToString();
             }
             else
             {
@@ -1027,5 +1006,6 @@ namespace ResearchProgram
                 e.Handled = true;
             }
         }
+        
     }
 }

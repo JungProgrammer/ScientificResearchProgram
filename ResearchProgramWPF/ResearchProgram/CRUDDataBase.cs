@@ -926,7 +926,7 @@ namespace ResearchProgram
             reader.Close();
 
 
-
+            
             // Получение остальных столбцов
             cmd = new NpgsqlCommand("SELECT id, fio, birthdate, sex, placeofwork, category, degree, rank FROM persons", conn);
             reader = cmd.ExecuteReader();
