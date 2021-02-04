@@ -19,9 +19,13 @@ namespace ResearchProgram
         public static string loginFromDB = "postgres";
         public static string passwordFromDB = "XeKhM9bQnRYah";
 
-        //ИСПОЛЬЗОВАНИЕ ТЕСТОВОЙ ВЕТКИ БАЗЫ ДАННЫХ
-        //УСТАНОВИТЬ FALSE ПРИ ПЕРЕДАЧЕ НА ИСПОЛЬЗОВАНИЕ !!!!!!!!!!!!!!!!!!!!!!!
+        // К какой базе подключаться при режиме сборки
+#if DEBUG
         public static bool DEBUG = true;
+#else
+        public static bool DEBUG = false;
+#endif
+
 
         private static NpgsqlConnection conn;
 
