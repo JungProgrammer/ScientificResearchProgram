@@ -75,7 +75,7 @@ namespace ResearchProgram
             SplashScreen splash = new SplashScreen("Images\\splashscreen.png");
             splash.Show(false, true);
             InitializeComponent();
-
+            Title = "Гранты НИЧ v" + Settings.Default.ProgrammVersion;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             GrantsFilters.ResetFilters();

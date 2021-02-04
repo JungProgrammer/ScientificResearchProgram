@@ -19,6 +19,9 @@ namespace ResearchProgram
         public static string loginFromDB = "postgres";
         public static string passwordFromDB = "XeKhM9bQnRYah";
 
+        //ИСПОЛЬЗОВАНИЕ ТЕСТОВОЙ ВЕТКИ БАЗЫ ДАННЫХ
+        //УСТАНОВИТЬ FALSE ПРИ ПЕРЕДАЧЕ НА ИСПОЛЬЗОВАНИЕ !!!!!!!!!!!!!!!!!!!!!!!
+        public static bool DEBUG = true;
 
         private static NpgsqlConnection conn;
 
@@ -27,7 +30,15 @@ namespace ResearchProgram
         /// </summary>
         public static void ConnectToDataBase()
         {
-            conn = new NpgsqlConnection($"Server=212.192.88.14; Port=5432; User Id={loginFromDB}; Password={passwordFromDB}; Database=postgres");
+            string Database;
+            if (DEBUG) {
+                Database = "test_db";
+            }
+            else
+            {
+                Database = "postgres";
+            }
+            conn = new NpgsqlConnection($"Server=212.192.88.14; Port=5432; User Id={loginFromDB}; Password={passwordFromDB}; Database={Database}");
             try
             {
                 conn.Open();
