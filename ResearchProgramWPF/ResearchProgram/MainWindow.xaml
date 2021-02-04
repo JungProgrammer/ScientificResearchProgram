@@ -119,25 +119,33 @@
                                 <MenuItem Header="Показать полную информацию"
                                           Click="ShowFullInformation">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/info.jpg"/>
+                                        <Image Source="/ResearchProgram;component/Icons/info.jpg"
+                                               Width="18"
+                                               Height="18"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="Редактировать" 
                                           Click="EditGrant">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/edit.png"/>
+                                        <Image Source="/ResearchProgram;component/Icons/edit.png"
+                                               Width="15"
+                                               Height="15"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="Скрыть выделенные столбцы" 
                                           Click="HideSelectedColumns">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/hide.png"/>
+                                        <Image Source="/ResearchProgram;component/Icons/hide.png"
+                                               Width="16"
+                                               Height="16"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="Показать скрытые столбцы" 
                                           Click="ShowHiddenColumns">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/show.png"/>
+                                        <Image Source="/ResearchProgram;component/Icons/show.png"
+                                               Width="16"
+                                               Height="16"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                             </ContextMenu>

@@ -84,24 +84,61 @@ namespace ResearchProgram
         /// <param name="grant"></param>
         public static void AddRowToGrantTable(DataTable grantsDataTable, Grant grant)
         {
-            string depositors = String.Empty;
-            string depositsSum = String.Empty;
+            // Словарь для отображения средств
+            Dictionary<string, double> depositDict = new Dictionary<string, double>();
             for (int i = 0; i < grant.Depositor.Count; i++)
             {
+                string depositorStr;
+                float depositorSum;
+                float depositorSumNoNDS;
                 if (GrantsFilters.CheckReceiptDate(grant.ReceiptDate[i]))
                 {
-                    depositors += grant.Depositor[i].Title + "\n";
-                    if (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey)
-                    {
-                            depositsSum += grant.DepositorSumNoNDS[i] + "\n";
+                    depositorStr = grant.Depositor[i].Title;
+                    depositorSum = grant.DepositorSum[i];
+                    depositorSumNoNDS = grant.DepositorSumNoNDS[i];
+
+                    // Если в словаре такое средство уже есть, то суммируем
+                    if (depositDict.ContainsKey(depositorStr))
+                    { 
+                        if(!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey)
+                        {
+                            depositDict[depositorStr] += Convert.ToDouble(depositorSumNoNDS);
+                        }
+                        else
+                        {
+                            depositDict[depositorStr] += Convert.ToDouble(depositorSum);
+                        }
                     }
                     else
                     {
-                        depositsSum += grant.DepositorSum[i] + "\n";
+                        if (depositorStr != String.Empty && depositorStr != String.Empty)
+                        {
+                            if (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey)
+                            {
+                                depositDict.Add(depositorStr, Convert.ToDouble(depositorSumNoNDS));
+                            }
+                            else
+                            {
+                                depositDict.Add(depositorStr, Convert.ToDouble(depositorSum));
+                            }
+                        }
                     }
                 }
             }
 
+            // Строки для отображения
+            string depositors = String.Empty;
+            string depositsSum = String.Empty;
+
+            // Перевод словарей в строки отображения
+            foreach(string depositor in depositDict.Keys)
+            {
+                depositors += depositor + '\n';
+            }
+            foreach(float depositorSum in depositDict.Values)
+            {
+                depositsSum += depositorSum.ToString() + '\n';
+            }
 
 
             // Если договор подходит под фильтр
