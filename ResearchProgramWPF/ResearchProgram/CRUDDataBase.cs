@@ -79,7 +79,8 @@ namespace ResearchProgram
             }
             else
             {
-                Debug.WriteLine("No rows found.");
+                //Грантов нет, возвращаем пустой массив
+                return new Grant[0];
             }
 
             reader.Close();
@@ -894,7 +895,8 @@ namespace ResearchProgram
             }
             else
             {
-                Debug.WriteLine("No rows found.");
+                // Людей нет, устанавливаем массив в 0
+                persons = new Person[0];
             }
             reader.Close();
 
@@ -987,10 +989,6 @@ namespace ResearchProgram
                     };
                     customers.Add(c);
                 }
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
             }
             reader.Close();
 
