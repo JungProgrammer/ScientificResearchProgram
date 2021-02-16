@@ -21,7 +21,7 @@ namespace ResearchProgram
 
         //ИСПОЛЬЗОВАНИЕ ТЕСТОВОЙ ВЕТКИ БАЗЫ ДАННЫХ
         //УСТАНОВИТЬ FALSE ПРИ ПЕРЕДАЧЕ НА ИСПОЛЬЗОВАНИЕ !!!!!!!!!!!!!!!!!!!!!!!
-        public static bool DEBUG = true;
+        public static bool DEBUG = false;
 
         private static NpgsqlConnection conn;
 
