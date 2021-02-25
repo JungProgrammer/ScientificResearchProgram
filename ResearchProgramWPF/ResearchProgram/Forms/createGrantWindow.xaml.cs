@@ -755,8 +755,7 @@ namespace ResearchProgram
             }
             else
             {
-                incorrectDataString += "Необходимо указать руководителя НИОКР\n";
-                isAllOkey = false;
+                newGrant.LeadNIOKR = null;
             }
 
             if (executorsVerticalListView.Items != null)

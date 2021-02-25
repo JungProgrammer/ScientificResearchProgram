@@ -19,9 +19,13 @@ namespace ResearchProgram
         public static string loginFromDB = "postgres";
         public static string passwordFromDB = "XeKhM9bQnRYah";
 
-        //ИСПОЛЬЗОВАНИЕ ТЕСТОВОЙ ВЕТКИ БАЗЫ ДАННЫХ
-        //УСТАНОВИТЬ FALSE ПРИ ПЕРЕДАЧЕ НА ИСПОЛЬЗОВАНИЕ !!!!!!!!!!!!!!!!!!!!!!!
+        // К какой базе подключаться при режиме сборки
+        #if DEBUG
+        public static bool DEBUG = true;
+        #else
         public static bool DEBUG = false;
+        #endif
+
 
         private static NpgsqlConnection conn;
 
@@ -31,7 +35,8 @@ namespace ResearchProgram
         public static void ConnectToDataBase()
         {
             string Database;
-            if (DEBUG) {
+            if (DEBUG)
+            {
                 Database = "test_db";
             }
             else
@@ -939,7 +944,7 @@ namespace ResearchProgram
             reader.Close();
 
 
-            
+
             // Получение остальных столбцов
             cmd = new NpgsqlCommand("SELECT id, fio, birthdate, sex, placeofwork, category, degree, rank FROM persons", conn);
             reader = cmd.ExecuteReader();
@@ -1271,9 +1276,9 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    for(int i = 0;i<personsList.Count; i++)
+                    for (int i = 0; i < personsList.Count; i++)
                     {
-                        if(reader[0].ToString() == personsList[i].Id.ToString())
+                        if (reader[0].ToString() == personsList[i].Id.ToString())
                         {
                             personsList[i].Jobs.Add(new Job()
                             {
@@ -1949,7 +1954,8 @@ namespace ResearchProgram
             NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM salaryrates WHERE personid = :id", conn);
             cmd.Parameters.Add(new NpgsqlParameter("id", fixedPerson.Id));
             cmd.ExecuteNonQuery();
-            for (int i = 0; i < fixedPerson.Jobs.Count; i++) {
+            for (int i = 0; i < fixedPerson.Jobs.Count; i++)
+            {
                 cmd = new NpgsqlCommand("INSERT INTO salaryrates(personid, jobid, salaryrate) VALUES(:personid, :jobid, :salaryrate)", conn);
                 Console.WriteLine("id " + fixedPerson.Id.ToString());
                 cmd.Parameters.Add(new NpgsqlParameter("personid", fixedPerson.Id));
@@ -1962,7 +1968,7 @@ namespace ResearchProgram
         public static void UpdateCustomer(Customer fixedCustomer)
         {
             ConnectToDataBase();
-            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE customers SET title = :title WHERE customerid = :id",conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE customers SET title = :title WHERE customerid = :id", conn);
             cmd.Parameters.Add(new NpgsqlParameter("id", fixedCustomer.Id));
             cmd.Parameters.Add(new NpgsqlParameter("title", fixedCustomer.Title));
             cmd.ExecuteNonQuery();
@@ -2019,7 +2025,11 @@ namespace ResearchProgram
             cmd.Parameters.Add(new NpgsqlParameter("nameniokr", grant.NameNIOKR));
             cmd.Parameters.Add(new NpgsqlParameter("startdate", grant.StartDate));
             cmd.Parameters.Add(new NpgsqlParameter("enddate", grant.EndDate));
-            cmd.Parameters.Add(new NpgsqlParameter("leadniokrid", grant.LeadNIOKR.Id));
+            if (grant.LeadNIOKR != null)
+                cmd.Parameters.Add(new NpgsqlParameter("leadniokrid", grant.LeadNIOKR.Id));
+            else
+                cmd.Parameters.Add(new NpgsqlParameter("leadniokrid", DBNull.Value));
+
             cmd.Parameters.Add(new NpgsqlParameter("institutionid", grant.Institution != null ? grant.Institution.Id : 0));
             cmd.Parameters.Add(new NpgsqlParameter("unitid", grant.Unit != null ? grant.Unit.Id : 0));
             cmd.Parameters.Add(new NpgsqlParameter("kafedraid", grant.Kafedra != null ? grant.Kafedra.Id : 0));
