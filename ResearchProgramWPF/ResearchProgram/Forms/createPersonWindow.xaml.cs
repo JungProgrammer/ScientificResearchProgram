@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Data;
 using DotNetKit.Windows.Controls;
-
+using ResearchProgram.Classes;
 
 namespace ResearchProgram
 {
@@ -33,6 +33,11 @@ namespace ResearchProgram
         private int _editedPersonId;
         private string _personFIO;
 
+        public List<PlaceOfWork> PlaceOfWorkList { get; set; }
+        public List<WorkCategories> WorkCategoriesList { get; set; }
+        public List<WorkDegree> WorkDegreesList { get; set; }
+        public List<WorkRank> WorkRanksList { get; set; }
+
         /// <summary>
         /// Выбранный пол человека
         /// </summary>
@@ -46,6 +51,10 @@ namespace ResearchProgram
 
             CRUDDataBase.ConnectToDataBase();
             jobsList = CRUDDataBase.GetJobs();
+            PlaceOfWorkList = CRUDDataBase.GetPlacesOfWorks();
+            WorkCategoriesList = CRUDDataBase.GetWorkCategories();
+            WorkDegreesList = CRUDDataBase.GetWorkDegrees();
+            WorkRanksList = CRUDDataBase.GetWorkRanks();
             CRUDDataBase.CloseConnection();
 
             if (personToEdit != null)
@@ -57,10 +66,10 @@ namespace ResearchProgram
                 Title = "Редактирование человека";
                 createPersonButton.Content = "Редактировать человека";
                 FIOTextBox.Text = personToEdit.FIO;
-                placeOfWorkTextBox.Text = personToEdit.PlaceOfWork;
-                degreeTextBox.Text = personToEdit.Degree;
-                categoryTextBox.Text = personToEdit.Category;
-                rankTextBox.Text = personToEdit.Rank;
+                //placeOfWorkTextBox.Text = personToEdit.PlaceOfWork;
+                //degreeTextBox.Text = personToEdit.Degree;
+                //categoryTextBox.Text = personToEdit.Category;
+                //rankTextBox.Text = personToEdit.Rank;
                 BirthDateDatePicker.SelectedDate = personToEdit.BitrhDate;
                 if (personToEdit.Sex)
                     sexMan.IsChecked = true;
@@ -105,7 +114,7 @@ namespace ResearchProgram
                     horizontalStackPanel.Children.Add(jobComboBox);
                     horizontalStackPanel.Children.Add(salaryRateTextBox);
                     horizontalStackPanel.Children.Add(salaryTextBlock);
-                    jobsVerticalListView.Items.Add(horizontalStackPanel);
+                    //jobsVerticalListView.Items.Add(horizontalStackPanel);
                 }
             }
 
@@ -183,7 +192,7 @@ namespace ResearchProgram
             horizontalStackPanel.Children.Add(salaryRateTextBox);
             horizontalStackPanel.Children.Add(salaryTextBlock);
 
-            jobsVerticalListView.Items.Add(horizontalStackPanel);
+            //jobsVerticalListView.Items.Add(horizontalStackPanel);
         }
 
         /// <summary>
@@ -193,20 +202,19 @@ namespace ResearchProgram
         /// <param name="e"></param>
         private void jobsDeleteButton_Click(object sender, RoutedEventArgs e)
         {
-            int countSelectedElement = jobsVerticalListView.SelectedItems.Count;
-            if (countSelectedElement > 0)
-            {
-                for (int i = 0; i < countSelectedElement; i++)
-                {
-                    jobsVerticalListView.Items.Remove(jobsVerticalListView.SelectedItems[0]);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Выделите нужный для удаления элемент");
-            }
+            //    int countSelectedElement = jobsVerticalListView.SelectedItems.Count;
+            //    if (countSelectedElement > 0)
+            //    {
+            //        for (int i = 0; i < countSelectedElement; i++)
+            //        {
+            //            jobsVerticalListView.Items.Remove(jobsVerticalListView.SelectedItems[0]);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        MessageBox.Show("Выделите нужный для удаления элемент");
+            //    }
         }
-
         private void ChangeJobComboBox(object sender, RoutedEventArgs e)
         {
 
@@ -243,48 +251,48 @@ namespace ResearchProgram
 
             newPerson.Sex = _sexSelected;
 
-            if (placeOfWorkTextBox.Text != null)
-            {
-                newPerson.PlaceOfWork = placeOfWorkTextBox.Text;
-            }
+            //if (placeOfWorkTextBox.Text != null)
+            //{
+            //    newPerson.PlaceOfWork = placeOfWorkTextBox.Text;
+            //}
 
-            if (categoryTextBox.Text != null)
-            {
-                newPerson.Category = categoryTextBox.Text;
-            }
+            //if (categoryTextBox.Text != null)
+            //{
+            //    newPerson.Category = categoryTextBox.Text;
+            //}
 
-            if (degreeTextBox.Text != null)
-            {
-                newPerson.Degree = degreeTextBox.Text;
-            }
+            //if (degreeTextBox.Text != null)
+            //{
+            //    newPerson.Degree = degreeTextBox.Text;
+            //}
 
-            if (rankTextBox.Text != null)
-            {
-                newPerson.Rank = rankTextBox.Text;
-            }
+            //if (rankTextBox.Text != null)
+            //{
+            //    newPerson.Rank = rankTextBox.Text;
+            //}
 
-            if (jobsVerticalListView.Items != null)
-            {
-                AutoCompleteComboBox jobCmb;
-                TextBox salaryRateTextBox;
+            //if (jobsVerticalListView.Items != null)
+            //{
+            //    AutoCompleteComboBox jobCmb;
+            //    TextBox salaryRateTextBox;
 
-                foreach (StackPanel jobStackPanel in jobsVerticalListView.Items.OfType<StackPanel>())
-                {
-                    jobCmb = (AutoCompleteComboBox)jobStackPanel.Children[0];
-                    salaryRateTextBox = (TextBox)jobStackPanel.Children[1];
+            //    foreach (StackPanel jobStackPanel in jobsVerticalListView.Items.OfType<StackPanel>())
+            //    {
+            //        jobCmb = (AutoCompleteComboBox)jobStackPanel.Children[0];
+            //        salaryRateTextBox = (TextBox)jobStackPanel.Children[1];
 
-                    if (jobCmb.SelectedItem != null && salaryRateTextBox.Text.ToString() != "")
-                    {
-                        newPerson.Jobs.Add(new Job()
-                        {
-                            Id = ((Job)jobCmb.SelectedItem).Id,
-                            Title = ((Job)jobCmb.SelectedItem).Title,
-                            Salary = ((Job)jobCmb.SelectedItem).Salary,
-                            SalaryRate = Parser.ConvertToRightFloat(salaryRateTextBox.Text.ToString())
-                        });
-                    }
-                }
-            }
+            //        if (jobCmb.SelectedItem != null && salaryRateTextBox.Text.ToString() != "")
+            //        {
+            //            newPerson.Jobs.Add(new Job()
+            //            {
+            //                Id = ((Job)jobCmb.SelectedItem).Id,
+            //                Title = ((Job)jobCmb.SelectedItem).Title,
+            //                Salary = ((Job)jobCmb.SelectedItem).Salary,
+            //                SalaryRate = Parser.ConvertToRightFloat(salaryRateTextBox.Text.ToString())
+            //            });
+            //        }
+            //    }
+            //}
 
             if (isAllOkey)
             {
@@ -333,6 +341,101 @@ namespace ResearchProgram
                     Close();
                     break;
             }
+        }
+
+        private void workPlaceAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            Grid grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.ColumnDefinitions.Add(new ColumnDefinition());
+            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(30) }) ;
+            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(25) });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(30) });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(25) });
+
+            Label workPlaceLabel = new Label
+            {
+                Content = "Место работы"
+            };
+            grid.Children.Add(workPlaceLabel);
+            Grid.SetRow(workPlaceLabel, 0);
+            Grid.SetColumn(workPlaceLabel, 0);
+
+            ComboBox workPlaceComboBox = new ComboBox
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                Padding = new Thickness(5, 5, 5, 5),
+                ItemsSource = PlaceOfWorkList,
+            };
+            grid.Children.Add(workPlaceComboBox);
+            Grid.SetRow(workPlaceComboBox, 1);
+            Grid.SetColumn(workPlaceComboBox, 0);
+
+            Label CategoryLabel = new Label
+            {
+                Content = "Категория"
+            };
+            grid.Children.Add(CategoryLabel);
+            Grid.SetRow(CategoryLabel, 0);
+            Grid.SetColumn(CategoryLabel, 1);
+
+            ComboBox categoryComboBox = new ComboBox
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                Padding = new Thickness(5, 5, 5, 5),
+                ItemsSource = WorkCategoriesList,
+            };
+            grid.Children.Add(categoryComboBox);
+            Grid.SetRow(categoryComboBox, 1);
+            Grid.SetColumn(categoryComboBox, 1);
+
+            Label DegreeLabel = new Label
+            {
+                Content = "Степень"
+            };
+            grid.Children.Add(DegreeLabel);
+            Grid.SetRow(DegreeLabel, 2);
+            Grid.SetColumn(DegreeLabel, 0);
+
+            ComboBox degreeComboBox = new ComboBox
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                Padding = new Thickness(5, 5, 5, 5),
+                ItemsSource = WorkDegreesList,
+            };
+            grid.Children.Add(degreeComboBox);
+            Grid.SetRow(degreeComboBox, 3);
+            Grid.SetColumn(degreeComboBox, 0);
+
+            Label rankLabel = new Label
+            {
+                Content = "Звание"
+            };
+            grid.Children.Add(rankLabel);
+            Grid.SetRow(rankLabel, 2);
+            Grid.SetColumn(rankLabel, 1);
+
+            ComboBox rankComboBox = new ComboBox
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                Padding = new Thickness(5, 5, 5, 5),
+                ItemsSource = WorkRanksList,
+            };
+            grid.Children.Add(rankComboBox);
+            Grid.SetRow(rankComboBox, 3);
+            Grid.SetColumn(rankComboBox, 1);
+
+
+
+            workPlaceListView.Items.Add(grid);
+
+        }
+
+        private void workPlaceDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
