@@ -1178,6 +1178,7 @@ namespace ResearchProgram
         {
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, field_title, field_id FROM fieldslist ORDER BY id", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
+            WorkerWithTablesOnMainForm.AddHeadersToPersonTable(dataTable, "id");
 
             if (reader.HasRows)
             {
@@ -2307,7 +2308,7 @@ namespace ResearchProgram
 
         }
 
-        public static Grant GetGrantByGrantNumber(string grantNumber)
+        public static Grant GetGrantById(string grantId)
         {
             ConnectToDataBase();
             Grant[] grants = GetAllGrants();
@@ -2315,7 +2316,7 @@ namespace ResearchProgram
             Grant grant = new Grant();
             for (int i = 0; i < grants.Length; i++)
             {
-                if (grants[i].grantNumber == grantNumber)
+                if (grants[i].Id == Convert.ToInt32(grantId))
                 {
                     grant = grants[i];
                     break;

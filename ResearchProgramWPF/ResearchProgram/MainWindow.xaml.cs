@@ -75,6 +75,7 @@ namespace ResearchProgram
             SplashScreen splash = new SplashScreen("Images\\splashscreen.png");
             splash.Show(false, true);
             InitializeComponent();
+
             Title = "Гранты НИЧ v" + Settings.Default.ProgrammVersion;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
@@ -128,6 +129,7 @@ namespace ResearchProgram
             CRUDDataBase.CreateGrantsHeaders(GrantsDataTable);
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
             CRUDDataBase.CloseConnection();
+
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -224,7 +226,6 @@ namespace ResearchProgram
         /// <param name="e"></param>
         private void HideSelectedColumns(object sender, RoutedEventArgs e)
         {
-            //selectedCells = GrantsTable.SelectedCells;
             if(GrantsTable.SelectedCells != null)
             {
                 int columnNumber;
@@ -285,16 +286,16 @@ namespace ResearchProgram
         }
         private void EditGrant(object sender, RoutedEventArgs e)
         {
-            string grantNumber = "";
+            string grantId = "";
             try
             {
-                grantNumber = SelectedGrantRow.Row.Field<String>("Номер договора");
+                grantId = SelectedGrantRow.Row.Field<String>("id");
             }
             catch
             { return; }
-            Console.WriteLine(grantNumber);
+            Console.WriteLine(grantId);
 
-            Grant grant = CRUDDataBase.GetGrantByGrantNumber(grantNumber);
+            Grant grant = CRUDDataBase.GetGrantById(grantId);
 
             CreateGrantWindow newGrantWindow = new CreateGrantWindow(GrantsDataTable, grant)
             {
@@ -482,8 +483,8 @@ namespace ResearchProgram
 
         private void ShowFullInformation(object sender, RoutedEventArgs e)
         {
-            string grantNumber = SelectedGrantRow.Row.Field<String>("Номер договора");
-            Grant grant = CRUDDataBase.GetGrantByGrantNumber(grantNumber);
+            string grantId = SelectedGrantRow.Row.Field<String>("id");
+            Grant grant = CRUDDataBase.GetGrantById(grantId);
 
             FullGrantInfo fullGrantInfonewGrantWindow = new FullGrantInfo(grant)
             {
@@ -494,6 +495,22 @@ namespace ResearchProgram
             fullGrantInfonewGrantWindow.Closing += (senders, args) => { fullGrantInfonewGrantWindow.Owner = null; };
 
             fullGrantInfonewGrantWindow.Show();
+        }
+
+        private void PeopleTable_GotFocus(object sender, RoutedEventArgs e)
+        {
+            PeopleTable.Columns[0].Visibility = Visibility.Collapsed;
+        }
+
+        private void CustomerTable_GotFocus(object sender, RoutedEventArgs e)
+        {
+            CustomerTable.Columns[0].Visibility = Visibility.Collapsed;
+        }
+
+        private void GrantsTable_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            GrantsTable.Columns[0].Visibility = Visibility.Collapsed;
+
         }
     }
 }

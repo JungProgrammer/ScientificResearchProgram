@@ -98,8 +98,6 @@
                     </Button>
 
 
-
-
                     <DataGrid x:Name="GrantsTable"
                               AutoGenerateColumns="True"
                               ItemsSource="{Binding GrantsDataTable}"
@@ -108,7 +106,8 @@
                               CanUserAddRows="False"
                               CanUserDeleteRows="False"
                               IsReadOnly="True"
-                              CurrentItem="{Binding Path=SelectedGrantRow, Mode=TwoWay}">
+                              CurrentItem="{Binding Path=SelectedGrantRow, Mode=TwoWay}" 
+                              LoadingRow="GrantsTable_LoadingRow">
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">
                                 <Setter Property="Background" Value="{Binding Path=Средства, Converter={StaticResource DepositsConverter}}"/>
@@ -183,18 +182,20 @@
                         <RowDefinition Height="25"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                        <DataGrid x:Name="PeopleTable"
+                    
+                    <DataGrid x:Name="PeopleTable"
                                   Grid.Row="1"
                               AutoGenerateColumns="True"
                               ItemsSource="{Binding PeopleDataTable}"
+                              SelectionUnit="CellOrRowHeader"
                               CanUserAddRows="False"
                               CanUserDeleteRows="False"
                               IsReadOnly="True"
-                              CurrentItem="{Binding Path=SelectedPersonRow, Mode=TwoWay}">
+                              CurrentItem="{Binding Path=SelectedPersonRow, Mode=TwoWay}" GotFocus="PeopleTable_GotFocus">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Редактировать" 
-                                          Click="EditPeople">
+                                              Click="EditPeople">
                                     <MenuItem.Icon>
                                         <Image Source="/ResearchProgram;component/Icons/edit.png"/>
                                     </MenuItem.Icon>
@@ -202,6 +203,7 @@
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                     </DataGrid>
+                    
                     <Button x:Name="personsUpdateButton"
                             Grid.Row="0"
                             Margin="0 0 2 2"
@@ -229,7 +231,7 @@
                               CanUserAddRows="False"
                               CanUserDeleteRows="False"
                               IsReadOnly="True"
-                              CurrentItem="{Binding Path=SelectedCustomerRow, Mode=TwoWay}">
+                              CurrentItem="{Binding Path=SelectedCustomerRow, Mode=TwoWay}" GotFocus="CustomerTable_GotFocus">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Редактировать" 

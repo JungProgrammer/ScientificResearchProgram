@@ -147,6 +147,7 @@ namespace ResearchProgram
                 if (grantsDataTable.Rows.Count == 0) countOfGrantRows = 0;
                 countOfGrantRows++;
                 DataRow row = grantsDataTable.NewRow();
+                row["id"]                       = grant.Id;
                 row["№"]                        = countOfGrantRows.ToString();
                 row["Номер договора"]           = grant.grantNumber;
                 row["ОКВЭД"]                    = grant.OKVED;
@@ -197,6 +198,7 @@ namespace ResearchProgram
             row["Оклад"]                        = string.Join("\n", Job.GetSalariesFromPerson(person.Jobs));
             row["Ставка"]                       = string.Join("\n", Job.GetSalaryRatesFromPerson(person.Jobs));
             personsDataTable.Rows.Add(row);
+
 
         }
 
