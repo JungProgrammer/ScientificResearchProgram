@@ -8,6 +8,7 @@ using Npgsql;
 using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.Windows;
+using ResearchProgram.Classes;
 
 namespace ResearchProgram
 {
@@ -21,9 +22,9 @@ namespace ResearchProgram
 
         // К какой базе подключаться при режиме сборки
         #if DEBUG
-        public static bool DEBUG = true;
+            public static bool DEBUG = true;
         #else
-        public static bool DEBUG = false;
+            public static bool DEBUG = false;
         #endif
 
 
@@ -2440,6 +2441,110 @@ namespace ResearchProgram
             cmd.Parameters.Add(new NpgsqlParameter("title", customer.Title));
             cmd.ExecuteNonQuery();
             CloseConnection();
+        }
+
+        public static List<PlaceOfWork> GetPlacesOfWorks()
+        {
+            List<PlaceOfWork> placeOfWorks = new List<PlaceOfWork>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM place_of_work ORDER BY title;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    placeOfWorks.Add(new PlaceOfWork()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+            return placeOfWorks;
+        }
+
+        public static List<WorkCategories> GetWorkCategories()
+        {
+            List<WorkCategories> workCategories = new List<WorkCategories>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM work_categories ORDER BY title;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    workCategories.Add(new WorkCategories()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+            return workCategories;
+        }
+
+        public static List<WorkDegree> GetWorkDegrees()
+        {
+            List<WorkDegree> workDegrees = new List<WorkDegree>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM work_degree ORDER BY title;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    workDegrees.Add(new WorkDegree()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+            return workDegrees;
+        }
+
+        public static List<WorkRank> GetWorkRanks()
+        {
+            List<WorkRank> workRanks = new List<WorkRank>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM work_rank ORDER BY title;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    workRanks.Add(new WorkRank()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+            return workRanks;
         }
     }
 }
