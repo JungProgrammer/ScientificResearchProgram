@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ResearchProgram.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,31 +7,34 @@ using System.Threading.Tasks;
 
 namespace ResearchProgram
 {
-    public class Person: IContainer
+    public class Person : IContainer
     {
+        public struct WorkPlace
+        {
+            public PlaceOfWork placeOfWork;
+            public WorkCategories workCategory;
+            public List<Job> jobList;
+            public int Id;
+        }
         public Person()
         {
             Id = 0;
             FIO = "";
             BitrhDate = DateTime.MinValue;
             Sex = true;
-            PlaceOfWork = "";
-            Category = "";
-            Degree = "";
-            Rank = "";
-            Jobs = new List<Job>();
+            Degree = new WorkDegree();
+            Rank = new WorkRank();
+            workPlaces = new List<WorkPlace>();
         }
 
         public int Id { get; set; }
-
         public string FIO { get; set; }
         public DateTime BitrhDate { get; set; }
         public bool Sex { get; set; }
-        public string PlaceOfWork { get; set; }
-        public string Category { get; set; }
-        public string Degree { get; set; }
-        public string Rank { get; set; }
-        public List<Job> Jobs { get; set; }
+        public WorkDegree Degree { get; set; }
+        public WorkRank Rank { get; set; }
+        public List<WorkPlace> workPlaces { get; set; }
+
 
         public string GetTitle()
         {

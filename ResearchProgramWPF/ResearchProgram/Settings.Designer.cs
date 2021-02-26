@@ -130,5 +130,17 @@ namespace ResearchProgram {
                 this["RowColor6"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.01")]
+        public string ProgrammVersion {
+            get {
+                return ((string)(this["ProgrammVersion"]));
+            }
+            set {
+                this["ProgrammVersion"] = value;
+            }
+        }
     }
 }

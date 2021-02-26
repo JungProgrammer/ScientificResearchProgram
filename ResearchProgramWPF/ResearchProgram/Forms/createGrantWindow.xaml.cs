@@ -31,13 +31,6 @@ namespace ResearchProgram
             }
         }
 
-        public string selectedNameNIOKR;
-        public string SelectedNameNIOKR
-        {
-            get { return selectedNameNIOKR; }
-            set { selectedNameNIOKR = value; Console.WriteLine((string)value); }
-        }
-
         //Списки данных из БД
         public ObservableCollection<string> NIOKRList { get; set; }
         public List<Person> PersonsList { get; set; }
@@ -81,12 +74,6 @@ namespace ResearchProgram
 
         public CreateGrantWindow(DataTable grantsDataTable, Grant grantToEdit = null)
         {
-            NIOKRList = new ObservableCollection<string>
-            {
-                "19",
-                "20"
-            };
-
             InitializeComponent();
 
 
@@ -111,6 +98,9 @@ namespace ResearchProgram
             AddLeadNIOKRAutoCompleteComboBox();
             AddResearchTypeAutoCompleteComboBox();
 
+            priceTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+            priceNoNDSTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+
             // Закрытие подключения к базе данных
             CRUDDataBase.CloseConnection();
 
@@ -126,15 +116,7 @@ namespace ResearchProgram
                 createGrantButton.Content = "Редактировать";
                 OKVEDTextBox.Text = grantToEdit.OKVED;
                 grantNumberTextBox.Text = grantToEdit.grantNumber;
-                switch (grantToEdit.NameNIOKR)
-                {
-                    case "19":
-                        NIOKRComboBox.SelectedIndex = 0;
-                        break;
-                    case "20":
-                        NIOKRComboBox.SelectedIndex = 1;
-                        break;
-                }
+                NIOKRTextBox.Text = grantToEdit.NameNIOKR;
 
                 for (int i = 0; i < grantToEdit.Customer.Count; i++)
                 {
@@ -200,10 +182,10 @@ namespace ResearchProgram
                         MinWidth = 110,
                         Text = grantToEdit.DepositorSumNoNDS[i].ToString()
                     };
-                    sumTextBoxNoNDS.PreviewTextInput += TextBoxNumbersPreviewInput;
+                    sumTextBoxNoNDS.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
                     sumTextBoxNoNDS.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
 
-                    sumTextBox.PreviewTextInput += TextBoxNumbersPreviewInput;
+                    sumTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
                     sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler;
                     sumTextBox.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
 
@@ -329,21 +311,6 @@ namespace ResearchProgram
             DataContext = this;
         }
 
-
-        //Функция для ввода в текст бокс только чисел с одним разделителем
-        private void TextBoxNumbersPreviewInput(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !(Char.IsDigit(e.Text, 0) || ((e.Text == System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0].ToString()) && (DS_Count(((TextBox)sender).Text) < 1)));
-        }
-
-        // функция подсчета разделителя
-        public int DS_Count(string s)
-        {
-            string substr = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0].ToString();
-            int count = (s.Length - s.Replace(substr, "").Length) / substr.Length;
-            return count;
-        }
-
         /// <summary>
         /// Кнопка добавления у заказчика
         /// </summary>
@@ -461,11 +428,11 @@ namespace ResearchProgram
                 Width = 110,
                 Padding = new Thickness(0, 2, 0, 2)
             };
-            sumTextBox.PreviewTextInput += TextBoxNumbersPreviewInput;
+            sumTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
             sumTextBox.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
             sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler;
 
-            sumTextBoxNoNDS.PreviewTextInput += TextBoxNumbersPreviewInput;
+            sumTextBoxNoNDS.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
             sumTextBoxNoNDS.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
 
             DatePicker datePicker = new DatePicker()
@@ -502,7 +469,7 @@ namespace ResearchProgram
             }
             else
             {
-                MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -531,7 +498,7 @@ namespace ResearchProgram
             }
             else
             {
-                MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -645,9 +612,9 @@ namespace ResearchProgram
                 isAllOkey = false;
             }
 
-            if (NIOKRComboBox.SelectedItem != null)
+            if (NIOKRTextBox.Text.ToString() != "")
             {
-                newGrant.NameNIOKR = NIOKRComboBox.SelectedItem.ToString();
+                newGrant.NameNIOKR = NIOKRTextBox.Text.ToString();
             }
             else
             {
@@ -776,8 +743,7 @@ namespace ResearchProgram
             }
             else
             {
-                incorrectDataString += "Необходимо указать руководителя НИОКР\n";
-                isAllOkey = false;
+                newGrant.LeadNIOKR = null;
             }
 
             if (executorsVerticalListView.Items != null)
@@ -1027,5 +993,6 @@ namespace ResearchProgram
                 e.Handled = true;
             }
         }
+        
     }
 }

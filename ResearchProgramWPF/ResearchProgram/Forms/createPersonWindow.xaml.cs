@@ -1,20 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Data;
-using DotNetKit.Windows.Controls;
-
-
+using ResearchProgram.Classes;
+using System.ComponentModel;
+ 
 namespace ResearchProgram
 {
     /// <summary>
@@ -33,6 +25,12 @@ namespace ResearchProgram
         private int _editedPersonId;
         private string _personFIO;
 
+        public List<PlaceOfWork> PlaceOfWorkList { get; set; }
+        public List<WorkCategories> WorkCategoriesList { get; set; }
+        public List<WorkDegree> WorkDegreesList { get; set; }
+        public List<WorkRank> WorkRanksList { get; set; }
+
+
         /// <summary>
         /// Выбранный пол человека
         /// </summary>
@@ -46,84 +44,280 @@ namespace ResearchProgram
 
             CRUDDataBase.ConnectToDataBase();
             jobsList = CRUDDataBase.GetJobs();
+            PlaceOfWorkList = CRUDDataBase.GetPlacesOfWorks();
+            WorkCategoriesList = CRUDDataBase.GetWorkCategories();
+            WorkDegreesList = CRUDDataBase.GetWorkDegrees();
+            WorkRanksList = CRUDDataBase.GetWorkRanks();
             CRUDDataBase.CloseConnection();
 
             if (personToEdit != null)
             {
-                DeletePersonButton.Visibility = System.Windows.Visibility.Visible;
+                DeletePersonButton.Visibility = Visibility.Visible;
                 _isEditPerson = true;
                 _editedPersonId = personToEdit.Id;
                 _personFIO = personToEdit.FIO;
                 Title = "Редактирование человека";
                 createPersonButton.Content = "Редактировать человека";
                 FIOTextBox.Text = personToEdit.FIO;
-                placeOfWorkTextBox.Text = personToEdit.PlaceOfWork;
-                degreeTextBox.Text = personToEdit.Degree;
-                categoryTextBox.Text = personToEdit.Category;
-                rankTextBox.Text = personToEdit.Rank;
+
+                for(int i = 0;i < WorkDegreesList.Count; i++)
+                {
+                    if (personToEdit.Degree.Id == WorkDegreesList[i].Id)
+                        degreeComboBox.SelectedIndex = i;
+                }
+
+                for (int i = 0; i < WorkRanksList.Count; i++)
+                {
+                    if (personToEdit.Rank.Id == WorkRanksList[i].Id)
+                        rankComboBox.SelectedIndex = i;
+                }
+
                 BirthDateDatePicker.SelectedDate = personToEdit.BitrhDate;
                 if (personToEdit.Sex)
                     sexMan.IsChecked = true;
                 else
                     sexWoman.IsChecked = true;
-                for(int i = 0; i< personToEdit.Jobs.Count; i++)
+
+                foreach(Person.WorkPlace workPlace in personToEdit.workPlaces)
                 {
-                    StackPanel horizontalStackPanel = new StackPanel()
+                    Grid grid = new Grid();
+                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(200) });
+                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(200) });
+                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(150) });
+                    grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(150) });
+                    grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(35) });
+                    grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(30) });
+                    grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(35) });
+                    grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(30) });
+
+                    Label workPlaceLabel = new Label
                     {
-                        Orientation = Orientation.Horizontal,
+                        Content = "Место работы"
                     };
+                    grid.Children.Add(workPlaceLabel);
+                    Grid.SetRow(workPlaceLabel, 0);
+                    Grid.SetColumn(workPlaceLabel, 0);
 
-
-                    AutoCompleteComboBox jobComboBox = new AutoCompleteComboBox()
-                    {
-                        Margin = new Thickness(0, 0, 0, 0),
-                        ItemsSource = new List<Job>(jobsList),
-                        Width = 130,
-                    };
-                    for (int j = 0; j < jobsList.Count; j++)
-                        if (personToEdit.Jobs[i].Title == jobsList[j].Title)
-                            jobComboBox.SelectedIndex = j;
-
-                    TextBlock salaryTextBlock = new TextBlock()
-                    {
-                        Margin = new Thickness(30, 0, 5, 0),
-                        Width = 80,
-                        IsEnabled = false,
-                        Text = personToEdit.Jobs[i].Salary.ToString()
-                    };
-                    salaryTextBlock.SetBinding(TextBlock.TextProperty, new Binding() { Source = jobComboBox, Path = new PropertyPath(ComboBox.SelectedValueProperty), TargetNullValue = "", Converter = new JobConverter() });
-
-
-                    TextBox salaryRateTextBox = new TextBox()
+                    ComboBox workPlaceComboBox = new ComboBox
                     {
                         Margin = new Thickness(5, 0, 5, 0),
-                        Width = 75,
-                        Text = personToEdit.Jobs[i].SalaryRate.ToString()
+                        Padding = new Thickness(5, 5, 5, 5),
+                        Height = 25,
+                        ItemsSource = PlaceOfWorkList
                     };
-                    salaryRateTextBox.PreviewTextInput += TextBoxNumbersPreviewInput;
+                    grid.Children.Add(workPlaceComboBox);
+                    Grid.SetRow(workPlaceComboBox, 1);
+                    Grid.SetColumn(workPlaceComboBox, 0);
+                    for(int i =0;i< PlaceOfWorkList.Count; i++)
+                    {
+                        if (workPlace.placeOfWork.Id == PlaceOfWorkList[i].Id)
+                            workPlaceComboBox.SelectedIndex = i;
+                    }
 
-                    horizontalStackPanel.Children.Add(jobComboBox);
-                    horizontalStackPanel.Children.Add(salaryRateTextBox);
-                    horizontalStackPanel.Children.Add(salaryTextBlock);
-                    jobsVerticalListView.Items.Add(horizontalStackPanel);
+                    Label CategoryLabel = new Label
+                    {
+                        Content = "Категория"
+                    };
+                    grid.Children.Add(CategoryLabel);
+                    Grid.SetRow(CategoryLabel, 2);
+                    Grid.SetColumn(CategoryLabel, 0);
+
+                    ComboBox categoryComboBox = new ComboBox
+                    {
+                        Margin = new Thickness(5, 0, 5, 0),
+                        Padding = new Thickness(5, 5, 5, 5),
+                        Height = 25,
+                        ItemsSource = WorkCategoriesList,
+                        SelectedItem = workPlace.workCategory
+                    };
+                    grid.Children.Add(categoryComboBox);
+                    Grid.SetRow(categoryComboBox, 3);
+                    Grid.SetColumn(categoryComboBox, 0);
+                    for (int i = 0; i < WorkCategoriesList.Count; i++)
+                    {
+                        if (workPlace.workCategory.Id == WorkCategoriesList[i].Id)
+                            categoryComboBox.SelectedIndex = i;
+                    }
+
+                    Grid jobGrid = new Grid();
+                    jobGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                    jobGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                    jobGrid.ColumnDefinitions.Add(new ColumnDefinition());
+                    jobGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(25) });
+                    jobGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(80) });
+                    jobGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(25) });
+                    grid.Children.Add(jobGrid);
+                    Grid.SetRow(jobGrid, 0);
+                    Grid.SetColumn(jobGrid, 1);
+                    Grid.SetColumnSpan(jobGrid, 2);
+                    Grid.SetRowSpan(jobGrid, 4);
+
+                    Label jobLabel = new Label
+                    {
+                        Content = "Должность"
+                    };
+                    jobGrid.Children.Add(jobLabel);
+                    Label rateLabel = new Label
+                    {
+                        Content = "Ставка"
+                    };
+                    jobGrid.Children.Add(rateLabel);
+
+                    Grid.SetRow(rateLabel, 0);
+                    Grid.SetColumn(rateLabel, 1);
+                    Label salaryLabel = new Label
+                    {
+                        Content = "Оклад"
+                    };
+                    jobGrid.Children.Add(salaryLabel);
+                    Grid.SetRow(salaryLabel, 0);
+                    Grid.SetColumn(salaryLabel, 2);
+
+                    ListView jobListView = new ListView();
+                    jobGrid.Children.Add(jobListView);
+                    Grid.SetRow(jobListView, 1);
+                    Grid.SetColumn(jobListView, 0);
+                    Grid.SetColumnSpan(jobListView, 3);
+
+
+                    Button addJobButton = new Button
+                    {
+                        Content = "Добавить"
+
+                    };
+                    addJobButton.Click += addJobButton_click;
+                    jobGrid.Children.Add(addJobButton);
+                    Grid.SetRow(addJobButton, 2);
+                    Grid.SetColumn(addJobButton, 0);
+
+                    Button deleteJobButton = new Button
+                    {
+                        Content = "Удалить"
+                    };
+                    deleteJobButton.Click += deleteJobButton_click;
+                    jobGrid.Children.Add(deleteJobButton);
+                    Grid.SetRow(deleteJobButton, 2);
+                    Grid.SetColumn(deleteJobButton, 1);
+
+
+                    foreach(Job job in workPlace.jobList)
+                    {
+                        Grid grid2 = new Grid();
+                        grid2.ColumnDefinitions.Add(new ColumnDefinition());
+                        grid2.ColumnDefinitions.Add(new ColumnDefinition());
+                        grid2.ColumnDefinitions.Add(new ColumnDefinition());
+
+                        TextBox salaryTextBox = new TextBox
+                        {
+                            IsEnabled = false,
+                            Width = 80,
+                            Margin = new Thickness(10, 3, 5, 3),
+                            Text = job.Salary.ToString()
+                        };
+
+                        ComboBox jobComboBox = new ComboBox
+                        {
+                            ItemsSource = jobsList,
+                            Margin = new Thickness(0, 5, 0, 0),
+                            Height = 25,
+                            Width = 100,
+
+                        };
+                        jobComboBox.SelectionChanged += jobComboBoxSelectionChanged_event;
+                        grid2.Children.Add(jobComboBox);
+                        Grid.SetColumn(jobComboBox, 0);
+                        for (int i = 0; i < jobsList.Count; i++)
+                        {
+                            if (job.Id == jobsList[i].Id)
+                                jobComboBox.SelectedIndex = i;
+                        }
+
+                        grid2.Children.Add(salaryTextBox);
+                        Grid.SetColumn(salaryTextBox, 1);
+
+                        TextBox rateTextBox = new TextBox
+                        {
+                            Width = 80,
+                            Margin = new Thickness(30, 3, 5, 3),
+                            Text = job.SalaryRate.ToString()
+                        };
+                        rateTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+                        grid2.Children.Add(rateTextBox);
+                        Grid.SetColumn(rateTextBox, 2);
+
+                        jobListView.Items.Add(grid2);
+
+                        void jobComboBoxSelectionChanged_event(object sender3, SelectionChangedEventArgs e3)
+                        {
+                            salaryTextBox.Text = ((Job)jobComboBox.SelectedItem).Salary.ToString();
+                        }
+
+                    }
+
+                    workPlaceListView.Items.Add(grid);
+
+                    void addJobButton_click(object sender2, RoutedEventArgs e2)
+                    {
+                        Grid grid2 = new Grid();
+                        grid2.ColumnDefinitions.Add(new ColumnDefinition());
+                        grid2.ColumnDefinitions.Add(new ColumnDefinition());
+                        grid2.ColumnDefinitions.Add(new ColumnDefinition());
+
+                        TextBox salaryTextBox = new TextBox
+                        {
+                            IsEnabled = false,
+                            Width = 80,
+                            Margin = new Thickness(10, 3, 5, 3),
+                        };
+
+                        ComboBox jobComboBox = new ComboBox
+                        {
+                            ItemsSource = jobsList,
+                            Margin = new Thickness(0, 5, 0, 0),
+                            Height = 25,
+                            Width = 100,
+
+                        };
+                        jobComboBox.SelectionChanged += jobComboBoxSelectionChanged_event;
+                        grid2.Children.Add(jobComboBox);
+                        Grid.SetColumn(jobComboBox, 0);
+
+                        grid2.Children.Add(salaryTextBox);
+                        Grid.SetColumn(salaryTextBox, 1);
+
+                        TextBox rateTextBox = new TextBox
+                        {
+                            Width = 80,
+                            Margin = new Thickness(30, 3, 5, 3),
+                        };
+                        rateTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+                        grid2.Children.Add(rateTextBox);
+                        Grid.SetColumn(rateTextBox, 2);
+
+                        jobListView.Items.Add(grid2);
+
+                        void jobComboBoxSelectionChanged_event(object sender3, SelectionChangedEventArgs e3)
+                        {
+                            salaryTextBox.Text = ((Job)jobComboBox.SelectedItem).Salary.ToString();
+                        }
+                    }
+
+                    void deleteJobButton_click(object sender2, RoutedEventArgs e2)
+                    {
+                        int countSelectedElement = jobListView.SelectedItems.Count;
+                        if (countSelectedElement > 0)
+                        {
+                            for (int i = 0; i < countSelectedElement; i++)
+                            {
+                                jobListView.Items.Remove(jobListView.SelectedItems[0]);
+                            }
+                        }
+                    }
+
                 }
             }
 
             DataContext = this;
-        }
-
-        //Функция для ввода в текст бокс только чисел с одним разделителем
-        private void TextBoxNumbersPreviewInput(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !((Char.IsDigit(e.Text, 0) || ((e.Text == System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0].ToString()) && (DS_Count(((TextBox)sender).Text) < 1))));
-        }
-
-        // функция подсчета разделителя
-        public int DS_Count(string s)
-        {
-            string substr = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0].ToString();
-            int count = (s.Length - s.Replace(substr, "").Length) / substr.Length;
-            return count;
         }
 
         /// <summary>
@@ -143,74 +337,6 @@ namespace ResearchProgram
             }
         }
 
-        /// <summary>
-        /// Добавление StackPanel с элементами для работы. Добавление в jobsVerticalListView
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void jobsAddButton_Click_1(object sender, RoutedEventArgs e)
-        {
-            StackPanel horizontalStackPanel = new StackPanel()
-            {
-                Orientation = Orientation.Horizontal,
-            };
-
-
-            AutoCompleteComboBox jobComboBox = new AutoCompleteComboBox()
-            {
-                Margin = new Thickness(0, 0, 0, 0),
-                ItemsSource = new List<Job>(jobsList),
-                Width = 130
-            };
-
-            TextBlock salaryTextBlock = new TextBlock()
-            {
-                Margin = new Thickness(30, 0, 5, 0),
-                Width = 80,
-                IsEnabled = false
-            };
-            salaryTextBlock.SetBinding(TextBlock.TextProperty, new Binding() { Source = jobComboBox, Path = new PropertyPath(ComboBox.SelectedValueProperty), TargetNullValue = "", Converter = new JobConverter() });
-
-
-            TextBox salaryRateTextBox = new TextBox()
-            {
-                Margin = new Thickness(5, 0, 5, 0),
-                Width = 75
-            };
-            salaryRateTextBox.PreviewTextInput += TextBoxNumbersPreviewInput;
-
-            horizontalStackPanel.Children.Add(jobComboBox);
-            horizontalStackPanel.Children.Add(salaryRateTextBox);
-            horizontalStackPanel.Children.Add(salaryTextBlock);
-
-            jobsVerticalListView.Items.Add(horizontalStackPanel);
-        }
-
-        /// <summary>
-        /// Удаление StackPanel из jobsVerticalListView
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void jobsDeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            int countSelectedElement = jobsVerticalListView.SelectedItems.Count;
-            if (countSelectedElement > 0)
-            {
-                for (int i = 0; i < countSelectedElement; i++)
-                {
-                    jobsVerticalListView.Items.Remove(jobsVerticalListView.SelectedItems[0]);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Выделите нужный для удаления элемент");
-            }
-        }
-
-        private void ChangeJobComboBox(object sender, RoutedEventArgs e)
-        {
-
-        }
 
         /// <summary>
         /// Добавление человека в бд и строки в таблицу
@@ -225,7 +351,6 @@ namespace ResearchProgram
             bool isAllOkey = true;
             string incorrectDataString = "";
 
-            newPerson.Id = _editedPersonId;
             if (FIOTextBox.Text != "")
             {
                 newPerson.FIO = FIOTextBox.Text;
@@ -243,74 +368,89 @@ namespace ResearchProgram
 
             newPerson.Sex = _sexSelected;
 
-            if (placeOfWorkTextBox.Text != null)
+            if (degreeComboBox.SelectedItem != null)
             {
-                newPerson.PlaceOfWork = placeOfWorkTextBox.Text;
+                newPerson.Degree = (WorkDegree)degreeComboBox.SelectedItem;
             }
 
-            if (categoryTextBox.Text != null)
+            if (rankComboBox.SelectedItem != null)
             {
-                newPerson.Category = categoryTextBox.Text;
+                newPerson.Rank = (WorkRank)rankComboBox.SelectedItem;
             }
 
-            if (degreeTextBox.Text != null)
+            if (workPlaceListView.Items != null)
             {
-                newPerson.Degree = degreeTextBox.Text;
-            }
-
-            if (rankTextBox.Text != null)
-            {
-                newPerson.Rank = rankTextBox.Text;
-            }
-
-            if (jobsVerticalListView.Items != null)
-            {
-                AutoCompleteComboBox jobCmb;
-                TextBox salaryRateTextBox;
-
-                foreach (StackPanel jobStackPanel in jobsVerticalListView.Items.OfType<StackPanel>())
+                foreach (Grid grid in workPlaceListView.Items.OfType<Grid>())
                 {
-                    jobCmb = (AutoCompleteComboBox)jobStackPanel.Children[0];
-                    salaryRateTextBox = (TextBox)jobStackPanel.Children[1];
+                    ComboBox workPlaceComboBox = (ComboBox)grid.Children[1];
+                    ComboBox workCategoryComboBox = (ComboBox)grid.Children[3];
+                    Grid jobGrid = (Grid)grid.Children[4];
+                    ListView jobListView = (ListView)jobGrid.Children[3];
 
-                    if (jobCmb.SelectedItem != null && salaryRateTextBox.Text.ToString() != "")
+
+                    Person.WorkPlace workPlace = new Person.WorkPlace();
+                    if (workPlaceComboBox.SelectedItem != null)
                     {
-                        newPerson.Jobs.Add(new Job()
+                        workPlace.placeOfWork = (PlaceOfWork)workPlaceComboBox.SelectedItem;
+                        if (workCategoryComboBox.SelectedItem != null)
                         {
-                            Id = ((Job)jobCmb.SelectedItem).Id,
-                            Title = ((Job)jobCmb.SelectedItem).Title,
-                            Salary = ((Job)jobCmb.SelectedItem).Salary,
-                            SalaryRate = Parser.ConvertToRightFloat(salaryRateTextBox.Text.ToString())
-                        });
+                            workPlace.workCategory = (WorkCategories)workCategoryComboBox.SelectedItem;
+                        }
+                        else
+                        {
+                            workPlace.workCategory = new WorkCategories();
+                        }
+
+                        workPlace.jobList = new List<Job>();
+                        foreach (Grid grid1 in jobListView.Items.OfType<Grid>())
+                        {
+                            ComboBox jobComboBox = (ComboBox)grid1.Children[0];
+                            TextBox salaryRateTextBox = (TextBox)grid1.Children[2];
+                            if (jobComboBox.SelectedItem != null)
+                            {
+                                Job job = (Job)jobComboBox.SelectedItem;
+                                if (salaryRateTextBox.Text != "")
+                                {
+                                    job.SalaryRate = Convert.ToInt32(salaryRateTextBox.Text);
+                                }
+                                else
+                                {
+                                    job.SalaryRate = 0;
+                                }
+                                Console.WriteLine(job.Id);
+                                Console.WriteLine(job.Salary);
+                                Console.WriteLine(job.SalaryRate);
+
+                                workPlace.jobList.Add(job);
+                            }
+                        }
                     }
+                    newPerson.workPlaces.Add(workPlace);
                 }
             }
-
             if (isAllOkey)
             {
                 CRUDDataBase.ConnectToDataBase();
 
                 if (_isEditPerson)
                 {
+                    newPerson.Id = _editedPersonId;
                     CRUDDataBase.UpdateFIO(newPerson);
                     CRUDDataBase.UpdateBirthDate(newPerson);
                     CRUDDataBase.UpdateSex(newPerson);
                     CRUDDataBase.UpdatePlaceOfWork(newPerson);
-                    CRUDDataBase.UpdateCategory(newPerson);
                     CRUDDataBase.UpdateDegree(newPerson);
                     CRUDDataBase.UpdateRank(newPerson);
-                    CRUDDataBase.UpdateSalary(newPerson);
-                    MessageBox.Show("Человек успешно изменен", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
-
+                    MessageBox.Show("Информация о человекек успешно изменена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Close();
                 }
                 else
                 {
                     // Внесение нового человека в бд
                     CRUDDataBase.InsertNewPersonToDB(newPerson);
 
-                    WorkerWithTablesOnMainForm.AddRowToPersonsTable(peopleDataTable, newPerson);
-
-                    MessageBox.Show("Человек успешно внесен", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Информация о человеке успешно внесена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                    Close();
                 }
 
                 CRUDDataBase.CloseConnection();
@@ -334,5 +474,192 @@ namespace ResearchProgram
                     break;
             }
         }
+
+        private void workPlaceAddButton_Click(object sender, RoutedEventArgs e)
+        {
+            Grid grid = new Grid();
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(200) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(200) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(150) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(150) });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(35) });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(30) });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(35) });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(30) });
+
+            Label workPlaceLabel = new Label
+            {
+                Content = "Место работы"
+            };
+            grid.Children.Add(workPlaceLabel);
+            Grid.SetRow(workPlaceLabel, 0);
+            Grid.SetColumn(workPlaceLabel, 0);
+
+            ComboBox workPlaceComboBox = new ComboBox
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                Padding = new Thickness(5, 5, 5, 5),
+                Height = 25,
+                ItemsSource = PlaceOfWorkList,
+            };
+            grid.Children.Add(workPlaceComboBox);
+            Grid.SetRow(workPlaceComboBox, 1);
+            Grid.SetColumn(workPlaceComboBox, 0);
+
+            Label CategoryLabel = new Label
+            {
+                Content = "Категория"
+            };
+            grid.Children.Add(CategoryLabel);
+            Grid.SetRow(CategoryLabel, 2);
+            Grid.SetColumn(CategoryLabel, 0);
+
+            ComboBox categoryComboBox = new ComboBox
+            {
+                Margin = new Thickness(5, 0, 5, 0),
+                Padding = new Thickness(5, 5, 5, 5),
+                Height = 25,
+                ItemsSource = WorkCategoriesList,
+            };
+            grid.Children.Add(categoryComboBox);
+            Grid.SetRow(categoryComboBox, 3);
+            Grid.SetColumn(categoryComboBox, 0);
+
+            Grid jobGrid = new Grid();
+            jobGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            jobGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            jobGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            jobGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(25) });
+            jobGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(80) });
+            jobGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(25) });
+            grid.Children.Add(jobGrid);
+            Grid.SetRow(jobGrid, 0);
+            Grid.SetColumn(jobGrid, 1);
+            Grid.SetColumnSpan(jobGrid, 2);
+            Grid.SetRowSpan(jobGrid, 4);
+
+            Label jobLabel = new Label
+            {
+                Content = "Должность"
+            };
+            jobGrid.Children.Add(jobLabel);
+            Label rateLabel = new Label
+            {
+                Content = "Ставка"
+            };
+            jobGrid.Children.Add(rateLabel);
+
+            Grid.SetRow(rateLabel, 0);
+            Grid.SetColumn(rateLabel, 1);
+            Label salaryLabel = new Label
+            {
+                Content = "Оклад"
+            };
+            jobGrid.Children.Add(salaryLabel);
+            Grid.SetRow(salaryLabel, 0);
+            Grid.SetColumn(salaryLabel, 2);
+
+            ListView jobListView = new ListView();
+            jobGrid.Children.Add(jobListView);
+            Grid.SetRow(jobListView, 1);
+            Grid.SetColumn(jobListView, 0);
+            Grid.SetColumnSpan(jobListView, 3);
+
+
+            Button addJobButton = new Button
+            {
+                Content = "Добавить"
+
+            };
+            addJobButton.Click += addJobButton_click;
+            jobGrid.Children.Add(addJobButton);
+            Grid.SetRow(addJobButton, 2);
+            Grid.SetColumn(addJobButton, 0);
+
+            Button deleteJobButton = new Button
+            {
+                Content = "Удалить"
+            };
+            deleteJobButton.Click += deleteJobButton_click;
+            jobGrid.Children.Add(deleteJobButton);
+            Grid.SetRow(deleteJobButton, 2);
+            Grid.SetColumn(deleteJobButton, 1);
+
+
+            workPlaceListView.Items.Add(grid);
+
+            void addJobButton_click(object sender2, RoutedEventArgs e2)
+            {
+                Grid grid2 = new Grid();
+                grid2.ColumnDefinitions.Add(new ColumnDefinition());
+                grid2.ColumnDefinitions.Add(new ColumnDefinition());
+                grid2.ColumnDefinitions.Add(new ColumnDefinition());
+
+                TextBox salaryTextBox = new TextBox
+                {
+                    IsEnabled = false,
+                    Width = 80,
+                    Margin = new Thickness(10, 3, 5, 3),
+                };
+
+                ComboBox jobComboBox = new ComboBox
+                {
+                    ItemsSource = jobsList,
+                    Margin = new Thickness(0, 5, 0, 0),
+                    Height = 25,
+                    Width = 100,
+                    
+                };
+                jobComboBox.SelectionChanged += jobComboBoxSelectionChanged_event;
+                grid2.Children.Add(jobComboBox);
+                Grid.SetColumn(jobComboBox, 0);
+
+                grid2.Children.Add(salaryTextBox);
+                Grid.SetColumn(salaryTextBox, 1);
+
+                TextBox rateTextBox = new TextBox
+                {
+                    Width = 80,
+                    Margin = new Thickness(30, 3, 5, 3),
+                };
+                rateTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+                grid2.Children.Add(rateTextBox);
+                Grid.SetColumn(rateTextBox, 2);
+
+                jobListView.Items.Add(grid2);
+
+                void jobComboBoxSelectionChanged_event(object sender3, SelectionChangedEventArgs e3)
+                {
+                    salaryTextBox.Text = ((Job)jobComboBox.SelectedItem).Salary.ToString();
+                }
+            }
+
+            void deleteJobButton_click(object sender2, RoutedEventArgs e2)
+            {
+                int countSelectedElement = jobListView.SelectedItems.Count;
+                if (countSelectedElement > 0)
+                {
+                    for (int i = 0; i < countSelectedElement; i++)
+                    {
+                        jobListView.Items.Remove(jobListView.SelectedItems[0]);
+                    }
+                }
+            }
+
+
+        }
+
+        private void workPlaceDeleteButton_Click(object sender, RoutedEventArgs e)
+        {
+            int countSelectedElement = workPlaceListView.SelectedItems.Count;
+            if (countSelectedElement > 0)
+            {
+                for (int i = 0; i < countSelectedElement; i++)
+                {
+                    workPlaceListView.Items.Remove(workPlaceListView.SelectedItems[0]);
+                }
+            }
+        }
+
     }
 }

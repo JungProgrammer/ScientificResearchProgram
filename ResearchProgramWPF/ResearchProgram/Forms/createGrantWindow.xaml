@@ -125,11 +125,10 @@
                                    Grid.Row="6"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
-                            <dotNetKitControls:AutoCompleteComboBox Grid.Row="7"
-                                                                    x:Name="NIOKRComboBox"
-                                                                    Margin="5 0"
-                                                                    ItemsSource="{Binding NIOKRList}">
-                            </dotNetKitControls:AutoCompleteComboBox>
+                            <TextBox Grid.Row="7"
+                                     x:Name="NIOKRTextBox"
+                                     Margin="5 0">
+                            </TextBox>
 
                             <Label Content="Руководитель НИОКР"
                                    Grid.Row="8"
@@ -350,7 +349,6 @@
                                          Grid.Column="0"
                                          Name="priceTextBox"
                                          Margin="5 0"
-                                         PreviewTextInput="TextBoxNumbersPreviewInput"
                                          PreviewKeyDown="priceNoNDSTextBox_PreviewKeyDown"
                                          Padding="0 3"/>
                                 
@@ -370,7 +368,6 @@
                                          Name="priceNoNDSTextBox"
                                          Margin="5 0"
                                          Grid.Column="2"
-                                         PreviewTextInput="TextBoxNumbersPreviewInput"
                                          PreviewKeyDown="priceNoNDSTextBox_PreviewKeyDown"
                                          Padding="0 3"
                                          Text="{Binding ElementName=priceTextBox, Path=Text, Converter={StaticResource PriceNDSConverter}}"/>

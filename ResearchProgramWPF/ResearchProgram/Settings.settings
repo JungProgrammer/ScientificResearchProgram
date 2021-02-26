@@ -29,5 +29,8 @@
     <Setting Name="RowColor6" Type="System.String" Scope="User">
       <Value Profile="(Default)">#FFFFFF</Value>
     </Setting>
+    <Setting Name="ProgrammVersion" Type="System.String" Scope="User">
+      <Value Profile="(Default)">1.01</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

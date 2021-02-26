@@ -8,7 +8,9 @@
         Title="Гранты НИЧ"
         Height="900"
         Width="1300"
-        x:Name="mainWindow" Closing="mainWindow_Closing">
+        x:Name="mainWindow" 
+        Closing="mainWindow_Closing"
+        WindowState="Maximized">
     <Window.Resources>
         <local:NDSConverter x:Key="NDSConverter" />
         <local:DepositsConverter x:Key="DepositsConverter"/>
@@ -36,12 +38,18 @@
               FontSize="13">
             <MenuItem Header="Файл">
                 <MenuItem Header="Создать договор" Click="CreateGrantMenuItem_Click"/>
-                <MenuItem Header="Структура университета" Click="StructureOfUniversity_Click"/>
                 <MenuItem Header="Добавить">
                     <MenuItem Header="Человек" Click="CreatePersonMenuItem_Click"/>
                     <MenuItem Header="Заказчик" Click="CreateCustomerMenuItem_Click"/>
                 </MenuItem>
 
+                <MenuItem Header="Справочники">
+                    <MenuItem Header="Структура университета" Click="StructureOfUniversity_Click"/>
+                    <MenuItem Header="Места работы" Click="PlaceOfWork_Click"/>
+                    <MenuItem Header="Должности" Click="Post_Click"/>
+                    <MenuItem Header="Степени" Click="Degree_Click"/>
+                </MenuItem>
+                
                 <Separator />
                 <MenuItem Header="Настройки" Click="SettingsTypeMenuItem_Click"></MenuItem>
                 <MenuItem Header="Выход"></MenuItem>
@@ -96,8 +104,6 @@
                     </Button>
 
 
-
-
                     <DataGrid x:Name="GrantsTable"
                               AutoGenerateColumns="True"
                               ItemsSource="{Binding GrantsDataTable}"
@@ -106,7 +112,8 @@
                               CanUserAddRows="False"
                               CanUserDeleteRows="False"
                               IsReadOnly="True"
-                              CurrentItem="{Binding Path=SelectedGrantRow, Mode=TwoWay}">
+                              CurrentItem="{Binding Path=SelectedGrantRow, Mode=TwoWay}" 
+                              LoadingRow="GrantsTable_LoadingRow">
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">
                                 <Setter Property="Background" Value="{Binding Path=Средства, Converter={StaticResource DepositsConverter}}"/>
@@ -117,25 +124,33 @@
                                 <MenuItem Header="Показать полную информацию"
                                           Click="ShowFullInformation">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/info.jpg"/>
+                                        <Image Source="/ResearchProgram;component/Icons/info.jpg"
+                                               Width="18"
+                                               Height="18"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="Редактировать" 
                                           Click="EditGrant">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/edit.png"/>
+                                        <Image Source="/ResearchProgram;component/Icons/edit.png"
+                                               Width="15"
+                                               Height="15"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="Скрыть выделенные столбцы" 
                                           Click="HideSelectedColumns">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/hide.png"/>
+                                        <Image Source="/ResearchProgram;component/Icons/hide.png"
+                                               Width="16"
+                                               Height="16"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <MenuItem Header="Показать скрытые столбцы" 
                                           Click="ShowHiddenColumns">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/show.png"/>
+                                        <Image Source="/ResearchProgram;component/Icons/show.png"
+                                               Width="16"
+                                               Height="16"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                             </ContextMenu>
@@ -173,18 +188,20 @@
                         <RowDefinition Height="25"/>
                         <RowDefinition/>
                     </Grid.RowDefinitions>
-                        <DataGrid x:Name="PeopleTable"
+                    
+                    <DataGrid x:Name="PeopleTable"
                                   Grid.Row="1"
                               AutoGenerateColumns="True"
                               ItemsSource="{Binding PeopleDataTable}"
+                              SelectionUnit="CellOrRowHeader"
                               CanUserAddRows="False"
                               CanUserDeleteRows="False"
                               IsReadOnly="True"
-                              CurrentItem="{Binding Path=SelectedPersonRow, Mode=TwoWay}">
+                              CurrentItem="{Binding Path=SelectedPersonRow, Mode=TwoWay}" GotFocus="PeopleTable_GotFocus">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Редактировать" 
-                                          Click="EditPeople">
+                                              Click="EditPeople">
                                     <MenuItem.Icon>
                                         <Image Source="/ResearchProgram;component/Icons/edit.png"/>
                                     </MenuItem.Icon>
@@ -192,6 +209,7 @@
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                     </DataGrid>
+                    
                     <Button x:Name="personsUpdateButton"
                             Grid.Row="0"
                             Margin="0 0 2 2"
@@ -219,7 +237,7 @@
                               CanUserAddRows="False"
                               CanUserDeleteRows="False"
                               IsReadOnly="True"
-                              CurrentItem="{Binding Path=SelectedCustomerRow, Mode=TwoWay}">
+                              CurrentItem="{Binding Path=SelectedCustomerRow, Mode=TwoWay}" GotFocus="CustomerTable_GotFocus">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Редактировать" 

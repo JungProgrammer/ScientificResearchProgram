@@ -1,18 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace ResearchProgram
 {
-    public class Job
+    public class Job: INotifyPropertyChanged
     {
         // Id в БД
         public int Id { get; set; }
 
+        private string _title;
         // Название работы
-        public string Title { get; set; }
+        public string Title
+        {
+            get => _title;
+            set
+            {
+                _title = value;
+                OnPropertyChanged(nameof(Title));
+            }
+        }
 
         // Оклад
         public float Salary { get; set; }
@@ -58,6 +69,12 @@ namespace ResearchProgram
         public override string ToString()
         {
             return Title;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
     }
 }

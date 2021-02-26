@@ -49,7 +49,7 @@ namespace ResearchProgram.Forms
 
             DataContext = grant;
 
-            SetDataContexts();
+            SetDataContexts(grant);
         }
 
         private void SetStartViewModelSettings(Grant grant)
@@ -88,16 +88,16 @@ namespace ResearchProgram.Forms
             }
         }
 
-        private void SetDataContexts()
+        private void SetDataContexts(Grant grant)
         {
             // Установка привзяки для сумм
-            if (Settings.Default.NDSKey)
+            if (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey)
             {
-                DepositorsSumsControl.ItemsSource = depositorSums;
+                DepositorsSumsControl.ItemsSource = depositorSumsNoNDS;
             }
             else
             {
-                DepositorsSumsControl.ItemsSource = depositorSumsNoNDS;
+                DepositorsSumsControl.ItemsSource = depositorSums;
             }
 
             // Установка привязки для дат

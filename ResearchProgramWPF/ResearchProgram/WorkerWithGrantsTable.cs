@@ -30,12 +30,15 @@ namespace ResearchProgram
                 ColumnName = header,
                 Caption = header
             };
-            if (column.ColumnName == "№")
-                column.DataType = System.Type.GetType("System.Int32");
-            //if (column.ColumnName == "Общая сумма договора")
-            //{
-            //    column.DataType = System.Type.GetType("System.Double");
-            //}
+            switch (column.ColumnName)
+            {
+                case "№":
+                    column.DataType = Type.GetType("System.Int32");
+                    break;
+                case "Стоимость договора":
+                    column.DataType = Type.GetType("System.Double");
+                    break;
+            }
 
 
             grantsDataTable.Columns.Add(column);
@@ -81,27 +84,61 @@ namespace ResearchProgram
         /// <param name="grant"></param>
         public static void AddRowToGrantTable(DataTable grantsDataTable, Grant grant)
         {
-            string depositors = String.Empty;
-            string depositsSum = String.Empty;
+            // Словарь для отображения средств
+            Dictionary<string, double> depositDict = new Dictionary<string, double>();
             for (int i = 0; i < grant.Depositor.Count; i++)
             {
+                string depositorStr;
+                float depositorSum;
+                float depositorSumNoNDS;
                 if (GrantsFilters.CheckReceiptDate(grant.ReceiptDate[i]))
                 {
-                    depositors += grant.Depositor[i].Title + "\n";
-                    if (Settings.Default.NDSKey)
-                    {
-                        if (!grant.isWIthNDS)
-                            depositsSum += "БЕЗ НДС\n";
+                    depositorStr = grant.Depositor[i].Title;
+                    depositorSum = grant.DepositorSum[i];
+                    depositorSumNoNDS = grant.DepositorSumNoNDS[i];
+
+                    // Если в словаре такое средство уже есть, то суммируем
+                    if (depositDict.ContainsKey(depositorStr))
+                    { 
+                        if(!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey)
+                        {
+                            depositDict[depositorStr] += Convert.ToDouble(depositorSumNoNDS);
+                        }
                         else
-                            depositsSum += grant.DepositorSum[i] + "\n";
+                        {
+                            depositDict[depositorStr] += Convert.ToDouble(depositorSum);
+                        }
                     }
                     else
                     {
-                        depositsSum += grant.DepositorSumNoNDS[i] + "\n";
+                        if (depositorStr != String.Empty && depositorStr != String.Empty)
+                        {
+                            if (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey)
+                            {
+                                depositDict.Add(depositorStr, Convert.ToDouble(depositorSumNoNDS));
+                            }
+                            else
+                            {
+                                depositDict.Add(depositorStr, Convert.ToDouble(depositorSum));
+                            }
+                        }
                     }
                 }
             }
 
+            // Строки для отображения
+            string depositors = String.Empty;
+            string depositsSum = String.Empty;
+
+            // Перевод словарей в строки отображения
+            foreach(string depositor in depositDict.Keys)
+            {
+                depositors += depositor + '\n';
+            }
+            foreach(float depositorSum in depositDict.Values)
+            {
+                depositsSum += depositorSum.ToString() + '\n';
+            }
 
 
             // Если договор подходит под фильтр
@@ -110,6 +147,7 @@ namespace ResearchProgram
                 if (grantsDataTable.Rows.Count == 0) countOfGrantRows = 0;
                 countOfGrantRows++;
                 DataRow row = grantsDataTable.NewRow();
+                row["id"]                       = grant.Id;
                 row["№"]                        = countOfGrantRows.ToString();
                 row["Номер договора"]           = grant.grantNumber;
                 row["ОКВЭД"]                    = grant.OKVED;
@@ -117,7 +155,7 @@ namespace ResearchProgram
                 row["Заказчик"]                 = string.Join("\n", grant.Customer);
                 row["Дата начала"]              = grant.StartDate == new DateTime(1, 1, 1) ? "": grant.StartDate.ToString("dd.MM.yyyy");
                 row["Дата завершения"]          = grant.EndDate == new DateTime(1, 1, 1) ? "" : grant.EndDate.ToString("dd.MM.yyyy");
-                row["Стоимость договора"]       = (!grant.isWIthNDS && Settings.Default.NDSKey) ? "БЕЗ НДС" :  grant.PriceNoNDS.ToString();
+                row["Стоимость договора"]       = (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey) ? grant.PriceNoNDS.ToString() : grant.Price.ToString();
                 row["Источник финансирования"]  = depositors;
                 row["Поступления"]              = depositsSum;
                 row["Руководитель НИОКР"]       = grant.LeadNIOKR.shortName();
@@ -152,14 +190,15 @@ namespace ResearchProgram
             row["ФИО"]                          = person.FIO;
             row["Дата рождения"]                = person.BitrhDate == new DateTime(1, 1, 1) ? "" : person.BitrhDate.ToString("dd.MM.yyyy");
             row["Пол"]                          = person.Sex ? "M" : "Ж";
-            row["Место работы"]                 = person.PlaceOfWork;
-            row["Категория"]                    = person.Category;
-            row["Степень"]                      = person.Degree;
-            row["Звание"]                       = person.Rank;
-            row["Должность"]                    = string.Join("\n", person.Jobs);
-            row["Оклад"]                        = string.Join("\n", Job.GetSalariesFromPerson(person.Jobs));
-            row["Ставка"]                       = string.Join("\n", Job.GetSalaryRatesFromPerson(person.Jobs));
+            //row["Место работы"]                 = person.PlaceOfWork;
+            //row["Категория"]                    = person.Category;
+            row["Степень"] = person.Degree.Title;
+            row["Звание"] = person.Rank.Title;
+            //row["Должность"]                    = string.Join("\n", person.Jobs);
+            //row["Оклад"]                        = string.Join("\n", Job.GetSalariesFromPerson(person.Jobs));
+            //row["Ставка"]                       = string.Join("\n", Job.GetSalaryRatesFromPerson(person.Jobs));
             personsDataTable.Rows.Add(row);
+
 
         }
 
