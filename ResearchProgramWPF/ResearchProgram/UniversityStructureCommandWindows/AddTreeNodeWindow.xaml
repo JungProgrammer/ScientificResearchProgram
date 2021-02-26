@@ -30,7 +30,7 @@
             </Button>
             <Button IsCancel="True"
                     MinWidth="60"
-                    Content="Отмена">
+                    Content="Отмена" Click="Button_Click">
             </Button>
         </WrapPanel>
 

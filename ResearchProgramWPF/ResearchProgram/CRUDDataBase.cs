@@ -979,6 +979,67 @@ namespace ResearchProgram
             }
         }
 
+        public static ObservableCollection<PlaceOfWork> LoadPlacesOfWorks()
+        {
+            ObservableCollection<PlaceOfWork> placeOfWorks = new ObservableCollection<PlaceOfWork>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM place_of_work;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    placeOfWorks.Add(new PlaceOfWork()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
+                }
+            }
+
+            return placeOfWorks;
+        }
+
+        public static PlaceOfWork AddPlaceOfWork(string newNamePlaceOfWork)
+        {
+            PlaceOfWork newPlaceOfWork = null;
+
+            NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO place_of_work (title) VALUES (:title);", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", newNamePlaceOfWork));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("SELECT id FROM place_of_work ORDER BY id DESC ", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Read();
+                newPlaceOfWork = new PlaceOfWork()
+                {
+                    Id = Convert.ToInt32(reader[0]),
+                    Title = newNamePlaceOfWork
+                };
+            }
+
+            return newPlaceOfWork;
+        }
+
+        public static void DeletePlaceOfWork(PlaceOfWork placeOfWork)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM place_of_work WHERE id = :id;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("id", placeOfWork.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        public static void EditPlaceOfWork(PlaceOfWork placeOfWork)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE place_of_work SET title = :title WHERE id = :id;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("id", placeOfWork.Id));
+            cmd.Parameters.Add(new NpgsqlParameter("title", placeOfWork.Title));
+            cmd.ExecuteNonQuery();
+        }
+
         /// <summary>
         /// Выгружает таблицу заказчиков
         /// </summary>

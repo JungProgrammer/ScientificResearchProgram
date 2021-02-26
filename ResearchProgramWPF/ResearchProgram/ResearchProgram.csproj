@@ -146,6 +146,15 @@
     <Compile Include="Forms\FullGrantInfo.xaml.cs">
       <DependentUpon>FullGrantInfo.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\HelpWindows\AddElementWindow.xaml.cs">
+      <DependentUpon>AddElementWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\HelpWindows\EditElementWindow.xaml.cs">
+      <DependentUpon>EditElementWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\PlaceOfWorkWindow.xaml.cs">
+      <DependentUpon>PlaceOfWorkWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="GrantHeader.cs" />
     <Compile Include="GrantsFilters.cs" />
     <Compile Include="IContainer.cs" />
@@ -204,6 +213,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\FullGrantInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\HelpWindows\AddElementWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\HelpWindows\EditElementWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\PlaceOfWorkWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

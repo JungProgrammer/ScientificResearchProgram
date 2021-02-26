@@ -55,5 +55,10 @@ namespace ResearchProgram.UniversityStructureCommandWindows
             if (PropertyChanged != null)
                 PropertyChanged(this, new PropertyChangedEventArgs(prop));
         }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

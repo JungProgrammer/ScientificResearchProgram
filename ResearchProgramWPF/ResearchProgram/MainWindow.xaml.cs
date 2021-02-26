@@ -512,5 +512,26 @@ namespace ResearchProgram
             GrantsTable.Columns[0].Visibility = Visibility.Collapsed;
 
         }
+
+        private void PlaceOfWork_Click(object sender, RoutedEventArgs e)
+        {
+            PlaceOfWorkWindow placeOfWorkWindow = new PlaceOfWorkWindow()
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Owner = this
+            };
+
+            placeOfWorkWindow.ShowDialog();
+        }
+
+        private void Post_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void Degree_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

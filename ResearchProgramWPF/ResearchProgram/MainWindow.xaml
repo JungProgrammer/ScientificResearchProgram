@@ -38,12 +38,18 @@
               FontSize="13">
             <MenuItem Header="Файл">
                 <MenuItem Header="Создать договор" Click="CreateGrantMenuItem_Click"/>
-                <MenuItem Header="Структура университета" Click="StructureOfUniversity_Click"/>
                 <MenuItem Header="Добавить">
                     <MenuItem Header="Человек" Click="CreatePersonMenuItem_Click"/>
                     <MenuItem Header="Заказчик" Click="CreateCustomerMenuItem_Click"/>
                 </MenuItem>
 
+                <MenuItem Header="Справочники">
+                    <MenuItem Header="Структура университета" Click="StructureOfUniversity_Click"/>
+                    <MenuItem Header="Места работы" Click="PlaceOfWork_Click"/>
+                    <MenuItem Header="Должности" Click="Post_Click"/>
+                    <MenuItem Header="Степени" Click="Degree_Click"/>
+                </MenuItem>
+                
                 <Separator />
                 <MenuItem Header="Настройки" Click="SettingsTypeMenuItem_Click"></MenuItem>
                 <MenuItem Header="Выход"></MenuItem>
