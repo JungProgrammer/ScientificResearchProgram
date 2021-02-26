@@ -98,6 +98,9 @@ namespace ResearchProgram
             AddLeadNIOKRAutoCompleteComboBox();
             AddResearchTypeAutoCompleteComboBox();
 
+            priceTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+            priceNoNDSTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+
             // Закрытие подключения к базе данных
             CRUDDataBase.CloseConnection();
 
@@ -179,10 +182,10 @@ namespace ResearchProgram
                         MinWidth = 110,
                         Text = grantToEdit.DepositorSumNoNDS[i].ToString()
                     };
-                    sumTextBoxNoNDS.PreviewTextInput += TextBoxNumbersPreviewInput;
+                    sumTextBoxNoNDS.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
                     sumTextBoxNoNDS.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
 
-                    sumTextBox.PreviewTextInput += TextBoxNumbersPreviewInput;
+                    sumTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
                     sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler;
                     sumTextBox.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
 
@@ -308,21 +311,6 @@ namespace ResearchProgram
             DataContext = this;
         }
 
-
-        //Функция для ввода в текст бокс только чисел с одним разделителем
-        private void TextBoxNumbersPreviewInput(object sender, TextCompositionEventArgs e)
-        {
-            e.Handled = !(Char.IsDigit(e.Text, 0) || ((e.Text == System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0].ToString()) && (DS_Count(((TextBox)sender).Text) < 1)));
-        }
-
-        // функция подсчета разделителя
-        public int DS_Count(string s)
-        {
-            string substr = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0].ToString();
-            int count = (s.Length - s.Replace(substr, "").Length) / substr.Length;
-            return count;
-        }
-
         /// <summary>
         /// Кнопка добавления у заказчика
         /// </summary>
@@ -440,11 +428,11 @@ namespace ResearchProgram
                 Width = 110,
                 Padding = new Thickness(0, 2, 0, 2)
             };
-            sumTextBox.PreviewTextInput += TextBoxNumbersPreviewInput;
+            sumTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
             sumTextBox.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
             sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler;
 
-            sumTextBoxNoNDS.PreviewTextInput += TextBoxNumbersPreviewInput;
+            sumTextBoxNoNDS.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
             sumTextBoxNoNDS.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
 
             DatePicker datePicker = new DatePicker()
@@ -481,7 +469,7 @@ namespace ResearchProgram
             }
             else
             {
-                MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -510,7 +498,7 @@ namespace ResearchProgram
             }
             else
             {
-                MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
+                //MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace ResearchProgram
 {
@@ -25,6 +27,23 @@ namespace ResearchProgram
                 default:
                     return false;
             }
+
+
+            
+        }
+
+        //Функция для ввода в текст бокс только чисел с одним разделителем
+        public static void TextBoxNumbersPreviewInput(object sender, TextCompositionEventArgs e)
+        {
+            e.Handled = !(Char.IsDigit(e.Text, 0) || ((e.Text == System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0].ToString()) && (DS_Count(((TextBox)sender).Text) < 1)));
+        }
+
+        // функция подсчета разделителя
+        public static int DS_Count(string s)
+        {
+            string substr = System.Globalization.CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator[0].ToString();
+            int count = (s.Length - s.Replace(substr, "").Length) / substr.Length;
+            return count;
         }
 
     }

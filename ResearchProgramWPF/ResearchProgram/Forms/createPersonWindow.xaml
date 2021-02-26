@@ -6,11 +6,10 @@
         xmlns:local="clr-namespace:ResearchProgram"
         xmlns:dotNetKitControls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
         mc:Ignorable="d"
-        Title="Добавить нового человека" Height="450" Width="770" ResizeMode="NoResize">
+        Title="Добавить нового человека" Height="490" Width="770" ResizeMode="NoResize">
     <Grid>
 
         <Grid.ColumnDefinitions>
-            <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
             <ColumnDefinition/>
@@ -70,6 +69,31 @@
                          Content="Женщина"
                          Checked="RadioButton_Checked" />
         </StackPanel>
+
+        <Label Content="Степень"               
+               Grid.Row="0"
+               Grid.Column="4"
+               Margin="0 5 0 0"/>
+
+        <ComboBox Grid.Row="1"
+                 Grid.Column="4"
+                 Name="degreeComboBox"
+                  ItemsSource="{Binding WorkDegreesList }"
+                  Height="25"
+                 Margin="5 0"/>
+
+        <Label Content="Звание"               
+               Grid.Row="0"
+               Grid.Column="5"
+               Margin="0 5 0 0"/>
+
+        <ComboBox Grid.Row="1"
+                 Grid.Column="5"
+                 Name="rankComboBox"
+                  ItemsSource="{Binding WorkRanksList }"
+                  Height="25"
+                 Margin="5 0"/>
+
         <GroupBox Grid.Row="2"
                   Grid.RowSpan="5"
                   Grid.Column="0"
@@ -85,10 +109,10 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="255"/>
+                        <RowDefinition Height="285"/>
                         <RowDefinition Height="35"/>
                     </Grid.RowDefinitions>
-                    
+
                     <ListView Grid.Row="0"
                               Grid.ColumnSpan="100"
                               x:Name="workPlaceListView">
@@ -112,134 +136,9 @@
             </StackPanel>
         </GroupBox>
 
-        <!--<GroupBox Grid.Row="2"
-                  Grid.Column="0"
-                  Grid.RowSpan="50"
-                  Grid.ColumnSpan="100"
-                  Header="Место работы">
-            <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="25"/>
-            </Grid.RowDefinitions>
-
-
-                <Label Content="Место работы"
-               Grid.Row="0"
-               Grid.Column="0"
-               Margin="0 5 0 0"/>
-
-                <ComboBox Grid.Row="1"
-                  Grid.Column="0"
-                  Name="placeOfWorkComboBox"
-                  Margin="5 0"
-                  ItemsSource="{Binding PlaceOfWork}"
-                  Padding="5"/>
-
-                <Label Content="Категория"
-               Grid.Row="0"
-               Grid.Column="1"
-               Margin="0 5 0 0"/>
-
-                <ComboBox Grid.Row="1"
-                  Grid.Column="1"
-                  Name="categoryComboBox"
-                  Margin="5 0"
-                  ItemsSource="{Binding WorkCategories}"
-            Padding="5"/>
-
-                <Label Content="Степень"
-                           Grid.Row="2"
-                           Grid.Column="0"
-                           Margin="0 5 0 0"/>
-
-                <ComboBox Grid.Row="3"
-                  Grid.Column="0"
-                  Name="degreeComboBox"
-                  Margin="5 0"
-                  ItemsSource="{Binding WorkDegrees}"
-                  Padding="5"/>
-
-                <Label Content="Звание"
-                           Grid.Row="2"
-                           Grid.Column="1"
-                           Margin="0 5 0 0"/>
-
-                <ComboBox Grid.Row="3"
-                  Grid.Column="1"
-                  Name="rankComboBox"
-                  Margin="5 0"
-                  ItemsSource="{Binding WorkRanks}"
-                  Padding="5"/>
-
-                <Grid Name="depositsGrid"
-                      Grid.Row="0"
-                      Grid.Column="2"
-                      Grid.ColumnSpan="3"
-                      Grid.RowSpan="7">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="25"/>
-                        <RowDefinition Height="60"/>
-                        <RowDefinition Height="3"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="4*"/>
-                        <ColumnDefinition Width="3*"/>
-                        <ColumnDefinition Width="2*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Label Content="Должность"
-                           Grid.Row="0"
-                           Grid.Column="0"
-                           FontSize="13" 
-                           Grid.ColumnSpan="3"/>
-
-                    <Label Content="Ставка"
-                           Grid.Row="0"
-                           Grid.Column="1"
-                           FontSize="13"/>
-
-                    <Label Content="Оклад"
-                           Grid.Row="0"
-                           Grid.Column="4"
-                           FontSize="13"/>
-
-                    <ListView Grid.Row="1"
-                      Grid.ColumnSpan="3"
-                      x:Name="jobsVerticalListView">
-                    </ListView>
-
-                    <Button Content="Добавить"
-                            Name="jobsAddButton"
-                            Grid.Row="2"
-                            Grid.Column="0"
-                            Margin="0 5 20 5"
-                            Click="jobsAddButton_Click_1"/>
-
-                    <Button Content="Удалить"
-                            Name="jobsDeleteButton"
-                            Grid.Row="2"
-                            Grid.Column="1"
-                    Margin="0 5 20 5"
-                            Width="Auto" 
-                            Click="jobsDeleteButton_Click"/>
-                </Grid>
-
-            </Grid>
-        </GroupBox>-->
-
-
         <Button Content="Добавить человека"
                 Grid.Row="7"
-                Grid.Column="5"
+                Grid.Column="4"
                 Grid.ColumnSpan="2"
                 Margin="50 5 5 5"
                 Click="createPersonButtonClick"
