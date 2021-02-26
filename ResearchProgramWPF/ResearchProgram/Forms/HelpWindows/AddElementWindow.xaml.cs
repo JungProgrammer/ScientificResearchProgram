@@ -21,6 +21,16 @@ namespace ResearchProgram.Forms.HelpWindows
     /// </summary>
     public partial class AddElementWindow : Window, INotifyPropertyChanged
     {
+        private string _typeWindow;
+        public string TypeWindow
+        {
+            get => _typeWindow;
+            set
+            {
+                _typeWindow = value;
+                OnPropertyChanged(nameof(_typeWindow));
+            }
+        }
 
         private string _newNameOfElement;
         public string NewNameOfElement
@@ -33,15 +43,28 @@ namespace ResearchProgram.Forms.HelpWindows
             }
         }
 
+        private string _salaty;
+        public string Salary
+        {
+            get => _salaty;
+            set
+            {
+                _salaty = value;
+                OnPropertyChanged(nameof(Salary));
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        public AddElementWindow()
+        public AddElementWindow(string typeWindow)
         {
             InitializeComponent();
+
+            TypeWindow = typeWindow;
 
             DataContext = this;
         }

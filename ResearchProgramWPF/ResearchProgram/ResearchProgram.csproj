@@ -125,11 +125,13 @@
     </ApplicationDefinition>
     <Compile Include="Classes\OKVED.cs" />
     <Compile Include="Classes\PlaceOfWork.cs" />
+    <Compile Include="Classes\WindowsArgumentsTranfer.cs" />
     <Compile Include="Classes\WorkCategories.cs" />
     <Compile Include="Classes\WorkDegree.cs" />
     <Compile Include="Classes\WorkRank.cs" />
     <Compile Include="Converters\NOCConverter.cs" />
     <Compile Include="Converters\SumConverter.cs" />
+    <Compile Include="Converters\WindowsHelperConverter.cs" />
     <Compile Include="Forms\CreateCustomerWindow.xaml.cs">
       <DependentUpon>CreateCustomerWindow.xaml</DependentUpon>
     </Compile>
@@ -151,6 +153,9 @@
     </Compile>
     <Compile Include="Forms\HelpWindows\EditElementWindow.xaml.cs">
       <DependentUpon>EditElementWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\JobsWindow.xaml.cs">
+      <DependentUpon>JobsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\PlaceOfWorkWindow.xaml.cs">
       <DependentUpon>PlaceOfWorkWindow.xaml</DependentUpon>
@@ -221,6 +226,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\HelpWindows\EditElementWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\JobsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -14,30 +13,31 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using ResearchProgram.Classes;
 using ResearchProgram.Forms.HelpWindows;
+using ResearchProgram.Classes;
+using System.Runtime.CompilerServices;
 
 namespace ResearchProgram.Forms
 {
     /// <summary>
-    /// Логика взаимодействия для PlaceOfWork.xaml
+    /// Логика взаимодействия для JobsWindow.xaml
     /// </summary>
-    public partial class PlaceOfWorkWindow : Window, INotifyPropertyChanged
+    public partial class JobsWindow : Window, INotifyPropertyChanged
     {
-        public ObservableCollection<PlaceOfWork> PlaceWorkNames { get; set; }
+        public ObservableCollection<Job> JobNames { get; set; }
 
-        private PlaceOfWork _selectedPlaceOfWork;
-        public PlaceOfWork SelectedPlaceOfWork
+        private Job _selectedJob;
+        public Job SelectedJob
         {
-            get => _selectedPlaceOfWork;
+            get => _selectedJob;
             set
             {
-                _selectedPlaceOfWork = value;
-                OnPropertyChanged(nameof(SelectedPlaceOfWork));
+                _selectedJob = value;
+                OnPropertyChanged(nameof(SelectedJob));
             }
         }
 
-        private PlaceOfWork newPlaceWorkElement;
+        private Job newPlaceWorkElement;
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -46,21 +46,21 @@ namespace ResearchProgram.Forms
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        public PlaceOfWorkWindow()
+        public JobsWindow()
         {
             InitializeComponent();
 
-            LoadPlaceWorkNames();
+            LoadJobNames();
 
             DataContext = this;
         }
 
-        private void LoadPlaceWorkNames()
+        private void LoadJobNames()
         {
-            PlaceWorkNames = new ObservableCollection<PlaceOfWork>();
+            JobNames = new ObservableCollection<Job>();
 
             CRUDDataBase.ConnectToDataBase();
-            PlaceWorkNames = CRUDDataBase.LoadPlacesOfWorks();
+            JobNames = CRUDDataBase.LoadJobs();
             CRUDDataBase.CloseConnection();
         }
 
@@ -70,15 +70,17 @@ namespace ResearchProgram.Forms
         /// <param name="newInputName"></param>
         public void ShowAddElementWindow()
         {
-            AddElementWindow addElementWindow = new AddElementWindow(WindowsArgumentsTranfer.IsPlaceOfWorksWindow);
+            AddElementWindow addElementWindow = new AddElementWindow(WindowsArgumentsTranfer.IsJobsWindow);
             addElementWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             string newInputName;
+            string newSalary;
 
             if (addElementWindow.ShowDialog() == true)
             {
                 newInputName = addElementWindow.NewNameOfElement;
-                AddNewPlaceOfWork(newInputName);
+                newSalary = addElementWindow.Salary;
+                AddNewJob(newInputName, newSalary);
 
                 MessageBox.Show("Информация сохранена");
             }
@@ -88,7 +90,7 @@ namespace ResearchProgram.Forms
                 MessageBox.Show("Все изменения в этом окне будут сброшены");
             }
         }
-        
+
         /// <summary>
         /// Открытие окна изменения элемента
         /// </summary>
@@ -103,7 +105,7 @@ namespace ResearchProgram.Forms
             if (editElementWindow.ShowDialog() == true)
             {
                 newInputName = editElementWindow.NewNameOfElement;
-                EditPlaceOfWork(newInputName);
+                EditJob(newInputName);
 
                 MessageBox.Show("Информация сохранена");
             }
@@ -131,9 +133,9 @@ namespace ResearchProgram.Forms
         /// <param name="e"></param>
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            if (SelectedPlaceOfWork != null)
+            if (SelectedJob != null)
             {
-                ShowEditElementWindow(SelectedPlaceOfWork.Title);
+                ShowEditElementWindow(SelectedJob.Title);
             }
             else
             {
@@ -141,42 +143,42 @@ namespace ResearchProgram.Forms
             }
         }
 
-        private void AddNewPlaceOfWork(string newNamePlaceOfWork)
+        private void AddNewJob(string newJobName, string newSalary)
         {
-            if(newNamePlaceOfWork != null)
+            if (newJobName != null)
             {
                 // Добавление в бд
                 CRUDDataBase.ConnectToDataBase();
-                newPlaceWorkElement = CRUDDataBase.AddPlaceOfWork(newNamePlaceOfWork);
+                newPlaceWorkElement = CRUDDataBase.AddJob(newJobName, newSalary);
                 CRUDDataBase.CloseConnection();
 
                 // Добавление в список
-                PlaceWorkNames.Add(newPlaceWorkElement);
+                JobNames.Add(newPlaceWorkElement);
             }
         }
 
-        private void EditPlaceOfWork(string newNamePlaceOfWork)
+        private void EditJob(string newJobName)
         {
             // Изменение в списке
-            SelectedPlaceOfWork.Title = newNamePlaceOfWork;
+            SelectedJob.Title = newJobName;
 
             // Изменение в бд
             CRUDDataBase.ConnectToDataBase();
-            CRUDDataBase.EditPlaceOfWork(SelectedPlaceOfWork);
+            CRUDDataBase.EditJob(SelectedJob);
             CRUDDataBase.CloseConnection();
         }
 
         private void delete_Click(object sender, RoutedEventArgs e)
         {
-            if (SelectedPlaceOfWork != null)
+            if (SelectedJob != null)
             {
                 // Удаление из бд
                 CRUDDataBase.ConnectToDataBase();
-                CRUDDataBase.DeletePlaceOfWork(SelectedPlaceOfWork);
+                CRUDDataBase.DeleteJob(SelectedJob);
                 CRUDDataBase.CloseConnection();
 
                 // Удаление из списка
-                PlaceWorkNames.Remove(SelectedPlaceOfWork);
+                JobNames.Remove(SelectedJob);
             }
             else
             {

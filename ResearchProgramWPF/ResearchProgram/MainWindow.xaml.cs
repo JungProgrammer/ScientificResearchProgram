@@ -526,7 +526,13 @@ namespace ResearchProgram
 
         private void Post_Click(object sender, RoutedEventArgs e)
         {
+            JobsWindow jobsWindow = new JobsWindow()
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Owner = this
+            };
 
+            jobsWindow.ShowDialog();
         }
 
         private void Degree_Click(object sender, RoutedEventArgs e)

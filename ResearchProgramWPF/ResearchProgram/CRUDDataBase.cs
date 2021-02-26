@@ -979,6 +979,10 @@ namespace ResearchProgram
             }
         }
 
+        /// <summary>
+        /// Загрузка всех мест работ
+        /// </summary>
+        /// <returns></returns>
         public static ObservableCollection<PlaceOfWork> LoadPlacesOfWorks()
         {
             ObservableCollection<PlaceOfWork> placeOfWorks = new ObservableCollection<PlaceOfWork>();
@@ -1001,11 +1005,42 @@ namespace ResearchProgram
             return placeOfWorks;
         }
 
+        /// <summary>
+        /// Загрузка всех должностей
+        /// </summary>
+        /// <returns></returns>
+        public static ObservableCollection<Job> LoadJobs()
+        {
+            ObservableCollection<Job> jobs = new ObservableCollection<Job>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title, salary FROM jobs;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    jobs.Add(new Job()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
+                }
+            }
+
+            return jobs;
+        }
+
+        /// <summary>
+        /// Добавление нового места работы
+        /// </summary>
+        /// <param name="newNamePlaceOfWork">Название нового места работы</param>
+        /// <returns></returns>
         public static PlaceOfWork AddPlaceOfWork(string newNamePlaceOfWork)
         {
             PlaceOfWork newPlaceOfWork = null;
 
-            NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO place_of_work (title) VALUES (:title);", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO place_of_work (title) VALUES (:title);", conn); 
             cmd.Parameters.Add(new NpgsqlParameter("title", newNamePlaceOfWork));
             cmd.ExecuteNonQuery();
 
@@ -1025,6 +1060,41 @@ namespace ResearchProgram
             return newPlaceOfWork;
         }
 
+        /// <summary>
+        /// Добавление новой должности
+        /// </summary>
+        /// <param name="newJobName">Название новой должности</param>
+        /// <param name="newSalary">Ставка</param>
+        /// <returns></returns>
+        public static Job AddJob(string newJobName, string newSalary)
+        {
+            Job job = null;
+
+            NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO jobs (title, salary) VALUES (:title, :salary);", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", newJobName));
+            cmd.Parameters.Add(new NpgsqlParameter("salary", ResearchProgram.Parser.ConvertToRightFloat(newSalary)));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("SELECT id FROM jobs ORDER BY id DESC ", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Read();
+                job = new Job()
+                {
+                    Id = Convert.ToInt32(reader[0]),
+                    Title = newJobName
+                };
+            }
+
+            return job;
+        }
+
+        /// <summary>
+        /// Удаление места работы
+        /// </summary>
+        /// <param name="placeOfWork"></param>
         public static void DeletePlaceOfWork(PlaceOfWork placeOfWork)
         {
             NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM place_of_work WHERE id = :id;", conn);
@@ -1032,11 +1102,38 @@ namespace ResearchProgram
             cmd.ExecuteNonQuery();
         }
 
+        /// <summary>
+        /// Удаление должности
+        /// </summary>
+        /// <param name="job"></param>
+        public static void DeleteJob(Job job)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM jobs WHERE id = :id;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("id", job.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Изменение места работы
+        /// </summary>
+        /// <param name="placeOfWork"></param>
         public static void EditPlaceOfWork(PlaceOfWork placeOfWork)
         {
             NpgsqlCommand cmd = new NpgsqlCommand("UPDATE place_of_work SET title = :title WHERE id = :id;", conn);
             cmd.Parameters.Add(new NpgsqlParameter("id", placeOfWork.Id));
             cmd.Parameters.Add(new NpgsqlParameter("title", placeOfWork.Title));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Изменение должности
+        /// </summary>
+        /// <param name="job"></param>
+        public static void EditJob(Job job)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE jobs SET title = :title WHERE id = :id;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("id", job.Id));
+            cmd.Parameters.Add(new NpgsqlParameter("title", job.Title));
             cmd.ExecuteNonQuery();
         }
 
