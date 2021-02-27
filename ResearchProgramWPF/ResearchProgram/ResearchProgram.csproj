@@ -142,6 +142,9 @@
     <Compile Include="Classes\Depositor.cs" />
     <Compile Include="Converters\DepositsConverter.cs" />
     <Compile Include="FilterElement.cs" />
+    <Compile Include="Forms\DegreesWindow.xaml.cs">
+      <DependentUpon>DegreesWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\FiltersWindow.xaml.cs">
       <DependentUpon>FiltersWindow.xaml</DependentUpon>
     </Compile>
@@ -159,6 +162,9 @@
     </Compile>
     <Compile Include="Forms\PlaceOfWorkWindow.xaml.cs">
       <DependentUpon>PlaceOfWorkWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\RanksWindow.xaml.cs">
+      <DependentUpon>RanksWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="GrantHeader.cs" />
     <Compile Include="GrantsFilters.cs" />
@@ -213,6 +219,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Forms\DegreesWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\FiltersWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -234,6 +244,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\PlaceOfWorkWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\RanksWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

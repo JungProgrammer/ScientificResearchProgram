@@ -537,7 +537,24 @@ namespace ResearchProgram
 
         private void Degree_Click(object sender, RoutedEventArgs e)
         {
+            DegreesWindow degreesWindow = new DegreesWindow()
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Owner = this
+            };
 
+            degreesWindow.ShowDialog();
+        }
+
+        private void Rank_Click(object sender, RoutedEventArgs e)
+        {
+            RanksWindow ranksWindow = new RanksWindow()
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Owner = this
+            };
+
+            ranksWindow.ShowDialog();
         }
     }
 }

@@ -48,6 +48,7 @@
                     <MenuItem Header="Места работы" Click="PlaceOfWork_Click"/>
                     <MenuItem Header="Должности" Click="Post_Click"/>
                     <MenuItem Header="Степени" Click="Degree_Click"/>
+                    <MenuItem Header="Ранги" Click="Rank_Click"/>
                 </MenuItem>
                 
                 <Separator />

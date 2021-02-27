@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ResearchProgram.Classes;
+using ResearchProgram.Forms.HelpWindows;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -14,30 +16,28 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using ResearchProgram.Classes;
-using ResearchProgram.Forms.HelpWindows;
 
 namespace ResearchProgram.Forms
 {
     /// <summary>
-    /// Логика взаимодействия для PlaceOfWork.xaml
+    /// Логика взаимодействия для RanksWindow.xaml
     /// </summary>
-    public partial class PlaceOfWorkWindow : Window, INotifyPropertyChanged
+    public partial class RanksWindow : Window, INotifyPropertyChanged
     {
-        public ObservableCollection<PlaceOfWork> PlaceWorkNames { get; set; }
+        public ObservableCollection<WorkRank> RanksNames { get; set; }
 
-        private PlaceOfWork _selectedPlaceOfWork;
-        public PlaceOfWork SelectedPlaceOfWork
+        private WorkRank _selectedRankName;
+        public WorkRank SelectedRankName
         {
-            get => _selectedPlaceOfWork;
+            get => _selectedRankName;
             set
             {
-                _selectedPlaceOfWork = value;
-                OnPropertyChanged(nameof(SelectedPlaceOfWork));
+                _selectedRankName = value;
+                OnPropertyChanged(nameof(SelectedRankName));
             }
         }
 
-        private PlaceOfWork newPlaceWorkElement;
+        private WorkRank newRankElement;
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -46,21 +46,21 @@ namespace ResearchProgram.Forms
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        public PlaceOfWorkWindow()
+        public RanksWindow()
         {
             InitializeComponent();
 
-            LoadPlaceWorkNames();
+            LoadRanks();
 
             DataContext = this;
         }
 
-        private void LoadPlaceWorkNames()
+        private void LoadRanks()
         {
-            PlaceWorkNames = new ObservableCollection<PlaceOfWork>();
+            RanksNames = new ObservableCollection<WorkRank>();
 
             CRUDDataBase.ConnectToDataBase();
-            PlaceWorkNames = CRUDDataBase.LoadPlacesOfWorks();
+            RanksNames = CRUDDataBase.LoadRanks();
             CRUDDataBase.CloseConnection();
         }
 
@@ -78,7 +78,7 @@ namespace ResearchProgram.Forms
             if (addElementWindow.ShowDialog() == true)
             {
                 newInputName = addElementWindow.NewNameOfElement;
-                AddNewPlaceOfWork(newInputName);
+                AddNewRank(newInputName);
 
                 MessageBox.Show("Информация сохранена");
             }
@@ -88,7 +88,7 @@ namespace ResearchProgram.Forms
                 MessageBox.Show("Все изменения в этом окне будут сброшены");
             }
         }
-        
+
         /// <summary>
         /// Открытие окна изменения элемента
         /// </summary>
@@ -103,7 +103,7 @@ namespace ResearchProgram.Forms
             if (editElementWindow.ShowDialog() == true)
             {
                 newInputName = editElementWindow.NewNameOfElement;
-                EditPlaceOfWork(newInputName);
+                EditRank(newInputName);
 
                 MessageBox.Show("Информация сохранена");
             }
@@ -131,9 +131,9 @@ namespace ResearchProgram.Forms
         /// <param name="e"></param>
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            if (SelectedPlaceOfWork != null)
+            if (SelectedRankName != null)
             {
-                ShowEditElementWindow(SelectedPlaceOfWork.Title);
+                ShowEditElementWindow(SelectedRankName.Title);
             }
             else
             {
@@ -141,42 +141,42 @@ namespace ResearchProgram.Forms
             }
         }
 
-        private void AddNewPlaceOfWork(string newNamePlaceOfWork)
+        private void AddNewRank(string newRankName)
         {
-            if(newNamePlaceOfWork != null)
+            if (newRankName != null)
             {
                 // Добавление в бд
                 CRUDDataBase.ConnectToDataBase();
-                newPlaceWorkElement = CRUDDataBase.AddPlaceOfWork(newNamePlaceOfWork);
+                newRankElement = CRUDDataBase.AddRank(newRankName);
                 CRUDDataBase.CloseConnection();
 
                 // Добавление в список
-                PlaceWorkNames.Add(newPlaceWorkElement);
+                RanksNames.Add(newRankElement);
             }
         }
 
-        private void EditPlaceOfWork(string newNamePlaceOfWork)
+        private void EditRank(string newNamePlaceOfWork)
         {
             // Изменение в списке
-            SelectedPlaceOfWork.Title = newNamePlaceOfWork;
+            SelectedRankName.Title = newNamePlaceOfWork;
 
             // Изменение в бд
             CRUDDataBase.ConnectToDataBase();
-            CRUDDataBase.EditPlaceOfWork(SelectedPlaceOfWork);
+            CRUDDataBase.EditRank(SelectedRankName);
             CRUDDataBase.CloseConnection();
         }
 
         private void delete_Click(object sender, RoutedEventArgs e)
         {
-            if (SelectedPlaceOfWork != null)
+            if (SelectedRankName != null)
             {
                 // Удаление из бд
                 CRUDDataBase.ConnectToDataBase();
-                CRUDDataBase.DeletePlaceOfWork(SelectedPlaceOfWork);
+                CRUDDataBase.DeleteRank(SelectedRankName);
                 CRUDDataBase.CloseConnection();
 
                 // Удаление из списка
-                PlaceWorkNames.Remove(SelectedPlaceOfWork);
+                RanksNames.Remove(SelectedRankName);
             }
             else
             {

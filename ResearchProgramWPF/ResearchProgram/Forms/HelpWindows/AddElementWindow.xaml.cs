@@ -43,13 +43,13 @@ namespace ResearchProgram.Forms.HelpWindows
             }
         }
 
-        private string _salaty;
+        private string _salary;
         public string Salary
         {
-            get => _salaty;
+            get => _salary;
             set
             {
-                _salaty = value;
+                _salary = value;
                 OnPropertyChanged(nameof(Salary));
             }
         }

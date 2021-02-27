@@ -930,12 +930,65 @@ namespace ResearchProgram
                     jobs.Add(new Job()
                     {
                         Id = Convert.ToInt32(reader[0]),
-                        Title = reader[1].ToString()
+                        Title = reader[1].ToString(),
+                        Salary = float.Parse(reader[2].ToString())
                     });
                 }
             }
 
             return jobs;
+        }
+
+        /// <summary>
+        /// Загрузка из бд всех степеней
+        /// </summary>
+        /// <returns></returns>
+        public static ObservableCollection<WorkDegree> LoadDegrees()
+        {
+            ObservableCollection<WorkDegree> degrees = new ObservableCollection<WorkDegree>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM work_degree;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    degrees.Add(new WorkDegree()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
+                }
+            }
+
+            return degrees;
+        }
+
+        /// <summary>
+        /// Загрузка рангов
+        /// </summary>
+        /// <returns></returns>
+        public static ObservableCollection<WorkRank> LoadRanks()
+        {
+            ObservableCollection<WorkRank> workRanks = new ObservableCollection<WorkRank>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM work_rank;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    workRanks.Add(new WorkRank()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
+                }
+            }
+
+            return workRanks;
         }
 
         /// <summary>
@@ -977,9 +1030,11 @@ namespace ResearchProgram
         {
             Job job = null;
 
+            float salary = ResearchProgram.Parser.ConvertToRightFloat(newSalary);
+
             NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO jobs (title, salary) VALUES (:title, :salary);", conn);
             cmd.Parameters.Add(new NpgsqlParameter("title", newJobName));
-            cmd.Parameters.Add(new NpgsqlParameter("salary", ResearchProgram.Parser.ConvertToRightFloat(newSalary)));
+            cmd.Parameters.Add(new NpgsqlParameter("salary", salary));
             cmd.ExecuteNonQuery();
 
             cmd = new NpgsqlCommand("SELECT id FROM jobs ORDER BY id DESC ", conn);
@@ -991,11 +1046,70 @@ namespace ResearchProgram
                 job = new Job()
                 {
                     Id = Convert.ToInt32(reader[0]),
-                    Title = newJobName
+                    Title = newJobName,
+                    Salary = salary
                 };
             }
 
             return job;
+        }
+
+        /// <summary>
+        /// Добавление степени
+        /// </summary>
+        /// <param name="newDegreeName"></param>
+        /// <returns></returns>
+        public static WorkDegree AddDegree(string newDegreeName)
+        {
+            WorkDegree workDegree = null;
+
+            NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO work_degree (title) VALUES (:title);", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", newDegreeName));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("SELECT id FROM work_degree ORDER BY id DESC ", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Read();
+                workDegree = new WorkDegree()
+                {
+                    Id = Convert.ToInt32(reader[0]),
+                    Title = newDegreeName
+                };
+            }
+
+            return workDegree;
+        }
+
+        /// <summary>
+        /// Добавление ранга
+        /// </summary>
+        /// <param name="newRankName"></param>
+        /// <returns></returns>
+        public static WorkRank AddRank(string newRankName)
+        {
+            WorkRank workRank = null;
+
+            NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO work_rank (title) VALUES (:title);", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", newRankName));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("SELECT id FROM work_rank ORDER BY id DESC ", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Read();
+                workRank = new WorkRank()
+                {
+                    Id = Convert.ToInt32(reader[0]),
+                    Title = newRankName
+                };
+            }
+
+            return workRank;
         }
 
         /// <summary>
@@ -1021,6 +1135,28 @@ namespace ResearchProgram
         }
 
         /// <summary>
+        /// Удаление степени
+        /// </summary>
+        /// <param name="workDegree"></param>
+        public static void DeleteDegree(WorkDegree workDegree)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM work_degree WHERE id = :id;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("id", workDegree.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Удаление ранга
+        /// </summary>
+        /// <param name="workRank"></param>
+        public static void DeleteRank(WorkRank workRank)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM work_rank WHERE id = :id;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("id", workRank.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
         /// Изменение места работы
         /// </summary>
         /// <param name="placeOfWork"></param>
@@ -1038,9 +1174,34 @@ namespace ResearchProgram
         /// <param name="job"></param>
         public static void EditJob(Job job)
         {
-            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE jobs SET title = :title WHERE id = :id;", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE jobs SET title = :title, salary = :salary WHERE id = :id;", conn);
             cmd.Parameters.Add(new NpgsqlParameter("id", job.Id));
             cmd.Parameters.Add(new NpgsqlParameter("title", job.Title));
+            cmd.Parameters.Add(new NpgsqlParameter("salary", job.Salary));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Изменение степени
+        /// </summary>
+        /// <param name="workDegree"></param>
+        public static void EditDegree(WorkDegree workDegree)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE work_degree SET title = :title WHERE id = :id;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("id", workDegree.Id));
+            cmd.Parameters.Add(new NpgsqlParameter("title", workDegree.Title));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Изменение ранга
+        /// </summary>
+        /// <param name="workRank"></param>
+        public static void EditRank(WorkRank workRank)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE work_rank SET title = :title WHERE id = :id;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("id", workRank.Id));
+            cmd.Parameters.Add(new NpgsqlParameter("title", workRank.Title));
             cmd.ExecuteNonQuery();
         }
 

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ResearchProgram.Classes;
+using ResearchProgram.Forms.HelpWindows;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -14,30 +16,28 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using ResearchProgram.Classes;
-using ResearchProgram.Forms.HelpWindows;
 
 namespace ResearchProgram.Forms
 {
     /// <summary>
-    /// Логика взаимодействия для PlaceOfWork.xaml
+    /// Логика взаимодействия для DegreesWindow.xaml
     /// </summary>
-    public partial class PlaceOfWorkWindow : Window, INotifyPropertyChanged
+    public partial class DegreesWindow : Window, INotifyPropertyChanged
     {
-        public ObservableCollection<PlaceOfWork> PlaceWorkNames { get; set; }
+        public ObservableCollection<WorkDegree> DegreesNames { get; set; }
 
-        private PlaceOfWork _selectedPlaceOfWork;
-        public PlaceOfWork SelectedPlaceOfWork
+        private WorkDegree _selectedDegreeName;
+        public WorkDegree SelectedDegreeName
         {
-            get => _selectedPlaceOfWork;
+            get => _selectedDegreeName;
             set
             {
-                _selectedPlaceOfWork = value;
-                OnPropertyChanged(nameof(SelectedPlaceOfWork));
+                _selectedDegreeName = value;
+                OnPropertyChanged(nameof(SelectedDegreeName));
             }
         }
 
-        private PlaceOfWork newPlaceWorkElement;
+        private WorkDegree newDegreeElement;
 
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -46,21 +46,21 @@ namespace ResearchProgram.Forms
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        public PlaceOfWorkWindow()
+        public DegreesWindow()
         {
             InitializeComponent();
 
-            LoadPlaceWorkNames();
+            LoadDegrees();
 
             DataContext = this;
         }
 
-        private void LoadPlaceWorkNames()
+        private void LoadDegrees()
         {
-            PlaceWorkNames = new ObservableCollection<PlaceOfWork>();
+            DegreesNames = new ObservableCollection<WorkDegree>();
 
             CRUDDataBase.ConnectToDataBase();
-            PlaceWorkNames = CRUDDataBase.LoadPlacesOfWorks();
+            DegreesNames = CRUDDataBase.LoadDegrees();
             CRUDDataBase.CloseConnection();
         }
 
@@ -78,7 +78,7 @@ namespace ResearchProgram.Forms
             if (addElementWindow.ShowDialog() == true)
             {
                 newInputName = addElementWindow.NewNameOfElement;
-                AddNewPlaceOfWork(newInputName);
+                AddNewDegree(newInputName);
 
                 MessageBox.Show("Информация сохранена");
             }
@@ -88,7 +88,7 @@ namespace ResearchProgram.Forms
                 MessageBox.Show("Все изменения в этом окне будут сброшены");
             }
         }
-        
+
         /// <summary>
         /// Открытие окна изменения элемента
         /// </summary>
@@ -103,7 +103,7 @@ namespace ResearchProgram.Forms
             if (editElementWindow.ShowDialog() == true)
             {
                 newInputName = editElementWindow.NewNameOfElement;
-                EditPlaceOfWork(newInputName);
+                EditDegree(newInputName);
 
                 MessageBox.Show("Информация сохранена");
             }
@@ -131,9 +131,9 @@ namespace ResearchProgram.Forms
         /// <param name="e"></param>
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            if (SelectedPlaceOfWork != null)
+            if (SelectedDegreeName != null)
             {
-                ShowEditElementWindow(SelectedPlaceOfWork.Title);
+                ShowEditElementWindow(SelectedDegreeName.Title);
             }
             else
             {
@@ -141,42 +141,42 @@ namespace ResearchProgram.Forms
             }
         }
 
-        private void AddNewPlaceOfWork(string newNamePlaceOfWork)
+        private void AddNewDegree(string newDegreeName)
         {
-            if(newNamePlaceOfWork != null)
+            if (newDegreeName != null)
             {
                 // Добавление в бд
                 CRUDDataBase.ConnectToDataBase();
-                newPlaceWorkElement = CRUDDataBase.AddPlaceOfWork(newNamePlaceOfWork);
+                newDegreeElement = CRUDDataBase.AddDegree(newDegreeName);
                 CRUDDataBase.CloseConnection();
 
                 // Добавление в список
-                PlaceWorkNames.Add(newPlaceWorkElement);
+                DegreesNames.Add(newDegreeElement);
             }
         }
 
-        private void EditPlaceOfWork(string newNamePlaceOfWork)
+        private void EditDegree(string newNamePlaceOfWork)
         {
             // Изменение в списке
-            SelectedPlaceOfWork.Title = newNamePlaceOfWork;
+            SelectedDegreeName.Title = newNamePlaceOfWork;
 
             // Изменение в бд
             CRUDDataBase.ConnectToDataBase();
-            CRUDDataBase.EditPlaceOfWork(SelectedPlaceOfWork);
+            CRUDDataBase.EditDegree(SelectedDegreeName);
             CRUDDataBase.CloseConnection();
         }
 
         private void delete_Click(object sender, RoutedEventArgs e)
         {
-            if (SelectedPlaceOfWork != null)
+            if (SelectedDegreeName != null)
             {
                 // Удаление из бд
                 CRUDDataBase.ConnectToDataBase();
-                CRUDDataBase.DeletePlaceOfWork(SelectedPlaceOfWork);
+                CRUDDataBase.DeleteDegree(SelectedDegreeName);
                 CRUDDataBase.CloseConnection();
 
                 // Удаление из списка
-                PlaceWorkNames.Remove(SelectedPlaceOfWork);
+                DegreesNames.Remove(SelectedDegreeName);
             }
             else
             {

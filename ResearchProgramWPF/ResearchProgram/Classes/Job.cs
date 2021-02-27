@@ -25,8 +25,18 @@ namespace ResearchProgram
             }
         }
 
+
+        private float _salary;
         // Оклад
-        public float Salary { get; set; }
+        public float Salary
+        {
+            get => _salary;
+            set
+            {
+                _salary = value;
+                OnPropertyChanged(nameof(Salary));
+            }
+        }
 
         // Ставка
         public float SalaryRate { get; set; }

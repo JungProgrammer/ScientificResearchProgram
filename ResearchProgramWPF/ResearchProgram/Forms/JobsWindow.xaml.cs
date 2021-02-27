@@ -95,17 +95,19 @@ namespace ResearchProgram.Forms
         /// Открытие окна изменения элемента
         /// </summary>
         /// <param name="newInputName"></param>
-        public void ShowEditElementWindow(string selectedElement)
+        public void ShowEditElementWindow(Job job)
         {
-            EditElementWindow editElementWindow = new EditElementWindow(selectedElement);
+            EditElementWindow editElementWindow = new EditElementWindow(job.Title, WindowsArgumentsTranfer.IsJobsWindow, job.Salary.ToString());
             editElementWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             string newInputName;
+            string newSalary;
 
             if (editElementWindow.ShowDialog() == true)
             {
                 newInputName = editElementWindow.NewNameOfElement;
-                EditJob(newInputName);
+                newSalary = editElementWindow.Salary;
+                EditJob(newInputName, newSalary);
 
                 MessageBox.Show("Информация сохранена");
             }
@@ -135,7 +137,7 @@ namespace ResearchProgram.Forms
         {
             if (SelectedJob != null)
             {
-                ShowEditElementWindow(SelectedJob.Title);
+                ShowEditElementWindow(SelectedJob);
             }
             else
             {
@@ -157,10 +159,11 @@ namespace ResearchProgram.Forms
             }
         }
 
-        private void EditJob(string newJobName)
+        private void EditJob(string newJobName, string newSalary)
         {
             // Изменение в списке
             SelectedJob.Title = newJobName;
+            SelectedJob.Salary = Parser.ConvertToRightFloat(newSalary);
 
             // Изменение в бд
             CRUDDataBase.ConnectToDataBase();

@@ -15,7 +15,21 @@ namespace ResearchProgram
         /// <returns></returns>
         public static float ConvertToRightFloat(string floatNum)
         {
-            return float.Parse(floatNum.Replace('.', ','));
+            try
+            {
+                if (floatNum != null)
+                {
+                    return float.Parse(floatNum.Replace('.', ','));
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch
+            {
+                return 0;
+            }
         }
     }
 }
