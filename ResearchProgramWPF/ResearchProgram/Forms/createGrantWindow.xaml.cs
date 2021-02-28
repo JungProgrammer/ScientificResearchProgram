@@ -152,7 +152,7 @@ namespace ResearchProgram
                     void sumTextBoxTextChangedEventHandler(object senderr, TextChangedEventArgs args)
                     {
                         if (sumTextBox.Text.Length > 0)
-                            sumTextBoxNoNDS.Text = (Math.Round(Convert.ToDouble(sumTextBox.Text) * 1 / Settings.Default.NDSValue, 2)).ToString();
+                            sumTextBoxNoNDS.Text = (Math.Round(Convert.ToDouble(sumTextBox.Text) * 1 / ((bool)GrantWithoutNDSCheckBox.IsChecked ? 1 : Settings.Default.NDSValue), 2)).ToString();
                         else
                             sumTextBoxNoNDS.Text = "";
                     }
