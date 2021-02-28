@@ -172,7 +172,7 @@ namespace ResearchProgram
                         Margin = new Thickness(5, 0, 5, 10),
                         MinWidth = 110,
                         Text = grantToEdit.DepositorSum[i].ToString(),
-                        IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked
+                        //IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked
                     };
 
 
@@ -201,7 +201,7 @@ namespace ResearchProgram
 
                     horizontalStackPanel.Children.Add(depositorComboBox);
                     horizontalStackPanel.Children.Add(sumTextBox);
-                    horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0), IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked });
+                    horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0), /*IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked*/ });
                     horizontalStackPanel.Children.Add(sumTextBoxNoNDS);
                     horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 5, 0) });
                     horizontalStackPanel.Children.Add(dateComboBox);
@@ -396,7 +396,7 @@ namespace ResearchProgram
             void sumTextBoxTextChangedEventHandler(object senderr, TextChangedEventArgs args)
             {
                 if (sumTextBox.Text.Length > 0)
-                    sumTextBoxNoNDS.Text = (Math.Round(Convert.ToDouble(sumTextBox.Text) * 1 / Settings.Default.NDSValue, 2)).ToString();
+                    sumTextBoxNoNDS.Text = (Math.Round(Convert.ToDouble(sumTextBox.Text) * 1 / ((bool)GrantWithoutNDSCheckBox.IsChecked ? 1 : Settings.Default.NDSValue) /*Settings.Default.NDSValue*/, 2)).ToString();
                 else
                     sumTextBoxNoNDS.Text = "";
             }
@@ -419,7 +419,7 @@ namespace ResearchProgram
                 Margin = new Thickness(5, 0, 5, 10),
                 Width = 110,
                 Padding = new Thickness(0, 2, 0, 2),
-                IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked,
+                //IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked,
             };
 
             sumTextBoxNoNDS = new TextBox()
@@ -443,7 +443,7 @@ namespace ResearchProgram
 
             horizontalStackPanel.Children.Add(depositorComboBox);
             horizontalStackPanel.Children.Add(sumTextBox);
-            horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0), IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked });
+            horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0), /*IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked*/ });
             horizontalStackPanel.Children.Add(sumTextBoxNoNDS);
             horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 5, 0) });
             horizontalStackPanel.Children.Add(datePicker);
@@ -599,11 +599,11 @@ namespace ResearchProgram
             {
                 newGrant.grantNumber = grantNumberTextBox.Text;
 
-                if (!CRUDDataBase.IsGrantNumberAvailable(newGrant))
-                {
-                    incorrectDataString += "Договор с таким номером уже существует. Пожалуйста, укажите уникальный номер договора.\n\n";
-                    isAllOkey = false;
-                }
+                //if (!CRUDDataBase.IsGrantNumberAvailable(newGrant))
+                //{
+                //    incorrectDataString += "Договор с таким номером уже существует. Пожалуйста, укажите уникальный номер договора.\n\n";
+                //    isAllOkey = false;
+                //}
             }
             else
             {
@@ -688,33 +688,9 @@ namespace ResearchProgram
                     }
 
                     else
-                    if ((bool)GrantWithoutNDSCheckBox.IsChecked)
                     {
-                        //БЕЗ НДС
-                        if(partSumNoNDS.Text.ToString() != "")
+                        if (partSumNoNDS.Text.ToString() != "" && partSum.Text.ToString() != "")
                         {
-                            //ПОЛЯ ЗАПОЛНЕНЫ ПРАВИЛЬНО
-                            newGrant.Depositor.Add(new Depositor()
-                            {
-                                Id = ((Depositor)cmb.SelectedItem).Id,
-                                Title = cmb.SelectedItem.ToString(),
-                            });
-                            newGrant.DepositorSum.Add(0);
-                            newGrant.DepositorSumNoNDS.Add(Parser.ConvertToRightFloat(partSumNoNDS.Text));
-                            newGrant.ReceiptDate.Add(selectedDate.ToShortDateString());
-                        }
-                        else
-                        {
-                            isAllOkey = false;
-                            incorrectDataString += "Не указаны суммы финансирования.\n";
-                        }
-                    }
-                    else
-                    {
-                        // С НДС
-                        if (partSum.Text.ToString() != "" && partSumNoNDS.Text.ToString() != "")
-                        {
-                            //ПОЛЯ ЗАПОЛНЕНЫ ПРАВИЛЬНО
                             newGrant.Depositor.Add(new Depositor()
                             {
                                 Id = ((Depositor)cmb.SelectedItem).Id,
@@ -724,12 +700,49 @@ namespace ResearchProgram
                             newGrant.DepositorSumNoNDS.Add(Parser.ConvertToRightFloat(partSumNoNDS.Text));
                             newGrant.ReceiptDate.Add(selectedDate.ToShortDateString());
                         }
-                        else
-                        {
-                            isAllOkey = false;
-                            incorrectDataString += "Не указаны суммы финансирования.\n";
-                        }
                     }
+                    //if ((bool)GrantWithoutNDSCheckBox.IsChecked)
+                    //{
+                    //    //БЕЗ НДС
+                    //    if (partSumNoNDS.Text.ToString() != "")
+                    //    {
+                    //        //ПОЛЯ ЗАПОЛНЕНЫ ПРАВИЛЬНО
+                    //        newGrant.Depositor.Add(new Depositor()
+                    //        {
+                    //            Id = ((Depositor)cmb.SelectedItem).Id,
+                    //            Title = cmb.SelectedItem.ToString(),
+                    //        });
+                    //        newGrant.DepositorSum.Add(0);
+                    //        newGrant.DepositorSumNoNDS.Add(Parser.ConvertToRightFloat(partSumNoNDS.Text));
+                    //        newGrant.ReceiptDate.Add(selectedDate.ToShortDateString());
+                    //    }
+                    //    else
+                    //    {
+                    //        isAllOkey = false;
+                    //        incorrectDataString += "Не указаны суммы финансирования.\n";
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    // С НДС
+                    //    if (partSum.Text.ToString() != "" && partSumNoNDS.Text.ToString() != "")
+                    //    {
+                    //        //ПОЛЯ ЗАПОЛНЕНЫ ПРАВИЛЬНО
+                    //        newGrant.Depositor.Add(new Depositor()
+                    //        {
+                    //            Id = ((Depositor)cmb.SelectedItem).Id,
+                    //            Title = cmb.SelectedItem.ToString(),
+                    //        });
+                    //        newGrant.DepositorSum.Add(Parser.ConvertToRightFloat(partSum.Text));
+                    //        newGrant.DepositorSumNoNDS.Add(Parser.ConvertToRightFloat(partSumNoNDS.Text));
+                    //        newGrant.ReceiptDate.Add(selectedDate.ToShortDateString());
+                    //    }
+                    //    else
+                    //    {
+                    //        isAllOkey = false;
+                    //        incorrectDataString += "Не указаны суммы финансирования.\n";
+                    //    }
+                    //}
                 }
             }
 
@@ -971,19 +984,19 @@ namespace ResearchProgram
 
         private void GrantWithoutNDSCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            priceTextBox.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
-            PriceLabel.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
-            PriceRubLabel.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
-            SummLabel.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
-            if ((bool)GrantWithoutNDSCheckBox.IsChecked)
-                priceTextBox.Text = "";
-            foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
-            {
-                sp.Children[1].IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
-                if ((bool)GrantWithoutNDSCheckBox.IsChecked)
-                    ((TextBox)sp.Children[1]).Text = "";
-                sp.Children[2].IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
-            }
+            //priceTextBox.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
+            //PriceLabel.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
+            //PriceRubLabel.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
+            //SummLabel.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
+            //if ((bool)GrantWithoutNDSCheckBox.IsChecked)
+            //    priceTextBox.Text = "";
+            //foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
+            //{
+            //    sp.Children[1].IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
+            //    if ((bool)GrantWithoutNDSCheckBox.IsChecked)
+            //        ((TextBox)sp.Children[1]).Text = "";
+            //    sp.Children[2].IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
+            //}
         }
 
         private void priceNoNDSTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -993,6 +1006,18 @@ namespace ResearchProgram
                 e.Handled = true;
             }
         }
-        
+
+        /// <summary>
+        /// Изменение значения в textbox цена договора
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void priceTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (priceTextBox.Text.Length > 0)
+                priceNoNDSTextBox.Text = (Math.Round(Convert.ToDouble(priceTextBox.Text) * 1 / ((bool)GrantWithoutNDSCheckBox.IsChecked ? 1 : Settings.Default.NDSValue) /*Settings.Default.NDSValue*/, 2)).ToString();
+            else
+                priceNoNDSTextBox.Text = "";
+        }
     }
 }

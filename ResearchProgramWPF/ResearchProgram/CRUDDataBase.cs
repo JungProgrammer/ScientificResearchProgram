@@ -1000,7 +1000,7 @@ namespace ResearchProgram
         {
             PlaceOfWork newPlaceOfWork = null;
 
-            NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO place_of_work (title) VALUES (:title);", conn); 
+            NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO place_of_work (title) VALUES (:title);", conn);
             cmd.Parameters.Add(new NpgsqlParameter("title", newNamePlaceOfWork));
             cmd.ExecuteNonQuery();
 
@@ -2019,9 +2019,15 @@ namespace ResearchProgram
         /// </summary>
         public static void UpdateLeadNiokr(Grant fixedGrant)
         {
-            // Сначала удаление прошлых источников средств
             NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET leadniokrid = :leadniokrid WHERE id = :id", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("leadniokrid", fixedGrant.LeadNIOKR.Id));
+            if (fixedGrant.LeadNIOKR != null)
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("leadniokrid", fixedGrant.LeadNIOKR.Id));
+            }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("leadniokrid", DBNull.Value));
+            }
             cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
             cmd.ExecuteNonQuery();
         }
@@ -2604,24 +2610,24 @@ namespace ResearchProgram
             cmd.ExecuteNonQuery();
         }
 
-        public static bool IsGrantNumberAvailable(Grant grant)
-        {
-            ConnectToDataBase();
-            // Проверяем не занят ли номер договора, который пытаются вставлять/изменять
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT grantNumber FROM grants WHERE grantNumber = :grantNumber AND id != :id", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("grantNumber", grant.grantNumber));
-            cmd.Parameters.Add(new NpgsqlParameter("id", grant.Id));
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-            bool answer;
-            if (reader.HasRows)
-                answer = false;
-            else
-                answer = true;
-            CloseConnection();
+        //public static bool IsGrantNumberAvailable(Grant grant)
+        //{
+        //    ConnectToDataBase();
+        //    // Проверяем не занят ли номер договора, который пытаются вставлять/изменять
+        //    NpgsqlCommand cmd = new NpgsqlCommand("SELECT grantNumber FROM grants WHERE grantNumber = :grantNumber AND id != :id", conn);
+        //    cmd.Parameters.Add(new NpgsqlParameter("grantNumber", grant.grantNumber));
+        //    cmd.Parameters.Add(new NpgsqlParameter("id", grant.Id));
+        //    NpgsqlDataReader reader = cmd.ExecuteReader();
+        //    bool answer;
+        //    if (reader.HasRows)
+        //        answer = false;
+        //    else
+        //        answer = true;
+        //    CloseConnection();
 
-            return answer;
+        //    return answer;
 
-        }
+        //}
 
         public static Grant GetGrantById(string grantId)
         {
