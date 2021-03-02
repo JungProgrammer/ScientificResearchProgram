@@ -396,6 +396,7 @@ namespace ResearchProgram
             ExcelWorksheet worksheet = excelPackage.Workbook.Worksheets.Add("Лист 1");
             //грузим все данные из таблицы грантов одним махом
             worksheet.Cells["A1"].LoadFromDataTable(GrantsDataTable, PrintHeaders: true);
+            worksheet.DeleteColumn(1, 1);
             //удаляем колонки со средствами
             worksheet.DeleteColumn(EXCEL_DEPOSITS_START_COLUMN, 2);
             //получаем список средств
@@ -426,8 +427,8 @@ namespace ResearchProgram
                 //словарь для хранения средства и его значения
                 Dictionary<string, double> depositDict = new Dictionary<string, double>();
                 //получаем строку средств и значений, сразу же делим на массивы
-                string[] depositString = row.ItemArray[8].ToString().Split('\n');
-                string[] depositSummString = row.ItemArray[9].ToString().Split('\n');
+                string[] depositString = row.ItemArray[9].ToString().Split('\n');
+                string[] depositSummString = row.ItemArray[10].ToString().Split('\n');
                 //проходим по каждому виду средств
                 for (int i = 0; i < depositString.Length; i++)
                 {
@@ -435,7 +436,7 @@ namespace ResearchProgram
                     if (depositDict.ContainsKey(depositString[i]))
                         depositDict[depositString[i]] += Convert.ToDouble(depositSummString[i]);
                     else
-                        if(depositString[i] != String.Empty && depositSummString[i] != String.Empty && depositSummString[i] != "БЕЗ НДС")
+                        if(depositString[i] != String.Empty && depositSummString[i] != String.Empty)
                         {
                             //если такого средства в словаре еще нет, то добавим
                             depositDict.Add(depositString[i], Convert.ToDouble(depositSummString[i]));

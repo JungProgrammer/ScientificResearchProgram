@@ -56,8 +56,8 @@ namespace ResearchProgram
                 _isEditPerson = true;
                 _editedPersonId = personToEdit.Id;
                 _personFIO = personToEdit.FIO;
-                Title = "Редактирование человека";
-                createPersonButton.Content = "Редактировать человека";
+                Title = "Изменение информации о человеке";
+                createPersonButton.Content = "Сохранить";
                 FIOTextBox.Text = personToEdit.FIO;
 
                 for(int i = 0;i < WorkDegreesList.Count; i++)
@@ -441,7 +441,7 @@ namespace ResearchProgram
                     CRUDDataBase.UpdatePlaceOfWork(newPerson);
                     CRUDDataBase.UpdateDegree(newPerson);
                     CRUDDataBase.UpdateRank(newPerson);
-                    MessageBox.Show("Информация о человекек успешно изменена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Информация о человеке успешно изменена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
                     Close();
                 }
                 else

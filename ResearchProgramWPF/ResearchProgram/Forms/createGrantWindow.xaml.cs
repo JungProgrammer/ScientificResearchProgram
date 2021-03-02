@@ -113,7 +113,7 @@ namespace ResearchProgram
                 grantEditId = grantToEdit.Id;
                 grantNumber = grantToEdit.grantNumber;
                 Title = "Редактирование договора";
-                createGrantButton.Content = "Редактировать";
+                createGrantButton.Content = "Сохранить";
                 OKVEDTextBox.Text = grantToEdit.OKVED;
                 grantNumberTextBox.Text = grantToEdit.grantNumber;
                 NIOKRTextBox.Text = grantToEdit.NameNIOKR;
@@ -933,7 +933,7 @@ namespace ResearchProgram
                     // Закрываем соединение с БД
                     CRUDDataBase.CloseConnection();
 
-                    MessageBox.Show("Договор успешно изменен", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                    MessageBox.Show("Информация о договоре успешно изменена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 // Если создание нового договора
                 else

@@ -39,12 +39,12 @@ namespace ResearchProgram
             if (addTreeNodeWindow.ShowDialog() == true)
             {
                 inputNameStructure = addTreeNodeWindow.StructureTitle;
-                MessageBox.Show("Вершина успешно добавлена");
+                MessageBox.Show("Добавление успешно", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
                 inputNameStructure = string.Empty;
-                MessageBox.Show("Все изменения в этом окне будут сброшены");
+                MessageBox.Show("Все изменения в этом окне будут сброшены", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -60,18 +60,18 @@ namespace ResearchProgram
             if (renameNodeWindow.ShowDialog() == true)
             {
                 newInputName = renameNodeWindow.StructureTitle;
-                MessageBox.Show("Вершина успешно изменена");
+                MessageBox.Show("Изменение", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
                 newInputName = string.Empty;
-                MessageBox.Show("Все изменения в этом окне будут сброшены");
+                MessageBox.Show("Все изменения в этом окне будут сброшены", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
         internal static void ShowWarning(string message, ref bool result)
         {
-            MessageBoxResult messageBoxResult = MessageBox.Show(message, "Предупреждение", MessageBoxButton.YesNo);
+            MessageBoxResult messageBoxResult = MessageBox.Show(message, "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Warning);
             if (messageBoxResult == MessageBoxResult.Yes)
             {
                 result = true;
@@ -85,12 +85,12 @@ namespace ResearchProgram
 
         public static void ShowAlertAboutUnselectedTreeNode()
         {
-            MessageBox.Show("Необходимо выделить вершину");
+            MessageBox.Show("Необходимо выделить вершину", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         public static void ShowAlert(string message)
         {
-            MessageBox.Show(message);
+            MessageBox.Show(message, "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
     }
 }
