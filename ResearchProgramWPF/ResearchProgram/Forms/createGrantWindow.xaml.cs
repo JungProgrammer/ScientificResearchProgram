@@ -129,7 +129,7 @@ namespace ResearchProgram
                     {
                         Margin = new Thickness(5),
                         ItemsSource = new List<Customer>(CustomersList),
-                        MinWidth = 300
+                        Width = 270
                     };
 
                     for (int j = 0; j < CustomersList.Count; j++)
@@ -200,7 +200,7 @@ namespace ResearchProgram
                     DatePicker dateComboBox = new DatePicker()
                     {
                         Margin = new Thickness(5, 0, 5, 10),
-                        MinWidth = 110,
+                        Width = 110,
                         SelectedDate = selectedDate
                     };
 
@@ -223,7 +223,7 @@ namespace ResearchProgram
                     {
                         Margin = new Thickness(5),
                         ItemsSource = new List<Person>(PersonsList),
-                        MinWidth = 300
+                        Width = 270
                     };
                     for (int j = 0; j < PersonsList.Count; j++)
                         if (PersonsList[j].FIO == grantToEdit.Executor[i].FIO)
@@ -266,7 +266,7 @@ namespace ResearchProgram
                     {
                         Margin = new Thickness(5),
                         ItemsSource = new List<PriorityTrend>(PriorityTrendList),
-                        MinWidth = 300
+                        Width = 270
                     };
                     for (int j = 0; j < PriorityTrendList.Count; j++)
                         if (PriorityTrendList[j].Title == grantToEdit.PriorityTrands[i].Title)
@@ -282,7 +282,7 @@ namespace ResearchProgram
                     {
                         Margin = new Thickness(5),
                         ItemsSource = new List<ScienceType>(ScienceTypeList),
-                        MinWidth = 300
+                        Width = 270
                     };
 
                     for (int j = 0; j < ScienceTypeList.Count; j++)
@@ -327,7 +327,7 @@ namespace ResearchProgram
             {
                 Margin = new Thickness(5),
                 ItemsSource = new List<Customer>(CustomersList),
-                MinWidth = 270
+                Width = 270
             };
 
             customersVerticalListView.Items.Add(customerComboBox);
@@ -485,7 +485,7 @@ namespace ResearchProgram
             {
                 Margin = new Thickness(5),
                 ItemsSource = new List<Person>(PersonsList),
-                MinWidth = 270
+                Width = 270
             };
 
             executorsVerticalListView.Items.Add(executorComboBox);
