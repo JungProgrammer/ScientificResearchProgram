@@ -51,7 +51,7 @@ namespace ResearchProgram
                 OnPropertyChanged(nameof(SelectedEndDate));
             }
         }
-        
+
         // Таблица договоров
         public DataTable GrantsDataTable
         {
@@ -70,6 +70,9 @@ namespace ResearchProgram
         // Окно фильтров
         FiltersWindow filtersWindow;
 
+        public List<Person> PersonsList { get; set; }
+
+
         public MainWindow()
         {
             SplashScreen splash = new SplashScreen("Images\\splashscreen.png");
@@ -80,6 +83,11 @@ namespace ResearchProgram
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             GrantsFilters.ResetFilters();
+
+            // Загрузка людей
+            //LoadPersonsList();
+
+
 
             // Установка изначальных настроек
             SetSettings();
@@ -119,7 +127,7 @@ namespace ResearchProgram
         /// <summary>
         /// Загрузка данных в таблицу договоров
         /// </summary>
-        private void LoadGrantsTable()
+        public void LoadGrantsTable()
         {
             var ds = new DataSet("Grants");
             GrantsDataTable = ds.Tables.Add("GrantsTable");
@@ -130,6 +138,13 @@ namespace ResearchProgram
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
             CRUDDataBase.CloseConnection();
 
+        }
+
+        public void LoadPersonsList()
+        {
+            CRUDDataBase.ConnectToDataBase();
+            PersonsList = CRUDDataBase.GetPersons();
+            CRUDDataBase.CloseConnection();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -166,7 +181,7 @@ namespace ResearchProgram
         // открытие окна с созданием договора
         private void CreateGrantMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            CreateGrantWindow newGrantWindow = new CreateGrantWindow(GrantsDataTable)
+            CreateGrantWindow newGrantWindow = new CreateGrantWindow(GrantsDataTable, Owner:this)
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Owner = this
@@ -185,8 +200,9 @@ namespace ResearchProgram
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Owner = this
             };
-
-            newPersonWindow.ShowDialog();
+            // Эта штука нужна чтобы родительское окно не скрывалось, когда дочернее закрывается
+            newPersonWindow.Closing += (senders, args) => { newPersonWindow.Owner = null; };
+            newPersonWindow.Show();
         }
 
         // Открытие окна с созданием средств
@@ -226,11 +242,12 @@ namespace ResearchProgram
         /// <param name="e"></param>
         private void HideSelectedColumns(object sender, RoutedEventArgs e)
         {
-            if(GrantsTable.SelectedCells != null)
+            if (GrantsTable.SelectedCells != null)
             {
                 int columnNumber;
 
-                foreach(DataGridCellInfo selectedCell in GrantsTable.SelectedCells) {
+                foreach (DataGridCellInfo selectedCell in GrantsTable.SelectedCells)
+                {
                     columnNumber = selectedCell.Column.DisplayIndex;
                     GrantsTable.Columns[columnNumber].Visibility = Visibility.Collapsed;
                 }
@@ -254,7 +271,7 @@ namespace ResearchProgram
             }
         }
 
-        private void GrantsUpdateButton_Click(object sender, EventArgs e)
+        public void GrantsUpdateButton_Click(object sender, EventArgs e)
         {
             GrantsFilters.StartDepositDate.Data = _selectedStartDate.ToString();
             GrantsFilters.EndDepositDate.Data = _selectedEndDate.ToString();
@@ -264,14 +281,14 @@ namespace ResearchProgram
             CRUDDataBase.CloseConnection();
         }
 
-        private void PersonsUpdateButton_Click(object sender, EventArgs e)
+        public void PersonsUpdateButton_Click(object sender, EventArgs e)
         {
             CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.LoadPersonsTable(PeopleDataTable);
             CRUDDataBase.CloseConnection();
         }
 
-        private void CustomersUpdateButton_Click(object sender, EventArgs e)
+        public void CustomersUpdateButton_Click(object sender, EventArgs e)
         {
             CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.LoadCustomersTable(CustomersDataTable);
@@ -282,7 +299,7 @@ namespace ResearchProgram
         public DataRowView SelectedGrantRow
         {
             get { return selectedGrantRow; }
-            set {selectedGrantRow = value;}
+            set { selectedGrantRow = value; }
         }
         private void EditGrant(object sender, RoutedEventArgs e)
         {
@@ -419,7 +436,7 @@ namespace ResearchProgram
             }
             //обнуляем все средства одним махом
             worksheet.Cells[2, EXCEL_DEPOSITS_START_COLUMN, worksheet.Dimension.End.Row, EXCEL_DEPOSITS_START_COLUMN + depositors.Count].Value = 0;
-            
+
             //перебираем все строки в таблице грантов
             int row_count = 2;
             foreach (DataRow row in GrantsDataTable.Rows)
@@ -436,11 +453,11 @@ namespace ResearchProgram
                     if (depositDict.ContainsKey(depositString[i]))
                         depositDict[depositString[i]] += Convert.ToDouble(depositSummString[i]);
                     else
-                        if(depositString[i] != String.Empty && depositSummString[i] != String.Empty)
-                        {
-                            //если такого средства в словаре еще нет, то добавим
-                            depositDict.Add(depositString[i], Convert.ToDouble(depositSummString[i]));
-                        }
+                        if (depositString[i] != String.Empty && depositSummString[i] != String.Empty)
+                    {
+                        //если такого средства в словаре еще нет, то добавим
+                        depositDict.Add(depositString[i], Convert.ToDouble(depositSummString[i]));
+                    }
                 }
                 //перебираем словарь со средствами текущей строки
                 foreach (KeyValuePair<string, double> entry in depositDict)
@@ -454,7 +471,7 @@ namespace ResearchProgram
 
             worksheet.Cells["A:AA"].AutoFitColumns();
             worksheet.Cells["A1:AA1"].Style.Font.Bold = true;
-            worksheet.Cells[2,1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column].Style.WrapText = true;
+            worksheet.Cells[2, 1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column].Style.WrapText = true;
             worksheet.View.FreezePanes(2, 1);
             worksheet.Cells[1, 1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column].Style.Border.Top.Style = ExcelBorderStyle.Thin;
             worksheet.Cells[1, 1, worksheet.Dimension.End.Row, worksheet.Dimension.End.Column].Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
@@ -556,6 +573,17 @@ namespace ResearchProgram
             };
 
             ranksWindow.ShowDialog();
+        }
+
+        private void Category_Click(object sender, RoutedEventArgs e)
+        {
+            CategoryWindow categoryWindow = new CategoryWindow()
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Owner = this
+            };
+
+            categoryWindow.ShowDialog();
         }
     }
 }

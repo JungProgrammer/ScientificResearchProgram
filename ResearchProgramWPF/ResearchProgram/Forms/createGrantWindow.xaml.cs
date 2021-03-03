@@ -32,6 +32,7 @@ namespace ResearchProgram
         }
 
         //Списки данных из БД
+
         public ObservableCollection<string> NIOKRList { get; set; }
         public List<Person> PersonsList { get; set; }
         public List<Customer> CustomersList { get; set; }
@@ -49,6 +50,8 @@ namespace ResearchProgram
         public List<ComboBox> EnteredExecutorsList { get; set; }
         public List<Object[]> EnteredDepositsList { get; set; }
         public List<ComboBox> EnteredScienceTypesList { get; set; }
+
+        MainWindow mainWindow;
 
         public string NirChecker;
         public string NOCChecker;
@@ -72,15 +75,17 @@ namespace ResearchProgram
         }
 
 
-        public CreateGrantWindow(DataTable grantsDataTable, Grant grantToEdit = null)
+        public CreateGrantWindow(DataTable grantsDataTable, Grant grantToEdit = null, MainWindow Owner = null)
         {
             InitializeComponent();
+            mainWindow = Owner;
 
 
             // Подключение к базе данных
             CRUDDataBase.ConnectToDataBase();
 
             PersonsList = CRUDDataBase.GetPersons();
+            //PersonsList = mainWindow.PersonsList;
             UniversityStructure = CRUDDataBase.GetUniversityStructure();
             CustomersList = CRUDDataBase.GetCustomers();
             DepositsList = CRUDDataBase.GetDeposits();
@@ -122,7 +127,7 @@ namespace ResearchProgram
                 {
                     AutoCompleteComboBox customerComboBox = new AutoCompleteComboBox()
                     {
-                        Margin = new Thickness(5, 0, 5, 0),
+                        Margin = new Thickness(5),
                         ItemsSource = new List<Customer>(CustomersList),
                         MinWidth = 300
                     };
@@ -216,7 +221,7 @@ namespace ResearchProgram
                 {
                     AutoCompleteComboBox executorComboBox = new AutoCompleteComboBox()
                     {
-                        Margin = new Thickness(5, 0, 5, 0),
+                        Margin = new Thickness(5),
                         ItemsSource = new List<Person>(PersonsList),
                         MinWidth = 300
                     };
@@ -259,7 +264,7 @@ namespace ResearchProgram
                 {
                     AutoCompleteComboBox priorityTrendComboBox = new AutoCompleteComboBox()
                     {
-                        Margin = new Thickness(5, 0, 5, 0),
+                        Margin = new Thickness(5),
                         ItemsSource = new List<PriorityTrend>(PriorityTrendList),
                         MinWidth = 300
                     };
@@ -275,7 +280,7 @@ namespace ResearchProgram
                 {
                     AutoCompleteComboBox scienceTypeComboBox = new AutoCompleteComboBox()
                     {
-                        Margin = new Thickness(5, 0, 5, 0),
+                        Margin = new Thickness(5),
                         ItemsSource = new List<ScienceType>(ScienceTypeList),
                         MinWidth = 300
                     };
@@ -320,7 +325,7 @@ namespace ResearchProgram
         {
             AutoCompleteComboBox customerComboBox = new AutoCompleteComboBox()
             {
-                Margin = new Thickness(5, 0, 5, 0),
+                Margin = new Thickness(5),
                 ItemsSource = new List<Customer>(CustomersList),
                 MinWidth = 270
             };
@@ -478,7 +483,7 @@ namespace ResearchProgram
 
             AutoCompleteComboBox executorComboBox = new AutoCompleteComboBox()
             {
-                Margin = new Thickness(5, 0, 5, 0),
+                Margin = new Thickness(5),
                 ItemsSource = new List<Person>(PersonsList),
                 MinWidth = 270
             };
@@ -506,7 +511,7 @@ namespace ResearchProgram
         {
             AutoCompleteComboBox priorityTrendComboBox = new AutoCompleteComboBox()
             {
-                Margin = new Thickness(5, 0, 5, 0),
+                Margin = new Thickness(5),
                 ItemsSource = new List<PriorityTrend>(PriorityTrendList),
                 Width = 270
             };
@@ -535,7 +540,7 @@ namespace ResearchProgram
         {
             AutoCompleteComboBox scienceTypeComboBox = new AutoCompleteComboBox()
             {
-                Margin = new Thickness(5, 0, 5, 0),
+                Margin = new Thickness(5),
                 ItemsSource = new List<ScienceType>(ScienceTypeList),
                 Width = 270
             };
@@ -948,6 +953,8 @@ namespace ResearchProgram
 
                     MessageBox.Show("Договор успешно создан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
+                //mainWindow.LoadGrantsTable();
+                ((MainWindow)Owner).GrantsUpdateButton_Click(sender, e);
                 Close();
             }
             else
@@ -965,6 +972,7 @@ namespace ResearchProgram
                 case MessageBoxResult.Yes:
                     CRUDDataBase.DeleteGrant(grantNumber);
                     MessageBox.Show("Удаление успешно", "Удаление договора", MessageBoxButton.OK, MessageBoxImage.Information);
+                    ((MainWindow)Owner).GrantsUpdateButton_Click(sender, e);
                     Close();
                     break;
             }

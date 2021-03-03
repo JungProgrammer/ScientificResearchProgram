@@ -31,9 +31,10 @@ namespace ResearchProgram
                 _isEditCustomer = true;
                 _customerTitle = CustomerToEdit.Title;
                 _customerId = CustomerToEdit.Id;
-                Title = "Редактирование заказчика";
+                Title = "Редактирование информации о заказчике";
                 NewCustomerTextBox.Text = CustomerToEdit.Title;
-                AddCustomerButton.Content = "Редактировать";
+                NewCustomerShortNameTextBox.Text = CustomerToEdit.ShortTitle;
+                AddCustomerButton.Content = "Сохранить";
             }
         }
 
@@ -43,19 +44,20 @@ namespace ResearchProgram
             {
                 Customer customer = new Customer();
                 customer.Title = NewCustomerTextBox.Text;
+                customer.ShortTitle = NewCustomerShortNameTextBox.Text;
                 if (_isEditCustomer)
                 {
                     customer.Id = _customerId;
                     CRUDDataBase.UpdateCustomer(customer);
                     MessageBox.Show("Редактирование успешно ", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
-                    Close();
                 }
                 else
                 {
                     CRUDDataBase.AddNewCustomer(customer);
                     MessageBox.Show("Добавление успешно ", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
-                    Close();
                 }
+                ((MainWindow)Owner).CustomersUpdateButton_Click(sender, e);
+                Close();
             }
         }
         private void DeleteCustomerButton_Click(object sender, RoutedEventArgs e)
@@ -67,6 +69,7 @@ namespace ResearchProgram
                 case MessageBoxResult.Yes:
                     CRUDDataBase.DeleteCustomer(_customerId);
                     MessageBox.Show("Удаление успешно", "Удаление заказчика", MessageBoxButton.OK, MessageBoxImage.Information);
+                    ((MainWindow)Owner).CustomersUpdateButton_Click(sender, e);
                     Close();
                     break;
             }

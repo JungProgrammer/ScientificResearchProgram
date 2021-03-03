@@ -206,7 +206,8 @@ namespace ResearchProgram
         {
             DataRow row = customersDataTable.NewRow();
             row["id"] = customer.Id;
-            row["Наименование"] = customer.Title;
+            row["Наименование"] = customer.ShortTitle;
+            row["Полное наименование"] = customer.Title;
             customersDataTable.Rows.Add(row);
         }
     }

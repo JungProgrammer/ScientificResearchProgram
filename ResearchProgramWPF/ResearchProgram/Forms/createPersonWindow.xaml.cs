@@ -6,7 +6,7 @@ using System.Windows.Controls;
 using System.Data;
 using ResearchProgram.Classes;
 using System.ComponentModel;
- 
+
 namespace ResearchProgram
 {
     /// <summary>
@@ -60,7 +60,7 @@ namespace ResearchProgram
                 createPersonButton.Content = "Сохранить";
                 FIOTextBox.Text = personToEdit.FIO;
 
-                for(int i = 0;i < WorkDegreesList.Count; i++)
+                for (int i = 0; i < WorkDegreesList.Count; i++)
                 {
                     if (personToEdit.Degree.Id == WorkDegreesList[i].Id)
                         degreeComboBox.SelectedIndex = i;
@@ -78,7 +78,7 @@ namespace ResearchProgram
                 else
                     sexWoman.IsChecked = true;
 
-                foreach(Person.WorkPlace workPlace in personToEdit.workPlaces)
+                foreach (Person.WorkPlace workPlace in personToEdit.workPlaces)
                 {
                     Grid grid = new Grid();
                     grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(200) });
@@ -108,7 +108,7 @@ namespace ResearchProgram
                     grid.Children.Add(workPlaceComboBox);
                     Grid.SetRow(workPlaceComboBox, 1);
                     Grid.SetColumn(workPlaceComboBox, 0);
-                    for(int i =0;i< PlaceOfWorkList.Count; i++)
+                    for (int i = 0; i < PlaceOfWorkList.Count; i++)
                     {
                         if (workPlace.placeOfWork.Id == PlaceOfWorkList[i].Id)
                             workPlaceComboBox.SelectedIndex = i;
@@ -133,11 +133,12 @@ namespace ResearchProgram
                     grid.Children.Add(categoryComboBox);
                     Grid.SetRow(categoryComboBox, 3);
                     Grid.SetColumn(categoryComboBox, 0);
-                    for (int i = 0; i < WorkCategoriesList.Count; i++)
-                    {
-                        if (workPlace.workCategory.Id == WorkCategoriesList[i].Id)
-                            categoryComboBox.SelectedIndex = i;
-                    }
+                    if (workPlace.workCategory != null)
+                        for (int i = 0; i < WorkCategoriesList.Count; i++)
+                        {
+                            if (workPlace.workCategory.Id == WorkCategoriesList[i].Id)
+                                categoryComboBox.SelectedIndex = i;
+                        }
 
                     Grid jobGrid = new Grid();
                     jobGrid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -157,6 +158,15 @@ namespace ResearchProgram
                         Content = "Должность"
                     };
                     jobGrid.Children.Add(jobLabel);
+
+                    Label salaryLabel = new Label
+                    {
+                        Content = "Оклад"
+                    };
+                    jobGrid.Children.Add(salaryLabel);
+                    Grid.SetRow(salaryLabel, 0);
+                    Grid.SetColumn(salaryLabel, 1);
+
                     Label rateLabel = new Label
                     {
                         Content = "Ставка"
@@ -164,14 +174,7 @@ namespace ResearchProgram
                     jobGrid.Children.Add(rateLabel);
 
                     Grid.SetRow(rateLabel, 0);
-                    Grid.SetColumn(rateLabel, 1);
-                    Label salaryLabel = new Label
-                    {
-                        Content = "Оклад"
-                    };
-                    jobGrid.Children.Add(salaryLabel);
-                    Grid.SetRow(salaryLabel, 0);
-                    Grid.SetColumn(salaryLabel, 2);
+                    Grid.SetColumn(rateLabel, 2);
 
                     ListView jobListView = new ListView();
                     jobGrid.Children.Add(jobListView);
@@ -200,7 +203,7 @@ namespace ResearchProgram
                     Grid.SetColumn(deleteJobButton, 1);
 
 
-                    foreach(Job job in workPlace.jobList)
+                    foreach (Job job in workPlace.jobList)
                     {
                         Grid grid2 = new Grid();
                         grid2.ColumnDefinitions.Add(new ColumnDefinition());
@@ -442,16 +445,17 @@ namespace ResearchProgram
                     CRUDDataBase.UpdateDegree(newPerson);
                     CRUDDataBase.UpdateRank(newPerson);
                     MessageBox.Show("Информация о человеке успешно изменена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
-                    Close();
                 }
                 else
                 {
                     // Внесение нового человека в бд
                     CRUDDataBase.InsertNewPersonToDB(newPerson);
-
+                    //((MainWindow)Owner).LoadPersonsList();
                     MessageBox.Show("Информация о человеке успешно внесена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
-                    Close();
                 }
+                ((MainWindow)Owner).PersonsUpdateButton_Click(sender, e);
+                Close();
+
 
                 CRUDDataBase.CloseConnection();
             }
@@ -470,6 +474,7 @@ namespace ResearchProgram
                 case MessageBoxResult.Yes:
                     CRUDDataBase.DeletePerson(_editedPersonId);
                     MessageBox.Show("Удаление успешно", "Удаление человека", MessageBoxButton.OK, MessageBoxImage.Information);
+                    ((MainWindow)Owner).PersonsUpdateButton_Click(sender, e);
                     Close();
                     break;
             }
@@ -543,21 +548,22 @@ namespace ResearchProgram
                 Content = "Должность"
             };
             jobGrid.Children.Add(jobLabel);
-            Label rateLabel = new Label
-            {
-                Content = "Ставка"
-            };
-            jobGrid.Children.Add(rateLabel);
 
-            Grid.SetRow(rateLabel, 0);
-            Grid.SetColumn(rateLabel, 1);
             Label salaryLabel = new Label
             {
                 Content = "Оклад"
             };
             jobGrid.Children.Add(salaryLabel);
             Grid.SetRow(salaryLabel, 0);
-            Grid.SetColumn(salaryLabel, 2);
+            Grid.SetColumn(salaryLabel, 1);
+
+            Label rateLabel = new Label
+            {
+                Content = "Ставка"
+            };
+            jobGrid.Children.Add(rateLabel);
+            Grid.SetRow(rateLabel, 0);
+            Grid.SetColumn(rateLabel, 2);
 
             ListView jobListView = new ListView();
             jobGrid.Children.Add(jobListView);
@@ -608,7 +614,7 @@ namespace ResearchProgram
                     Margin = new Thickness(0, 5, 0, 0),
                     Height = 25,
                     Width = 100,
-                    
+
                 };
                 jobComboBox.SelectionChanged += jobComboBoxSelectionChanged_event;
                 grid2.Children.Add(jobComboBox);

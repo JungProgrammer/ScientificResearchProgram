@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:ResearchProgram.Forms.HelpWindows"
         xmlns:formNameSpace="clr-namespace:ResearchProgram"
         mc:Ignorable="d"
-        Title="Добавление элемента" Height="210" Width="450">
+        Title="Добавление элемента" Height="160" Width="450"
+        ResizeMode="NoResize">
 
     <Window.Resources>
         <formNameSpace:WindowsHelperConverter x:Key="windowsHelperConverter"/>
@@ -14,8 +15,8 @@
     
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="130"/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="80"/>
+            <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0"
@@ -39,7 +40,7 @@
                         Visibility="{Binding TypeWindow, Converter={StaticResource windowsHelperConverter}}"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Center">
-                <TextBlock Text="Ставка"
+                <TextBlock Text="Оклад"
                        Margin="5 0 0 4"
                        FontSize="14"/>
 

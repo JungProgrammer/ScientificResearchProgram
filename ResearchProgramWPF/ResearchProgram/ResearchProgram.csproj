@@ -132,6 +132,9 @@
     <Compile Include="Converters\NOCConverter.cs" />
     <Compile Include="Converters\SumConverter.cs" />
     <Compile Include="Converters\WindowsHelperConverter.cs" />
+    <Compile Include="Forms\CategoryWindow.xaml.cs">
+      <DependentUpon>CategoryWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\CreateCustomerWindow.xaml.cs">
       <DependentUpon>CreateCustomerWindow.xaml</DependentUpon>
     </Compile>
@@ -207,6 +210,10 @@
     <Compile Include="Converters\VisibilityConveter.cs" />
     <Compile Include="WorkerWithGrantsTable.cs" />
     <Compile Include="WorkerWithUniversityStructure.cs" />
+    <Page Include="Forms\CategoryWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\CreateCustomerWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

@@ -12,6 +12,8 @@ namespace ResearchProgram
 
         public string Title { get; set; }
 
+        public string ShortTitle { get; set; }
+
         public Customer()
         {
             Title = "";
@@ -24,7 +26,10 @@ namespace ResearchProgram
 
         public override string ToString()
         {
-            return Title;
+            if (ShortTitle != "")
+                return ShortTitle;
+            else
+                return Title;
         }
     }
 }

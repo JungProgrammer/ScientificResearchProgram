@@ -1,14 +1,12 @@
-﻿using System;
-using System.Data;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Npgsql;
-using System.Diagnostics;
-using System.Collections.ObjectModel;
-using System.Windows;
+﻿using Npgsql;
 using ResearchProgram.Classes;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows;
 
 namespace ResearchProgram
 {
@@ -63,6 +61,7 @@ namespace ResearchProgram
         {
             conn.Close();
         }
+
 
         public static Grant[] GetAllGrants()
         {
@@ -234,7 +233,7 @@ namespace ResearchProgram
 
 
             // Получение заказчиков
-            cmd = new NpgsqlCommand("SELECT grant_id, customer_id, customers.title FROM grants " +
+            cmd = new NpgsqlCommand("SELECT grant_id, customer_id, customers.title, customers.short_title FROM grants " +
                                         "JOIN grants_customers ON grants.id = grants_customers.grant_id " +
                                         "JOIN customers ON customers.customerid = grants_customers.customer_id; ", conn);
             reader = cmd.ExecuteReader();
@@ -249,7 +248,8 @@ namespace ResearchProgram
                     grants[grant_index].Customer.Add(new Customer()
                     {
                         Id = Convert.ToInt32(reader[1]),
-                        Title = reader[2].ToString()
+                        Title = reader[2].ToString(),
+                        ShortTitle = reader[3].ToString()
                     });
                 }
             }
@@ -991,6 +991,29 @@ namespace ResearchProgram
             return workRanks;
         }
 
+
+        public static ObservableCollection<WorkCategories> LoadCategories()
+        {
+            ObservableCollection<WorkCategories> workCategories = new ObservableCollection<WorkCategories>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM work_categories;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    workCategories.Add(new WorkCategories()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
+                }
+            }
+
+            return workCategories;
+        }
+
         /// <summary>
         /// Добавление нового места работы
         /// </summary>
@@ -1084,7 +1107,7 @@ namespace ResearchProgram
         }
 
         /// <summary>
-        /// Добавление ранга
+        /// Добавление звания
         /// </summary>
         /// <param name="newRankName"></param>
         /// <returns></returns>
@@ -1110,6 +1133,35 @@ namespace ResearchProgram
             }
 
             return workRank;
+        }
+
+        /// <summary>
+        /// Добавление категории
+        /// </summary>
+        /// <param name="newCategoryName"></param>
+        /// <returns></returns>
+        public static WorkCategories AddCategory(string newCategoryName)
+        {
+            WorkCategories workCategory = null;
+
+            NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO work_categories (title) VALUES (:title);", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("title", newCategoryName));
+            cmd.ExecuteNonQuery();
+
+            cmd = new NpgsqlCommand("SELECT id FROM work_rank ORDER BY id DESC ", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Read();
+                workCategory = new WorkCategories()
+                {
+                    Id = Convert.ToInt32(reader[0]),
+                    Title = newCategoryName
+                };
+            }
+
+            return workCategory;
         }
 
         /// <summary>
@@ -1146,13 +1198,24 @@ namespace ResearchProgram
         }
 
         /// <summary>
-        /// Удаление ранга
+        /// Удаление звания
         /// </summary>
         /// <param name="workRank"></param>
         public static void DeleteRank(WorkRank workRank)
         {
             NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM work_rank WHERE id = :id;", conn);
             cmd.Parameters.Add(new NpgsqlParameter("id", workRank.Id));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Удаление категории
+        /// </summary>
+        /// <param name="workCategory"></param>
+        public static void DeleteCategory(WorkCategories workCategory)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM work_categories WHERE id = :id;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("id", workCategory.Id));
             cmd.ExecuteNonQuery();
         }
 
@@ -1194,7 +1257,7 @@ namespace ResearchProgram
         }
 
         /// <summary>
-        /// Изменение ранга
+        /// Изменение звания
         /// </summary>
         /// <param name="workRank"></param>
         public static void EditRank(WorkRank workRank)
@@ -1202,6 +1265,18 @@ namespace ResearchProgram
             NpgsqlCommand cmd = new NpgsqlCommand("UPDATE work_rank SET title = :title WHERE id = :id;", conn);
             cmd.Parameters.Add(new NpgsqlParameter("id", workRank.Id));
             cmd.Parameters.Add(new NpgsqlParameter("title", workRank.Title));
+            cmd.ExecuteNonQuery();
+        }
+
+        /// <summary>
+        /// Изменение степени
+        /// </summary>
+        /// <param name="workCategory"></param>
+        public static void EditCategory(WorkCategories workCategory)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE work_categories SET title = :title WHERE id = :id;", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("id", workCategory.Id));
+            cmd.Parameters.Add(new NpgsqlParameter("title", workCategory.Title));
             cmd.ExecuteNonQuery();
         }
 
@@ -1217,7 +1292,7 @@ namespace ResearchProgram
             List<Customer> customers = new List<Customer>();
 
             // Получение остальных столбцов
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT customerid, title FROM customers ORDER BY customerid", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT customerid, title, short_title FROM customers ORDER BY customerid", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
 
@@ -1228,7 +1303,8 @@ namespace ResearchProgram
                     Customer c = new Customer
                     {
                         Id = Convert.ToInt32(reader[0]),
-                        Title = reader[1].ToString()
+                        Title = reader[1].ToString(),
+                        ShortTitle = reader[2].ToString()
                     };
                     customers.Add(c);
                 }
@@ -1540,21 +1616,30 @@ namespace ResearchProgram
                     {
                         while (reader.Read())
                         {
-                            person.workPlaces.Add(new Person.WorkPlace
+                            Person.WorkPlace workPlace = new Person.WorkPlace();
+                            if (reader[4] != DBNull.Value)
                             {
-                                Id = Convert.ToInt32(reader[4]),
-                                placeOfWork = new PlaceOfWork
+                                workPlace.Id = Convert.ToInt32(reader[4]);
+                            }
+                            if (reader[0] != DBNull.Value)
+                            {
+                                workPlace.placeOfWork = new PlaceOfWork
                                 {
                                     Id = Convert.ToInt32(reader[0]),
                                     Title = reader[2].ToString()
-                                },
-                                workCategory = new WorkCategories
+                                };
+                            }
+                            if (reader[3] != DBNull.Value)
+                            {
+                                workPlace.workCategory = new WorkCategories
                                 {
                                     Id = Convert.ToInt32(reader[1]),
                                     Title = reader[3].ToString()
-                                },
-                                jobList = new List<Job>()
-                            });
+                                };
+                            }
+                            workPlace.jobList = new List<Job>();
+
+                            person.workPlaces.Add(workPlace);
                         }
                     }
                     reader.Close();
@@ -1595,7 +1680,7 @@ namespace ResearchProgram
         public static List<Customer> GetCustomers()
         {
             List<Customer> customersList = new List<Customer>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT customerid, title FROM customers ORDER BY title;", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT customerid, title, short_title FROM customers ORDER BY title;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -1605,7 +1690,8 @@ namespace ResearchProgram
                     customersList.Add(new Customer()
                     {
                         Id = Convert.ToInt32(reader[0]),
-                        Title = reader[1].ToString()
+                        Title = reader[1].ToString(),
+                        ShortTitle = reader[2].ToString()
                     });
                 }
             }
@@ -2120,11 +2206,21 @@ namespace ResearchProgram
         {
             if (fixedGrant.ResearchType.Count > 0)
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grantresearchtype SET grantid = :grantid WHERE researchtypeid = :researchtypeid", conn);
+                NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM grantresearchtype WHERE grantid = :grantid", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("grantid", fixedGrant.Id));
+                cmd.ExecuteNonQuery();
+
+                cmd = new NpgsqlCommand("insert into grantresearchtype (" +
+                "grantid, " +
+                "researchtypeid) " +
+                "values(" +
+                ":grantid, " +
+                ":researchtypeid)", conn);
                 cmd.Parameters.Add(new NpgsqlParameter("grantid", fixedGrant.Id));
                 cmd.Parameters.Add(new NpgsqlParameter("researchtypeid", fixedGrant.ResearchType[0].Id));
                 cmd.ExecuteNonQuery();
             }
+
         }
 
         /// <summary>
@@ -2290,9 +2386,10 @@ namespace ResearchProgram
         public static void UpdateCustomer(Customer fixedCustomer)
         {
             ConnectToDataBase();
-            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE customers SET title = :title WHERE customerid = :id", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE customers SET title = :title, short_title = :short_title WHERE customerid = :id", conn);
             cmd.Parameters.Add(new NpgsqlParameter("id", fixedCustomer.Id));
             cmd.Parameters.Add(new NpgsqlParameter("title", fixedCustomer.Title));
+            cmd.Parameters.Add(new NpgsqlParameter("short_title", fixedCustomer.ShortTitle));
             cmd.ExecuteNonQuery();
             CloseConnection();
         }
@@ -2754,8 +2851,9 @@ namespace ResearchProgram
         public static void AddNewCustomer(Customer customer)
         {
             ConnectToDataBase();
-            NpgsqlCommand cmd = new NpgsqlCommand("insert into customers (title) values(:title)", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("insert into customers (title, short_title) values(:title, :short_title)", conn);
             cmd.Parameters.Add(new NpgsqlParameter("title", customer.Title));
+            cmd.Parameters.Add(new NpgsqlParameter("short_title", customer.ShortTitle));
             cmd.ExecuteNonQuery();
             CloseConnection();
         }

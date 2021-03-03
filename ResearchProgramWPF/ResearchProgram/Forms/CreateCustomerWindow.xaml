@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResearchProgram"
         mc:Ignorable="d"
-        Title="Добавление заказчика" Height="150" Width="400">
+        Title="Добавление заказчика" Height="250" Width="400">
     <Grid>
         <Grid.ColumnDefinitions>
         </Grid.ColumnDefinitions>
@@ -13,23 +13,32 @@
             <RowDefinition/>
             <RowDefinition/>
             <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <Label Content="Введите название заказчика"
+        <Label Content="Введите полное наименование заказчика"
                Margin="5"
                Grid.Row="0"/>
         <TextBox Grid.Row="1"
                  Margin="5 0"
                  x:Name="NewCustomerTextBox"
                  Padding="0 9"/>
-        <Button Grid.Row="2"
+        <Label Content="Введите аббревиатуру заказчика"
+               Margin="5"
+               Grid.Row="2"/>
+        <TextBox Grid.Row="3"
+                 Margin="5 0"
+                 x:Name="NewCustomerShortNameTextBox"
+                 Padding="0 9"/>
+        <Button Grid.Row="4"
                 x:Name="AddCustomerButton"
                 HorizontalAlignment="Right"
                 Width="150"
                 Margin="5"
                 Content="Добавить"
                 Click="AddCustomerButton_Click"/>
-        <Button Grid.Row="2"
+        <Button Grid.Row="4"
                 x:Name="DeleteCustomerButton"
                 HorizontalAlignment="Left"
                 Width="150"
