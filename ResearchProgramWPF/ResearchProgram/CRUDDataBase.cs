@@ -2369,18 +2369,32 @@ namespace ResearchProgram
 
         public static void UpdateDegree(Person fixedPerson)
         {
-            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET degree_id = :degree_id WHERE id = :id", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("degree_id", fixedPerson.Degree.Id));
+                NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET degree_id = :degree_id WHERE id = :id", conn);
+            if (fixedPerson.Degree.Title != null)
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("degree_id", fixedPerson.Degree.Id));
+            }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("degree_id", DBNull.Value));
+            }
             cmd.Parameters.Add(new NpgsqlParameter("id", fixedPerson.Id));
-            cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
         }
 
         public static void UpdateRank(Person fixedPerson)
         {
-            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET rank_id = :rank_id WHERE id = :id", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("rank_id", fixedPerson.Rank.Id));
+                NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET rank_id = :rank_id WHERE id = :id", conn);
+                if (fixedPerson.Rank.Title != null)
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("rank_id", fixedPerson.Rank.Id));
+            }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("rank_id", DBNull.Value));
+            }
             cmd.Parameters.Add(new NpgsqlParameter("id", fixedPerson.Id));
-            cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
         }
 
         public static void UpdateCustomer(Customer fixedCustomer)
