@@ -85,7 +85,7 @@ namespace ResearchProgram
         public static void AddRowToGrantTable(DataTable grantsDataTable, Grant grant)
         {
             // Словарь для отображения средств
-            Dictionary<string, double> depositDict = new Dictionary<string, double>();
+            Dictionary<string, float> depositDict = new Dictionary<string, float>();
             for (int i = 0; i < grant.Depositor.Count; i++)
             {
                 string depositorStr;
@@ -102,11 +102,11 @@ namespace ResearchProgram
                     { 
                         if(!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey)
                         {
-                            depositDict[depositorStr] += Convert.ToDouble(depositorSumNoNDS);
+                            depositDict[depositorStr] += depositorSumNoNDS;
                         }
                         else
                         {
-                            depositDict[depositorStr] += Convert.ToDouble(depositorSum);
+                            depositDict[depositorStr] += depositorSum;
                         }
                     }
                     else
@@ -115,11 +115,11 @@ namespace ResearchProgram
                         {
                             if (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey)
                             {
-                                depositDict.Add(depositorStr, Convert.ToDouble(depositorSumNoNDS));
+                                depositDict.Add(depositorStr, depositorSumNoNDS);
                             }
                             else
                             {
-                                depositDict.Add(depositorStr, Convert.ToDouble(depositorSum));
+                                depositDict.Add(depositorStr, depositorSum);
                             }
                         }
                     }
@@ -128,7 +128,7 @@ namespace ResearchProgram
 
             // Строки для отображения
             string depositors = String.Empty;
-            string depositsSum = String.Empty;
+            string depositsSum = "";
 
             // Перевод словарей в строки отображения
             foreach(string depositor in depositDict.Keys)
@@ -137,7 +137,7 @@ namespace ResearchProgram
             }
             foreach(float depositorSum in depositDict.Values)
             {
-                depositsSum += depositorSum.ToString() + '\n';
+                depositsSum += depositorSum.ToString("0.##########") + '\n';
             }
 
 

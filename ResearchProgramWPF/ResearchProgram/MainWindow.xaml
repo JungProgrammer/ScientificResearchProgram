@@ -204,7 +204,9 @@
                                 <MenuItem Header="Редактировать" 
                                               Click="EditPeople">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/edit.png"/>
+                                        <Image Source="/ResearchProgram;component/Icons/edit.png"
+                                               Width="18"
+                                               Height="18"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                             </ContextMenu>
@@ -244,7 +246,9 @@
                                 <MenuItem Header="Редактировать" 
                                           Click="EditCustomer">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/edit.png"/>
+                                        <Image Source="/ResearchProgram;component/Icons/edit.png"
+                                               Width="18"
+                                               Height="18"/>
                                     </MenuItem.Icon>
                                 </MenuItem>
                             </ContextMenu>
