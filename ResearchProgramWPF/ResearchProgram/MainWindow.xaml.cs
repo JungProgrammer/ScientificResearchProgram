@@ -531,17 +531,6 @@ namespace ResearchProgram
 
         }
 
-        private void PlaceOfWork_Click(object sender, RoutedEventArgs e)
-        {
-            PlaceOfWorkWindow placeOfWorkWindow = new PlaceOfWorkWindow()
-            {
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-                Owner = this
-            };
-
-            placeOfWorkWindow.ShowDialog();
-        }
-
         private void Post_Click(object sender, RoutedEventArgs e)
         {
             JobsWindow jobsWindow = new JobsWindow()

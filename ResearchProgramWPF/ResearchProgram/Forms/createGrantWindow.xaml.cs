@@ -363,11 +363,11 @@ namespace ResearchProgram
             {
                 Margin = new Thickness(5, 0, 5, 0),
                 ItemsSource = new List<Person>(PersonsList),
-                MinWidth = 300,
 
             };
             CommonInfoGrid.Children.Add(LeadNIOKRAutoCompleteComboBox);
-            Grid.SetRow(LeadNIOKRAutoCompleteComboBox, 9);
+            Grid.SetRow(LeadNIOKRAutoCompleteComboBox, 5);
+            Grid.SetColumn(LeadNIOKRAutoCompleteComboBox, 0);
         }
 
         /// <summary>

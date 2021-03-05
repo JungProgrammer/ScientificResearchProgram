@@ -64,6 +64,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
@@ -124,7 +125,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\OKVED.cs" />
-    <Compile Include="Classes\PlaceOfWork.cs" />
+    <Compile Include="Classes\PersonWorkPalce.cs" />
+    <Compile Include="Classes\UniversityStructureNode.cs" />
     <Compile Include="Classes\WindowsArgumentsTranfer.cs" />
     <Compile Include="Classes\WorkCategories.cs" />
     <Compile Include="Classes\WorkDegree.cs" />
@@ -162,9 +164,6 @@
     </Compile>
     <Compile Include="Forms\JobsWindow.xaml.cs">
       <DependentUpon>JobsWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\PlaceOfWorkWindow.xaml.cs">
-      <DependentUpon>PlaceOfWorkWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\RanksWindow.xaml.cs">
       <DependentUpon>RanksWindow.xaml</DependentUpon>
@@ -247,10 +246,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\JobsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Forms\PlaceOfWorkWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

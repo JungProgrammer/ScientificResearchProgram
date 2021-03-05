@@ -887,32 +887,6 @@ namespace ResearchProgram
         }
 
         /// <summary>
-        /// Загрузка всех мест работ
-        /// </summary>
-        /// <returns></returns>
-        public static ObservableCollection<PlaceOfWork> LoadPlacesOfWorks()
-        {
-            ObservableCollection<PlaceOfWork> placeOfWorks = new ObservableCollection<PlaceOfWork>();
-
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM place_of_work;", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    placeOfWorks.Add(new PlaceOfWork()
-                    {
-                        Id = Convert.ToInt32(reader[0]),
-                        Title = reader[1].ToString()
-                    });
-                }
-            }
-
-            return placeOfWorks;
-        }
-
-        /// <summary>
         /// Загрузка всех должностей
         /// </summary>
         /// <returns></returns>
@@ -1012,35 +986,6 @@ namespace ResearchProgram
             }
 
             return workCategories;
-        }
-
-        /// <summary>
-        /// Добавление нового места работы
-        /// </summary>
-        /// <param name="newNamePlaceOfWork">Название нового места работы</param>
-        /// <returns></returns>
-        public static PlaceOfWork AddPlaceOfWork(string newNamePlaceOfWork)
-        {
-            PlaceOfWork newPlaceOfWork = null;
-
-            NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO place_of_work (title) VALUES (:title);", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", newNamePlaceOfWork));
-            cmd.ExecuteNonQuery();
-
-            cmd = new NpgsqlCommand("SELECT id FROM place_of_work ORDER BY id DESC ", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                reader.Read();
-                newPlaceOfWork = new PlaceOfWork()
-                {
-                    Id = Convert.ToInt32(reader[0]),
-                    Title = newNamePlaceOfWork
-                };
-            }
-
-            return newPlaceOfWork;
         }
 
         /// <summary>
@@ -1165,17 +1110,6 @@ namespace ResearchProgram
         }
 
         /// <summary>
-        /// Удаление места работы
-        /// </summary>
-        /// <param name="placeOfWork"></param>
-        public static void DeletePlaceOfWork(PlaceOfWork placeOfWork)
-        {
-            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM place_of_work WHERE id = :id;", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("id", placeOfWork.Id));
-            cmd.ExecuteNonQuery();
-        }
-
-        /// <summary>
         /// Удаление должности
         /// </summary>
         /// <param name="job"></param>
@@ -1216,18 +1150,6 @@ namespace ResearchProgram
         {
             NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM work_categories WHERE id = :id;", conn);
             cmd.Parameters.Add(new NpgsqlParameter("id", workCategory.Id));
-            cmd.ExecuteNonQuery();
-        }
-
-        /// <summary>
-        /// Изменение места работы
-        /// </summary>
-        /// <param name="placeOfWork"></param>
-        public static void EditPlaceOfWork(PlaceOfWork placeOfWork)
-        {
-            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE place_of_work SET title = :title WHERE id = :id;", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("id", placeOfWork.Id));
-            cmd.Parameters.Add(new NpgsqlParameter("title", placeOfWork.Title));
             cmd.ExecuteNonQuery();
         }
 
@@ -1604,9 +1526,8 @@ namespace ResearchProgram
             {
                 foreach (Person person in personsList)
                 {
-                    cmd = new NpgsqlCommand("SELECT place_of_work_id, category_id, pow.title, wc.title, persons_work_places.id FROM persons " +
+                    cmd = new NpgsqlCommand("SELECT category_id, wc.title, persons_work_places.id FROM persons " +
                         "JOIN persons_work_places ON persons.id = persons_work_places.person_id " +
-                        "LEFT JOIN place_of_work pow on persons_work_places.place_of_work_id = pow.id " +
                         "LEFT JOIN work_categories wc on persons_work_places.category_id = wc.id " +
                         "WHERE persons.id = :person_id;", conn);
                     cmd.Parameters.Add(new NpgsqlParameter("person_id", person.Id));
@@ -1616,25 +1537,25 @@ namespace ResearchProgram
                     {
                         while (reader.Read())
                         {
-                            Person.WorkPlace workPlace = new Person.WorkPlace();
-                            if (reader[4] != DBNull.Value)
+                            PersonWorkPalce workPlace = new PersonWorkPalce();
+                            if (reader[2] != DBNull.Value)
                             {
-                                workPlace.Id = Convert.ToInt32(reader[4]);
+                                workPlace.Id = Convert.ToInt32(reader[2]);
                             }
-                            if (reader[0] != DBNull.Value)
-                            {
-                                workPlace.placeOfWork = new PlaceOfWork
-                                {
-                                    Id = Convert.ToInt32(reader[0]),
-                                    Title = reader[2].ToString()
-                                };
-                            }
-                            if (reader[3] != DBNull.Value)
+                            //if (reader[0] != DBNull.Value)
+                            //{
+                            //    workPlace.placeOfWork = new WorkPlace
+                            //    {
+                            //        Id = Convert.ToInt32(reader[0]),
+                            //        Title = reader[2].ToString()
+                            //    };
+                            //}
+                            if (reader[1] != DBNull.Value)
                             {
                                 workPlace.workCategory = new WorkCategories
                                 {
-                                    Id = Convert.ToInt32(reader[1]),
-                                    Title = reader[3].ToString()
+                                    Id = Convert.ToInt32(reader[0]),
+                                    Title = reader[1].ToString()
                                 };
                             }
                             workPlace.jobList = new List<Job>();
@@ -1649,7 +1570,7 @@ namespace ResearchProgram
 
                 foreach (Person person in personsList)
                 {
-                    foreach (Person.WorkPlace workPlace in person.workPlaces)
+                    foreach (PersonWorkPalce workPlace in person.workPlaces)
                     {
 
                         cmd = new NpgsqlCommand("SELECT persons_jobs.job_id, j.title, j.salary, salary_rate FROM persons_jobs " +
@@ -2307,18 +2228,15 @@ namespace ResearchProgram
 
         public static void InserttNewPlaceOfWork(Person person)
         {
-            foreach (Person.WorkPlace placeOfWork in person.workPlaces)
+            foreach (PersonWorkPalce placeOfWork in person.workPlaces)
             {
                 NpgsqlCommand cmd = new NpgsqlCommand("insert into persons_work_places (" +
                 "person_id, " +
-                "place_of_work_id," +
                 "category_id) " +
                 "values(" +
                 ":person_id, " +
-                ":place_of_work_id, " +
                 ":category_id)", conn);
                 cmd.Parameters.Add(new NpgsqlParameter("person_id", person.Id));
-                cmd.Parameters.Add(new NpgsqlParameter("place_of_work_id", placeOfWork.placeOfWork.Id));
                 if (placeOfWork.workCategory.Title != null)
                 {
                     cmd.Parameters.Add(new NpgsqlParameter("category_id", placeOfWork.workCategory.Id));
@@ -2872,31 +2790,6 @@ namespace ResearchProgram
             CloseConnection();
         }
 
-        public static List<PlaceOfWork> GetPlacesOfWorks()
-        {
-            List<PlaceOfWork> placeOfWorks = new List<PlaceOfWork>();
-
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM place_of_work ORDER BY title;", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    placeOfWorks.Add(new PlaceOfWork()
-                    {
-                        Id = Convert.ToInt32(reader[0]),
-                        Title = reader[1].ToString()
-                    });
-                }
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
-            reader.Close();
-            return placeOfWorks;
-        }
 
         public static List<WorkCategories> GetWorkCategories()
         {
@@ -2974,6 +2867,36 @@ namespace ResearchProgram
             }
             reader.Close();
             return workRanks;
+        }
+
+        public static ObservableCollection<UniversityStructureNode> GetStructureNodes(string regex)
+        {
+            ConnectToDataBase();
+
+            ObservableCollection<UniversityStructureNode> firstNodesList = new ObservableCollection<UniversityStructureNode>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, address, title FROM work_place_structure WHERE address ~ " + regex + "ORDER BY title;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    firstNodesList.Add(new UniversityStructureNode()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Address = reader[1].ToString(),
+                        Title = reader[2].ToString()
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+            CloseConnection();
+            return firstNodesList;
         }
     }
 }

@@ -9,13 +9,7 @@ namespace ResearchProgram
 {
     public class Person : IContainer
     {
-        public struct WorkPlace
-        {
-            public PlaceOfWork placeOfWork;
-            public WorkCategories workCategory;
-            public List<Job> jobList;
-            public int Id;
-        }
+
         public Person()
         {
             Id = 0;
@@ -24,7 +18,7 @@ namespace ResearchProgram
             Sex = true;
             Degree = new WorkDegree();
             Rank = new WorkRank();
-            workPlaces = new List<WorkPlace>();
+            workPlaces = new List<PersonWorkPalce>();
         }
 
         public int Id { get; set; }
@@ -33,7 +27,7 @@ namespace ResearchProgram
         public bool Sex { get; set; }
         public WorkDegree Degree { get; set; }
         public WorkRank Rank { get; set; }
-        public List<WorkPlace> workPlaces { get; set; }
+        public List<PersonWorkPalce> workPlaces { get; set; }
 
 
         public string GetTitle()

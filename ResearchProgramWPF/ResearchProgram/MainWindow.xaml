@@ -44,7 +44,6 @@
                     <Separator />
                     <MenuItem Header="Структура университета" Click="StructureOfUniversity_Click"/>
                     <Separator />
-                    <MenuItem Header="Места работы" Click="PlaceOfWork_Click"/>
                     <MenuItem Header="Должности" Click="Post_Click"/>
                     <MenuItem Header="Степени" Click="Degree_Click"/>
                     <MenuItem Header="Звания" Click="Rank_Click"/>
