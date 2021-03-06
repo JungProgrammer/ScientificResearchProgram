@@ -10,9 +10,10 @@ namespace ResearchProgram.Classes
 {
     public class UniversityStructureNode : INotifyPropertyChanged
     {
-        public int id;
-        public string address;
-        public string title;
+        private int id;
+        private string address;
+        private string title;
+        private bool isMainWorkPlace;
         public int Id
         {
             get { return id; }
@@ -41,6 +42,19 @@ namespace ResearchProgram.Classes
                 title = value;
                 OnPropertyChanged("Title");
             }
+        }
+
+        public bool IsMainWorkPlace
+        {
+            get { return isMainWorkPlace; }
+            set { isMainWorkPlace = value;
+                OnPropertyChanged("IsMainWorkPlace");
+            }
+        }
+
+        public UniversityStructureNode()
+        {
+            IsMainWorkPlace = false;
         }
 
         public override string ToString()

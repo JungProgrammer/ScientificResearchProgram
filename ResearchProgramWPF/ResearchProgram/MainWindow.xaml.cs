@@ -84,11 +84,6 @@ namespace ResearchProgram
 
             GrantsFilters.ResetFilters();
 
-            // Загрузка людей
-            //LoadPersonsList();
-
-
-
             // Установка изначальных настроек
             SetSettings();
 

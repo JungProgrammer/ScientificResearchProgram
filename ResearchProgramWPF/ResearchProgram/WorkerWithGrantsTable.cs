@@ -160,10 +160,10 @@ namespace ResearchProgram
                 row["Поступления"]              = depositsSum;
                 row["Руководитель НИОКР"]       = grant.LeadNIOKR.shortName();
                 row["Исполнители"]              = string.Join("\n", grant.Executor.Select(x => x.shortName()).ToArray()); 
-                row["Учреждение"]               = grant.Institution;
-                row["Подразделение"]            = grant.Unit;
-                row["Кафедра"]                  = grant.Kafedra;
-                row["Лаборатория"]              = grant.Laboratory;
+                row["Учреждение"]               = grant.FirstNode;
+                row["Подразделение"]            = grant.SecondNode;
+                row["Отдел"]                    = grant.ThirdNode;
+                row["Структурная ед."]          = grant.FourthNode;
                 row["ГРНТИ"]                    = grant.GRNTI;
                 row["Тип исследования"]         = string.Join("\n", grant.ResearchType);
                 row["Приоритетные направления"] = string.Join("\n", grant.PriorityTrands);

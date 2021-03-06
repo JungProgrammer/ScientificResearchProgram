@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ResearchProgram.Classes;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -88,5 +89,10 @@ namespace ResearchProgram
         public string NOC { get; set; }
         //Есть ли у договора НДС
         public bool isWIthNDS { get; set; }
+
+        public UniversityStructureNode FirstNode { get; set; }
+        public UniversityStructureNode SecondNode { get; set; }
+        public UniversityStructureNode ThirdNode { get; set; }
+        public UniversityStructureNode FourthNode { get; set; }
     }
 }

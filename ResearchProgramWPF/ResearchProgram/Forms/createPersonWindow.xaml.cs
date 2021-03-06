@@ -158,7 +158,6 @@ namespace ResearchProgram
             {
                 foreach (Grid grid in workPlaceListView.Items.OfType<Grid>())
                 {
-                    // AAAAAAAAAAAAAAAAAAAA TODO
                     ComboBox categoryComboBox = (ComboBox)grid.Children[1];
                     CheckBox isMainWorkPlace = (CheckBox)grid.Children[2];
 
@@ -246,16 +245,6 @@ namespace ResearchProgram
                         newPerson.workPlaces.Add(personWorkPlace);
 
                     }
-                    //else
-                    //{
-                    //    personWorkPlace.workCategory = new WorkCategories();
-                    //    personWorkPlace.firstNode = new UniversityStructureNode();
-                    //    personWorkPlace.secondNode = new UniversityStructureNode();
-                    //    personWorkPlace.thirdNode = new UniversityStructureNode();
-                    //    personWorkPlace.fourthNode = new UniversityStructureNode();
-                    //    personWorkPlace.IsMainWorkPlace = (bool)isMainWorkPlace.IsChecked;
-                    //    personWorkPlace.jobList = new List<Job>();
-                    //}
 
                 }
             }

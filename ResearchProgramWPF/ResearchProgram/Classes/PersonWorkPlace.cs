@@ -15,6 +15,7 @@ namespace ResearchProgram.Classes
 {
     public class PersonWorkPlace : INotifyPropertyChanged
     {
+        // кароче этот класс совмещает в себе всю инфу о месте работы человека и дает возможность добавлять всю эту инфу на форму
         public int Id { get; set; }
 
         public bool IsMainWorkPlace { get; set; }
@@ -36,10 +37,11 @@ namespace ResearchProgram.Classes
         public List<WorkDegree> WorkDegreesList { get; set; }
         public List<WorkRank> WorkRanksList { get; set; }
         public List<Job> jobsList { get; set; }
-        public ObservableCollection<UniversityStructureNode> _firstNodeList;
-        public ObservableCollection<UniversityStructureNode> _secondNodeList;
-        public ObservableCollection<UniversityStructureNode> _thirdNodeList;
-        public ObservableCollection<UniversityStructureNode> _fourthNodeList;
+
+        private ObservableCollection<UniversityStructureNode> _firstNodeList;
+        private ObservableCollection<UniversityStructureNode> _secondNodeList;
+        private ObservableCollection<UniversityStructureNode> _thirdNodeList;
+        private ObservableCollection<UniversityStructureNode> _fourthNodeList;
         public ObservableCollection<UniversityStructureNode> FirstNodeList { get { return _firstNodeList; } set { _firstNodeList = value; OnPropertyChanged("FirstNodeList"); } }
         public ObservableCollection<UniversityStructureNode> SecondNodeList { get { return _secondNodeList; } set { _secondNodeList = value; OnPropertyChanged("SecondNodeList"); } }
         public ObservableCollection<UniversityStructureNode> ThirdNodeList { get { return _thirdNodeList; } set { _thirdNodeList = value; OnPropertyChanged("ThirdNodeList"); } }
@@ -152,6 +154,10 @@ namespace ResearchProgram.Classes
             grid.Children.Add(isMainWorkPlace);
             Grid.SetRow(isMainWorkPlace, 1);
             Grid.SetColumn(isMainWorkPlace, 1);
+            if(IsMainWorkPlace != null)
+            {
+                isMainWorkPlace.IsChecked = IsMainWorkPlace;
+            }
 
 
             Label workPlaceLabel = new Label
