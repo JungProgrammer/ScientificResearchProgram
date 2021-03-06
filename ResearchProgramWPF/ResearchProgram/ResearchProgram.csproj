@@ -125,7 +125,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\OKVED.cs" />
-    <Compile Include="Classes\PersonWorkPalce.cs" />
+    <Compile Include="Classes\PersonWorkPlace.cs" />
     <Compile Include="Classes\UniversityStructureNode.cs" />
     <Compile Include="Classes\WindowsArgumentsTranfer.cs" />
     <Compile Include="Classes\WorkCategories.cs" />

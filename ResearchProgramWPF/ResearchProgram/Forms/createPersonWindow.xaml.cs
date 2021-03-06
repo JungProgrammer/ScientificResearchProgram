@@ -87,13 +87,12 @@ namespace ResearchProgram
                 else
                     sexWoman.IsChecked = true;
 
-                foreach (PersonWorkPalce workPlace in personToEdit.workPlaces)
+                foreach (PersonWorkPlace workPlace in personToEdit.workPlaces)
                 {
                     workPlaceListView.Items.Add(workPlace.getPersonGrid());
                     workPlace.isMainWorkPlace.Checked += IsMainWorkPlace_Checked;
                 }
             }
-
             DataContext = this;
         }
 
@@ -160,26 +159,68 @@ namespace ResearchProgram
                 foreach (Grid grid in workPlaceListView.Items.OfType<Grid>())
                 {
                     // AAAAAAAAAAAAAAAAAAAA TODO
-                    ComboBox workPlaceComboBox = (ComboBox)grid.Children[1];
-                    ComboBox workCategoryComboBox = (ComboBox)grid.Children[3];
-                    Grid jobGrid = (Grid)grid.Children[4];
+                    ComboBox categoryComboBox = (ComboBox)grid.Children[1];
+                    CheckBox isMainWorkPlace = (CheckBox)grid.Children[2];
+
+                    ComboBox workPlaceComboBox = (ComboBox)grid.Children[4];
+                    ComboBox UnitComboBox = (ComboBox)grid.Children[6];
+                    ComboBox DepartmentComboBox = (ComboBox)grid.Children[8];
+                    ComboBox StructNodeComboBox = (ComboBox)grid.Children[10];
+
+                    Grid jobGrid = (Grid)grid.Children[11];
                     ListView jobListView = (ListView)jobGrid.Children[3];
 
 
-                    PersonWorkPalce workPlace = new PersonWorkPalce();
-                    if (workPlaceComboBox.SelectedItem != null)
+                    PersonWorkPlace personWorkPlace = new PersonWorkPlace();
+                    if (workPlaceComboBox.SelectedItem != null || categoryComboBox.SelectedItem != null)
                     {
-                        //workPlace.placeOfWork = (WorkPlace)workPlaceComboBox.SelectedItem;
-                        //if (workCategoryComboBox.SelectedItem != null)
-                        //{
-                        //    workPlace.workCategory = (WorkCategories)workCategoryComboBox.SelectedItem;
-                        //}
-                        //else
-                        //{
-                        //    workPlace.workCategory = new WorkCategories();
-                        //}
+                        personWorkPlace.IsMainWorkPlace = (bool)isMainWorkPlace.IsChecked;
+                        if (categoryComboBox.SelectedItem != null)
+                        {
+                            personWorkPlace.workCategory = (WorkCategories)categoryComboBox.SelectedItem;
+                        }
+                        else
+                        {
+                            personWorkPlace.workCategory = new WorkCategories();
+                        }
 
-                        workPlace.jobList = new List<Job>();
+                        if (workPlaceComboBox.SelectedItem != null)
+                        {
+                            personWorkPlace.firstNode = (UniversityStructureNode)workPlaceComboBox.SelectedItem;
+                        }
+                        else
+                        {
+                            personWorkPlace.firstNode = new UniversityStructureNode();
+                        }
+
+                        if (UnitComboBox.SelectedItem != null)
+                        {
+                            personWorkPlace.secondNode = (UniversityStructureNode)UnitComboBox.SelectedItem;
+                        }
+                        else
+                        {
+                            personWorkPlace.secondNode = new UniversityStructureNode();
+                        }
+
+                        if (DepartmentComboBox.SelectedItem != null)
+                        {
+                            personWorkPlace.thirdNode = (UniversityStructureNode)DepartmentComboBox.SelectedItem;
+                        }
+                        else
+                        {
+                            personWorkPlace.thirdNode = new UniversityStructureNode();
+                        }
+
+                        if (StructNodeComboBox.SelectedItem != null)
+                        {
+                            personWorkPlace.fourthNode = (UniversityStructureNode)StructNodeComboBox.SelectedItem;
+                        }
+                        else
+                        {
+                            personWorkPlace.fourthNode = new UniversityStructureNode();
+                        }
+
+                        personWorkPlace.jobList = new List<Job>();
                         foreach (Grid grid1 in jobListView.Items.OfType<Grid>())
                         {
                             ComboBox jobComboBox = (ComboBox)grid1.Children[0];
@@ -199,11 +240,23 @@ namespace ResearchProgram
                                 Console.WriteLine(job.Salary);
                                 Console.WriteLine(job.SalaryRate);
 
-                                workPlace.jobList.Add(job);
+                                personWorkPlace.jobList.Add(job);
                             }
                         }
+                        newPerson.workPlaces.Add(personWorkPlace);
+
                     }
-                    newPerson.workPlaces.Add(workPlace);
+                    //else
+                    //{
+                    //    personWorkPlace.workCategory = new WorkCategories();
+                    //    personWorkPlace.firstNode = new UniversityStructureNode();
+                    //    personWorkPlace.secondNode = new UniversityStructureNode();
+                    //    personWorkPlace.thirdNode = new UniversityStructureNode();
+                    //    personWorkPlace.fourthNode = new UniversityStructureNode();
+                    //    personWorkPlace.IsMainWorkPlace = (bool)isMainWorkPlace.IsChecked;
+                    //    personWorkPlace.jobList = new List<Job>();
+                    //}
+
                 }
             }
             if (isAllOkey)
@@ -257,7 +310,7 @@ namespace ResearchProgram
 
         private void workPlaceAddButton_Click(object sender, RoutedEventArgs e)
         {
-            PersonWorkPalce personWorkPalce = new PersonWorkPalce();
+            PersonWorkPlace personWorkPalce = new PersonWorkPlace();
 
             workPlaceListView.Items.Add(personWorkPalce.getPersonGrid());
             personWorkPalce.isMainWorkPlace.Checked += IsMainWorkPlace_Checked;

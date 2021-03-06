@@ -18,7 +18,7 @@ namespace ResearchProgram
             Sex = true;
             Degree = new WorkDegree();
             Rank = new WorkRank();
-            workPlaces = new List<PersonWorkPalce>();
+            workPlaces = new List<PersonWorkPlace>();
         }
 
         public int Id { get; set; }
@@ -27,7 +27,7 @@ namespace ResearchProgram
         public bool Sex { get; set; }
         public WorkDegree Degree { get; set; }
         public WorkRank Rank { get; set; }
-        public List<PersonWorkPalce> workPlaces { get; set; }
+        public List<PersonWorkPlace> workPlaces { get; set; }
 
 
         public string GetTitle()

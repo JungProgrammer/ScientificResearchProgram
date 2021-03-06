@@ -13,7 +13,7 @@ using System.Windows.Data;
 
 namespace ResearchProgram.Classes
 {
-    public class PersonWorkPalce : INotifyPropertyChanged
+    public class PersonWorkPlace : INotifyPropertyChanged
     {
         public int Id { get; set; }
 
@@ -130,7 +130,6 @@ namespace ResearchProgram.Classes
             ComboBox categoryComboBox = new ComboBox
             {
                 Margin = new Thickness(5, 0, 5, 0),
-                Padding = new Thickness(5, 5, 5, 5),
                 Height = 25,
                 ItemsSource = WorkCategoriesList,
             };
@@ -169,13 +168,15 @@ namespace ResearchProgram.Classes
             Grid.SetColumn(workPlaceComboBox, 0);
             workPlaceComboBox.SelectionChanged += WorkPlaceComboBox_SelectionChanged;
             workPlaceComboBox.PreviewMouseDown += ComboBoxPreviewMouseDown;
-
             if (firstNode != null)
             {
                 for (int i = 0; i < FirstNodeList.Count; i++)
                 {
                     if (firstNode.Id == FirstNodeList[i].Id)
+                    {
                         workPlaceComboBox.SelectedIndex = i;
+                        break;
+                    }
                 }
             }
 
@@ -193,7 +194,17 @@ namespace ResearchProgram.Classes
             Grid.SetColumn(UnitComboBox, 0);
             UnitComboBox.SelectionChanged += UnitComboBox_SelectionChanged;
             UnitComboBox.PreviewMouseDown += ComboBoxPreviewMouseDown;
-
+            if (secondNode != null)
+            {
+                for (int i = 0; i < SecondNodeList.Count; i++)
+                {
+                    if (secondNode.Id == SecondNodeList[i].Id)
+                    {
+                        UnitComboBox.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
 
             Label DepartmentLabel = new Label
             {
@@ -208,7 +219,17 @@ namespace ResearchProgram.Classes
             Grid.SetColumn(DepartmentComboBox, 1);
             DepartmentComboBox.SelectionChanged += DepartmentComboBox_SelectionChanged;
             DepartmentComboBox.PreviewMouseDown += ComboBoxPreviewMouseDown;
-
+            if (thirdNode != null)
+            {
+                for (int i = 0; i < ThirdNodeList.Count; i++)
+                {
+                    if (thirdNode.Id == ThirdNodeList[i].Id)
+                    {
+                        DepartmentComboBox.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
 
             Label StructNodeLabel = new Label
             {
@@ -223,7 +244,17 @@ namespace ResearchProgram.Classes
             Grid.SetColumn(StructNodeComboBox, 1);
             StructNodeComboBox.SelectionChanged += StructNodeComboBox_SelectionChanged;
             StructNodeComboBox.PreviewMouseDown += ComboBoxPreviewMouseDown;
-
+            if (fourthNode != null)
+            {
+                for (int i = 0; i < FourthNodeList.Count; i++)
+                {
+                    if (fourthNode.Id == FourthNodeList[i].Id)
+                    {
+                        StructNodeComboBox.SelectedIndex = i;
+                        break;
+                    }
+                }
+            }
 
             Grid jobGrid = new Grid();
             jobGrid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -307,10 +338,9 @@ namespace ResearchProgram.Classes
                     ComboBox jobComboBox = new ComboBox
                     {
                         ItemsSource = jobsList,
-                        Margin = new Thickness(0, 5, 0, 0),
+                        Margin = new Thickness(5),
                         Height = 25,
                         Width = 100,
-
                     };
                     jobComboBox.SelectionChanged += jobComboBoxSelectionChanged_event;
                     grid2.Children.Add(jobComboBox);
