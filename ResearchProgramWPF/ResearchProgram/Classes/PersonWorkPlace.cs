@@ -504,13 +504,6 @@ namespace ResearchProgram.Classes
                     }
                     if (universityStructureNode != null)
                     {
-
-                        //SecondNodeList.Clear();
-                        //foreach (UniversityStructureNode u in CRUDDataBase.GetStructureNodes("'^" + universityStructureNode.Address + "\\.[0-9]+$'"))
-                        //{
-                        //    SecondNodeList.Add(u);
-                        //}
-
                         ThirdNodeList.Clear();
                         foreach (UniversityStructureNode u in CRUDDataBase.GetStructureNodes("'^" + universityStructureNode.Address + "\\.[0-9]+$'"))
                         {

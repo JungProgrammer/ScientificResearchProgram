@@ -163,7 +163,7 @@ namespace ResearchProgram
                 row["Учреждение"]               = grant.FirstNode;
                 row["Подразделение"]            = grant.SecondNode;
                 row["Отдел"]                    = grant.ThirdNode;
-                row["Структурная ед."]          = grant.FourthNode;
+                row["Структурная единица"]      = grant.FourthNode;
                 row["ГРНТИ"]                    = grant.GRNTI;
                 row["Тип исследования"]         = string.Join("\n", grant.ResearchType);
                 row["Приоритетные направления"] = string.Join("\n", grant.PriorityTrands);

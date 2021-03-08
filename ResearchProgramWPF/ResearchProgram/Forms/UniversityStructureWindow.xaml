@@ -14,20 +14,18 @@
         </Grid.RowDefinitions>
 
         <TreeView Grid.Row="0"
-                  x:Name="treeUniversityStructure"
-                  ItemsSource="{Binding RootNode}">
+                  x:Name="treeUniversityStructure">
             <TreeView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Добавить" Command="{Binding AddCommand}"/>
-                    <MenuItem Header="Переименовать" Command="{Binding RenameCommand}"/>
-                    <MenuItem Header="Удалить" Command="{Binding DeleteCommand}"/>
+                    <MenuItem Header="Добавить"
+                              Click="AddItem_Click"/>
+                    <MenuItem Header="Редактировать"
+                              Click="EditItem_Click"/>
                 </ContextMenu>
             </TreeView.ContextMenu>
 
             <TreeView.ItemContainerStyle>
-                <!-- 
-                This Style binds a TreeViewItem to a PersonViewModel. 
-                -->
+                 
                 <Style TargetType="{x:Type TreeViewItem}">
                     <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
@@ -44,8 +42,9 @@
             </TreeView.ItemContainerStyle>
             
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Path=Children}" >
-                    <TextBlock Text="{Binding Path=TitleNode}"/>
+                <HierarchicalDataTemplate ItemsSource="{Binding Path=Nodes}" >
+                    <TextBlock Text="{Binding Path=Title}"
+                               PreviewMouseRightButtonDown="TextBlock_PreviewMouseRightButtonDown"/>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

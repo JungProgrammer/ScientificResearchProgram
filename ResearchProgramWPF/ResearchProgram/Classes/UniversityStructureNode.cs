@@ -14,6 +14,7 @@ namespace ResearchProgram.Classes
         private string address;
         private string title;
         private bool isMainWorkPlace;
+        private string shortTitle;
         public int Id
         {
             get { return id; }
@@ -52,6 +53,16 @@ namespace ResearchProgram.Classes
             }
         }
 
+        public string ShortTitle
+        {
+            get { return shortTitle; }
+            set
+            {
+                shortTitle = value;
+                OnPropertyChanged("ShortTitle");
+            }
+        }
+
         public UniversityStructureNode()
         {
             IsMainWorkPlace = false;
@@ -59,7 +70,14 @@ namespace ResearchProgram.Classes
 
         public override string ToString()
         {
-            return Title;
+            if (ShortTitle != "" && ShortTitle != null)
+            {
+                return ShortTitle;
+            }
+            else
+            {
+                return Title;
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

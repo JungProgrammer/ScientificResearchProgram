@@ -21,17 +21,6 @@ namespace ResearchProgram
     /// </summary>
     public partial class CreateGrantWindow : Window, INotifyPropertyChanged
     {
-        // Класс для выбора параметров, характеризующих структуру вуза
-        private WorkerWithUniversityStructure _universityStructure;
-        public WorkerWithUniversityStructure UniversityStructure
-        {
-            get => _universityStructure;
-            set
-            {
-                _universityStructure = value;
-                OnPropertyChanged(nameof(UniversityStructure));
-            }
-        }
 
         private ObservableCollection<UniversityStructureNode> _firstNodeList;
         private ObservableCollection<UniversityStructureNode> _secondNodeList;
@@ -89,7 +78,6 @@ namespace ResearchProgram
 
             PersonsList = CRUDDataBase.GetPersons();
             //PersonsList = mainWindow.PersonsList;
-            UniversityStructure = CRUDDataBase.GetUniversityStructure();
             CustomersList = CRUDDataBase.GetCustomers();
             DepositsList = CRUDDataBase.GetDeposits();
             KafedrasList = CRUDDataBase.GetKafedras();

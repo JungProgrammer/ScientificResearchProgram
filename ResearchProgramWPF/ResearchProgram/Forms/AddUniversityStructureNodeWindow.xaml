@@ -1,0 +1,51 @@
+﻿<Window x:Class="ResearchProgram.Forms.AddUniversityStructureNode"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ResearchProgram.Forms"
+        mc:Ignorable="d"
+        Title="Добавление новой структурной единицы" Height="225" Width="450"
+        ResizeMode="NoResize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Введите название новой структурной единицы"
+               Margin="5"
+               Grid.Row="0"/>
+        <TextBox Grid.Row="1"
+                 Margin="5 0"
+                 x:Name="NewNodeTextBox"
+                 Padding="0 9"/>
+        <Label Content="Введите аббревиатуру"
+               Margin="5"
+               Grid.Row="2"/>
+        <TextBox Grid.Row="3"
+                 Margin="5 0"
+                 x:Name="NewNodeShortNameTextBox"
+                 Padding="0 9"/>
+        <Button Grid.Row="4"
+                x:Name="AddNodeButton"
+                HorizontalAlignment="Right"
+                Width="150"
+                Margin="5"
+                Content="Добавить"
+                Click="AddNodeButton_Click"/>
+        <Button Grid.Row="4"
+                x:Name="DeleteNodeButton"
+                HorizontalAlignment="Left"
+                Width="150"
+                Margin="5"
+                Content="Удалить"
+                Click="DeleteNodeButton_Click"
+                Visibility="Hidden"/>
+    </Grid>
+</Window>
