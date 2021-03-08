@@ -1,15 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Data.Linq;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 
 namespace ResearchProgram.Classes
 {
@@ -97,7 +90,7 @@ namespace ResearchProgram.Classes
             {
                 Margin = new Thickness(5, 0, 5, 0),
                 Height = 25,
-                ItemsSource = SecondNodeList, // TODO
+                ItemsSource = SecondNodeList,
                 IsEditable = true
 
 
@@ -107,7 +100,7 @@ namespace ResearchProgram.Classes
             {
                 Margin = new Thickness(5, 0, 5, 0),
                 Height = 25,
-                ItemsSource = ThirdNodeList, // TODO
+                ItemsSource = ThirdNodeList,
                 IsEditable = true
 
             };
@@ -116,7 +109,7 @@ namespace ResearchProgram.Classes
             {
                 Margin = new Thickness(5, 0, 5, 0),
                 Height = 25,
-                ItemsSource = FourthNodeList, // TODO
+                ItemsSource = FourthNodeList,
                 IsEditable = true
 
             };
@@ -154,7 +147,7 @@ namespace ResearchProgram.Classes
             grid.Children.Add(isMainWorkPlace);
             Grid.SetRow(isMainWorkPlace, 1);
             Grid.SetColumn(isMainWorkPlace, 1);
-            if(IsMainWorkPlace != null)
+            if (IsMainWorkPlace != null)
             {
                 isMainWorkPlace.IsChecked = IsMainWorkPlace;
             }

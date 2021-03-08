@@ -175,11 +175,8 @@
     <Compile Include="GrantHeader.cs" />
     <Compile Include="GrantsFilters.cs" />
     <Compile Include="IContainer.cs" />
-    <Compile Include="Classes\Institution.cs" />
     <Compile Include="Classes\Job.cs" />
     <Compile Include="Converters\JobConverter.cs" />
-    <Compile Include="Classes\Laboratory.cs" />
-    <Compile Include="Converters\LaboratoryConverter.cs" />
     <Compile Include="Converters\NDSConverter.cs" />
     <Compile Include="Classes\Nir.cs" />
     <Compile Include="Parser.cs" />
@@ -196,7 +193,6 @@
     <Compile Include="Forms\SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Classes\Unit.cs" />
     <Compile Include="Forms\UniversityStructureWindow.xaml.cs">
       <DependentUpon>UniversityStructureWindow.xaml</DependentUpon>
     </Compile>
@@ -264,7 +260,6 @@
     </Compile>
     <Compile Include="CRUDDataBase.cs" />
     <Compile Include="Classes\Grant.cs" />
-    <Compile Include="Classes\Kafedra.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>

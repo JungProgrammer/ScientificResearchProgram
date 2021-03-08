@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ResearchProgram.Classes
 {
@@ -48,7 +43,9 @@ namespace ResearchProgram.Classes
         public bool IsMainWorkPlace
         {
             get { return isMainWorkPlace; }
-            set { isMainWorkPlace = value;
+            set
+            {
+                isMainWorkPlace = value;
                 OnPropertyChanged("IsMainWorkPlace");
             }
         }

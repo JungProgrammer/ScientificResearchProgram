@@ -1,19 +1,15 @@
-﻿using Npgsql;
-using System;
-using System.Data;
-using System.Diagnostics;
-using System.Windows;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Windows.Controls;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using OfficeOpenXml;
-using System.IO;
-using System.Windows.Forms;
+﻿using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using ResearchProgram.Forms;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.IO;
+using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Forms;
 
 namespace ResearchProgram
 {
@@ -176,7 +172,7 @@ namespace ResearchProgram
         // открытие окна с созданием договора
         private void CreateGrantMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            CreateGrantWindow newGrantWindow = new CreateGrantWindow(GrantsDataTable, Owner:this)
+            CreateGrantWindow newGrantWindow = new CreateGrantWindow(GrantsDataTable, Owner: this)
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Owner = this

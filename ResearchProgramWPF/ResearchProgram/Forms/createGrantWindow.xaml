@@ -9,8 +9,6 @@
         Title="Создать новый договор" Height="550" Width="850" ResizeMode="NoResize">
 
     <Window.Resources>
-        <local:LaboratoryConverter x:Key="laboratoryConverter"/>
-        <local:PriceNDSConverter x:Key="PriceNDSConverter"/>
     </Window.Resources>
 
     <Grid>

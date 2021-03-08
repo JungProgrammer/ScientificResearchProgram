@@ -1,13 +1,11 @@
-﻿using System;
+﻿using ResearchProgram.Classes;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Data;
-using ResearchProgram.Classes;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Collections.ObjectModel;
 
 namespace ResearchProgram
 {

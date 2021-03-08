@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows.Data;
 using System.Windows;
+using System.Windows.Data;
 
 namespace ResearchProgram
 {
-    class NDSConverter: IValueConverter
+    class NDSConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {   
+        {
             if ((bool)value)
             {
                 return "Отображение с НДС";

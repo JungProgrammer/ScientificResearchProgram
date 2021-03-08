@@ -1,17 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Configuration;
 namespace ResearchProgram
 {
     /// <summary>
@@ -26,7 +15,7 @@ namespace ResearchProgram
         }
         public event EventHandler ReloadGrantsTable;
         public bool isNDSCheckBoxChecked;
-        public bool IsNDSCheckBoxChecked {get; set;} = Settings.Default.NDSKey;
+        public bool IsNDSCheckBoxChecked { get; set; } = Settings.Default.NDSKey;
 
         private void ApplyButton_Click(object sender, RoutedEventArgs e)
         {
@@ -64,7 +53,8 @@ namespace ResearchProgram
                         break;
                 }
             }
-            else {
+            else
+            {
                 Close();
             }
         }
@@ -75,7 +65,7 @@ namespace ResearchProgram
         }
 
         private void ColorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
-        {   
+        {
             if (applyButton != null)
                 applyButton.IsEnabled = true;
         }

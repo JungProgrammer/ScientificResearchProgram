@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Data;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Npgsql;
-using System.Diagnostics;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

@@ -1,18 +1,16 @@
 ﻿using DotNetKit.Windows.Controls;
+using ResearchProgram.Classes;
 using System;
-using System.Data;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-using System.Text.RegularExpressions;
-using ResearchProgram.Classes;
+using System.Windows.Media;
 
 namespace ResearchProgram
 {
@@ -38,9 +36,6 @@ namespace ResearchProgram
 
         public List<Depositor> DepositsList { get; set; }
         public List<ScienceType> ScienceTypeList { get; set; }
-        public List<Kafedra> KafedrasList { get; set; }
-        public List<Unit> UnitsList { get; set; }
-        public List<Institution> InstituionsList { get; set; }
         public List<ResearchType> ResearchTypesList { get; set; }
         public List<PriorityTrend> PriorityTrendList { get; set; }
         //Списки данных из формы
@@ -80,9 +75,6 @@ namespace ResearchProgram
             //PersonsList = mainWindow.PersonsList;
             CustomersList = CRUDDataBase.GetCustomers();
             DepositsList = CRUDDataBase.GetDeposits();
-            KafedrasList = CRUDDataBase.GetKafedras();
-            UnitsList = CRUDDataBase.GetUnits();
-            InstituionsList = CRUDDataBase.GetInstitutions();
             ResearchTypesList = CRUDDataBase.GetResearchTypes();
             ScienceTypeList = CRUDDataBase.GetScienceTypes();
             PriorityTrendList = CRUDDataBase.GetPriorityTrends();
