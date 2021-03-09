@@ -1,21 +1,12 @@
 ﻿using ResearchProgram.Classes;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ResearchProgram
 {
     public class Person : IContainer
     {
-        public struct WorkPlace
-        {
-            public PlaceOfWork placeOfWork;
-            public WorkCategories workCategory;
-            public List<Job> jobList;
-            public int Id;
-        }
+
         public Person()
         {
             Id = 0;
@@ -24,7 +15,7 @@ namespace ResearchProgram
             Sex = true;
             Degree = new WorkDegree();
             Rank = new WorkRank();
-            workPlaces = new List<WorkPlace>();
+            workPlaces = new List<PersonWorkPlace>();
         }
 
         public int Id { get; set; }
@@ -33,7 +24,7 @@ namespace ResearchProgram
         public bool Sex { get; set; }
         public WorkDegree Degree { get; set; }
         public WorkRank Rank { get; set; }
-        public List<WorkPlace> workPlaces { get; set; }
+        public List<PersonWorkPlace> workPlaces { get; set; }
 
 
         public string GetTitle()
@@ -68,7 +59,7 @@ namespace ResearchProgram
             {
                 shortName = FIO;
             }
-            
+
             return shortName;
         }
     }

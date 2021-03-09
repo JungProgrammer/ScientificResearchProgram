@@ -1,16 +1,16 @@
 ﻿using DotNetKit.Windows.Controls;
+using ResearchProgram.Classes;
 using System;
-using System.Data;
 using System.Collections.Generic;
-using System.Linq;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
+using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
-using System.Text.RegularExpressions;
+using System.Windows.Media;
 
 namespace ResearchProgram
 {
@@ -19,31 +19,23 @@ namespace ResearchProgram
     /// </summary>
     public partial class CreateGrantWindow : Window, INotifyPropertyChanged
     {
-        // Класс для выбора параметров, характеризующих структуру вуза
-        private WorkerWithUniversityStructure _universityStructure;
-        public WorkerWithUniversityStructure UniversityStructure
-        {
-            get => _universityStructure;
-            set
-            {
-                _universityStructure = value;
-                OnPropertyChanged(nameof(UniversityStructure));
-            }
-        }
+
+        private ObservableCollection<UniversityStructureNode> _firstNodeList;
+        private ObservableCollection<UniversityStructureNode> _secondNodeList;
+        private ObservableCollection<UniversityStructureNode> _thirdNodeList;
+        private ObservableCollection<UniversityStructureNode> _fourthNodeList;
+        public ObservableCollection<UniversityStructureNode> FirstNodeList { get { return _firstNodeList; } set { _firstNodeList = value; OnPropertyChanged("FirstNodeList"); } }
+        public ObservableCollection<UniversityStructureNode> SecondNodeList { get { return _secondNodeList; } set { _secondNodeList = value; OnPropertyChanged("SecondNodeList"); } }
+        public ObservableCollection<UniversityStructureNode> ThirdNodeList { get { return _thirdNodeList; } set { _thirdNodeList = value; OnPropertyChanged("ThirdNodeList"); } }
+        public ObservableCollection<UniversityStructureNode> FourthNodeList { get { return _fourthNodeList; } set { _fourthNodeList = value; OnPropertyChanged("FourthNodeList"); } }
 
         //Списки данных из БД
 
-        public ObservableCollection<string> NIOKRList { get; set; }
         public List<Person> PersonsList { get; set; }
         public List<Customer> CustomersList { get; set; }
-        public List<string> SelectedItems { get; set; }
-        public List<string> SelectedValues { get; set; }
 
         public List<Depositor> DepositsList { get; set; }
         public List<ScienceType> ScienceTypeList { get; set; }
-        public List<Kafedra> KafedrasList { get; set; }
-        public List<Unit> UnitsList { get; set; }
-        public List<Institution> InstituionsList { get; set; }
         public List<ResearchType> ResearchTypesList { get; set; }
         public List<PriorityTrend> PriorityTrendList { get; set; }
         //Списки данных из формы
@@ -52,14 +44,9 @@ namespace ResearchProgram
         public List<ComboBox> EnteredScienceTypesList { get; set; }
 
         MainWindow mainWindow;
-
+        Grant grantToEdit;
         public string NirChecker;
         public string NOCChecker;
-
-        // Combobox для руководителя
-        AutoCompleteComboBox LeadNIOKRAutoCompleteComboBox;
-        // Combobox для типа исследования
-        AutoCompleteComboBox researchTypeAutoCompleteComboBox;
 
 
         // Если это окно отрыто для редактирования.
@@ -80,18 +67,14 @@ namespace ResearchProgram
             InitializeComponent();
             mainWindow = Owner;
 
-
+            this.grantToEdit = grantToEdit;
             // Подключение к базе данных
             CRUDDataBase.ConnectToDataBase();
 
             PersonsList = CRUDDataBase.GetPersons();
             //PersonsList = mainWindow.PersonsList;
-            UniversityStructure = CRUDDataBase.GetUniversityStructure();
             CustomersList = CRUDDataBase.GetCustomers();
             DepositsList = CRUDDataBase.GetDeposits();
-            KafedrasList = CRUDDataBase.GetKafedras();
-            UnitsList = CRUDDataBase.GetUnits();
-            InstituionsList = CRUDDataBase.GetInstitutions();
             ResearchTypesList = CRUDDataBase.GetResearchTypes();
             ScienceTypeList = CRUDDataBase.GetScienceTypes();
             PriorityTrendList = CRUDDataBase.GetPriorityTrends();
@@ -100,8 +83,15 @@ namespace ResearchProgram
             EnteredScienceTypesList = new List<ComboBox>();
             EnteredExecutorsList = new List<ComboBox>();
 
-            AddLeadNIOKRAutoCompleteComboBox();
-            AddResearchTypeAutoCompleteComboBox();
+            LeadNIOKRAutoCompleteComboBox.ItemsSource = new List<Person>(PersonsList);
+            researchTypeComboBox.ItemsSource = new List<ResearchType>(ResearchTypesList);
+
+            FirstNodeList = new ObservableCollection<UniversityStructureNode>();
+            SecondNodeList = new ObservableCollection<UniversityStructureNode>();
+            ThirdNodeList = new ObservableCollection<UniversityStructureNode>();
+            FourthNodeList = new ObservableCollection<UniversityStructureNode>();
+
+
 
             priceTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
             priceNoNDSTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
@@ -232,21 +222,69 @@ namespace ResearchProgram
                     executorsVerticalListView.Items.Add(executorComboBox);
                 }
 
-                // Привязка для структуры университета
-                UniversityStructure.SelectedInstitution = UniversityStructure.FindInstitution(grantToEdit.Institution.Id);
-                if (UniversityStructure.SelectedInstitution != null)
+                //// Привязка для структуры университета
+                //UniversityStructure.SelectedInstitution = UniversityStructure.FindInstitution(grantToEdit.Institution.Id);
+                //if (UniversityStructure.SelectedInstitution != null)
+                //{
+                //    UniversityStructure.SelectedUnit = UniversityStructure.FindUnit(UniversityStructure.SelectedInstitution, grantToEdit.Unit.Id);
+                //    if (UniversityStructure.SelectedUnit != null)
+                //    {
+                //        UniversityStructure.SelectedKafedra = UniversityStructure.FindKafedra(UniversityStructure.SelectedUnit, grantToEdit.Kafedra.Id);
+                //        if (UniversityStructure.SelectedKafedra != null)
+                //        {
+                //            UniversityStructure.SelectedLaboratory = UniversityStructure.FindLaboratoryInKafedra(UniversityStructure.SelectedKafedra, grantToEdit.Laboratory.Id);
+                //        }
+                //        if (UniversityStructure.SelectedLaboratory == null)
+                //        {
+                //            UniversityStructure.SelectedLaboratory = UniversityStructure.FindLaboratoryInUnit(UniversityStructure.SelectedUnit, grantToEdit.Laboratory.Id);
+                //        }
+                //    }
+                //}
+
+                FirstNodeComboBox.SelectedIndex = -1;
+                if (grantToEdit.FirstNode.Title != null)
                 {
-                    UniversityStructure.SelectedUnit = UniversityStructure.FindUnit(UniversityStructure.SelectedInstitution, grantToEdit.Unit.Id);
-                    if (UniversityStructure.SelectedUnit != null)
+                    for (int i = 0; i < FirstNodeList.Count; i++)
                     {
-                        UniversityStructure.SelectedKafedra = UniversityStructure.FindKafedra(UniversityStructure.SelectedUnit, grantToEdit.Kafedra.Id);
-                        if (UniversityStructure.SelectedKafedra != null)
+                        if (grantToEdit.FirstNode.Id == FirstNodeList[i].Id)
                         {
-                            UniversityStructure.SelectedLaboratory = UniversityStructure.FindLaboratoryInKafedra(UniversityStructure.SelectedKafedra, grantToEdit.Laboratory.Id);
+                            FirstNodeComboBox.SelectedIndex = i;
                         }
-                        if (UniversityStructure.SelectedLaboratory == null)
+                    }
+                }
+
+                SecondNodeComboBox.SelectedIndex = -1;
+                if (grantToEdit.SecondNode.Title != null)
+                {
+                    for (int i = 0; i < SecondNodeList.Count; i++)
+                    {
+                        if (grantToEdit.SecondNode.Id == SecondNodeList[i].Id)
                         {
-                            UniversityStructure.SelectedLaboratory = UniversityStructure.FindLaboratoryInUnit(UniversityStructure.SelectedUnit, grantToEdit.Laboratory.Id);
+                            SecondNodeComboBox.SelectedIndex = i;
+                        }
+                    }
+                }
+
+                ThirdNodeComboBox.SelectedIndex = -1;
+                if (grantToEdit.ThirdNode.Title != null)
+                {
+                    for (int i = 0; i < ThirdNodeList.Count; i++)
+                    {
+                        if (grantToEdit.ThirdNode.Id == ThirdNodeList[i].Id)
+                        {
+                            ThirdNodeComboBox.SelectedIndex = i;
+                        }
+                    }
+                }
+
+                FourthComboBox.SelectedIndex = -1;
+                if (grantToEdit.FourthNode.Title != null)
+                {
+                    for (int i = 0; i < FourthNodeList.Count; i++)
+                    {
+                        if (grantToEdit.FourthNode.Id == FourthNodeList[i].Id)
+                        {
+                            FourthComboBox.SelectedIndex = i;
                         }
                     }
                 }
@@ -257,7 +295,7 @@ namespace ResearchProgram
                 {
                     for (int j = 0; j < ResearchTypesList.Count; j++)
                         if (ResearchTypesList[j].Title == grantToEdit.ResearchType[0].Title)
-                            researchTypeAutoCompleteComboBox.SelectedIndex = j;
+                            researchTypeComboBox.SelectedIndex = j;
                 }
 
                 for (int i = 0; i < grantToEdit.PriorityTrands.Count; i++)
@@ -352,40 +390,6 @@ namespace ResearchProgram
             {
                 MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
-        }
-
-        /// <summary>
-        /// Добавление комбо бокса к руководителю НИОКР
-        /// </summary>
-        private void AddLeadNIOKRAutoCompleteComboBox()
-        {
-            LeadNIOKRAutoCompleteComboBox = new AutoCompleteComboBox()
-            {
-                Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<Person>(PersonsList),
-                MinWidth = 300,
-
-            };
-            CommonInfoGrid.Children.Add(LeadNIOKRAutoCompleteComboBox);
-            Grid.SetRow(LeadNIOKRAutoCompleteComboBox, 9);
-        }
-
-        /// <summary>
-        /// Добавление комбо бокса к типу
-        /// </summary>
-
-        private void AddResearchTypeAutoCompleteComboBox()
-        {
-            researchTypeAutoCompleteComboBox = new AutoCompleteComboBox()
-            {
-                Margin = new Thickness(5, 0, 5, 0),
-                ItemsSource = new List<ResearchType>(ResearchTypesList),
-                MinWidth = 300
-            };
-            researchTypesGrid.Children.Add(researchTypeAutoCompleteComboBox);
-            Grid.SetRow(researchTypeAutoCompleteComboBox, 1);
-            Grid.SetColumn(researchTypeAutoCompleteComboBox, 0);
-            Grid.SetColumnSpan(researchTypeAutoCompleteComboBox, 2);
         }
 
         /// <summary>
@@ -603,12 +607,6 @@ namespace ResearchProgram
             if (grantNumberTextBox.Text.ToString() != "")
             {
                 newGrant.grantNumber = grantNumberTextBox.Text;
-
-                //if (!CRUDDataBase.IsGrantNumberAvailable(newGrant))
-                //{
-                //    incorrectDataString += "Договор с таким номером уже существует. Пожалуйста, укажите уникальный номер договора.\n\n";
-                //    isAllOkey = false;
-                //}
             }
             else
             {
@@ -706,48 +704,6 @@ namespace ResearchProgram
                             newGrant.ReceiptDate.Add(selectedDate.ToShortDateString());
                         }
                     }
-                    //if ((bool)GrantWithoutNDSCheckBox.IsChecked)
-                    //{
-                    //    //БЕЗ НДС
-                    //    if (partSumNoNDS.Text.ToString() != "")
-                    //    {
-                    //        //ПОЛЯ ЗАПОЛНЕНЫ ПРАВИЛЬНО
-                    //        newGrant.Depositor.Add(new Depositor()
-                    //        {
-                    //            Id = ((Depositor)cmb.SelectedItem).Id,
-                    //            Title = cmb.SelectedItem.ToString(),
-                    //        });
-                    //        newGrant.DepositorSum.Add(0);
-                    //        newGrant.DepositorSumNoNDS.Add(Parser.ConvertToRightFloat(partSumNoNDS.Text));
-                    //        newGrant.ReceiptDate.Add(selectedDate.ToShortDateString());
-                    //    }
-                    //    else
-                    //    {
-                    //        isAllOkey = false;
-                    //        incorrectDataString += "Не указаны суммы финансирования.\n";
-                    //    }
-                    //}
-                    //else
-                    //{
-                    //    // С НДС
-                    //    if (partSum.Text.ToString() != "" && partSumNoNDS.Text.ToString() != "")
-                    //    {
-                    //        //ПОЛЯ ЗАПОЛНЕНЫ ПРАВИЛЬНО
-                    //        newGrant.Depositor.Add(new Depositor()
-                    //        {
-                    //            Id = ((Depositor)cmb.SelectedItem).Id,
-                    //            Title = cmb.SelectedItem.ToString(),
-                    //        });
-                    //        newGrant.DepositorSum.Add(Parser.ConvertToRightFloat(partSum.Text));
-                    //        newGrant.DepositorSumNoNDS.Add(Parser.ConvertToRightFloat(partSumNoNDS.Text));
-                    //        newGrant.ReceiptDate.Add(selectedDate.ToShortDateString());
-                    //    }
-                    //    else
-                    //    {
-                    //        isAllOkey = false;
-                    //        incorrectDataString += "Не указаны суммы финансирования.\n";
-                    //    }
-                    //}
                 }
             }
 
@@ -779,60 +735,40 @@ namespace ResearchProgram
                 }
             }
 
-            // Добавление учреждения в новый договор
-            if (UniversityStructure.SelectedInstitution != null)
+            if (FirstNodeComboBox.SelectedItem != null)
             {
-                newGrant.Institution = new Institution()
-                {
-                    Id = UniversityStructure.SelectedInstitution.Id,
-                    Title = UniversityStructure.SelectedInstitution.Title
-                };
+                newGrant.FirstNode = (UniversityStructureNode)FirstNodeComboBox.SelectedItem;
             }
             else
             {
-                newGrant.Institution = null;
+                newGrant.FirstNode = new UniversityStructureNode();
             }
 
-            // Добавление подразделения в договор
-            if (UniversityStructure.SelectedUnit != null)
+            if (SecondNodeComboBox.SelectedItem != null)
             {
-                newGrant.Unit = new Unit()
-                {
-                    Id = UniversityStructure.SelectedUnit.Id,
-                    Title = UniversityStructure.SelectedUnit.Title
-                };
+                newGrant.SecondNode = (UniversityStructureNode)SecondNodeComboBox.SelectedItem;
             }
             else
             {
-                newGrant.Unit = null;
+                newGrant.SecondNode = new UniversityStructureNode();
             }
 
-            // Добавление кафедры в договор
-            if (UniversityStructure.SelectedKafedra != null)
+            if (ThirdNodeComboBox.SelectedItem != null)
             {
-                newGrant.Kafedra = new Kafedra()
-                {
-                    Id = UniversityStructure.SelectedKafedra.Id,
-                    Title = UniversityStructure.SelectedKafedra.Title
-                };
+                newGrant.ThirdNode = (UniversityStructureNode)ThirdNodeComboBox.SelectedItem;
             }
             else
             {
-                newGrant.Kafedra = null;
+                newGrant.ThirdNode = new UniversityStructureNode();
             }
 
-            // Добавление лаборатории в договор
-            if (UniversityStructure.SelectedLaboratory != null)
+            if (FourthComboBox.SelectedItem != null)
             {
-                newGrant.Laboratory = new Laboratory()
-                {
-                    Id = UniversityStructure.SelectedLaboratory.Id,
-                    Title = UniversityStructure.SelectedLaboratory.Title
-                };
+                newGrant.FourthNode = (UniversityStructureNode)FourthComboBox.SelectedItem;
             }
             else
             {
-                newGrant.Laboratory = null;
+                newGrant.FourthNode = new UniversityStructureNode();
             }
 
 
@@ -845,12 +781,12 @@ namespace ResearchProgram
                 newGrant.GRNTI = "";
             }
 
-            if (researchTypeAutoCompleteComboBox.SelectedItem != null)
+            if (researchTypeComboBox.SelectedItem != null)
             {
                 newGrant.ResearchType.Add(new ResearchType()
                 {
-                    Id = ((ResearchType)researchTypeAutoCompleteComboBox.SelectedItem).Id,
-                    Title = researchTypeAutoCompleteComboBox.SelectedItem.ToString()
+                    Id = ((ResearchType)researchTypeComboBox.SelectedItem).Id,
+                    Title = researchTypeComboBox.SelectedItem.ToString()
                 });
             }
             if (priorityTrendsVerticalListView.Items != null)
@@ -922,11 +858,8 @@ namespace ResearchProgram
                     CRUDDataBase.UpdatePriceNoNDS(newGrant);
                     CRUDDataBase.UpdateDeposits(newGrant);
                     CRUDDataBase.UpdateLeadNiokr(newGrant);
+                    CRUDDataBase.UpdateWorkPlace(newGrant);
                     CRUDDataBase.UpdateExecutors(newGrant);
-                    CRUDDataBase.UpdateInstitution(newGrant);
-                    CRUDDataBase.UpdateUnit(newGrant);
-                    CRUDDataBase.UpdateKafedra(newGrant);
-                    CRUDDataBase.UpdateLaboratory(newGrant);
                     CRUDDataBase.UpdateGRNTI(newGrant);
                     CRUDDataBase.UpdateResearchType(newGrant);
                     CRUDDataBase.UpdatePriorityTrends(newGrant);
@@ -953,7 +886,6 @@ namespace ResearchProgram
 
                     MessageBox.Show("Договор успешно создан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                //mainWindow.LoadGrantsTable();
                 ((MainWindow)Owner).GrantsUpdateButton_Click(sender, e);
                 Close();
             }
@@ -992,19 +924,7 @@ namespace ResearchProgram
 
         private void GrantWithoutNDSCheckBox_Checked(object sender, RoutedEventArgs e)
         {
-            //priceTextBox.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
-            //PriceLabel.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
-            //PriceRubLabel.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
-            //SummLabel.IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
-            //if ((bool)GrantWithoutNDSCheckBox.IsChecked)
-            //    priceTextBox.Text = "";
-            //foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
-            //{
-            //    sp.Children[1].IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
-            //    if ((bool)GrantWithoutNDSCheckBox.IsChecked)
-            //        ((TextBox)sp.Children[1]).Text = "";
-            //    sp.Children[2].IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked;
-            //}
+
         }
 
         private void priceNoNDSTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -1026,6 +946,117 @@ namespace ResearchProgram
                 priceNoNDSTextBox.Text = (Math.Round(Convert.ToDouble(priceTextBox.Text) * 1 / ((bool)GrantWithoutNDSCheckBox.IsChecked ? 1 : Settings.Default.NDSValue) /*Settings.Default.NDSValue*/, 2)).ToString();
             else
                 priceNoNDSTextBox.Text = "";
+        }
+
+        private void LeadNIOKRAutoCompleteComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            AutoCompleteComboBox autoCompleteComboBox = (AutoCompleteComboBox)sender;
+            Person person = (Person)autoCompleteComboBox.SelectedItem;
+            CRUDDataBase.ConnectToDataBase();
+
+            HashSet<String> set = new HashSet<String>();
+            if (grantToEdit != null)
+            {
+                if (grantToEdit.FirstNode.Title != null)
+                {
+                    FirstNodeList.Add(grantToEdit.FirstNode);
+                    set.Add(grantToEdit.FirstNode.Title);
+                }
+            }
+            foreach (UniversityStructureNode u in CRUDDataBase.GetAllFirstNodesByPerson(person))
+            {
+                if (!set.Contains(u.Title))
+                {
+                    FirstNodeList.Add(u);
+                    set.Add(u.Title);
+                }
+                if (u.IsMainWorkPlace)
+                {
+                    for (int i = 0; i < FirstNodeList.Count; i++)
+                    {
+                        if (u.Id == FirstNodeList[i].Id)
+                            FirstNodeComboBox.SelectedIndex = i;
+                    }
+                }
+            }
+            set.Clear();
+
+            if (grantToEdit != null)
+            {
+                if (grantToEdit.SecondNode.Title != null)
+                {
+                    SecondNodeList.Add(grantToEdit.SecondNode);
+                    set.Add(grantToEdit.SecondNode.Title);
+                }
+            }
+            foreach (UniversityStructureNode u in CRUDDataBase.GetAllSecondNodesByPerson(person))
+            {
+                if (!set.Contains(u.Title))
+                {
+                    SecondNodeList.Add(u);
+                    set.Add(u.Title);
+                }
+                if (u.IsMainWorkPlace)
+                {
+                    for (int i = 0; i < SecondNodeList.Count; i++)
+                    {
+                        if (u.Id == SecondNodeList[i].Id)
+                            SecondNodeComboBox.SelectedIndex = i;
+                    }
+                }
+            }
+            set.Clear();
+            if (grantToEdit != null)
+            {
+                if (grantToEdit.ThirdNode.Title != null)
+                {
+                    ThirdNodeList.Add(grantToEdit.ThirdNode);
+                    set.Add(grantToEdit.ThirdNode.Title);
+                }
+            }
+            foreach (UniversityStructureNode u in CRUDDataBase.GetAllThirdNodesByPerson(person))
+            {
+                if (!set.Contains(u.Title))
+                {
+                    ThirdNodeList.Add(u);
+                    set.Add(u.Title);
+                }
+                if (u.IsMainWorkPlace)
+                {
+                    for (int i = 0; i < ThirdNodeList.Count; i++)
+                    {
+                        if (u.Id == ThirdNodeList[i].Id)
+                            ThirdNodeComboBox.SelectedIndex = i;
+                    }
+                }
+            }
+            set.Clear();
+            if (grantToEdit != null)
+            {
+                if (grantToEdit.FourthNode.Title != null)
+                {
+                    FourthNodeList.Add(grantToEdit.FourthNode);
+                    set.Add(grantToEdit.FourthNode.Title);
+                }
+            }
+            foreach (UniversityStructureNode u in CRUDDataBase.GetAllFourthNodesByPerson(person))
+            {
+                if (!set.Contains(u.Title))
+                {
+                    FourthNodeList.Add(u);
+                    set.Add(u.Title);
+                }
+                if (u.IsMainWorkPlace)
+                {
+                    for (int i = 0; i < FourthNodeList.Count; i++)
+                    {
+                        if (u.Id == FourthNodeList[i].Id)
+                            FourthComboBox.SelectedIndex = i;
+                    }
+                }
+            }
+            set.Clear();
+            CRUDDataBase.CloseConnection();
         }
     }
 }

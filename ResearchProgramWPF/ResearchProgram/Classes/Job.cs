@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ResearchProgram
 {
-    public class Job: INotifyPropertyChanged
+    public class Job : INotifyPropertyChanged
     {
         // Id в БД
         public int Id { get; set; }
@@ -50,7 +46,7 @@ namespace ResearchProgram
         {
             List<string> salaries = new List<string>();
 
-            foreach(Job job in jobs)
+            foreach (Job job in jobs)
             {
                 salaries.Add(job.Salary.ToString());
             }

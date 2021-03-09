@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ResearchProgram
+﻿namespace ResearchProgram
 {
-    public class Depositor: IContainer
+    public class Depositor : IContainer
     {
         public int Id { get; set; }
 

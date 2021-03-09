@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ResearchProgram
 {
@@ -131,9 +127,9 @@ namespace ResearchProgram
             {
                 IsAllOkey = false;
 
-                foreach(Customer customer in grant.Customer)
+                foreach (Customer customer in grant.Customer)
                 {
-                    foreach(FilterElement customerFilter in Customer)
+                    foreach (FilterElement customerFilter in Customer)
                     {
                         if (customer.Title == customerFilter.Data) IsAllOkey = true;
                     }
@@ -184,13 +180,13 @@ namespace ResearchProgram
                 }
             }
             // Если указана только дата окончания
-            else if(EndDate != null && EndDate.Count > 0 && IsAllOkey)
+            else if (EndDate != null && EndDate.Count > 0 && IsAllOkey)
             {
                 IsAllOkey = false;
 
-                foreach(FilterElement date in EndDate)
+                foreach (FilterElement date in EndDate)
                 {
-                    if(grant.EndDate <= DateTime.Parse(date.Data))
+                    if (grant.EndDate <= DateTime.Parse(date.Data))
                     {
                         IsAllOkey = true;
                     }
@@ -199,11 +195,11 @@ namespace ResearchProgram
 
 
             // Проверка общей суммы договора
-            if(Price != null && Price.Count > 0 && IsAllOkey)
+            if (Price != null && Price.Count > 0 && IsAllOkey)
             {
                 IsAllOkey = false;
 
-                foreach(FilterElement price in Price)
+                foreach (FilterElement price in Price)
                 {
                     if (Utilities.ComparativeOperator(price.Sign, grant.Price.ToString(), price.Data)) IsAllOkey = true;
                 }
@@ -215,9 +211,9 @@ namespace ResearchProgram
             {
                 IsAllOkey = false;
 
-                foreach(Depositor grantDepositor in grant.Depositor)
+                foreach (Depositor grantDepositor in grant.Depositor)
                 {
-                    foreach(FilterElement depositor in Depositor)
+                    foreach (FilterElement depositor in Depositor)
                     {
                         if (depositor.Data == grantDepositor.Title) IsAllOkey = true;
                     }
@@ -226,11 +222,11 @@ namespace ResearchProgram
 
 
             // Проверка руководителя НИОКР
-            if(LeadNIOKR != null && LeadNIOKR.Count > 0 && IsAllOkey)
+            if (LeadNIOKR != null && LeadNIOKR.Count > 0 && IsAllOkey)
             {
                 IsAllOkey = false;
 
-                foreach(FilterElement leadNIOKR in LeadNIOKR)
+                foreach (FilterElement leadNIOKR in LeadNIOKR)
                 {
                     if (leadNIOKR.Data == grant.LeadNIOKR.FIO) IsAllOkey = true;
                 }
@@ -238,7 +234,7 @@ namespace ResearchProgram
 
 
             // Проверка исполнителей
-            if(Executor != null && Executor.Count > 0 && IsAllOkey)
+            if (Executor != null && Executor.Count > 0 && IsAllOkey)
             {
                 IsAllOkey = false;
 
@@ -251,58 +247,13 @@ namespace ResearchProgram
                 }
             }
 
-            // Проверка учерждения
-            if (Institution != null && Institution.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach (FilterElement institution in Institution)
-                {
-                    if (institution.Data == grant.Institution.Title) IsAllOkey = true;
-                }
-            }
-
-            // Проверка подразделений
-            if (Unit != null && Unit.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach (FilterElement unit in Unit)
-                {
-                    if (unit.Data == grant.Unit.Title) IsAllOkey = true;
-                }
-            }
-
-            // Проверка кафедр
-            if (Kafedra != null && Kafedra.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach (FilterElement kafedra in Kafedra)
-                {
-                    if (kafedra.Data == grant.Kafedra.Title) IsAllOkey = true;
-                }
-            }
-
-            // Проверка лабораторий
-            if(Laboratory != null && Laboratory.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach(FilterElement laboratory in Laboratory)
-                {
-                    if (laboratory.Data == grant.Laboratory.Title) IsAllOkey = true;
-                }
-            }
-
-
 
             // Проверка ГРНТИ
             if (GRNTI != null && GRNTI.Count > 0 && IsAllOkey)
             {
                 IsAllOkey = false;
 
-                foreach(FilterElement grnti in GRNTI)
+                foreach (FilterElement grnti in GRNTI)
                 {
                     if (grnti.Data == grant.GRNTI) IsAllOkey = true;
                 }
@@ -310,13 +261,13 @@ namespace ResearchProgram
 
 
             // Проверка типов исследования
-            if(ResearchTypes != null && ResearchTypes.Count > 0 && IsAllOkey)
+            if (ResearchTypes != null && ResearchTypes.Count > 0 && IsAllOkey)
             {
                 IsAllOkey = false;
 
-                foreach(ResearchType researchType in grant.ResearchType)
+                foreach (ResearchType researchType in grant.ResearchType)
                 {
-                    foreach(FilterElement _researchType in ResearchTypes)
+                    foreach (FilterElement _researchType in ResearchTypes)
                     {
                         if (_researchType.Data == researchType.Title) IsAllOkey = true;
                     }
@@ -325,11 +276,11 @@ namespace ResearchProgram
 
 
             // Проверка приоритетных направлений
-            if(PriorityTrands != null && PriorityTrands.Count > 0 && IsAllOkey)
+            if (PriorityTrands != null && PriorityTrands.Count > 0 && IsAllOkey)
             {
                 IsAllOkey = false;
 
-                foreach(PriorityTrend priorityTrend in grant.PriorityTrands)
+                foreach (PriorityTrend priorityTrend in grant.PriorityTrands)
                 {
                     foreach (FilterElement _priorityTrend in PriorityTrands)
                     {
@@ -343,10 +294,10 @@ namespace ResearchProgram
             if (ScienceTypes != null && ScienceTypes.Count > 0 && IsAllOkey)
             {
                 IsAllOkey = false;
-                
-                foreach(ScienceType scienceType in grant.ScienceType)
+
+                foreach (ScienceType scienceType in grant.ScienceType)
                 {
-                    foreach(FilterElement _scienceType in ScienceTypes)
+                    foreach (FilterElement _scienceType in ScienceTypes)
                     {
                         if (_scienceType.Data == scienceType.Title) IsAllOkey = true;
                     }
@@ -359,7 +310,7 @@ namespace ResearchProgram
             {
                 IsAllOkey = false;
 
-                foreach(FilterElement nir in NIR)
+                foreach (FilterElement nir in NIR)
                 {
                     if (nir.Data == grant.NIR) IsAllOkey = true;
                 }
@@ -371,7 +322,7 @@ namespace ResearchProgram
             {
                 IsAllOkey = false;
 
-                foreach(FilterElement noc in NOC)
+                foreach (FilterElement noc in NOC)
                 {
                     if (noc.Data == grant.NOC) IsAllOkey = true;
                 }

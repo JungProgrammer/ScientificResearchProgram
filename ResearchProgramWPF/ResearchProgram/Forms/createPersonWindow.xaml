@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ResearchProgram"
         xmlns:dotNetKitControls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
         mc:Ignorable="d"
-        Title="Добавить нового человека" Height="490" Width="770" ResizeMode="NoResize">
+        Title="Добавить нового человека" Height="600" Width="800" ResizeMode="NoResize">
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -38,7 +38,8 @@
                  Grid.Column="0"
                  Grid.ColumnSpan="2"
                  Name="FIOTextBox"
-                 Margin="5 0"/>
+                 Margin="5 0"
+                 Padding="3"/>
 
         <Label Content="Дата рождения"
                Grid.Row="0"
@@ -109,7 +110,7 @@
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="285"/>
+                        <RowDefinition Height="400"/>
                         <RowDefinition Height="35"/>
                     </Grid.RowDefinitions>
 

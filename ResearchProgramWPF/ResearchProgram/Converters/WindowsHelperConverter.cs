@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using ResearchProgram.Classes;
+using System;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
-using ResearchProgram.Classes;
 
 namespace ResearchProgram
 {
-    class WindowsHelperConverter: IValueConverter
+    class WindowsHelperConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
