@@ -243,6 +243,7 @@ namespace ResearchProgram
         private void EditItem_Click(object sender, RoutedEventArgs e)
         {
             SelectedNode = null;
+            GetSelectedTreeViewItemRecursive(rootNode);
             if (SelectedNode != null)
             {
                 GetSelectedTreeViewItemRecursive(rootNode);
