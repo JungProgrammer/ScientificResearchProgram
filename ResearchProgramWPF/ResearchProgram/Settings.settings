@@ -30,7 +30,7 @@
       <Value Profile="(Default)">#FFFFFF</Value>
     </Setting>
     <Setting Name="ProgrammVersion" Type="System.String" Scope="User">
-      <Value Profile="(Default)">1.21</Value>
+      <Value Profile="(Default)">1.3</Value>
     </Setting>
   </Settings>
 </SettingsFile>
