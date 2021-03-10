@@ -31,7 +31,17 @@ namespace ResearchProgram
 
         //Списки данных из БД
 
-        public List<Person> PersonsList { get; set; }
+        public List<Person> _personsList;
+        public List<Person> PersonsList {
+            get{
+                return _personsList;
+            }
+            set{
+                _personsList = value;
+                OnPropertyChanged("PersonsList");
+            }
+        }
+
         public List<Customer> CustomersList { get; set; }
 
         public List<Depositor> DepositsList { get; set; }
@@ -61,7 +71,6 @@ namespace ResearchProgram
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-
         public CreateGrantWindow(DataTable grantsDataTable, Grant grantToEdit = null, MainWindow Owner = null)
         {
             InitializeComponent();
@@ -72,7 +81,9 @@ namespace ResearchProgram
             CRUDDataBase.ConnectToDataBase();
 
             PersonsList = CRUDDataBase.GetPersons();
-            //PersonsList = mainWindow.PersonsList;
+
+            //PersonsList = StaticProperties.PersonsList;
+            
             CustomersList = CRUDDataBase.GetCustomers();
             DepositsList = CRUDDataBase.GetDeposits();
             ResearchTypesList = CRUDDataBase.GetResearchTypes();
@@ -84,6 +95,7 @@ namespace ResearchProgram
             EnteredExecutorsList = new List<ComboBox>();
 
             LeadNIOKRAutoCompleteComboBox.ItemsSource = new List<Person>(PersonsList);
+
             researchTypeComboBox.ItemsSource = new List<ResearchType>(ResearchTypesList);
 
             FirstNodeList = new ObservableCollection<UniversityStructureNode>();
@@ -132,8 +144,7 @@ namespace ResearchProgram
 
                 startDateDatePicker.SelectedDate = grantToEdit.StartDate;
                 endDateDatePicker.SelectedDate = grantToEdit.EndDate;
-                if (grantToEdit.isWIthNDS)
-                    priceTextBox.Text = grantToEdit.Price.ToString();
+                priceTextBox.Text = grantToEdit.Price.ToString();
                 priceNoNDSTextBox.Text = grantToEdit.PriceNoNDS.ToString();
                 GrantWithoutNDSCheckBox.IsChecked = !grantToEdit.isWIthNDS;
                 for (int i = 0; i < grantToEdit.Depositor.Count; i++)
