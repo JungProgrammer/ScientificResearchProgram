@@ -54,6 +54,31 @@ namespace ResearchProgram
             }
         }
 
+        public static NpgsqlConnection GetNewConnection()
+        {
+            NpgsqlConnection NewConnection;
+            string Database;
+            if (DEBUG)
+            {
+                Database = "test_db";
+            }
+            else
+            {
+                Database = "postgres";
+            }
+            NewConnection = new NpgsqlConnection($"Server=212.192.88.14; Port=5432; User Id={loginFromDB}; Password={passwordFromDB}; Database={Database}");
+            try
+            {
+                NewConnection.Open();
+            }
+            catch (Npgsql.NpgsqlException)
+            {
+                MessageBox.Show("Нет подключения к серверу баз данных. Попробуйте позже.\nПрограмма будет закрыта.", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                Environment.Exit(0);
+            }
+            return NewConnection;
+        }
+
         /// <summary>
         /// Закрытия соединения с БД
         /// </summary>
@@ -291,12 +316,10 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение остальных столбцов
-            cmd = new NpgsqlCommand("SELECT grants.id, grants.grantnumber, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO, k.title, u.title, i.title, GRNTI, NIR, NOC, l.title, i.id, u.id, k.id, l.id, pricenonds, is_with_nds FROM grants " +
-                                                        "LEFT JOIN persons p2 on grants.leadNIOKRId = p2.id " +
-                                                        "LEFT JOIN kafedras k on grants.kafedraId = k.id " +
-                                                        "LEFT JOIN units u on grants.unitId = u.id " +
-                                                        "LEFT JOIN laboratories l on grants.laboratoryid = l.id " +
-                                                        "LEFT JOIN institutions i on grants.institutionId = i.id ORDER BY grants.id;", conn);
+            cmd = new NpgsqlCommand("SELECT grants.id as gid, grants.grantnumber as ggn, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO as lead_niokr, " +
+                " GRNTI, NIR, NOC, pricenonds, is_with_nds, " +
+                "first_node_id, second_node_id, third_node_id, fourth_node_id FROM grants " +
+                                                        "LEFT JOIN persons p2 on grants.leadNIOKRId = p2.id ORDER BY grants.id;", conn);
             reader = cmd.ExecuteReader();
 
 
@@ -304,30 +327,26 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    grant_id = Convert.ToInt32(reader[0]);
+                    grant_id = Convert.ToInt32(reader["gid"]);
                     grant_index = ShowGrantIndex(grants, grant_id);
 
-                    grants[grant_index].grantNumber = reader[1].ToString();
-                    grants[grant_index].OKVED = reader[2].ToString();
-                    grants[grant_index].NameNIOKR = reader[3].ToString();
-                    grants[grant_index].StartDate = Convert.ToDateTime(reader[4]);
-                    grants[grant_index].EndDate = Convert.ToDateTime(reader[5]);
-                    grants[grant_index].Price = float.Parse(reader[6].ToString());
-                    grants[grant_index].PriceNoNDS = float.Parse(reader[19].ToString());
-                    grants[grant_index].LeadNIOKR = new Person() { FIO = reader[7].ToString() };
-                    grants[grant_index].Kafedra = new Kafedra() { Id = reader[17] != DBNull.Value ? Convert.ToInt32(reader[17]) : 0, Title = reader[8].ToString() };
-                    grants[grant_index].Unit = new Unit() { Id = reader[16] != DBNull.Value ? Convert.ToInt32(reader[16]) : 0, Title = reader[9].ToString() };
-                    grants[grant_index].Institution = new Institution() { Id = reader[15] != DBNull.Value ? Convert.ToInt32(reader[15]) : 0, Title = reader[10].ToString() };
-                    grants[grant_index].GRNTI = reader[11].ToString();
-                    grants[grant_index].NIR = reader[12].ToString();
-                    grants[grant_index].NOC = reader[13].ToString();
-                    grants[grant_index].Laboratory = new Laboratory() { Id = reader[18] != DBNull.Value ? Convert.ToInt32(reader[18]) : 0, Title = reader[14].ToString() };
-                    grants[grant_index].isWIthNDS = Convert.ToBoolean(reader[20]);
+                    grants[grant_index].grantNumber = reader["ggn"].ToString();
+                    grants[grant_index].OKVED = reader["OKVED"].ToString();
+                    grants[grant_index].NameNIOKR = reader["nameNIOKR"].ToString();
+                    grants[grant_index].StartDate = Convert.ToDateTime(reader["startDate"]);
+                    grants[grant_index].EndDate = Convert.ToDateTime(reader["endDate"]);
+                    grants[grant_index].Price = float.Parse(reader["price"].ToString());
+                    grants[grant_index].PriceNoNDS = float.Parse(reader["pricenonds"].ToString());
+                    grants[grant_index].LeadNIOKR = new Person() { FIO = reader["lead_niokr"].ToString() };
+                    grants[grant_index].GRNTI = reader["GRNTI"].ToString();
+                    grants[grant_index].NIR = reader["NIR"].ToString();
+                    grants[grant_index].NOC = reader["NOC"].ToString();
+                    grants[grant_index].isWIthNDS = Convert.ToBoolean(reader["is_with_nds"]);
+                    grants[grant_index].FirstNode = reader["first_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["first_node_id"])) : new UniversityStructureNode();
+                    grants[grant_index].SecondNode = reader["second_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["second_node_id"])) : new UniversityStructureNode();
+                    grants[grant_index].ThirdNode = reader["third_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["third_node_id"])) : new UniversityStructureNode();
+                    grants[grant_index].FourthNode = reader["fourth_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["fourth_node_id"])) : new UniversityStructureNode();
                 }
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
             }
             reader.Close();
             return grants;
@@ -349,529 +368,6 @@ namespace ResearchProgram
             }
         }
 
-
-        internal static Institution AddNewInstitution(string institutionTitle)
-        {
-            Institution newInstitution = null;
-
-            NpgsqlCommand cmd = new NpgsqlCommand("insert into institutions (" +
-                "title) " +
-                "values(:title)", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", institutionTitle));
-            cmd.ExecuteNonQuery();
-
-            cmd = new NpgsqlCommand("SELECT id FROM institutions ORDER BY id DESC ", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                reader.Read();
-                newInstitution = new Institution()
-                {
-                    Id = Convert.ToInt32(reader[0]),
-                    Title = institutionTitle
-                };
-            }
-
-            return newInstitution;
-        }
-
-        internal static Unit AddNewUnit(string unitTitle, int institutionId)
-        {
-            Unit newUnit = null;
-
-            NpgsqlCommand cmd = new NpgsqlCommand("insert into units (institutionid," +
-                "title) " +
-                "values(:institutionid," +
-                ":title)", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", unitTitle));
-            cmd.Parameters.Add(new NpgsqlParameter("institutionid", institutionId));
-            cmd.ExecuteNonQuery();
-
-            cmd = new NpgsqlCommand("SELECT id FROM units ORDER BY id DESC ", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                reader.Read();
-                newUnit = new Unit()
-                {
-                    Id = Convert.ToInt32(reader[0]),
-                    Title = unitTitle
-                };
-            }
-
-
-            return newUnit;
-        }
-
-        internal static Kafedra AddNewKafedra(string kafedraTitle, int unitId)
-        {
-            Kafedra newKafedra = null;
-
-            NpgsqlCommand cmd = new NpgsqlCommand("insert into kafedras (unitid," +
-                "title) " +
-                "values(:unitid," +
-                ":title)", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", kafedraTitle));
-            cmd.Parameters.Add(new NpgsqlParameter("unitid", unitId));
-            cmd.ExecuteNonQuery();
-
-            cmd = new NpgsqlCommand("SELECT id FROM kafedras ORDER BY id DESC ", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                reader.Read();
-                newKafedra = new Kafedra()
-                {
-                    Id = Convert.ToInt32(reader[0]),
-                    Title = kafedraTitle
-                };
-            }
-
-            return newKafedra;
-        }
-
-        /// <summary>
-        /// Добавление лаборатории в подразделение
-        /// </summary>
-        /// <param name="laboratoryTitle"></param>
-        /// <param name="unitId"></param>
-        /// <returns></returns>
-        internal static Laboratory AddNewLaboratoryToUnit(string laboratoryTitle, int unitId)
-        {
-            Laboratory newLaboratory = null;
-
-            NpgsqlCommand cmd = new NpgsqlCommand("insert into laboratories (unitid," +
-                "title) " +
-                "values(:unitid," +
-                ":title)", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", laboratoryTitle));
-            cmd.Parameters.Add(new NpgsqlParameter("unitid", unitId));
-            cmd.ExecuteNonQuery();
-
-            cmd = new NpgsqlCommand("SELECT id FROM laboratories ORDER BY id DESC ", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                reader.Read();
-                newLaboratory = new Laboratory()
-                {
-                    Id = Convert.ToInt32(reader[0]),
-                    Title = laboratoryTitle
-                };
-            }
-
-            return newLaboratory;
-        }
-
-        /// <summary>
-        /// Добавление лаборатории в учреждение
-        /// </summary>
-        /// <param name="laboratoryTitle"></param>
-        /// <param name="unitId"></param>
-        /// <returns></returns>
-        internal static Laboratory AddNewLaboratoryToInstitution(string laboratoryTitle, int institutionId)
-        {
-            Laboratory newLaboratory = null;
-
-            NpgsqlCommand cmd = new NpgsqlCommand("insert into laboratories (institutionid," +
-                "title) " +
-                "values(:institutionid," +
-                ":title)", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", laboratoryTitle));
-            cmd.Parameters.Add(new NpgsqlParameter("institutionid", institutionId));
-            cmd.ExecuteNonQuery();
-
-            cmd = new NpgsqlCommand("SELECT id FROM laboratories ORDER BY id DESC ", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                reader.Read();
-                newLaboratory = new Laboratory()
-                {
-                    Id = Convert.ToInt32(reader[0]),
-                    Title = laboratoryTitle
-                };
-            }
-
-            return newLaboratory;
-        }
-
-        /// <summary>
-        /// Добавление лаборатории в кафедру
-        /// </summary>
-        /// <param name="laboratoryTitle"></param>
-        /// <param name="unitId"></param>
-        /// <returns></returns>
-        internal static Laboratory AddNewLaboratoryToKafedra(string laboratoryTitle, int kafedraId)
-        {
-            Laboratory newLaboratory = null;
-
-            NpgsqlCommand cmd = new NpgsqlCommand("insert into laboratories (kafedraid," +
-                "title) " +
-                "values(:kafedraid," +
-                ":title)", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", laboratoryTitle));
-            cmd.Parameters.Add(new NpgsqlParameter("kafedraid", kafedraId));
-            cmd.ExecuteNonQuery();
-
-            cmd = new NpgsqlCommand("SELECT id FROM laboratories ORDER BY id DESC ", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                reader.Read();
-                newLaboratory = new Laboratory()
-                {
-                    Id = Convert.ToInt32(reader[0]),
-                    Title = laboratoryTitle
-                };
-            }
-
-            return newLaboratory;
-        }
-
-        /// <summary>
-        /// Переименование универа
-        /// </summary>
-        /// <param name="institution"></param>
-        internal static void RenameInstitution(Institution institution, string newTitle)
-        {
-            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE institutions SET title = :title WHERE id = :institutionid;", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", newTitle));
-            cmd.Parameters.Add(new NpgsqlParameter("institutionid", institution.Id));
-            cmd.ExecuteNonQuery();
-        }
-
-        /// <summary>
-        /// Переименование подразделение
-        /// </summary>
-        /// <param name="institution"></param>
-        internal static void RenameUnit(Unit unit, string newTitle)
-        {
-            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE units SET title = :title WHERE id = :unitid;", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", newTitle));
-            cmd.Parameters.Add(new NpgsqlParameter("unitid", unit.Id));
-            cmd.ExecuteNonQuery();
-        }
-
-        /// <summary>
-        /// Переименование кафедры
-        /// </summary>
-        /// <param name="institution"></param>
-        internal static void RenameKafedra(Kafedra kafedra, string newTitle)
-        {
-            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE kafedras SET title = :title WHERE id = :kafedraid;", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", newTitle));
-            cmd.Parameters.Add(new NpgsqlParameter("kafedraid", kafedra.Id));
-            cmd.ExecuteNonQuery();
-        }
-
-        /// <summary>
-        /// Переименование лаборатории
-        /// </summary>
-        /// <param name="institution"></param>
-        internal static void RenameLaboratory(Laboratory laboratory, string newTitle)
-        {
-            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE laboratories SET title = :title WHERE id = :laboratoryid;", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", newTitle));
-            cmd.Parameters.Add(new NpgsqlParameter("laboratoryid", laboratory.Id));
-            cmd.ExecuteNonQuery();
-        }
-
-        /// <summary>
-        /// Удаление университета
-        /// </summary>
-        /// <param name="institutionId"></param>
-        internal static void DeleteInstitution(int institutionId)
-        {
-            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM institutions WHERE id = :institutionid;", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("institutionid", institutionId));
-            cmd.ExecuteNonQuery();
-        }
-
-        /// <summary>
-        /// Удаление подразделения
-        /// </summary>
-        /// <param name="unitId"></param>
-        internal static void DeleteUnit(int unitId)
-        {
-            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM units WHERE id = :unitid;", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("unitid", unitId));
-            cmd.ExecuteNonQuery();
-        }
-
-        /// <summary>
-        /// Удаление кафедры
-        /// </summary>
-        /// <param name="kafedraId"></param>
-        internal static void DeleteKafedra(int kafedraId)
-        {
-            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM kafedras WHERE id = :kafedraid;", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("kafedraid", kafedraId));
-            cmd.ExecuteNonQuery();
-        }
-
-        /// <summary>
-        /// Удаление лаборатории
-        /// </summary>
-        /// <param name="laboratoryId"></param>
-        internal static void DeleteLaboratory(int laboratoryId)
-        {
-            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM laboratories WHERE id = :laboratoryid;", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("laboratoryid", laboratoryId));
-            cmd.ExecuteNonQuery();
-        }
-
-
-        internal static WorkerWithUniversityStructure GetUniversityStructure()
-        {
-            WorkerWithUniversityStructure universityStructure = new WorkerWithUniversityStructure();
-
-            // Сначала получаем всю структуру, где лаборатории привязаны к кафедрам
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT institutions.id, institutions.title, units.id, units.title, kafedras.id, kafedras.title, l1.id, l1.title FROM institutions " +
-                                                    "LEFT JOIN units ON institutions.id = units.institutionid " +
-                                                    "LEFT JOIN kafedras ON units.id = kafedras.unitid " +
-                                                    "LEFT JOIN laboratories l1 ON kafedras.id = l1.kafedraid " +
-                                                    "WHERE institutions.id > 0 " +
-                                                    "ORDER BY institutions.id; ", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-
-            if (reader.HasRows)
-            {
-                int institutionId;
-                int unitId;
-                int kafedraId;
-                int laboratoryId;
-
-                string institutionTitle;
-                string unitTitle;
-                string kafedraTitle;
-                string laboratoryTitle;
-
-                Institution institutionFound = null;
-                Unit unitFound = null;
-                Kafedra kafedraFound = null;
-                Laboratory laboratoryFound = null;
-
-                while (reader.Read())
-                {
-                    institutionId = reader[0] != DBNull.Value ? Convert.ToInt32(reader[0]) : 0;
-                    institutionTitle = reader[1].ToString();
-                    unitId = reader[2] != DBNull.Value ? Convert.ToInt32(reader[2]) : 0;
-                    unitTitle = reader[3].ToString();
-                    kafedraId = reader[4] != DBNull.Value ? Convert.ToInt32(reader[4]) : 0;
-                    kafedraTitle = reader[5].ToString();
-                    laboratoryId = reader[6] != DBNull.Value ? Convert.ToInt32(reader[6]) : 0;
-                    laboratoryTitle = reader[7].ToString();
-
-                    institutionFound = universityStructure.FindInstitution(institutionId);
-                    // Если такого учреждения еще нет
-                    if (institutionFound == null && institutionId != 0)
-                    {
-                        institutionFound = new Institution()
-                        {
-                            Id = institutionId,
-                            Title = institutionTitle
-                        };
-
-                        // Добавляем в список учреждений
-                        universityStructure.Institutions.Add(institutionFound);
-                    }
-
-                    if (institutionFound != null) unitFound = universityStructure.FindUnit(institutionFound, unitId);
-                    // Если такого подразделения еще нет
-                    if (unitFound == null && unitId != 0)
-                    {
-                        unitFound = new Unit()
-                        {
-                            Id = unitId,
-                            Title = unitTitle
-                        };
-
-                        // Добавляем его в список подразделений найденного университета
-                        institutionFound.Units.Add(unitFound);
-                    }
-
-                    if (unitFound != null) kafedraFound = universityStructure.FindKafedra(unitFound, kafedraId);
-                    // Если такой кафедры еще нет
-                    if (kafedraFound == null && kafedraId != 0)
-                    {
-                        kafedraFound = new Kafedra()
-                        {
-                            Id = kafedraId,
-                            Title = kafedraTitle
-                        };
-
-                        // Добавление кафедры в подразделение
-                        unitFound.Kafedras.Add(kafedraFound);
-                    }
-
-                    if (kafedraFound != null) laboratoryFound = universityStructure.FindLaboratoryInKafedra(kafedraFound, laboratoryId);
-                    // Если такая лаборатория еще не существует
-                    if (laboratoryFound == null && laboratoryId != 0)
-                    {
-                        laboratoryFound = new Laboratory()
-                        {
-                            Id = laboratoryId,
-                            Title = laboratoryTitle
-                        };
-
-                        kafedraFound.Laboratories.Add(laboratoryFound);
-                    }
-
-                }
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
-            reader.Close();
-
-
-            // Теперь получаем все записи, где лаборатория привязана к подразделению
-            cmd = new NpgsqlCommand("SELECT institutions.id, institutions.title, units.id, units.title, laboratories.id, laboratories.title FROM institutions " +
-                                        "LEFT JOIN units ON institutions.id = units.institutionid " +
-                                        "LEFT JOIN laboratories ON unitid = units.id " +
-                                        "ORDER BY institutions.id; ", conn);
-            reader = cmd.ExecuteReader();
-
-
-            if (reader.HasRows)
-            {
-                int institutionId;
-                int unitId;
-                int laboratoryId;
-
-                string institutionTitle;
-                string unitTitle;
-                string laboratoryTitle;
-
-                Institution institutionFound = null;
-                Unit unitFound = null;
-                Laboratory laboratoryFound = null;
-
-                while (reader.Read())
-                {
-                    institutionId = reader[0] != DBNull.Value ? Convert.ToInt32(reader[0]) : 0;
-                    institutionTitle = reader[1].ToString();
-                    unitId = reader[2] != DBNull.Value ? Convert.ToInt32(reader[2]) : 0;
-                    unitTitle = reader[3].ToString();
-                    laboratoryId = reader[4] != DBNull.Value ? Convert.ToInt32(reader[4]) : 0;
-                    laboratoryTitle = reader[5].ToString();
-
-                    institutionFound = universityStructure.FindInstitution(institutionId);
-                    // Если такого учреждения еще нет
-                    if (institutionFound == null && institutionId != 0)
-                    {
-                        institutionFound = new Institution()
-                        {
-                            Id = institutionId,
-                            Title = institutionTitle
-                        };
-
-                        // Добавляем в список учреждений
-                        universityStructure.Institutions.Add(institutionFound);
-                    }
-
-                    if (institutionFound != null) unitFound = universityStructure.FindUnit(institutionFound, unitId);
-                    // Если такого подразделения еще нет
-                    if (unitFound == null && unitId != 0)
-                    {
-                        unitFound = new Unit()
-                        {
-                            Id = unitId,
-                            Title = unitTitle
-                        };
-
-                        // Добавляем его в список подразделений найденного университета
-                        institutionFound.Units.Add(unitFound);
-                    }
-
-                    if (unitFound != null) laboratoryFound = universityStructure.FindLaboratoryInUnit(unitFound, laboratoryId);
-                    // Если такая лаборатория еще не существует
-                    if (laboratoryFound == null && laboratoryId != 0)
-                    {
-                        laboratoryFound = new Laboratory()
-                        {
-                            Id = laboratoryId,
-                            Title = laboratoryTitle
-                        };
-
-                        unitFound.Laboratories.Add(laboratoryFound);
-                    }
-
-                }
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
-            reader.Close();
-
-            // Получение лабораторий, которые привязаны напрямую к учреждению
-            cmd = new NpgsqlCommand("SELECT institutions.title, institutions.id, laboratories.title, laboratories.id FROM institutions " +
-                                        "LEFT JOIN laboratories ON institutions.id = laboratories.institutionid " +
-                                        "WHERE institutions.id > 0; ", conn);
-            reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                int institutionId;
-                int laboratoryId;
-
-                string institutionTitle;
-                string laboratoryTitle;
-
-                Institution institutionFound = null;
-                Laboratory laboratoryFound = null;
-
-                while (reader.Read())
-                {
-                    institutionId = reader[1] != DBNull.Value ? Convert.ToInt32(reader[1]) : 0;
-                    institutionTitle = reader[0].ToString();
-                    laboratoryId = reader[3] != DBNull.Value ? Convert.ToInt32(reader[3]) : 0;
-                    laboratoryTitle = reader[2].ToString();
-
-
-                    institutionFound = universityStructure.FindInstitution(institutionId);
-                    // Если такого учреждения еще нет
-                    if (institutionFound == null && institutionId != 0)
-                    {
-                        institutionFound = new Institution()
-                        {
-                            Id = institutionId,
-                            Title = institutionTitle
-                        };
-
-                        // Добавляем в список учреждений
-                        universityStructure.Institutions.Add(institutionFound);
-                    }
-
-                    if (institutionFound != null) laboratoryFound = universityStructure.FindLaboratoryInInstitution(institutionFound, laboratoryId);
-                    // Если такая лаборатория еще не существует
-                    if (laboratoryFound == null && laboratoryId != 0)
-                    {
-                        laboratoryFound = new Laboratory()
-                        {
-                            Id = laboratoryId,
-                            Title = laboratoryTitle
-                        };
-
-                        institutionFound.Laboratories.Add(laboratoryFound);
-                    }
-                }
-            }
-            reader.Close();
-
-            return universityStructure;
-        }
-
         /// <summary>
         /// Выгружает таблицу людей
         /// </summary>
@@ -884,32 +380,6 @@ namespace ResearchProgram
             {
                 WorkerWithTablesOnMainForm.AddRowToPersonsTable(dataTable, persons[i]);
             }
-        }
-
-        /// <summary>
-        /// Загрузка всех мест работ
-        /// </summary>
-        /// <returns></returns>
-        public static ObservableCollection<PlaceOfWork> LoadPlacesOfWorks()
-        {
-            ObservableCollection<PlaceOfWork> placeOfWorks = new ObservableCollection<PlaceOfWork>();
-
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM place_of_work;", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    placeOfWorks.Add(new PlaceOfWork()
-                    {
-                        Id = Convert.ToInt32(reader[0]),
-                        Title = reader[1].ToString()
-                    });
-                }
-            }
-
-            return placeOfWorks;
         }
 
         /// <summary>
@@ -991,7 +461,6 @@ namespace ResearchProgram
             return workRanks;
         }
 
-
         public static ObservableCollection<WorkCategories> LoadCategories()
         {
             ObservableCollection<WorkCategories> workCategories = new ObservableCollection<WorkCategories>();
@@ -1012,35 +481,6 @@ namespace ResearchProgram
             }
 
             return workCategories;
-        }
-
-        /// <summary>
-        /// Добавление нового места работы
-        /// </summary>
-        /// <param name="newNamePlaceOfWork">Название нового места работы</param>
-        /// <returns></returns>
-        public static PlaceOfWork AddPlaceOfWork(string newNamePlaceOfWork)
-        {
-            PlaceOfWork newPlaceOfWork = null;
-
-            NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO place_of_work (title) VALUES (:title);", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", newNamePlaceOfWork));
-            cmd.ExecuteNonQuery();
-
-            cmd = new NpgsqlCommand("SELECT id FROM place_of_work ORDER BY id DESC ", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                reader.Read();
-                newPlaceOfWork = new PlaceOfWork()
-                {
-                    Id = Convert.ToInt32(reader[0]),
-                    Title = newNamePlaceOfWork
-                };
-            }
-
-            return newPlaceOfWork;
         }
 
         /// <summary>
@@ -1165,17 +605,6 @@ namespace ResearchProgram
         }
 
         /// <summary>
-        /// Удаление места работы
-        /// </summary>
-        /// <param name="placeOfWork"></param>
-        public static void DeletePlaceOfWork(PlaceOfWork placeOfWork)
-        {
-            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM place_of_work WHERE id = :id;", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("id", placeOfWork.Id));
-            cmd.ExecuteNonQuery();
-        }
-
-        /// <summary>
         /// Удаление должности
         /// </summary>
         /// <param name="job"></param>
@@ -1216,18 +645,6 @@ namespace ResearchProgram
         {
             NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM work_categories WHERE id = :id;", conn);
             cmd.Parameters.Add(new NpgsqlParameter("id", workCategory.Id));
-            cmd.ExecuteNonQuery();
-        }
-
-        /// <summary>
-        /// Изменение места работы
-        /// </summary>
-        /// <param name="placeOfWork"></param>
-        public static void EditPlaceOfWork(PlaceOfWork placeOfWork)
-        {
-            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE place_of_work SET title = :title WHERE id = :id;", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("id", placeOfWork.Id));
-            cmd.Parameters.Add(new NpgsqlParameter("title", placeOfWork.Title));
             cmd.ExecuteNonQuery();
         }
 
@@ -1334,23 +751,6 @@ namespace ResearchProgram
             return index;
         }
 
-        /// <summary>
-        /// Ищет индекс гранта в массиве по id гранта
-        /// </summary>
-        /// <param name="grants"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        static int ShowPersonIndex(Person[] persons, int id)
-        {
-            int index = 0;
-            for (int i = 0; i < persons.Length; i++)
-            {
-                if (persons[i].Id == id) index = i;
-            }
-
-            return index;
-        }
-
         // Для метода GetGrantsHeadersForFilters
         enum DataToComboBox
         {
@@ -1386,10 +786,6 @@ namespace ResearchProgram
             List<ScienceType> scienceTypeList = GetScienceTypes();
             List<ResearchType> researchTypeList = GetResearchTypes();
             List<PriorityTrend> priorityTrendList = GetPriorityTrends();
-            List<Institution> institutionList = GetInstitutions();
-            List<Unit> unitList = GetUnits();
-            List<Kafedra> kafedraList = GetKafedras();
-            List<Laboratory> laboratoryList = GetLaboratories();
             List<Person> peopleList = GetPersons();
             List<Depositor> depositList = GetDeposits();
             List<Nir> nirList = new List<Nir>() {
@@ -1434,18 +830,6 @@ namespace ResearchProgram
                             break;
                         case DataToComboBox.executors:
                             newGrantHeader.DataToComboBox = new List<IContainer>(peopleList);
-                            break;
-                        case DataToComboBox.institution:
-                            newGrantHeader.DataToComboBox = institutionList.ConvertAll(x => (IContainer)x);
-                            break;
-                        case DataToComboBox.unit:
-                            newGrantHeader.DataToComboBox = unitList.ConvertAll(x => (IContainer)x);
-                            break;
-                        case DataToComboBox.kafedra:
-                            newGrantHeader.DataToComboBox = kafedraList.ConvertAll(x => (IContainer)x);
-                            break;
-                        case DataToComboBox.laboratory:
-                            newGrantHeader.DataToComboBox = laboratoryList.ConvertAll(x => (IContainer)x);
                             break;
                         case DataToComboBox.researchTypes:
                             newGrantHeader.DataToComboBox = researchTypeList.ConvertAll(x => (IContainer)x);
@@ -1549,51 +933,68 @@ namespace ResearchProgram
         public static List<Person> GetPersons(bool is_jobs_needed = false)
         {
             List<Person> personsList = new List<Person>();
+            List<int> persons_ids = new List<int>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id FROM persons ORDER BY id; ", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+            if (reader.HasRows)
+                while (reader.Read())
+                    persons_ids.Add(Convert.ToInt32(reader[0]));
+            reader.Close();
+            for (int i = 0; i < persons_ids.Count; i++)
+            {
+                personsList.Add(GetPerson(persons_ids[i], is_jobs_needed));
+            }
+            return personsList;
+        }
 
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT persons.id, fio, birthdate, sex, degree_id,wd.title, rank_id, wr.title FROM persons " +
-            "LEFT  JOIN work_degree wd ON persons.degree_id = wd.id " +
-            "LEFT JOIN work_rank wr on persons.rank_id = wr.id; ", conn);
+        public static Person GetPerson(int person_id, bool is_jobs_needed = false)
+        {
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT persons.id as pid, fio, birthdate, sex, degree_id,wd.title, rank_id, wr.title FROM persons " +
+                                                    "LEFT  JOIN work_degree wd ON persons.degree_id = wd.id " +
+                                                    "LEFT JOIN work_rank wr on persons.rank_id = wr.id " +
+                                                    "WHERE persons.id = :person_id; ", conn);
+            cmd.Parameters.Add(new NpgsqlParameter(":person_id", person_id));
 
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
-
+            Person newPerson = new Person();
             if (reader.HasRows)
             {
-                while (reader.Read())
+                reader.Read();
+                newPerson.Id = Convert.ToInt32(reader["pid"]);
+
+                newPerson.FIO = reader[1].ToString();
+
+                newPerson.BitrhDate = (DateTime)reader[2];
+
+                newPerson.Sex = (bool)reader[3];
+
+                if (reader[4] != DBNull.Value)
                 {
-                    Person newPerson = new Person();
-                    newPerson.Id = Convert.ToInt32(reader[0]);
-                    newPerson.FIO = reader[1].ToString();
-                    newPerson.BitrhDate = (DateTime)reader[2];
-                    newPerson.Sex = (bool)reader[3];
-                    if (reader[4] != DBNull.Value)
+                    newPerson.Degree = new WorkDegree
                     {
-                        newPerson.Degree = new WorkDegree
-                        {
-                            Id = Convert.ToInt32(reader[4]),
-                            Title = reader[5].ToString()
-                        };
-                    }
-                    else
-                    {
-                        newPerson.Degree = new WorkDegree();
-                    }
-
-                    if (reader[6] != DBNull.Value)
-                    {
-                        newPerson.Rank = new WorkRank
-                        {
-                            Id = Convert.ToInt32(reader[6]),
-                            Title = reader[7].ToString()
-                        };
-                    }
-                    else
-                    {
-                        newPerson.Rank = new WorkRank();
-                    }
-
-                    personsList.Add(newPerson);
+                        Id = Convert.ToInt32(reader[4]),
+                        Title = reader[5].ToString()
+                    };
                 }
+                else
+                {
+                    newPerson.Degree = new WorkDegree();
+                }
+
+                if (reader[6] != DBNull.Value)
+                {
+                    newPerson.Rank = new WorkRank
+                    {
+                        Id = Convert.ToInt32(reader[6]),
+                        Title = reader[7].ToString()
+                    };
+                }
+                else
+                {
+                    newPerson.Rank = new WorkRank();
+                }
+
             }
             else
             {
@@ -1602,79 +1003,119 @@ namespace ResearchProgram
             reader.Close();
             if (is_jobs_needed)
             {
-                foreach (Person person in personsList)
-                {
-                    cmd = new NpgsqlCommand("SELECT place_of_work_id, category_id, pow.title, wc.title, persons_work_places.id FROM persons " +
-                        "JOIN persons_work_places ON persons.id = persons_work_places.person_id " +
-                        "LEFT JOIN place_of_work pow on persons_work_places.place_of_work_id = pow.id " +
-                        "LEFT JOIN work_categories wc on persons_work_places.category_id = wc.id " +
-                        "WHERE persons.id = :person_id;", conn);
-                    cmd.Parameters.Add(new NpgsqlParameter("person_id", person.Id));
+                cmd = new NpgsqlCommand("SELECT persons_work_places.id, category_id, wc.title, is_main_work_place, first_node_id, second_node_id, third_node_id, fourth_node_id, " +
+                    "(SELECT title FROM work_place_structure WHERE id = first_node_id), " +
+                    "(SELECT address FROM work_place_structure WHERE id = first_node_id), " +
+                    "(SELECT title FROM work_place_structure WHERE id = second_node_id), " +
+                    "(SELECT address FROM work_place_structure WHERE id = second_node_id), " +
+                    "(SELECT title FROM work_place_structure WHERE id = third_node_id), " +
+                    "(SELECT address FROM work_place_structure WHERE id = third_node_id), " +
+                    "(SELECT title FROM work_place_structure WHERE id = fourth_node_id), " +
+                    "(SELECT address FROM work_place_structure WHERE id = fourth_node_id), " +
+                    "(SELECT short_title FROM work_place_structure WHERE id = first_node_id), " +
+                    "(SELECT short_title FROM work_place_structure WHERE id = second_node_id), " +
+                    "(SELECT short_title FROM work_place_structure WHERE id = third_node_id), " +
+                    "(SELECT short_title FROM work_place_structure WHERE id = fourth_node_id) " +
+                    " FROM persons " +
+                    "JOIN persons_work_places ON persons.id = persons_work_places.person_id " +
+                    "LEFT JOIN work_categories wc on persons_work_places.category_id = wc.id " +
+                    "WHERE persons.id = :person_id", conn);
+                cmd.Parameters.Add(new NpgsqlParameter("person_id", newPerson.Id));
 
+                reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        PersonWorkPlace workPlace = new PersonWorkPlace();
+                        workPlace.workCategory = new WorkCategories();
+                        workPlace.Id = reader[0] != DBNull.Value ? Convert.ToInt32(reader[0]) : -1;
+                        workPlace.workCategory.Id = reader[1] != DBNull.Value ? Convert.ToInt32(reader[1]) : -1;
+                        workPlace.workCategory.Title = reader[2] != DBNull.Value ? reader[2].ToString() : "";
+                        workPlace.IsMainWorkPlace = reader[3] != DBNull.Value ? Convert.ToBoolean(reader[3]) : false;
+
+
+                        if (reader[4] != DBNull.Value)
+                        {
+                            workPlace.firstNode = new UniversityStructureNode { Id = Convert.ToInt32(reader[4]) };
+                            workPlace.firstNode.Title = reader[8] != DBNull.Value ? reader[8].ToString() : "";
+                            workPlace.firstNode.Address = reader[9] != DBNull.Value ? reader[9].ToString() : "";
+                            workPlace.firstNode.ShortTitle = reader[16] != DBNull.Value ? reader[16].ToString() : "";
+                        }
+                        else
+                        {
+                            workPlace.firstNode = new UniversityStructureNode();
+                        }
+
+                        if (reader[5] != DBNull.Value)
+                        {
+                            workPlace.secondNode = new UniversityStructureNode { Id = Convert.ToInt32(reader[5]) };
+                            workPlace.secondNode.Title = reader[10] != DBNull.Value ? reader[10].ToString() : "";
+                            workPlace.secondNode.Address = reader[11] != DBNull.Value ? reader[11].ToString() : "";
+                            workPlace.secondNode.ShortTitle = reader[17] != DBNull.Value ? reader[17].ToString() : "";
+                        }
+                        else
+                        {
+                            workPlace.secondNode = new UniversityStructureNode();
+                        }
+
+                        if (reader[6] != DBNull.Value)
+                        {
+                            workPlace.thirdNode = new UniversityStructureNode { Id = Convert.ToInt32(reader[6]) };
+                            workPlace.thirdNode.Title = reader[12] != DBNull.Value ? reader[12].ToString() : "";
+                            workPlace.thirdNode.Address = reader[13] != DBNull.Value ? reader[13].ToString() : "";
+                            workPlace.thirdNode.ShortTitle = reader[18] != DBNull.Value ? reader[18].ToString() : "";
+                        }
+                        else
+                        {
+                            workPlace.thirdNode = new UniversityStructureNode();
+                        }
+
+                        if (reader[7] != DBNull.Value)
+                        {
+                            workPlace.fourthNode = new UniversityStructureNode { Id = Convert.ToInt32(reader[7]) };
+                            workPlace.fourthNode.Title = reader[14] != DBNull.Value ? reader[14].ToString() : "";
+                            workPlace.fourthNode.Address = reader[15] != DBNull.Value ? reader[15].ToString() : "";
+                            workPlace.fourthNode.ShortTitle = reader[19] != DBNull.Value ? reader[19].ToString() : "";
+                        }
+                        else
+                        {
+                            workPlace.fourthNode = new UniversityStructureNode();
+                        }
+                        workPlace.jobList = new List<Job>();
+
+                        newPerson.workPlaces.Add(workPlace);
+                    }
+                }
+                reader.Close();
+
+
+
+                foreach (PersonWorkPlace workPlace in newPerson.workPlaces)
+                {
+
+                    cmd = new NpgsqlCommand("SELECT persons_jobs.job_id, j.title, j.salary, salary_rate FROM persons_jobs " +
+                        "LEFT JOIN jobs j on persons_jobs.job_id = j.id " +
+                        "WHERE persons_work_places_id = :persons_work_places_id;", conn);
+                    cmd.Parameters.Add(new NpgsqlParameter("persons_work_places_id", workPlace.Id));
                     reader = cmd.ExecuteReader();
                     if (reader.HasRows)
                     {
                         while (reader.Read())
                         {
-                            Person.WorkPlace workPlace = new Person.WorkPlace();
-                            if (reader[4] != DBNull.Value)
+                            workPlace.jobList.Add(new Job
                             {
-                                workPlace.Id = Convert.ToInt32(reader[4]);
-                            }
-                            if (reader[0] != DBNull.Value)
-                            {
-                                workPlace.placeOfWork = new PlaceOfWork
-                                {
-                                    Id = Convert.ToInt32(reader[0]),
-                                    Title = reader[2].ToString()
-                                };
-                            }
-                            if (reader[3] != DBNull.Value)
-                            {
-                                workPlace.workCategory = new WorkCategories
-                                {
-                                    Id = Convert.ToInt32(reader[1]),
-                                    Title = reader[3].ToString()
-                                };
-                            }
-                            workPlace.jobList = new List<Job>();
-
-                            person.workPlaces.Add(workPlace);
+                                Id = Convert.ToInt32(reader[0]),
+                                Title = reader[1].ToString(),
+                                Salary = Convert.ToSingle(reader[2]),
+                                SalaryRate = reader[3] == DBNull.Value ? 0 : Convert.ToSingle(reader[3])
+                            });
                         }
                     }
                     reader.Close();
-
-
-                }
-
-                foreach (Person person in personsList)
-                {
-                    foreach (Person.WorkPlace workPlace in person.workPlaces)
-                    {
-
-                        cmd = new NpgsqlCommand("SELECT persons_jobs.job_id, j.title, j.salary, salary_rate FROM persons_jobs " +
-                            "LEFT JOIN jobs j on persons_jobs.job_id = j.id " +
-                            "WHERE persons_work_places_id = :persons_work_places_id;", conn);
-                        cmd.Parameters.Add(new NpgsqlParameter("persons_work_places_id", workPlace.Id));
-                        reader = cmd.ExecuteReader();
-                        if (reader.HasRows)
-                        {
-                            while (reader.Read())
-                            {
-                                workPlace.jobList.Add(new Job
-                                {
-                                    Id = Convert.ToInt32(reader[0]),
-                                    Title = reader[1].ToString(),
-                                    Salary = Convert.ToSingle(reader[2]),
-                                    SalaryRate = reader[3] == DBNull.Value ? 0 : Convert.ToSingle(reader[3])
-                                });
-                            }
-                        }
-                        reader.Close();
-                    }
                 }
             }
-            return personsList;
+            return newPerson;
         }
 
         public static List<Customer> GetCustomers()
@@ -1760,124 +1201,6 @@ namespace ResearchProgram
             }
             reader.Close();
             return priorityTrendsList;
-        }
-        /// <summary>
-        /// Получение списка кафедр
-        /// </summary>
-        /// <returns></returns>
-        public static List<Kafedra> GetKafedras()
-        {
-            List<Kafedra> kafedrasList = new List<Kafedra>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM kafedras ORDER BY title;", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    kafedrasList.Add(new Kafedra()
-                    {
-                        Id = Convert.ToInt32(reader[0]),
-                        Title = reader[1].ToString()
-                    });
-                }
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
-            reader.Close();
-
-            return kafedrasList;
-        }
-
-        /// <summary>
-        /// Получение списка лабораторий
-        /// </summary>
-        public static List<Laboratory> GetLaboratories()
-        {
-            List<Laboratory> laboratories = new List<Laboratory>();
-
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM laboratories ORDER BY title;", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    laboratories.Add(new Laboratory()
-                    {
-                        Id = Convert.ToInt32(reader[0]),
-                        Title = reader[1].ToString()
-                    });
-                }
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
-            reader.Close();
-
-            return laboratories;
-        }
-
-        /// <summary>
-        /// Получение списка подразделений
-        /// </summary>
-        /// <returns></returns>
-        public static List<Unit> GetUnits()
-        {
-            List<Unit> unitsList = new List<Unit>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM units ORDER BY title;", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    unitsList.Add(new Unit()
-                    {
-                        Id = Convert.ToInt32(reader[0]),
-                        Title = reader[1].ToString()
-                    });
-                }
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
-            reader.Close();
-
-            return unitsList;
-        }
-
-        /// <summary>
-        /// Получение списка учреждений
-        /// </summary>
-        /// <returns></returns>
-        public static List<Institution> GetInstitutions()
-        {
-            List<Institution> institutionsList = new List<Institution>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM institutions ORDER BY title;", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    institutionsList.Add(new Institution()
-                    {
-                        Id = Convert.ToInt32(reader[0]),
-                        Title = reader[1].ToString()
-                    });
-                }
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
-            reader.Close();
-            return institutionsList;
         }
 
         /// <summary>
@@ -2077,7 +1400,6 @@ namespace ResearchProgram
             cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
             cmd.ExecuteNonQuery();
         }
-
         public static void UpdatePriceNoNDS(Grant fixedGrant)
         {
             NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET pricenonds = :price WHERE id = :id", conn);
@@ -2132,60 +1454,46 @@ namespace ResearchProgram
             CRUDDataBase.AddExecutors(fixedGrant, fixedGrant.Id);
         }
 
-        /// <summary>
-        /// Обновление учреждения в бд
-        /// </summary>
-        public static void UpdateInstitution(Grant fixedGrant)
+        public static void UpdateWorkPlace(Grant fixedGrant)
         {
-            if (fixedGrant.Institution != null)
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET first_node_id = :first_node_id, second_node_id = :second_node_id, third_node_id = :third_node_id, fourth_node_id = :fourth_node_id WHERE id = :id", conn);
+            if (fixedGrant.FirstNode.Title != null && fixedGrant.FirstNode.Title != "")
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET institutionid = :institutionid WHERE id = :id", conn);
-                cmd.Parameters.Add(new NpgsqlParameter("institutionid", fixedGrant.Institution.Id));
-                cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
-                cmd.ExecuteNonQuery();
+                cmd.Parameters.Add(new NpgsqlParameter("first_node_id", fixedGrant.FirstNode.Id));
             }
-        }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("first_node_id", DBNull.Value));
+            }
 
-        /// <summary>
-        /// Обновление подразделения в бд
-        /// </summary>
-        public static void UpdateUnit(Grant fixedGrant)
-        {
-            if (fixedGrant.Unit != null)
+            if (fixedGrant.SecondNode.Title != null && fixedGrant.SecondNode.Title != "")
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET unitid = :unitid WHERE id = :id", conn);
-                cmd.Parameters.Add(new NpgsqlParameter("unitid", fixedGrant.Unit.Id));
-                cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
-                cmd.ExecuteNonQuery();
+                cmd.Parameters.Add(new NpgsqlParameter("second_node_id", fixedGrant.SecondNode.Id));
             }
-        }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("second_node_id", DBNull.Value));
+            }
 
-        /// <summary>
-        /// Обновление кафедры в бд
-        /// </summary>
-        public static void UpdateKafedra(Grant fixedGrant)
-        {
-            if (fixedGrant.Kafedra != null)
+            if (fixedGrant.ThirdNode.Title != null && fixedGrant.ThirdNode.Title != "")
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET kafedraid = :kafedraid WHERE id = :id", conn);
-                cmd.Parameters.Add(new NpgsqlParameter("kafedraid", fixedGrant.Kafedra.Id));
-                cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
-                cmd.ExecuteNonQuery();
+                cmd.Parameters.Add(new NpgsqlParameter("third_node_id", fixedGrant.ThirdNode.Id));
             }
-        }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("third_node_id", DBNull.Value));
+            }
 
-        /// <summary>
-        /// Обновление лаборатории в бд
-        /// </summary>
-        public static void UpdateLaboratory(Grant fixedGrant)
-        {
-            if (fixedGrant.Laboratory != null)
+            if (fixedGrant.FourthNode.Title != null && fixedGrant.FourthNode.Title != "")
             {
-                NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET laboratoryid = :laboratoryid WHERE id = :id", conn);
-                cmd.Parameters.Add(new NpgsqlParameter("laboratoryid", fixedGrant.Laboratory.Id));
-                cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
-                cmd.ExecuteNonQuery();
+                cmd.Parameters.Add(new NpgsqlParameter("fourth_node_id", fixedGrant.FourthNode.Id));
             }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("fourth_node_id", DBNull.Value));
+            }
+            cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
+            cmd.ExecuteNonQuery();
         }
 
         /// <summary>
@@ -2307,18 +1615,25 @@ namespace ResearchProgram
 
         public static void InserttNewPlaceOfWork(Person person)
         {
-            foreach (Person.WorkPlace placeOfWork in person.workPlaces)
+            foreach (PersonWorkPlace placeOfWork in person.workPlaces)
             {
                 NpgsqlCommand cmd = new NpgsqlCommand("insert into persons_work_places (" +
                 "person_id, " +
-                "place_of_work_id," +
-                "category_id) " +
+                "category_id," +
+                "first_node_id, " +
+                "second_node_id, " +
+                "third_node_id, " +
+                "fourth_node_id, " +
+                "is_main_work_place) " +
                 "values(" +
                 ":person_id, " +
-                ":place_of_work_id, " +
-                ":category_id)", conn);
+                ":category_id, " +
+                ":first_node_id, " +
+                ":second_node_id, " +
+                ":third_node_id, " +
+                ":fourth_node_id, " +
+                ":is_main_work_place)", conn);
                 cmd.Parameters.Add(new NpgsqlParameter("person_id", person.Id));
-                cmd.Parameters.Add(new NpgsqlParameter("place_of_work_id", placeOfWork.placeOfWork.Id));
                 if (placeOfWork.workCategory.Title != null)
                 {
                     cmd.Parameters.Add(new NpgsqlParameter("category_id", placeOfWork.workCategory.Id));
@@ -2327,6 +1642,45 @@ namespace ResearchProgram
                 {
                     cmd.Parameters.Add(new NpgsqlParameter("category_id", DBNull.Value));
                 }
+
+                if (placeOfWork.firstNode.Title != null)
+                {
+                    cmd.Parameters.Add(new NpgsqlParameter("first_node_id", placeOfWork.firstNode.Id));
+                }
+                else
+                {
+                    cmd.Parameters.Add(new NpgsqlParameter("first_node_id", DBNull.Value));
+                }
+
+                if (placeOfWork.secondNode.Title != null)
+                {
+                    cmd.Parameters.Add(new NpgsqlParameter("second_node_id", placeOfWork.secondNode.Id));
+                }
+                else
+                {
+                    cmd.Parameters.Add(new NpgsqlParameter("second_node_id", DBNull.Value));
+                }
+
+                if (placeOfWork.thirdNode.Title != null)
+                {
+                    cmd.Parameters.Add(new NpgsqlParameter("third_node_id", placeOfWork.thirdNode.Id));
+                }
+                else
+                {
+                    cmd.Parameters.Add(new NpgsqlParameter("third_node_id", DBNull.Value));
+                }
+
+                if (placeOfWork.fourthNode.Title != null)
+                {
+                    cmd.Parameters.Add(new NpgsqlParameter("fourth_node_id", placeOfWork.fourthNode.Id));
+                }
+                else
+                {
+                    cmd.Parameters.Add(new NpgsqlParameter("fourth_node_id", DBNull.Value));
+                }
+
+                cmd.Parameters.Add(new NpgsqlParameter("is_main_work_place", placeOfWork.IsMainWorkPlace));
+
                 cmd.ExecuteNonQuery();
 
                 int newWorkPlaceId = 0;
@@ -2356,7 +1710,6 @@ namespace ResearchProgram
                     cmd.ExecuteNonQuery();
                 }
             }
-
         }
 
         public static void UpdatePlaceOfWork(Person fixedPerson)
@@ -2369,7 +1722,7 @@ namespace ResearchProgram
 
         public static void UpdateDegree(Person fixedPerson)
         {
-                NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET degree_id = :degree_id WHERE id = :id", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET degree_id = :degree_id WHERE id = :id", conn);
             if (fixedPerson.Degree.Title != null)
             {
                 cmd.Parameters.Add(new NpgsqlParameter("degree_id", fixedPerson.Degree.Id));
@@ -2379,13 +1732,13 @@ namespace ResearchProgram
                 cmd.Parameters.Add(new NpgsqlParameter("degree_id", DBNull.Value));
             }
             cmd.Parameters.Add(new NpgsqlParameter("id", fixedPerson.Id));
-                cmd.ExecuteNonQuery();
+            cmd.ExecuteNonQuery();
         }
 
         public static void UpdateRank(Person fixedPerson)
         {
-                NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET rank_id = :rank_id WHERE id = :id", conn);
-                if (fixedPerson.Rank.Title != null)
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET rank_id = :rank_id WHERE id = :id", conn);
+            if (fixedPerson.Rank.Title != null)
             {
                 cmd.Parameters.Add(new NpgsqlParameter("rank_id", fixedPerson.Rank.Id));
             }
@@ -2394,7 +1747,7 @@ namespace ResearchProgram
                 cmd.Parameters.Add(new NpgsqlParameter("rank_id", DBNull.Value));
             }
             cmd.Parameters.Add(new NpgsqlParameter("id", fixedPerson.Id));
-                cmd.ExecuteNonQuery();
+            cmd.ExecuteNonQuery();
         }
 
         public static void UpdateCustomer(Customer fixedCustomer)
@@ -2428,14 +1781,14 @@ namespace ResearchProgram
                 "price, " +
                 "pricenonds, " +
                 "leadniokrid, " +
-                "kafedraid, " +
-                "unitid, " +
-                "institutionid, " +
-                "laboratoryid, " +
                 "grnti, " +
                 "nir, " +
                 "noc," +
-                "is_with_nds) " +
+                "is_with_nds, " +
+                "first_node_id, " +
+                "second_node_id, " +
+                "third_node_id, " +
+                "fourth_node_id) " +
                 "values(" +
                 ":grantnumber, " +
                 ":okved, " +
@@ -2445,14 +1798,14 @@ namespace ResearchProgram
                 ":price, " +
                 ":priceNoNDS, " +
                 ":leadniokrid, " +
-                ":kafedraid, " +
-                ":unitid, " +
-                ":institutionid, " +
-                ":laboratoryid, " +
                 ":grnti, " +
                 ":nir, " +
                 ":noc," +
-                ":is_with_nds)", conn);
+                ":is_with_nds, " +
+                ":first_node_id, " +
+                ":second_node_id, " +
+                ":third_node_id, " +
+                ":fourth_node_id)", conn);
             cmd.Parameters.Add(new NpgsqlParameter("grantnumber", grant.grantNumber));
             cmd.Parameters.Add(new NpgsqlParameter("okved", grant.OKVED));
             cmd.Parameters.Add(new NpgsqlParameter("nameniokr", grant.NameNIOKR));
@@ -2463,16 +1816,49 @@ namespace ResearchProgram
             else
                 cmd.Parameters.Add(new NpgsqlParameter("leadniokrid", DBNull.Value));
 
-            cmd.Parameters.Add(new NpgsqlParameter("institutionid", grant.Institution != null ? grant.Institution.Id : 0));
-            cmd.Parameters.Add(new NpgsqlParameter("unitid", grant.Unit != null ? grant.Unit.Id : 0));
-            cmd.Parameters.Add(new NpgsqlParameter("kafedraid", grant.Kafedra != null ? grant.Kafedra.Id : 0));
-            cmd.Parameters.Add(new NpgsqlParameter("laboratoryid", grant.Laboratory != null ? grant.Laboratory.Id : 0));
             cmd.Parameters.Add(new NpgsqlParameter("price", grant.Price));
             cmd.Parameters.Add(new NpgsqlParameter("priceNoNDS", grant.PriceNoNDS));
             cmd.Parameters.Add(new NpgsqlParameter("grnti", grant.GRNTI));
             cmd.Parameters.Add(new NpgsqlParameter("nir", grant.NIR));
             cmd.Parameters.Add(new NpgsqlParameter("noc", grant.NOC == "Да"));
             cmd.Parameters.Add(new NpgsqlParameter("is_with_nds", grant.isWIthNDS));
+
+            if (grant.FirstNode.Title != null && grant.FirstNode.Title != "")
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("first_node_id", grant.FirstNode.Id));
+            }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("first_node_id", DBNull.Value));
+            }
+
+            if (grant.SecondNode.Title != null && grant.SecondNode.Title != "")
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("second_node_id", grant.SecondNode.Id));
+            }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("second_node_id", DBNull.Value));
+            }
+
+            if (grant.ThirdNode.Title != null && grant.ThirdNode.Title != "")
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("third_node_id", grant.ThirdNode.Id));
+            }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("third_node_id", DBNull.Value));
+            }
+
+            if (grant.FourthNode.Title != null && grant.FourthNode.Title != "")
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("fourth_node_id", grant.FourthNode.Id));
+            }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("fourth_node_id", DBNull.Value));
+            }
+
 
             cmd.ExecuteNonQuery();
 
@@ -2658,88 +2044,6 @@ namespace ResearchProgram
             return jobsList;
         }
 
-        public static void InsertNewKafedraToDB(Kafedra kafedra)
-        {
-            // Вставляем в БД новую кафедру
-            NpgsqlCommand cmd = new NpgsqlCommand("insert into kafedras (title) values(:title)", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", kafedra.Title));
-
-            cmd.ExecuteNonQuery();
-        }
-
-        public static void InsertNewDepositToDB(Depositor depositor)
-        {
-            // Вставляем в БД новый источник средств
-            NpgsqlCommand cmd = new NpgsqlCommand("insert into depositors (title) values(:title)", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", depositor.Title));
-
-            cmd.ExecuteNonQuery();
-        }
-
-        public static void InsertNewUnitToDB(Unit unit)
-        {
-            // Вставляем в БД новое подразделение
-            NpgsqlCommand cmd = new NpgsqlCommand("insert into units (title) values(:title)", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", unit.Title));
-
-            cmd.ExecuteNonQuery();
-        }
-
-        public static void InsertNewInstituitonToDB(Institution institution)
-        {
-            // Вставляем в БД новое учреждение
-            NpgsqlCommand cmd = new NpgsqlCommand("insert into institutions (title) values(:title)", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", institution.Title));
-
-            cmd.ExecuteNonQuery();
-        }
-
-        public static void InsertNewResearchTypeToDB(ResearchType researchType)
-        {
-            // Вставляем в БД новый тип исследования
-            NpgsqlCommand cmd = new NpgsqlCommand("insert into researchtypes (title) values(:title)", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", researchType.Title));
-
-            cmd.ExecuteNonQuery();
-        }
-
-        public static void InsertNewPriorityTrendsToDB(PriorityTrend priorityTrend)
-        {
-            // Вставляем в БД новое приоритетное напрвление
-            NpgsqlCommand cmd = new NpgsqlCommand("insert into prioritytrends (title) values(:title)", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", priorityTrend.Title));
-
-            cmd.ExecuteNonQuery();
-        }
-
-        public static void InsertNewScienceTypeToDB(ScienceType scienceType)
-        {
-            // Вставляем в БД новый тип науки
-            NpgsqlCommand cmd = new NpgsqlCommand("insert into sciencetypes (title) values(:title)", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("title", scienceType.Title));
-
-            cmd.ExecuteNonQuery();
-        }
-
-        //public static bool IsGrantNumberAvailable(Grant grant)
-        //{
-        //    ConnectToDataBase();
-        //    // Проверяем не занят ли номер договора, который пытаются вставлять/изменять
-        //    NpgsqlCommand cmd = new NpgsqlCommand("SELECT grantNumber FROM grants WHERE grantNumber = :grantNumber AND id != :id", conn);
-        //    cmd.Parameters.Add(new NpgsqlParameter("grantNumber", grant.grantNumber));
-        //    cmd.Parameters.Add(new NpgsqlParameter("id", grant.Id));
-        //    NpgsqlDataReader reader = cmd.ExecuteReader();
-        //    bool answer;
-        //    if (reader.HasRows)
-        //        answer = false;
-        //    else
-        //        answer = true;
-        //    CloseConnection();
-
-        //    return answer;
-
-        //}
-
         public static Grant GetGrantById(string grantId)
         {
             ConnectToDataBase();
@@ -2760,17 +2064,8 @@ namespace ResearchProgram
         public static Person GetPersonByPersonId(string personId)
         {
             ConnectToDataBase();
-            List<Person> persons = GetPersons(true);
+            Person person = GetPerson(Convert.ToInt32(personId), true);
             CloseConnection();
-            Person person = new Person();
-            for (int i = 0; i < persons.Count; i++)
-            {
-                if (persons[i].Id == Convert.ToInt32(personId))
-                {
-                    person = persons[i];
-                    break;
-                }
-            }
             return person;
         }
 
@@ -2872,32 +2167,6 @@ namespace ResearchProgram
             CloseConnection();
         }
 
-        public static List<PlaceOfWork> GetPlacesOfWorks()
-        {
-            List<PlaceOfWork> placeOfWorks = new List<PlaceOfWork>();
-
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM place_of_work ORDER BY title;", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    placeOfWorks.Add(new PlaceOfWork()
-                    {
-                        Id = Convert.ToInt32(reader[0]),
-                        Title = reader[1].ToString()
-                    });
-                }
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
-            reader.Close();
-            return placeOfWorks;
-        }
-
         public static List<WorkCategories> GetWorkCategories()
         {
             List<WorkCategories> workCategories = new List<WorkCategories>();
@@ -2974,6 +2243,232 @@ namespace ResearchProgram
             }
             reader.Close();
             return workRanks;
+        }
+
+        public static ObservableCollection<UniversityStructureNode> GetStructureNodes(string regex)
+        {
+            ConnectToDataBase();
+
+            ObservableCollection<UniversityStructureNode> NodeList = new ObservableCollection<UniversityStructureNode>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, address, title, short_title FROM work_place_structure WHERE address ~ " + regex + "ORDER BY title;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    NodeList.Add(new UniversityStructureNode()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Address = reader[1].ToString(),
+                        Title = reader[2].ToString(),
+                        ShortTitle = reader[3].ToString()
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+            CloseConnection();
+            return NodeList;
+        }
+
+        public static UniversityStructureNode GetStructNodeById(int StructNodeId)
+        {
+            UniversityStructureNode Node = new UniversityStructureNode();
+            NpgsqlConnection connection = GetNewConnection();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, address, title, short_title FROM work_place_structure WHERE id = :id;", connection);
+            cmd.Parameters.Add(new NpgsqlParameter(":id", StructNodeId));
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    Node.Id = StructNodeId;
+                    Node.Address = reader[1].ToString();
+                    Node.Title = reader[2].ToString();
+                    Node.ShortTitle = reader[3].ToString();
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+            connection.Close();
+            return Node;
+        }
+
+        public static ObservableCollection<UniversityStructureNode> GetAllFirstNodesByPerson(Person person)
+        {
+            ObservableCollection<UniversityStructureNode> universityStructureNodes = new ObservableCollection<UniversityStructureNode>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT first_node_id, is_main_work_place, " +
+                    "(SELECT title FROM work_place_structure WHERE id = first_node_id), " +
+                    "(SELECT address FROM work_place_structure WHERE id = first_node_id), " +
+                    "(SELECT short_title FROM work_place_structure WHERE id = first_node_id) " +
+                    "FROM persons_work_places " +
+                    "WHERE person_id = :person_id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter(":person_id", person.Id));
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    universityStructureNodes.Add(new UniversityStructureNode
+                    {
+                        Id = reader[0] != DBNull.Value ? Convert.ToInt32(reader[0]) : -1,
+                        Title = reader[2] != DBNull.Value ? reader[2].ToString() : "",
+                        Address = reader[3] != DBNull.Value ? reader[3].ToString() : "",
+                        ShortTitle = reader[4] != DBNull.Value ? reader[4].ToString() : "",
+                        IsMainWorkPlace = reader[1] != DBNull.Value ? Convert.ToBoolean(reader[1]) : false
+                    });
+                }
+            }
+            reader.Close();
+            return universityStructureNodes;
+        }
+        public static ObservableCollection<UniversityStructureNode> GetAllSecondNodesByPerson(Person person)
+        {
+            ObservableCollection<UniversityStructureNode> universityStructureNodes = new ObservableCollection<UniversityStructureNode>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT second_node_id, is_main_work_place, " +
+                    "(SELECT title FROM work_place_structure WHERE id = second_node_id), " +
+                    "(SELECT address FROM work_place_structure WHERE id = second_node_id), " +
+                    "(SELECT short_title FROM work_place_structure WHERE id = second_node_id) " +
+                    "FROM persons_work_places " +
+                    "WHERE person_id = :person_id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter(":person_id", person.Id));
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    universityStructureNodes.Add(new UniversityStructureNode
+                    {
+                        Id = reader[0] != DBNull.Value ? Convert.ToInt32(reader[0]) : -1,
+                        Title = reader[2] != DBNull.Value ? reader[2].ToString() : "",
+                        Address = reader[3] != DBNull.Value ? reader[3].ToString() : "",
+                        ShortTitle = reader[4] != DBNull.Value ? reader[4].ToString() : "",
+                        IsMainWorkPlace = reader[1] != DBNull.Value ? Convert.ToBoolean(reader[1]) : false
+                    });
+                }
+            }
+            reader.Close();
+            return universityStructureNodes;
+        }
+        public static ObservableCollection<UniversityStructureNode> GetAllThirdNodesByPerson(Person person)
+        {
+            ObservableCollection<UniversityStructureNode> universityStructureNodes = new ObservableCollection<UniversityStructureNode>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT third_node_id, is_main_work_place, " +
+                    "(SELECT title FROM work_place_structure WHERE id = third_node_id), " +
+                    "(SELECT address FROM work_place_structure WHERE id = third_node_id), " +
+                    "(SELECT short_title FROM work_place_structure WHERE id = third_node_id) " +
+                    "FROM persons_work_places " +
+                    "WHERE person_id = :person_id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter(":person_id", person.Id));
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    universityStructureNodes.Add(new UniversityStructureNode
+                    {
+                        Id = reader[0] != DBNull.Value ? Convert.ToInt32(reader[0]) : -1,
+                        Title = reader[2] != DBNull.Value ? reader[2].ToString() : "",
+                        Address = reader[3] != DBNull.Value ? reader[3].ToString() : "",
+                        ShortTitle = reader[4] != DBNull.Value ? reader[4].ToString() : "",
+                        IsMainWorkPlace = reader[1] != DBNull.Value ? Convert.ToBoolean(reader[1]) : false
+                    });
+                }
+            }
+            reader.Close();
+            return universityStructureNodes;
+        }
+        public static ObservableCollection<UniversityStructureNode> GetAllFourthNodesByPerson(Person person)
+        {
+            ObservableCollection<UniversityStructureNode> universityStructureNodes = new ObservableCollection<UniversityStructureNode>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT fourth_node_id, is_main_work_place, " +
+                    "(SELECT title FROM work_place_structure WHERE id = fourth_node_id), " +
+                    "(SELECT address FROM work_place_structure WHERE id = fourth_node_id), " +
+                    "(SELECT short_title FROM work_place_structure WHERE id = fourth_node_id) " +
+                    "FROM persons_work_places " +
+                    "WHERE person_id = :person_id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter(":person_id", person.Id));
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    universityStructureNodes.Add(new UniversityStructureNode
+                    {
+                        Id = reader[0] != DBNull.Value ? Convert.ToInt32(reader[0]) : -1,
+                        Title = reader[2] != DBNull.Value ? reader[2].ToString() : "",
+                        Address = reader[3] != DBNull.Value ? reader[3].ToString() : "",
+                        ShortTitle = reader[4] != DBNull.Value ? reader[4].ToString() : "",
+                        IsMainWorkPlace = reader[1] != DBNull.Value ? Convert.ToBoolean(reader[1]) : false
+                    });
+                }
+            }
+            reader.Close();
+            return universityStructureNodes;
+        }
+
+        public static void AddNewUniversityStructureNode(TreeNode ParentNode, string NewTitle, string NewShortTitle)
+        {
+            NpgsqlConnection connection = GetNewConnection();
+            NpgsqlCommand cmd;
+            NpgsqlDataReader reader;
+            for (int i = 1; i < 1000000; i++)
+            {
+                cmd = new NpgsqlCommand("SELECT id, title, address FROM  work_place_structure WHERE address = :address", connection);
+                cmd.Parameters.Add(new NpgsqlParameter("address", ParentNode.Address + "." + i.ToString()));
+                reader = cmd.ExecuteReader();
+                if (reader.HasRows)
+                {
+                    reader.Close();
+                    continue;
+                }
+                else
+                {
+                    reader.Close();
+                    cmd = new NpgsqlCommand("INSERT INTO work_place_structure(title,short_title, address) VALUES(:title, :short_title, :address);", connection);
+                    cmd.Parameters.Add(new NpgsqlParameter("title", NewTitle));
+                    cmd.Parameters.Add(new NpgsqlParameter("short_title", NewShortTitle));
+                    cmd.Parameters.Add(new NpgsqlParameter("address", ParentNode.Address + "." + i.ToString()));
+                    cmd.ExecuteNonQuery();
+                    break;
+                }
+            }
+            connection.Close();
+        }
+
+        public static void DeleteUniversityStructureNode(TreeNode treeNode)
+        {
+            NpgsqlConnection connection = GetNewConnection();
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM work_place_structure WHERE id = :id", connection);
+            cmd.Parameters.Add(new NpgsqlParameter("id", treeNode.Id));
+            cmd.ExecuteNonQuery();
+            cmd = new NpgsqlCommand("DELETE FROM work_place_structure WHERE address ~'^" + treeNode.Address + "\\.'", connection);
+            cmd.ExecuteNonQuery();
+            connection.Close();
+        }
+
+        public static void EditUniversityStructureNode(TreeNode treeNode, string NewTitle, string NewShortTitle)
+        {
+            NpgsqlConnection connection = GetNewConnection();
+            NpgsqlCommand cmd = new NpgsqlCommand("UPDATE work_place_structure SET title = :title, short_title = :short_title WHERE id = :id", connection);
+            cmd.Parameters.Add(new NpgsqlParameter("id", treeNode.Id));
+            cmd.Parameters.Add(new NpgsqlParameter("title", NewTitle));
+            cmd.Parameters.Add(new NpgsqlParameter("short_title", NewShortTitle));
+            cmd.ExecuteNonQuery();
+            connection.Close();
         }
     }
 }

@@ -9,10 +9,8 @@
         Title="Создать новый договор" Height="550" Width="850" ResizeMode="NoResize">
 
     <Window.Resources>
-        <local:LaboratoryConverter x:Key="laboratoryConverter"/>
-        <local:PriceNDSConverter x:Key="PriceNDSConverter"/>
     </Window.Resources>
-    
+
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -35,11 +33,6 @@
                          Margin="0 0 0 3"
                          FontSize="15"
                          Tag="customersAndExecutors"
-                         Click="GrantParametersButtonClick"/>
-                <Button  Content="Даты"
-                         Margin="0 0 0 3"
-                         FontSize="15"
-                         Tag="Dates"
                          Click="GrantParametersButtonClick"/>
                 <Button  Content="Источник финансирования"
                          Margin="0 0 0 3"
@@ -93,11 +86,16 @@
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
 
                             <Label Content="ОКВЭД"
                                    FontWeight="Bold"
                                    Grid.Row="0"
                                    Margin="0 5 0 0"/>
+
                             <ComboBox Grid.Row="1"
                                       Name="OKVEDTextBox"
                                       Margin="5 0">
@@ -106,42 +104,56 @@
                             </ComboBox>
 
                             <Label Content="ГРНТИ"
-                                   Grid.Row="2"
+                                   Grid.Row="0"
+                                   Grid.Column="1"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="3"
+
+                            <TextBox Grid.Row="1"
+                                     Grid.Column="1"
                                      Name="GRNTITextBox"
                                      Margin="5 0"/>
 
                             <Label Content="Номер договора"
-                                   Grid.Row="4"
+                                   Grid.Row="2"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="5"
+
+                            <TextBox Grid.Row="3"
                                      Name="grantNumberTextBox"
-                                     Margin="5 0"></TextBox>
+                                     Margin="5 0"
+                                     Height="23"></TextBox>
 
                             <Label Content="Наименование НИОКР"
-                                   Grid.Row="6"
+                                   Grid.Row="2"
+                                   Grid.Column="1"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
-                            <TextBox Grid.Row="7"
+
+                            <TextBox Grid.Row="3"
+                                   Grid.Column="1"
                                      x:Name="NIOKRTextBox"
                                      Margin="5 0">
                             </TextBox>
 
                             <Label Content="Руководитель НИОКР"
-                                   Grid.Row="8"
+                                   Grid.Row="4"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
-
+                            
+                            <dotNetKitControls:AutoCompleteComboBox
+                                Grid.Row="5"
+                                Margin="5"
+                                x:Name="LeadNIOKRAutoCompleteComboBox"
+                                SelectionChanged="LeadNIOKRAutoCompleteComboBox_SelectionChanged"/>
+                            
                             <Label Content="НИР или Услуга"
-                                   Grid.Row="10"
+                                   Grid.Row="6"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
 
                             <StackPanel Name="nirStackPanel"
-                                        Grid.Row="11">
+                                        Grid.Row="7">
                                 <RadioButton GroupName="NIRRadio" 
                                              Content="НИР"   
                                              Checked="NIRRadioChecked"
@@ -153,11 +165,13 @@
                             </StackPanel>
 
                             <Label Content="НОЦ"
-                                   Grid.Row="12"
+                                   Grid.Row="6"
+                                   Grid.Column="1"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
                             <StackPanel Name="NOCStackPanel"
-                                        Grid.Row="13">
+                                        Grid.Row="7"
+                                        Grid.Column ="1">
                                 <RadioButton GroupName="NOCRadio" 
                                              Content="Да"   
                                              Checked="NOCRadioChecked"
@@ -167,6 +181,24 @@
                                              Checked="NOCRadioChecked"
                                              x:Name="NotNOC"/>
                             </StackPanel>
+
+                            <Label Content="Дата начала"
+                                   Grid.Row="8"
+                                   FontWeight="Bold"
+                                   Margin="0 5 0 0"/>
+                            <DatePicker Name="startDateDatePicker"
+                                        Grid.Row="9"
+                                        Margin="5"/>
+
+                            <Label Content="Дата окончания"
+                                   Grid.Row="8"
+                                   Grid.Column="1"
+                                   FontWeight="Bold"
+                                   Margin="0 5 0 0"/>
+                            <DatePicker Name="endDateDatePicker"
+                                        Grid.Row="9"
+                                        Grid.Column="9"
+                                        Margin="5"/>
                         </Grid>
                     </TabItem.Content>
                 </TabItem>
@@ -270,36 +302,6 @@
                     </TabItem.Content>
                 </TabItem>
 
-                <TabItem Name="Dates"
-                         Visibility="Collapsed">
-                    <TabItem.Content>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Label Content="Дата начала"
-                                   Grid.Row="0"
-                                   FontWeight="Bold"
-                                   Margin="0 5 0 0"/>
-                            <DatePicker Name="startDateDatePicker"
-                                        Grid.Row="1"/>
-                            
-                            <Label Content="Дата окончания"
-                                   Grid.Row="2"
-                                   FontWeight="Bold"
-                                   Margin="0 5 0 0"/>
-                            <DatePicker Name="endDateDatePicker"
-                                        Grid.Row="3"/>
-
-                        </Grid>
-
-                    </TabItem.Content>
-                </TabItem>
-
                 <TabItem Name="deposits"
                          Visibility="Collapsed">
                     <TabItem.Content>
@@ -344,7 +346,7 @@
                                        FontWeight="Bold"
                                        Grid.Column="0"
                                        Margin="0 5 0 0"/>
-                                
+
                                 <TextBox Grid.Row="2"
                                          Grid.Column="0"
                                          Name="priceTextBox"
@@ -352,13 +354,13 @@
                                          PreviewKeyDown="priceNoNDSTextBox_PreviewKeyDown"
                                          Padding="0 3"
                                          TextChanged="priceTextBox_TextChanged"/>
-                                
+
                                 <Label Content="руб."
                                        x:Name="PriceRubLabel"
                                        Grid.Row="2"
                                        Grid.Column="1"
                                        Margin="-7 0 0 0"/>
-                                
+
                                 <Label Content="Сумма без НДС"
                                        Grid.Row="1"
                                        FontWeight="Bold"
@@ -428,97 +430,60 @@
                 <TabItem Name="institution"
                          Visibility="Collapsed">
                     <TabItem.Content>
-                        <Grid x:Name="institutionGrid">
+                        <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
                                 <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
                             </Grid.RowDefinitions>
-
-                            <StackPanel Grid.Row="0"
-                                      DataContext="{Binding UniversityStructure}">
-                                <Label Content="Учреждение"
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Label Content="Учреждение"
                                    Grid.Row="0"
-                                   Margin="3 5 0 0"/>
-                                <dotNetKitControls:AutoCompleteComboBox
-                                    MinWidth="300"
-                                    Margin="8 2 0 2"
-                                    ItemsSource="{Binding Institutions}"
-                                    SelectedItem="{Binding SelectedInstitution}">
-                                </dotNetKitControls:AutoCompleteComboBox>
+                                   Margin="0 5 0 0"
+                                       FontWeight="Bold"/>
+                            <ComboBox
+                                    Grid.Row="1"
+                                    x:Name="FirstNodeComboBox"
+                                    Margin="5"
+                                ItemsSource="{Binding FirstNodeList}"/>
 
-                                <Label Content="Подразделение"
+                            <Label Content="Подразделение"
+                                   Grid.Row="2"
+                                   Margin="0 5 0 0"
+                                       FontWeight="Bold"/>
+                            <ComboBox
+                                    Grid.Row="3"
+                                    x:Name="SecondNodeComboBox"
+                                    Margin="5"
+                                ItemsSource="{Binding SecondNodeList}"/>
+
+                            <Label Content="Отдел"
                                    Grid.Row="0"
-                                   Margin="3 10 0 0"/>
-                                <dotNetKitControls:AutoCompleteComboBox
-                                    MinWidth="300"
-                                    Margin="8 2 0 2"
-                                    ItemsSource="{Binding SelectedInstitution.Units}"
-                                    SelectedItem="{Binding SelectedUnit}">
-                                </dotNetKitControls:AutoCompleteComboBox>
+                                       Grid.Column="1"
+                                   Margin="0 5 0 0"
+                                       FontWeight="Bold"/>
+                            <ComboBox
+                                    Grid.Row="1"
+                                       Grid.Column="1"
+                                    x:Name="ThirdNodeComboBox"
+                                    Margin="5"
+                                ItemsSource="{Binding ThirdNodeList}"/>
 
-                                <Label Content="Кафедра"
-                                   Grid.Row="0"
-                                   Margin="3 10 0 0"/>
-                                <dotNetKitControls:AutoCompleteComboBox
-                                    MinWidth="300"
-                                    Margin="8 2 0 2"
-                                    ItemsSource="{Binding SelectedUnit.Kafedras}"
-                                    SelectedItem="{Binding SelectedKafedra}">
-                                </dotNetKitControls:AutoCompleteComboBox>
-
-
-                                <Label Content="Лаборатория"
-                                         Grid.Row="0"
-                                   Margin="3 10 0 0"/>
-
-                                <dotNetKitControls:AutoCompleteComboBox
-                                    x:Name="institutionLaboratoryCombobox"
-                                    MinWidth="300"
-                                    Margin="8 2 0 2"
-                                    ItemsSource="{Binding SelectedInstitution.Laboratories}"
-                                    SelectedItem="{Binding SelectedLaboratory}">
-                                    <dotNetKitControls:AutoCompleteComboBox.Visibility>
-                                        <MultiBinding Converter="{StaticResource laboratoryConverter}"
-                                                      ConverterParameter="InstitutionLab">
-                                            <Binding Path = "SelectedUnit"/>
-                                            <Binding Path = "SelectedKafedra" />
-                                        </MultiBinding>
-                                    </dotNetKitControls:AutoCompleteComboBox.Visibility>
-                                </dotNetKitControls:AutoCompleteComboBox>
-
-                                <dotNetKitControls:AutoCompleteComboBox
-                                    x:Name="unitLaboratoryCombobox"
-                                    MinWidth="300"
-                                    Margin="8 2 0 2"
-                                    ItemsSource="{Binding SelectedUnit.Laboratories}"
-                                    SelectedItem="{Binding SelectedLaboratory}">
-                                    <dotNetKitControls:AutoCompleteComboBox.Visibility>
-                                        <MultiBinding Converter="{StaticResource laboratoryConverter}"
-                                                      ConverterParameter="UnitLab">
-                                            <Binding Path = "SelectedUnit"/>
-                                            <Binding Path = "SelectedKafedra" />
-                                        </MultiBinding>
-                                    </dotNetKitControls:AutoCompleteComboBox.Visibility>
-                                </dotNetKitControls:AutoCompleteComboBox>
-
-                                <dotNetKitControls:AutoCompleteComboBox
-                                    x:Name="kafedraLaboratoryCombobox"
-                                    MinWidth="300"
-                                    Margin="8 2 0 2"
-                                    ItemsSource="{Binding SelectedKafedra.Laboratories}"
-                                    SelectedItem="{Binding SelectedLaboratory}">
-                                    <dotNetKitControls:AutoCompleteComboBox.Visibility>
-                                        <MultiBinding Converter="{StaticResource laboratoryConverter}"
-                                                      ConverterParameter="KafedraLab">
-                                            <Binding Path = "SelectedUnit"/>
-                                            <Binding Path = "SelectedKafedra" />
-                                        </MultiBinding>
-                                    </dotNetKitControls:AutoCompleteComboBox.Visibility>
-                                </dotNetKitControls:AutoCompleteComboBox>
-
-
-
-                            </StackPanel>
+                            <Label Content="Структурная единица"
+                                         Grid.Row="2"
+                                       Grid.Column="1"
+                                   Margin="0 5 0 0"
+                                       FontWeight="Bold"/>
+                            <ComboBox
+                                    Grid.Row="3"
+                                       Grid.Column="1"
+                                    x:Name="FourthComboBox"
+                                    Margin="5"
+                                ItemsSource="{Binding FourthNodeList}"/>
 
                         </Grid>
                     </TabItem.Content>
@@ -543,6 +508,12 @@
                                    Margin="0 5 0 0"
                                    Grid.Column="0"
                                    Grid.ColumnSpan="2"/>
+
+                            <ComboBox
+                                x:Name="researchTypeComboBox"
+                                Grid.Row="1"
+                                Grid.ColumnSpan="2"
+                                Margin="5 0"/>
 
                             <Grid Name="priorityTrendsGrid"
                                   Grid.Row="3"

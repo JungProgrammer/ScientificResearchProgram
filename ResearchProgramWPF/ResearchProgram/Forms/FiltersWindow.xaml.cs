@@ -1,20 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Data;
+using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace ResearchProgram
 {
@@ -48,8 +36,9 @@ namespace ResearchProgram
         public ObservableCollection<GrantHeader> GrantItemsForControlPanel { get; set; }
 
         private GrantHeader _selectedGrantHeader;
-        public GrantHeader SelectedGrantHeader { 
-            get => _selectedGrantHeader; 
+        public GrantHeader SelectedGrantHeader
+        {
+            get => _selectedGrantHeader;
             set
             {
                 _selectedGrantHeader = value;
@@ -108,14 +97,14 @@ namespace ResearchProgram
         /// <param name="e"></param>    
         private void addFilterButton_Click(object sender, RoutedEventArgs e)
         {
-            if(_selectedGrantHeader != null)
+            if (_selectedGrantHeader != null)
             {
                 GrantItemsForControlPanel.Add(_selectedGrantHeader);
                 filtersTabControl.SelectedItem = _selectedGrantHeader;
 
                 removeFromHeadersFilters(SelectedGrantHeader);
 
-                if(GrantHeaders.Count > 0)
+                if (GrantHeaders.Count > 0)
                 {
                     SelectedGrantHeader = GrantHeaders[0];
                 }
@@ -223,26 +212,26 @@ namespace ResearchProgram
             GrantsFilters.ResetFilters();
 
             // Поиск фильтров
-            GrantsFilters.grantNumber =         FindGrantHeader(GrantItemsForControlPanel, "grantNumber")           != null     ?   FindGrantHeader(GrantItemsForControlPanel, "grantNumber").FilterElementsData            : null;
-            GrantsFilters.OKVED =               FindGrantHeader(GrantItemsForControlPanel, "OKVED")                 != null     ?   FindGrantHeader(GrantItemsForControlPanel, "OKVED").FilterElementsData                  : null;
-            GrantsFilters.NameNIOKR =           FindGrantHeader(GrantItemsForControlPanel, "NIOKR")                 != null     ?   FindGrantHeader(GrantItemsForControlPanel, "NIOKR").FilterElementsData                  : null;
-            GrantsFilters.Customer =            FindGrantHeader(GrantItemsForControlPanel, "customer")              != null     ?   FindGrantHeader(GrantItemsForControlPanel, "customer").FilterElementsData               : null;
-            GrantsFilters.StartDate =           FindGrantHeader(GrantItemsForControlPanel, "startDate")             != null     ?   FindGrantHeader(GrantItemsForControlPanel, "startDate").FilterElementsData              : null;
-            GrantsFilters.EndDate =             FindGrantHeader(GrantItemsForControlPanel, "endDate")               != null     ?   FindGrantHeader(GrantItemsForControlPanel, "endDate").FilterElementsData                : null;
-            GrantsFilters.Price =               FindGrantHeader(GrantItemsForControlPanel, "price")                 != null     ?   FindGrantHeader(GrantItemsForControlPanel, "price").FilterElementsData                  : null;
-            GrantsFilters.Depositor =           FindGrantHeader(GrantItemsForControlPanel, "deposits")              != null     ?   FindGrantHeader(GrantItemsForControlPanel, "deposits").FilterElementsData               : null;
-            GrantsFilters.LeadNIOKR =           FindGrantHeader(GrantItemsForControlPanel, "leadNIOKR")             != null     ?   FindGrantHeader(GrantItemsForControlPanel, "leadNIOKR").FilterElementsData              : null;
-            GrantsFilters.Executor =            FindGrantHeader(GrantItemsForControlPanel, "executors")             != null     ?   FindGrantHeader(GrantItemsForControlPanel, "executors").FilterElementsData              : null;
-            GrantsFilters.Kafedra =             FindGrantHeader(GrantItemsForControlPanel, "kafedra")               != null     ?   FindGrantHeader(GrantItemsForControlPanel, "kafedra").FilterElementsData                : null;
-            GrantsFilters.Unit =                FindGrantHeader(GrantItemsForControlPanel, "unit")                  != null     ?   FindGrantHeader(GrantItemsForControlPanel, "unit").FilterElementsData                   : null;
-            GrantsFilters.Laboratory =          FindGrantHeader(GrantItemsForControlPanel, "laboratory")            != null     ?   FindGrantHeader(GrantItemsForControlPanel, "laboratory").FilterElementsData             : null;
-            GrantsFilters.Institution =         FindGrantHeader(GrantItemsForControlPanel, "institution")           != null     ?   FindGrantHeader(GrantItemsForControlPanel, "institution").FilterElementsData            : null;
-            GrantsFilters.GRNTI =               FindGrantHeader(GrantItemsForControlPanel, "GRNTI")                 != null     ?   FindGrantHeader(GrantItemsForControlPanel, "GRNTI").FilterElementsData                  : null;
-            GrantsFilters.ResearchTypes =       FindGrantHeader(GrantItemsForControlPanel, "researchTypes")         != null     ?   FindGrantHeader(GrantItemsForControlPanel, "researchTypes").FilterElementsData          : null;
-            GrantsFilters.PriorityTrands =      FindGrantHeader(GrantItemsForControlPanel, "priorityTrends")        != null     ?   FindGrantHeader(GrantItemsForControlPanel, "priorityTrends").FilterElementsData         : null;
-            GrantsFilters.ScienceTypes =        FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem")       != null     ?   FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem").FilterElementsData        : null;
-            GrantsFilters.NIR =                 FindGrantHeader(GrantItemsForControlPanel, "NIRItem")               != null     ?   FindGrantHeader(GrantItemsForControlPanel, "NIRItem").FilterElementsData                : null;
-            GrantsFilters.NOC =                 FindGrantHeader(GrantItemsForControlPanel, "NOCItem")               != null     ?   FindGrantHeader(GrantItemsForControlPanel, "NOCItem").FilterElementsData                : null;
+            GrantsFilters.grantNumber = FindGrantHeader(GrantItemsForControlPanel, "grantNumber") != null ? FindGrantHeader(GrantItemsForControlPanel, "grantNumber").FilterElementsData : null;
+            GrantsFilters.OKVED = FindGrantHeader(GrantItemsForControlPanel, "OKVED") != null ? FindGrantHeader(GrantItemsForControlPanel, "OKVED").FilterElementsData : null;
+            GrantsFilters.NameNIOKR = FindGrantHeader(GrantItemsForControlPanel, "NIOKR") != null ? FindGrantHeader(GrantItemsForControlPanel, "NIOKR").FilterElementsData : null;
+            GrantsFilters.Customer = FindGrantHeader(GrantItemsForControlPanel, "customer") != null ? FindGrantHeader(GrantItemsForControlPanel, "customer").FilterElementsData : null;
+            GrantsFilters.StartDate = FindGrantHeader(GrantItemsForControlPanel, "startDate") != null ? FindGrantHeader(GrantItemsForControlPanel, "startDate").FilterElementsData : null;
+            GrantsFilters.EndDate = FindGrantHeader(GrantItemsForControlPanel, "endDate") != null ? FindGrantHeader(GrantItemsForControlPanel, "endDate").FilterElementsData : null;
+            GrantsFilters.Price = FindGrantHeader(GrantItemsForControlPanel, "price") != null ? FindGrantHeader(GrantItemsForControlPanel, "price").FilterElementsData : null;
+            GrantsFilters.Depositor = FindGrantHeader(GrantItemsForControlPanel, "deposits") != null ? FindGrantHeader(GrantItemsForControlPanel, "deposits").FilterElementsData : null;
+            GrantsFilters.LeadNIOKR = FindGrantHeader(GrantItemsForControlPanel, "leadNIOKR") != null ? FindGrantHeader(GrantItemsForControlPanel, "leadNIOKR").FilterElementsData : null;
+            GrantsFilters.Executor = FindGrantHeader(GrantItemsForControlPanel, "executors") != null ? FindGrantHeader(GrantItemsForControlPanel, "executors").FilterElementsData : null;
+            GrantsFilters.Kafedra = FindGrantHeader(GrantItemsForControlPanel, "kafedra") != null ? FindGrantHeader(GrantItemsForControlPanel, "kafedra").FilterElementsData : null;
+            GrantsFilters.Unit = FindGrantHeader(GrantItemsForControlPanel, "unit") != null ? FindGrantHeader(GrantItemsForControlPanel, "unit").FilterElementsData : null;
+            GrantsFilters.Laboratory = FindGrantHeader(GrantItemsForControlPanel, "laboratory") != null ? FindGrantHeader(GrantItemsForControlPanel, "laboratory").FilterElementsData : null;
+            GrantsFilters.Institution = FindGrantHeader(GrantItemsForControlPanel, "institution") != null ? FindGrantHeader(GrantItemsForControlPanel, "institution").FilterElementsData : null;
+            GrantsFilters.GRNTI = FindGrantHeader(GrantItemsForControlPanel, "GRNTI") != null ? FindGrantHeader(GrantItemsForControlPanel, "GRNTI").FilterElementsData : null;
+            GrantsFilters.ResearchTypes = FindGrantHeader(GrantItemsForControlPanel, "researchTypes") != null ? FindGrantHeader(GrantItemsForControlPanel, "researchTypes").FilterElementsData : null;
+            GrantsFilters.PriorityTrands = FindGrantHeader(GrantItemsForControlPanel, "priorityTrends") != null ? FindGrantHeader(GrantItemsForControlPanel, "priorityTrends").FilterElementsData : null;
+            GrantsFilters.ScienceTypes = FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem") != null ? FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem").FilterElementsData : null;
+            GrantsFilters.NIR = FindGrantHeader(GrantItemsForControlPanel, "NIRItem") != null ? FindGrantHeader(GrantItemsForControlPanel, "NIRItem").FilterElementsData : null;
+            GrantsFilters.NOC = FindGrantHeader(GrantItemsForControlPanel, "NOCItem") != null ? FindGrantHeader(GrantItemsForControlPanel, "NOCItem").FilterElementsData : null;
         }
 
         /// <summary>
@@ -255,7 +244,7 @@ namespace ResearchProgram
         {
             foreach (GrantHeader grantHeader in grantHeaders)
             {
-                if(grantHeader.nameForElement == elementName)
+                if (grantHeader.nameForElement == elementName)
                 {
                     return grantHeader;
                 }

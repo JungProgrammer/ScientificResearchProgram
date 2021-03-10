@@ -1,10 +1,6 @@
 ﻿using System;
-using System.Data;
-using Npgsql;
-using System.Diagnostics;
-using System.Windows;
 using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
+using System.Data;
 using System.Linq;
 
 namespace ResearchProgram
@@ -99,8 +95,8 @@ namespace ResearchProgram
 
                     // Если в словаре такое средство уже есть, то суммируем
                     if (depositDict.ContainsKey(depositorStr))
-                    { 
-                        if(!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey)
+                    {
+                        if (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey)
                         {
                             depositDict[depositorStr] += depositorSumNoNDS;
                         }
@@ -131,11 +127,11 @@ namespace ResearchProgram
             string depositsSum = "";
 
             // Перевод словарей в строки отображения
-            foreach(string depositor in depositDict.Keys)
+            foreach (string depositor in depositDict.Keys)
             {
                 depositors += depositor + '\n';
             }
-            foreach(float depositorSum in depositDict.Values)
+            foreach (float depositorSum in depositDict.Values)
             {
                 depositsSum += depositorSum.ToString("0.##########") + '\n';
             }
@@ -147,30 +143,30 @@ namespace ResearchProgram
                 if (grantsDataTable.Rows.Count == 0) countOfGrantRows = 0;
                 countOfGrantRows++;
                 DataRow row = grantsDataTable.NewRow();
-                row["id"]                       = grant.Id;
-                row["№"]                        = countOfGrantRows.ToString();
-                row["Номер договора"]           = grant.grantNumber;
-                row["ОКВЭД"]                    = grant.OKVED;
-                row["Наименование НИОКР"]       = grant.NameNIOKR;
-                row["Заказчик"]                 = string.Join("\n", grant.Customer);
-                row["Дата начала"]              = grant.StartDate == new DateTime(1, 1, 1) ? "": grant.StartDate.ToString("dd.MM.yyyy");
-                row["Дата завершения"]          = grant.EndDate == new DateTime(1, 1, 1) ? "" : grant.EndDate.ToString("dd.MM.yyyy");
-                row["Стоимость договора"]       = (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey) ? grant.PriceNoNDS.ToString() : grant.Price.ToString();
-                row["Источник финансирования"]  = depositors;
-                row["Поступления"]              = depositsSum;
-                row["Руководитель НИОКР"]       = grant.LeadNIOKR.shortName();
-                row["Исполнители"]              = string.Join("\n", grant.Executor.Select(x => x.shortName()).ToArray()); 
-                row["Учреждение"]               = grant.Institution;
-                row["Подразделение"]            = grant.Unit;
-                row["Кафедра"]                  = grant.Kafedra;
-                row["Лаборатория"]              = grant.Laboratory;
-                row["ГРНТИ"]                    = grant.GRNTI;
-                row["Тип исследования"]         = string.Join("\n", grant.ResearchType);
+                row["id"] = grant.Id;
+                row["№"] = countOfGrantRows.ToString();
+                row["Номер договора"] = grant.grantNumber;
+                row["ОКВЭД"] = grant.OKVED;
+                row["Наименование НИОКР"] = grant.NameNIOKR;
+                row["Заказчик"] = string.Join("\n", grant.Customer);
+                row["Дата начала"] = grant.StartDate == new DateTime(1, 1, 1) ? "" : grant.StartDate.ToString("dd.MM.yyyy");
+                row["Дата завершения"] = grant.EndDate == new DateTime(1, 1, 1) ? "" : grant.EndDate.ToString("dd.MM.yyyy");
+                row["Стоимость договора"] = (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey) ? grant.PriceNoNDS.ToString() : grant.Price.ToString();
+                row["Источник финансирования"] = depositors;
+                row["Поступления"] = depositsSum;
+                row["Руководитель НИОКР"] = grant.LeadNIOKR.shortName();
+                row["Исполнители"] = string.Join("\n", grant.Executor.Select(x => x.shortName()).ToArray());
+                row["Учреждение"] = grant.FirstNode;
+                row["Подразделение"] = grant.SecondNode;
+                row["Отдел"] = grant.ThirdNode;
+                row["Структурная единица"] = grant.FourthNode;
+                row["ГРНТИ"] = grant.GRNTI;
+                row["Тип исследования"] = string.Join("\n", grant.ResearchType);
                 row["Приоритетные направления"] = string.Join("\n", grant.PriorityTrands);
-                row["Тип науки"]                = string.Join("\n", grant.ScienceType);
-                row["НИР или УСЛУГА"]           = grant.NIR;
-                row["НОЦ"]                      = grant.NOC == "True" ? "Да" : grant.NOC == "False" ? "Нет" : "";
-                row["Наличие НДС"]              = grant.isWIthNDS ? "Да" : "Нет";
+                row["Тип науки"] = string.Join("\n", grant.ScienceType);
+                row["НИР или УСЛУГА"] = grant.NIR;
+                row["НОЦ"] = grant.NOC == "True" ? "Да" : grant.NOC == "False" ? "Нет" : "";
+                row["Наличие НДС"] = grant.isWIthNDS ? "Да" : "Нет";
                 grantsDataTable.Rows.Add(row);
             }
         }
@@ -185,11 +181,11 @@ namespace ResearchProgram
             if (personsDataTable.Rows.Count == 0) countOfPersonRows = 0;
             countOfPersonRows++;
             DataRow row = personsDataTable.NewRow();
-            row["#"]                            = countOfPersonRows.ToString();
-            row["id"]                           = person.Id;
-            row["ФИО"]                          = person.FIO;
-            row["Дата рождения"]                = person.BitrhDate == new DateTime(1, 1, 1) ? "" : person.BitrhDate.ToString("dd.MM.yyyy");
-            row["Пол"]                          = person.Sex ? "M" : "Ж";
+            row["#"] = countOfPersonRows.ToString();
+            row["id"] = person.Id;
+            row["ФИО"] = person.FIO;
+            row["Дата рождения"] = person.BitrhDate == new DateTime(1, 1, 1) ? "" : person.BitrhDate.ToString("dd.MM.yyyy");
+            row["Пол"] = person.Sex ? "M" : "Ж";
             //row["Место работы"]                 = person.PlaceOfWork;
             //row["Категория"]                    = person.Category;
             row["Степень"] = person.Degree.Title;

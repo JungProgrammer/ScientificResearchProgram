@@ -64,6 +64,7 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.3\lib\netstandard2.0\System.Memory.dll</HintPath>
@@ -124,7 +125,9 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Classes\OKVED.cs" />
-    <Compile Include="Classes\PlaceOfWork.cs" />
+    <Compile Include="Classes\PersonWorkPlace.cs" />
+    <Compile Include="Classes\TreeNode.cs" />
+    <Compile Include="Classes\UniversityStructureNode.cs" />
     <Compile Include="Classes\WindowsArgumentsTranfer.cs" />
     <Compile Include="Classes\WorkCategories.cs" />
     <Compile Include="Classes\WorkDegree.cs" />
@@ -132,6 +135,9 @@
     <Compile Include="Converters\NOCConverter.cs" />
     <Compile Include="Converters\SumConverter.cs" />
     <Compile Include="Converters\WindowsHelperConverter.cs" />
+    <Compile Include="Forms\AddUniversityStructureNodeWindow.xaml.cs">
+      <DependentUpon>AddUniversityStructureNodeWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\CategoryWindow.xaml.cs">
       <DependentUpon>CategoryWindow.xaml</DependentUpon>
     </Compile>
@@ -163,26 +169,19 @@
     <Compile Include="Forms\JobsWindow.xaml.cs">
       <DependentUpon>JobsWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Forms\PlaceOfWorkWindow.xaml.cs">
-      <DependentUpon>PlaceOfWorkWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Forms\RanksWindow.xaml.cs">
       <DependentUpon>RanksWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="GrantHeader.cs" />
     <Compile Include="GrantsFilters.cs" />
     <Compile Include="IContainer.cs" />
-    <Compile Include="Classes\Institution.cs" />
     <Compile Include="Classes\Job.cs" />
     <Compile Include="Converters\JobConverter.cs" />
-    <Compile Include="Classes\Laboratory.cs" />
-    <Compile Include="Converters\LaboratoryConverter.cs" />
     <Compile Include="Converters\NDSConverter.cs" />
     <Compile Include="Classes\Nir.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Classes\PriorityTrend.cs" />
     <Compile Include="Converters\PriceNDSConverter.cs" />
-    <Compile Include="RelayComand.cs" />
     <Compile Include="Classes\ResearchType.cs" />
     <Compile Include="Classes\ScienceType.cs" />
     <Compile Include="Settings.cs" />
@@ -194,22 +193,16 @@
     <Compile Include="Forms\SettingWindow.xaml.cs">
       <DependentUpon>SettingWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Classes\Unit.cs" />
-    <Compile Include="UniversityStructureCommandWindows\AddTreeNodeWindow.xaml.cs">
-      <DependentUpon>AddTreeNodeWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UniversityStructureCommandWindows\RenameNodeWindow.xaml.cs">
-      <DependentUpon>RenameNodeWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UniversityStructureViewModel.cs" />
     <Compile Include="Forms\UniversityStructureWindow.xaml.cs">
       <DependentUpon>UniversityStructureWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UniversityStructureWindowComands.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Converters\VisibilityConveter.cs" />
     <Compile Include="WorkerWithGrantsTable.cs" />
-    <Compile Include="WorkerWithUniversityStructure.cs" />
+    <Page Include="Forms\AddUniversityStructureNodeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Forms\CategoryWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -250,10 +243,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Forms\PlaceOfWorkWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Forms\RanksWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -271,20 +260,11 @@
     </Compile>
     <Compile Include="CRUDDataBase.cs" />
     <Compile Include="Classes\Grant.cs" />
-    <Compile Include="Classes\Kafedra.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="Forms\SettingWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UniversityStructureCommandWindows\AddTreeNodeWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UniversityStructureCommandWindows\RenameNodeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

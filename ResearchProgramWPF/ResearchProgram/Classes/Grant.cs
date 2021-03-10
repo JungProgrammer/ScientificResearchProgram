@@ -1,8 +1,6 @@
-﻿using System;
+﻿using ResearchProgram.Classes;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ResearchProgram
 {
@@ -20,20 +18,10 @@ namespace ResearchProgram
             ScienceType = new List<ScienceType>();
 
             Id = 0;
-            //grantNumber = "Не указан";
-            //OKVED = "Не указан";
-            //NameNIOKR = "Не указан";
             Price = 0;
             PriceNoNDS = 0;
-            Institution = new Institution();
-            Unit = new Unit();
-            Kafedra = new Kafedra();
-            Laboratory = new Laboratory();
-            //GRNTI = "Не указан";
-            //NIR = "Не указан";
-            //NOC = "Не указан";
             LeadNIOKR = new Person();
-            Customer = new List<Customer>(); 
+            Customer = new List<Customer>();
         }
 
         // Id
@@ -66,14 +54,6 @@ namespace ResearchProgram
         public Person LeadNIOKR { get; set; }
         // Исполнитель
         public List<Person> Executor { get; set; }
-        // Учреждение
-        public Institution Institution { get; set; }
-        // Подразделение
-        public Unit Unit { get; set; }
-        // Кафедра
-        public Kafedra Kafedra { get; set; }
-        // Лаборатория 
-        public Laboratory Laboratory { get; set; }
         // ГРНТИ
         public string GRNTI { get; set; }
         // Тип исследования
@@ -88,5 +68,10 @@ namespace ResearchProgram
         public string NOC { get; set; }
         //Есть ли у договора НДС
         public bool isWIthNDS { get; set; }
+
+        public UniversityStructureNode FirstNode { get; set; }
+        public UniversityStructureNode SecondNode { get; set; }
+        public UniversityStructureNode ThirdNode { get; set; }
+        public UniversityStructureNode FourthNode { get; set; }
     }
 }

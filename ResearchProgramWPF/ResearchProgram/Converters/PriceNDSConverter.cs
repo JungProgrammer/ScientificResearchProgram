@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Globalization;
-using System.Windows.Data;
 using System.Windows;
+using System.Windows.Data;
 
 namespace ResearchProgram
 {
-    class PriceNDSConverter: IValueConverter
+    class PriceNDSConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
