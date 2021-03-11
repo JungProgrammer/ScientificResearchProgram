@@ -944,6 +944,7 @@ namespace ResearchProgram
             {
                 personsList.Add(GetPerson(persons_ids[i], is_jobs_needed));
             }
+
             return personsList;
         }
 
@@ -1266,7 +1267,7 @@ namespace ResearchProgram
         /// Загрузка в БД нового человека
         /// </summary>
         /// <param name="person"></param>
-        public static void InsertNewPersonToDB(Person person)
+        public static Person InsertNewPersonToDB(Person person)
         {
             // Вставляем в БД нового человека
             NpgsqlCommand cmd = new NpgsqlCommand("insert into persons (" +
@@ -1318,6 +1319,8 @@ namespace ResearchProgram
             reader.Close();
 
             InserttNewPlaceOfWork(person);
+
+            return person;
         }
 
 
@@ -2469,6 +2472,25 @@ namespace ResearchProgram
             cmd.Parameters.Add(new NpgsqlParameter("short_title", NewShortTitle));
             cmd.ExecuteNonQuery();
             connection.Close();
+        }
+
+        public static string GetActualVersion()
+        {
+            NpgsqlConnection connection = GetNewConnection();
+            string Version = "";
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT value FROM config WHERE title='version';", connection);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                reader.Read();
+                Version = reader["value"].ToString();
+            }
+
+            reader.Close();
+            connection.Close();
+
+            return Version;
         }
     }
 }
