@@ -228,8 +228,8 @@ namespace ResearchProgram
             if (reader.HasRows)
             {
                 string grantDeposit;
-                string grantDepositSum;
-                string grantDepositSumNoNDS;
+                double grantDepositSum;
+                double grantDepositSumNoNDS;
                 string receiptDate;
                 while (reader.Read())
                 {
@@ -237,15 +237,15 @@ namespace ResearchProgram
                     grant_index = ShowGrantIndex(grants, grant_id);
 
                     grantDeposit = reader[1].ToString();
-                    grantDepositSum = reader[2].ToString();
-                    grantDepositSumNoNDS = reader[4].ToString();
+                    grantDepositSum = reader.GetDouble(2);
+                    grantDepositSumNoNDS = reader.GetDouble(4);
                     receiptDate = reader[3] != DBNull.Value ? DateTime.Parse(reader[3].ToString()).ToShortDateString() : string.Empty;
                     grants[grant_index].Depositor.Add(new Depositor()
                     {
                         Title = grantDeposit,
                     });
-                    grants[grant_index].DepositorSum.Add(float.Parse(grantDepositSum));
-                    grants[grant_index].DepositorSumNoNDS.Add(float.Parse(grantDepositSumNoNDS));
+                    grants[grant_index].DepositorSum.Add(grantDepositSum);
+                    grants[grant_index].DepositorSumNoNDS.Add(grantDepositSumNoNDS);
                     grants[grant_index].ReceiptDate.Add(receiptDate);
                 }
             }
@@ -335,8 +335,8 @@ namespace ResearchProgram
                     grants[grant_index].NameNIOKR = reader["nameNIOKR"].ToString();
                     grants[grant_index].StartDate = Convert.ToDateTime(reader["startDate"]);
                     grants[grant_index].EndDate = Convert.ToDateTime(reader["endDate"]);
-                    grants[grant_index].Price = reader.GetFloat(6);
-                    grants[grant_index].PriceNoNDS = reader.GetFloat(11);
+                    grants[grant_index].Price = reader.GetDouble(6);
+                    grants[grant_index].PriceNoNDS = reader.GetDouble(11);
                     grants[grant_index].LeadNIOKR = new Person() { FIO = reader["lead_niokr"].ToString() };
                     grants[grant_index].GRNTI = reader["GRNTI"].ToString();
                     grants[grant_index].NIR = reader["NIR"].ToString();
