@@ -335,8 +335,8 @@ namespace ResearchProgram
                     grants[grant_index].NameNIOKR = reader["nameNIOKR"].ToString();
                     grants[grant_index].StartDate = Convert.ToDateTime(reader["startDate"]);
                     grants[grant_index].EndDate = Convert.ToDateTime(reader["endDate"]);
-                    grants[grant_index].Price = float.Parse(reader["price"].ToString());
-                    grants[grant_index].PriceNoNDS = float.Parse(reader["pricenonds"].ToString());
+                    grants[grant_index].Price = reader.GetFloat(6);
+                    grants[grant_index].PriceNoNDS = reader.GetFloat(11);
                     grants[grant_index].LeadNIOKR = new Person() { FIO = reader["lead_niokr"].ToString() };
                     grants[grant_index].GRNTI = reader["GRNTI"].ToString();
                     grants[grant_index].NIR = reader["NIR"].ToString();
