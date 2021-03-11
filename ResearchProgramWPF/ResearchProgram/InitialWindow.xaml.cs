@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -38,7 +40,7 @@ namespace ResearchProgram.Forms
                 DownloadProgressBar.Visibility = Visibility.Visible;
                 MainInfoLabel.Content = "Найдна новая версия";
                 Console.WriteLine("НОВАЯ ВЕРСИЯ ХАХХАХАХА");
-                var client = new WebClient();
+                WebClient client = new WebClient();
                 client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(download_ProgressChanged);
                 client.DownloadFileCompleted += new AsyncCompletedEventHandler(download_Completed);
                 string uri = "http://" + ServerIp + ":8000/download_update/" + ActualVersion;
@@ -64,9 +66,33 @@ namespace ResearchProgram.Forms
 
         private void download_Completed(object sender, AsyncCompletedEventArgs e)
         {
+            if (Directory.Exists("updater"))
+            {
+                Console.WriteLine("Есть апдейтер");
+                Process.Start(System.IO.Path.GetFullPath(@"updater\updater.exe"), "temp_myprogram ResearchProgram.exe");
+                Process.GetCurrentProcess().Kill();
+            }
+            else
+            {
+                Console.WriteLine("Нет апдейтера, качаем");
+                MainInfoLabel.Content = "Скачивание установщика";
+                WebClient client = new WebClient();
+                client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(download_ProgressChanged);
+                client.DownloadFileCompleted += new AsyncCompletedEventHandler(UpdaterDownloadComplete);
+                string uri = "http://" + ServerIp + ":8000/get_updater";
+                client.DownloadFileAsync(new Uri(uri), "updater.zip");
+            }
+        }
+
+        private void UpdaterDownloadComplete(object sender, AsyncCompletedEventArgs e)
+        {
+            string archivePath = "updater.zip";
+            using (ZipArchive zipArchive = ZipFile.OpenRead(archivePath))
+            {
+                ZipFile.ExtractToDirectory(archivePath, Directory.GetCurrentDirectory());
+            }
             Process.Start(System.IO.Path.GetFullPath(@"updater\updater.exe"), "temp_myprogram ResearchProgram.exe");
             Process.GetCurrentProcess().Kill();
-            Console.WriteLine("СКАЧАНО");
         }
 
     }
