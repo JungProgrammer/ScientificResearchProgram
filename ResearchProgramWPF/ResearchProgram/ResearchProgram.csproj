@@ -166,6 +166,9 @@
     <Compile Include="Forms\HelpWindows\EditElementWindow.xaml.cs">
       <DependentUpon>EditElementWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="InitialWindow.xaml.cs">
+      <DependentUpon>InitialWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\JobsWindow.xaml.cs">
       <DependentUpon>JobsWindow.xaml</DependentUpon>
     </Compile>
@@ -236,6 +239,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\HelpWindows\EditElementWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="InitialWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -319,9 +326,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\edit.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\splashscreen.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\info.jpg" />

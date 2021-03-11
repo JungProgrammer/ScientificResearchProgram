@@ -19,7 +19,6 @@ namespace ResearchProgram
     /// </summary>
     public partial class CreateGrantWindow : Window, INotifyPropertyChanged
     {
-
         private ObservableCollection<UniversityStructureNode> _firstNodeList;
         private ObservableCollection<UniversityStructureNode> _secondNodeList;
         private ObservableCollection<UniversityStructureNode> _thirdNodeList;
@@ -102,7 +101,6 @@ namespace ResearchProgram
             SecondNodeList = new ObservableCollection<UniversityStructureNode>();
             ThirdNodeList = new ObservableCollection<UniversityStructureNode>();
             FourthNodeList = new ObservableCollection<UniversityStructureNode>();
-
 
 
             priceTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
