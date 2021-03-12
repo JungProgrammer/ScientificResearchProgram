@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 
 namespace ResearchProgram
@@ -32,7 +33,7 @@ namespace ResearchProgram
                     column.DataType = Type.GetType("System.Int32");
                     break;
                 case "Стоимость договора":
-                    column.DataType = Type.GetType("System.Double");
+                    //column.DataType = Type.GetType("System.Double");
                     break;
             }
 
@@ -81,12 +82,12 @@ namespace ResearchProgram
         public static void AddRowToGrantTable(DataTable grantsDataTable, Grant grant)
         {
             // Словарь для отображения средств
-            Dictionary<string, float> depositDict = new Dictionary<string, float>();
+            Dictionary<string, double> depositDict = new Dictionary<string, double>();
             for (int i = 0; i < grant.Depositor.Count; i++)
             {
                 string depositorStr;
-                float depositorSum;
-                float depositorSumNoNDS;
+                double depositorSum;
+                double depositorSumNoNDS;
                 if (GrantsFilters.CheckReceiptDate(grant.ReceiptDate[i]))
                 {
                     depositorStr = grant.Depositor[i].Title;
@@ -131,18 +132,22 @@ namespace ResearchProgram
             {
                 depositors += depositor + '\n';
             }
-            foreach (float depositorSum in depositDict.Values)
+            foreach (double depositorSum in depositDict.Values)
             {
-                depositsSum += depositorSum.ToString("0.##########") + '\n';
+                depositsSum += String.Format("{0:0.##}", depositorSum) + '\n';
             }
 
 
             // Если договор подходит под фильтр
             if (GrantsFilters.CheckGrantOnCurFilter(grant))
             {
+                //var first = string.Format("0k", grant.PriceNoNDS);
+                var first = grant.PriceNoNDS.ToString("C");
+
+
                 if (grantsDataTable.Rows.Count == 0) countOfGrantRows = 0;
                 countOfGrantRows++;
-                DataRow row = grantsDataTable.NewRow();
+                 DataRow row = grantsDataTable.NewRow();
                 row["id"] = grant.Id;
                 row["№"] = countOfGrantRows.ToString();
                 row["Номер договора"] = grant.grantNumber;
@@ -151,7 +156,7 @@ namespace ResearchProgram
                 row["Заказчик"] = string.Join("\n", grant.Customer);
                 row["Дата начала"] = grant.StartDate == new DateTime(1, 1, 1) ? "" : grant.StartDate.ToString("dd.MM.yyyy");
                 row["Дата завершения"] = grant.EndDate == new DateTime(1, 1, 1) ? "" : grant.EndDate.ToString("dd.MM.yyyy");
-                row["Стоимость договора"] = (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey) ? grant.PriceNoNDS.ToString() : grant.Price.ToString();
+                row["Стоимость договора"] = (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey) ? String.Format("{0:0.##}", grant.PriceNoNDS) : String.Format("{0:0.##}", grant.Price);
                 row["Источник финансирования"] = depositors;
                 row["Поступления"] = depositsSum;
                 row["Руководитель НИОКР"] = grant.LeadNIOKR.shortName();

@@ -9,8 +9,8 @@ namespace ResearchProgram
         public Grant()
         {
             Depositor = new List<Depositor>();
-            DepositorSum = new List<float>();
-            DepositorSumNoNDS = new List<float>();
+            DepositorSum = new List<double>();
+            DepositorSumNoNDS = new List<double>();
             ReceiptDate = new List<string>();
             Executor = new List<Person>();
             ResearchType = new List<ResearchType>();
@@ -39,15 +39,15 @@ namespace ResearchProgram
         // Дата окончания договора
         public DateTime EndDate { get; set; }
         // Цена договора
-        public float Price { get; set; }
+        public double Price { get; set; }
         // Цена договора без НДС
-        public float PriceNoNDS { get; set; }
+        public double PriceNoNDS { get; set; }
         // Средства
         public List<Depositor> Depositor { get; set; }
         // Часть средств
-        public List<float> DepositorSum { get; set; }
+        public List<double> DepositorSum { get; set; }
         // Часть средств без НДС
-        public List<float> DepositorSumNoNDS { get; set; }
+        public List<double> DepositorSumNoNDS { get; set; }
         // Дата поступления платежа
         public List<string> ReceiptDate { get; set; }
         // руководитель

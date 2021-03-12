@@ -125,24 +125,28 @@
                                      Height="23"></TextBox>
 
                             <Label Content="Наименование НИОКР"
-                                   Grid.Row="2"
-                                   Grid.Column="1"
+                                   Grid.Row="4"
+                                   Grid.Column="0"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
 
-                            <TextBox Grid.Row="3"
-                                   Grid.Column="1"
+                            <TextBox Grid.Row="5"
+                                   Grid.Column="0"
+                                   Grid.ColumnSpan="2"
+                                     
                                      x:Name="NIOKRTextBox"
                                      Margin="5 0">
                             </TextBox>
 
                             <Label Content="Руководитель НИОКР"
-                                   Grid.Row="4"
+                                   Grid.Row="2"
+                                   Grid.Column="1"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
                             
                             <dotNetKitControls:AutoCompleteComboBox
-                                Grid.Row="5"
+                                Grid.Row="3"
+                                Grid.Column="1"
                                 Margin="5"
                                 x:Name="LeadNIOKRAutoCompleteComboBox"
                                 SelectionChanged="LeadNIOKRAutoCompleteComboBox_SelectionChanged"/>

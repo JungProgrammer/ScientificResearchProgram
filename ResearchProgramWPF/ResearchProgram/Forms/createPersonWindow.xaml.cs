@@ -260,11 +260,13 @@ namespace ResearchProgram
                     CRUDDataBase.UpdateDegree(newPerson);
                     CRUDDataBase.UpdateRank(newPerson);
                     MessageBox.Show("Информация о человеке успешно изменена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                //((MainWindow)Owner).PersonsList.Add(newPerson);
+
                 }
                 else
                 {
                     // Внесение нового человека в бд
-                    CRUDDataBase.InsertNewPersonToDB(newPerson);
+                    newPerson = CRUDDataBase.InsertNewPersonToDB(newPerson);
                     //((MainWindow)Owner).LoadPersonsList();
                     MessageBox.Show("Информация о человеке успешно внесена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
                 }

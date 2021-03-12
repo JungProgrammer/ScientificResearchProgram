@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
+using System.Net;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,7 +24,6 @@ namespace ResearchProgram
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
         private DataTable _grantsDataTable;
-
         // Выбранная начальная дата оплат
         private DateTime _selectedStartDate;
         public DateTime SelectedStartDate
@@ -66,13 +66,21 @@ namespace ResearchProgram
         // Окно фильтров
         FiltersWindow filtersWindow;
 
-        public List<Person> PersonsList { get; set; }
-
+        public List<Person> _personsList;
+        public List<Person> PersonsList {
+        	get{
+        		return _personsList;
+        	}
+        	set{
+        		_personsList = value;
+        		OnPropertyChanged("PersonsList");
+        	}
+        }
 
         public MainWindow()
         {
-            SplashScreen splash = new SplashScreen("Images\\splashscreen.png");
-            splash.Show(false, true);
+            //SplashScreen splash = new SplashScreen("Images\\splashscreen.png");
+            //splash.Show(false, true);
             InitializeComponent();
 
             Title = "Гранты НИЧ v" + Settings.Default.ProgrammVersion;
@@ -93,8 +101,12 @@ namespace ResearchProgram
             // Загрука окна фильтров без его открытия
             LoadFilterWindow();
 
+            CRUDDataBase.ConnectToDataBase();
+            PersonsList = CRUDDataBase.GetPersons();
+            CRUDDataBase.CloseConnection();
+
             DataContext = this;
-            splash.Close(TimeSpan.FromMilliseconds(0));
+            //splash.Close(TimeSpan.FromMilliseconds(0));
         }
 
         private void SetSettings()
@@ -129,13 +141,6 @@ namespace ResearchProgram
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
             CRUDDataBase.CloseConnection();
 
-        }
-
-        public void LoadPersonsList()
-        {
-            CRUDDataBase.ConnectToDataBase();
-            PersonsList = CRUDDataBase.GetPersons();
-            CRUDDataBase.CloseConnection();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -179,7 +184,6 @@ namespace ResearchProgram
             };
             // Эта штука нужна чтобы родительское окно не скрывалось, когда дочернее закрывается
             newGrantWindow.Closing += (senders, args) => { newGrantWindow.Owner = null; };
-
             newGrantWindow.Show();
         }
 
@@ -312,7 +316,6 @@ namespace ResearchProgram
             };
             // Эта штука нужна чтобы родительское окно не скрывалось, когда дочернее закрывается
             newGrantWindow.Closing += (senders, args) => { newGrantWindow.Owner = null; };
-
             newGrantWindow.Show();
         }
 
@@ -488,7 +491,9 @@ namespace ResearchProgram
         {
             filtersWindow.WindowCanToBeClose = true;
             filtersWindow.Close();
+            Environment.Exit(0);
         }
+
 
         private void ShowFullInformation(object sender, RoutedEventArgs e)
         {

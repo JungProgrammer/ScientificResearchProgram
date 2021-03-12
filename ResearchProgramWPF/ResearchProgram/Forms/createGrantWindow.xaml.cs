@@ -19,7 +19,6 @@ namespace ResearchProgram
     /// </summary>
     public partial class CreateGrantWindow : Window, INotifyPropertyChanged
     {
-
         private ObservableCollection<UniversityStructureNode> _firstNodeList;
         private ObservableCollection<UniversityStructureNode> _secondNodeList;
         private ObservableCollection<UniversityStructureNode> _thirdNodeList;
@@ -31,7 +30,17 @@ namespace ResearchProgram
 
         //Списки данных из БД
 
-        public List<Person> PersonsList { get; set; }
+        public List<Person> _personsList;
+        public List<Person> PersonsList {
+            get{
+                return _personsList;
+            }
+            set{
+                _personsList = value;
+                OnPropertyChanged("PersonsList");
+            }
+        }
+
         public List<Customer> CustomersList { get; set; }
 
         public List<Depositor> DepositsList { get; set; }
@@ -61,7 +70,6 @@ namespace ResearchProgram
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-
         public CreateGrantWindow(DataTable grantsDataTable, Grant grantToEdit = null, MainWindow Owner = null)
         {
             InitializeComponent();
@@ -72,7 +80,9 @@ namespace ResearchProgram
             CRUDDataBase.ConnectToDataBase();
 
             PersonsList = CRUDDataBase.GetPersons();
-            //PersonsList = mainWindow.PersonsList;
+
+            //PersonsList = StaticProperties.PersonsList;
+            
             CustomersList = CRUDDataBase.GetCustomers();
             DepositsList = CRUDDataBase.GetDeposits();
             ResearchTypesList = CRUDDataBase.GetResearchTypes();
@@ -84,13 +94,13 @@ namespace ResearchProgram
             EnteredExecutorsList = new List<ComboBox>();
 
             LeadNIOKRAutoCompleteComboBox.ItemsSource = new List<Person>(PersonsList);
+
             researchTypeComboBox.ItemsSource = new List<ResearchType>(ResearchTypesList);
 
             FirstNodeList = new ObservableCollection<UniversityStructureNode>();
             SecondNodeList = new ObservableCollection<UniversityStructureNode>();
             ThirdNodeList = new ObservableCollection<UniversityStructureNode>();
             FourthNodeList = new ObservableCollection<UniversityStructureNode>();
-
 
 
             priceTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
@@ -132,9 +142,8 @@ namespace ResearchProgram
 
                 startDateDatePicker.SelectedDate = grantToEdit.StartDate;
                 endDateDatePicker.SelectedDate = grantToEdit.EndDate;
-                if (grantToEdit.isWIthNDS)
-                    priceTextBox.Text = grantToEdit.Price.ToString();
-                priceNoNDSTextBox.Text = grantToEdit.PriceNoNDS.ToString();
+                priceTextBox.Text = String.Format("{0:#,0.##}", grantToEdit.Price);
+                priceNoNDSTextBox.Text = String.Format("{0:#,0.##}", grantToEdit.PriceNoNDS);
                 GrantWithoutNDSCheckBox.IsChecked = !grantToEdit.isWIthNDS;
                 for (int i = 0; i < grantToEdit.Depositor.Count; i++)
                 {
@@ -147,7 +156,18 @@ namespace ResearchProgram
                     void sumTextBoxTextChangedEventHandler(object senderr, TextChangedEventArgs args)
                     {
                         if (sumTextBox.Text.Length > 0)
-                            sumTextBoxNoNDS.Text = (Math.Round(Convert.ToDouble(sumTextBox.Text) * 1 / ((bool)GrantWithoutNDSCheckBox.IsChecked ? 1 : Settings.Default.NDSValue), 2)).ToString();
+                        {
+                            sumTextBoxNoNDS.Text = String.Format("{0:#,0.##}", Math.Round(Convert.ToDouble(sumTextBox.Text) * 1 / ((bool)GrantWithoutNDSCheckBox.IsChecked ? 1 : Settings.Default.NDSValue), 2));
+
+                            //Если пользователь поставил запятую, то чтобы она не сбрасывалась
+                            if (sumTextBox.Text[sumTextBox.Text.Length - 1] != ',' && !sumTextBox.Text.Contains(",0"))
+                            {
+                                // запомнить, где текущий индекс сейчас курсора в текстбоксе
+                                int index = sumTextBox.CaretIndex;
+                                sumTextBox.Text = Convert.ToDouble(sumTextBox.Text) < 0.0000001 ? "" : String.Format("{0:#,0.#####}", Convert.ToDouble(sumTextBox.Text));
+                                sumTextBox.SelectionStart = index;
+                            }
+                        }
                         else
                             sumTextBoxNoNDS.Text = "";
                     }
@@ -166,7 +186,7 @@ namespace ResearchProgram
                     {
                         Margin = new Thickness(5, 0, 5, 10),
                         MinWidth = 110,
-                        Text = grantToEdit.DepositorSum[i].ToString(),
+                        Text = String.Format("{0:#,0.##}", grantToEdit.DepositorSum[i]),
                         //IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked
                     };
 
@@ -175,7 +195,7 @@ namespace ResearchProgram
                     {
                         Margin = new Thickness(5, 0, 5, 10),
                         MinWidth = 110,
-                        Text = grantToEdit.DepositorSumNoNDS[i].ToString()
+                        Text = String.Format("{0:#,0.##}", grantToEdit.DepositorSumNoNDS[i])
                     };
                     sumTextBoxNoNDS.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
                     sumTextBoxNoNDS.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
@@ -405,7 +425,18 @@ namespace ResearchProgram
             void sumTextBoxTextChangedEventHandler(object senderr, TextChangedEventArgs args)
             {
                 if (sumTextBox.Text.Length > 0)
-                    sumTextBoxNoNDS.Text = (Math.Round(Convert.ToDouble(sumTextBox.Text) * 1 / ((bool)GrantWithoutNDSCheckBox.IsChecked ? 1 : Settings.Default.NDSValue) /*Settings.Default.NDSValue*/, 2)).ToString();
+                {
+                    sumTextBoxNoNDS.Text = String.Format("{0:#,0.##}", Math.Round(Convert.ToDouble(sumTextBox.Text) * 1 / ((bool)GrantWithoutNDSCheckBox.IsChecked ? 1 : Settings.Default.NDSValue), 2));
+
+                    ///Если пользователь поставил запятую, то чтобы она не сбрасывалась
+                    if (sumTextBox.Text[sumTextBox.Text.Length - 1] != ',' && !sumTextBox.Text.Contains(",0"))
+                    {
+                        // запомнить, где текущий индекс сейчас курсора в текстбоксе
+                        int index = sumTextBox.CaretIndex;
+                        sumTextBox.Text = Convert.ToDouble(sumTextBox.Text) < 0.0000001 ? "" : String.Format("{0:#,0.#####}", Convert.ToDouble(sumTextBox.Text));
+                        sumTextBox.SelectionStart = index;
+                    }
+                }
                 else
                     sumTextBoxNoNDS.Text = "";
             }
@@ -428,7 +459,6 @@ namespace ResearchProgram
                 Margin = new Thickness(5, 0, 5, 10),
                 Width = 110,
                 Padding = new Thickness(0, 2, 0, 2),
-                //IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked,
             };
 
             sumTextBoxNoNDS = new TextBox()
@@ -657,12 +687,12 @@ namespace ResearchProgram
 
             if (priceTextBox.Text.ToString() != "")
             {
-                newGrant.Price = Parser.ConvertToRightFloat(priceTextBox.Text);
+                newGrant.Price = Double.Parse(priceTextBox.Text);
             }
 
             if (priceNoNDSTextBox.Text.ToString() != "")
             {
-                newGrant.PriceNoNDS = Parser.ConvertToRightFloat(priceNoNDSTextBox.Text);
+                newGrant.PriceNoNDS = Double.Parse(priceNoNDSTextBox.Text);
             }
 
             if (depositsVerticalListView.Items != null)
@@ -699,8 +729,8 @@ namespace ResearchProgram
                                 Id = ((Depositor)cmb.SelectedItem).Id,
                                 Title = cmb.SelectedItem.ToString(),
                             });
-                            newGrant.DepositorSum.Add(Parser.ConvertToRightFloat(partSum.Text));
-                            newGrant.DepositorSumNoNDS.Add(Parser.ConvertToRightFloat(partSumNoNDS.Text));
+                            newGrant.DepositorSum.Add(Double.Parse(partSum.Text));
+                            newGrant.DepositorSumNoNDS.Add(Double.Parse(partSumNoNDS.Text));
                             newGrant.ReceiptDate.Add(selectedDate.ToShortDateString());
                         }
                     }
@@ -943,7 +973,19 @@ namespace ResearchProgram
         private void priceTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (priceTextBox.Text.Length > 0)
-                priceNoNDSTextBox.Text = (Math.Round(Convert.ToDouble(priceTextBox.Text) * 1 / ((bool)GrantWithoutNDSCheckBox.IsChecked ? 1 : Settings.Default.NDSValue) /*Settings.Default.NDSValue*/, 2)).ToString();
+            {
+                priceNoNDSTextBox.Text = String.Format("{0:#,0.##}", Math.Round(Convert.ToDouble(priceTextBox.Text) * 1 / ((bool)GrantWithoutNDSCheckBox.IsChecked ? 1 : Settings.Default.NDSValue) /*Settings.Default.NDSValue*/, 2));
+
+                //Если пользователь поставил запятую, то чтобы она не сбрасывалась
+                if (priceTextBox.Text[priceTextBox.Text.Length - 1] != ',' && !priceTextBox.Text.Contains(",0") && !priceTextBox.Text.Contains(",00"))
+                {
+                    // запомнить, где текущий индекс сейчас курсора в текстбоксе
+                    int index = priceTextBox.CaretIndex;
+                    priceTextBox.Text = Convert.ToDouble(priceTextBox.Text) < 0.0000001 ? "" : String.Format("{0:#,0.#####}", Convert.ToDouble(priceTextBox.Text));
+                    priceTextBox.SelectionStart = index;
+                    
+                }
+            }
             else
                 priceNoNDSTextBox.Text = "";
         }
