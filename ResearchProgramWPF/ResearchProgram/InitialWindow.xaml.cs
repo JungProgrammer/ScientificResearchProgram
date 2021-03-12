@@ -19,34 +19,26 @@ using System.Windows.Shapes;
 
 namespace ResearchProgram.Forms
 {
-    /// <summary>
-    /// Логика взаимодействия для InitialWindow.xaml
-    /// </summary>
     public partial class InitialWindow : Window
     {
+
+#if DEBUG
+        public static bool DEBUG = true;
+#else
+        public static bool DEBUG = false;
+#endif
+
         string ServerIp = Settings.Default.ServerIP;
         public InitialWindow()
         {
+
             InitializeComponent();
+
             string ActualVersion = CRUDDataBase.GetActualVersion();
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             Show();
-
-            if (ActualVersion != Settings.Default.ProgrammVersion)
-            {
-
-                NewVersionDownloadInfo.Visibility = Visibility.Visible;
-                DownloadProgressBar.Visibility = Visibility.Visible;
-                MainInfoLabel.Content = "Найдна новая версия";
-                Console.WriteLine("НОВАЯ ВЕРСИЯ ХАХХАХАХА");
-                WebClient client = new WebClient();
-                client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(download_ProgressChanged);
-                client.DownloadFileCompleted += new AsyncCompletedEventHandler(download_Completed);
-                string uri = "http://" + ServerIp + ":8000/download_update/" + ActualVersion;
-                client.DownloadFileAsync(new Uri(uri),"update.zip");
-            }
-            else
+            if (DEBUG)
             {
                 MainWindow mainWindow = new MainWindow
                 {
@@ -56,6 +48,33 @@ namespace ResearchProgram.Forms
                 mainWindow.Closing += (senders, args) => { mainWindow.Owner = null; };
                 mainWindow.Show();
                 Hide();
+            }
+            else
+            {
+                if (ActualVersion != Settings.Default.ProgrammVersion)
+                {
+
+                    NewVersionDownloadInfo.Visibility = Visibility.Visible;
+                    DownloadProgressBar.Visibility = Visibility.Visible;
+                    MainInfoLabel.Content = "Найдна новая версия";
+                    Console.WriteLine("НОВАЯ ВЕРСИЯ ХАХХАХАХА");
+                    WebClient client = new WebClient();
+                    client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(download_ProgressChanged);
+                    client.DownloadFileCompleted += new AsyncCompletedEventHandler(download_Completed);
+                    string uri = "http://" + ServerIp + ":8000/download_update/" + ActualVersion;
+                    client.DownloadFileAsync(new Uri(uri), "update.zip");
+                }
+                else
+                {
+                    MainWindow mainWindow = new MainWindow
+                    {
+                        WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                        Owner = this
+                    };
+                    mainWindow.Closing += (senders, args) => { mainWindow.Owner = null; };
+                    mainWindow.Show();
+                    Hide();
+                }
             }
         }
 
