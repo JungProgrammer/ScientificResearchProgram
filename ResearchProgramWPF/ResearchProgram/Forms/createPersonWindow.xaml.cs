@@ -227,7 +227,7 @@ namespace ResearchProgram
                                 Job job = (Job)jobComboBox.SelectedItem;
                                 if (salaryRateTextBox.Text != "")
                                 {
-                                    job.SalaryRate = Convert.ToInt32(salaryRateTextBox.Text);
+                                    job.SalaryRate = float.Parse(salaryRateTextBox.Text);
                                 }
                                 else
                                 {
