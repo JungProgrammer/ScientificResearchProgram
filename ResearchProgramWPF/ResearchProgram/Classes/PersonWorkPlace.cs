@@ -15,15 +15,12 @@ namespace ResearchProgram.Classes
 
         public List<Job> jobList { get; set; }
 
-
         public UniversityStructureNode firstNode { get; set; }
         public UniversityStructureNode secondNode { get; set; }
         public UniversityStructureNode thirdNode { get; set; }
         public UniversityStructureNode fourthNode { get; set; }
 
         public WorkCategories workCategory { get; set; }
-
-
 
 
         public List<WorkCategories> WorkCategoriesList { get; set; }
@@ -83,7 +80,7 @@ namespace ResearchProgram.Classes
                 Margin = new Thickness(5, 0, 5, 0),
                 Height = 25,
                 ItemsSource = FirstNodeList,
-                IsEditable = true,
+                //IsEditable = true,
             };
 
             ComboBox UnitComboBox = new ComboBox
@@ -91,9 +88,7 @@ namespace ResearchProgram.Classes
                 Margin = new Thickness(5, 0, 5, 0),
                 Height = 25,
                 ItemsSource = SecondNodeList,
-                IsEditable = true
-
-
+                //IsEditable = true
             };
 
             ComboBox DepartmentComboBox = new ComboBox
@@ -101,8 +96,7 @@ namespace ResearchProgram.Classes
                 Margin = new Thickness(5, 0, 5, 0),
                 Height = 25,
                 ItemsSource = ThirdNodeList,
-                IsEditable = true
-
+                //IsEditable = true
             };
 
             ComboBox StructNodeComboBox = new ComboBox
@@ -110,8 +104,7 @@ namespace ResearchProgram.Classes
                 Margin = new Thickness(5, 0, 5, 0),
                 Height = 25,
                 ItemsSource = FourthNodeList,
-                IsEditable = true
-
+                //IsEditable = true
             };
 
             Label CategoryLabel = new Label
@@ -169,6 +162,7 @@ namespace ResearchProgram.Classes
             workPlaceComboBox.PreviewMouseDown += ComboBoxPreviewMouseDown;
             if (firstNode != null)
             {
+                isUserInteraction = true;
                 for (int i = 0; i < FirstNodeList.Count; i++)
                 {
                     if (firstNode.Id == FirstNodeList[i].Id)
@@ -195,6 +189,7 @@ namespace ResearchProgram.Classes
             UnitComboBox.PreviewMouseDown += ComboBoxPreviewMouseDown;
             if (secondNode != null)
             {
+                isUserInteraction = true;
                 for (int i = 0; i < SecondNodeList.Count; i++)
                 {
                     if (secondNode.Id == SecondNodeList[i].Id)
@@ -220,6 +215,7 @@ namespace ResearchProgram.Classes
             DepartmentComboBox.PreviewMouseDown += ComboBoxPreviewMouseDown;
             if (thirdNode != null)
             {
+                isUserInteraction = true;
                 for (int i = 0; i < ThirdNodeList.Count; i++)
                 {
                     if (thirdNode.Id == ThirdNodeList[i].Id)
@@ -245,6 +241,7 @@ namespace ResearchProgram.Classes
             StructNodeComboBox.PreviewMouseDown += ComboBoxPreviewMouseDown;
             if (fourthNode != null)
             {
+                isUserInteraction = true;
                 for (int i = 0; i < FourthNodeList.Count; i++)
                 {
                     if (fourthNode.Id == FourthNodeList[i].Id)
@@ -254,6 +251,7 @@ namespace ResearchProgram.Classes
                     }
                 }
             }
+            isUserInteraction = false;
 
             Grid jobGrid = new Grid();
             jobGrid.ColumnDefinitions.Add(new ColumnDefinition());
