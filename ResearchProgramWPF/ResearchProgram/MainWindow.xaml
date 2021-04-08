@@ -10,7 +10,8 @@
         Width="1300"
         x:Name="mainWindow" 
         Closing="mainWindow_Closing"
-        WindowState="Maximized">
+        WindowState="Maximized"
+        ContentRendered="mainWindow_ContentRendered">
     <Window.Resources>
         <local:NDSConverter x:Key="NDSConverter" />
         <local:DepositsConverter x:Key="DepositsConverter"/>
@@ -113,7 +114,9 @@
                               CanUserDeleteRows="False"
                               IsReadOnly="True"
                               CurrentItem="{Binding Path=SelectedGrantRow, Mode=TwoWay}" 
-                              LoadingRow="GrantsTable_LoadingRow">
+                              LoadingRow="GrantsTable_LoadingRow"
+                              AutoGeneratingColumn="GrantsTable_AutoGeneratingColumn">
+                        
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">
                                 <Setter Property="Background" Value="{Binding Path=Средства, Converter={StaticResource DepositsConverter}}"/>

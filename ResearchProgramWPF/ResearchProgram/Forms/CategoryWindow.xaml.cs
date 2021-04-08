@@ -68,13 +68,11 @@ namespace ResearchProgram.Forms
             {
                 newInputName = addElementWindow.NewNameOfElement;
                 AddNewCategory(newInputName);
-
-                MessageBox.Show("Информация сохранена");
             }
             else
             {
                 newInputName = string.Empty;
-                MessageBox.Show("Все изменения в этом окне будут сброшены");
+                //MessageBox.Show("Все изменения в этом окне будут сброшены");
             }
         }
 
@@ -94,12 +92,13 @@ namespace ResearchProgram.Forms
                 newInputName = editElementWindow.NewNameOfElement;
                 EditCategory(newInputName);
 
-                MessageBox.Show("Информация сохранена");
+                MessageBox.Show("Информация сохранена.", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+
             }
             else
             {
                 newInputName = string.Empty;
-                MessageBox.Show("Все изменения в этом окне будут сброшены");
+                //MessageBox.Show("Все изменения в этом окне будут сброшены");
             }
         }
 
@@ -134,13 +133,32 @@ namespace ResearchProgram.Forms
         {
             if (newCategoryName != null)
             {
-                // Добавление в бд
                 CRUDDataBase.ConnectToDataBase();
-                newCategoryElement = CRUDDataBase.AddCategory(newCategoryName);
+                if (CRUDDataBase.IsCategoryAlreadyExists(newCategoryName))
+                {
+                    MessageBoxResult sure = MessageBox.Show("Договор с такими номером и наименованием НИОКР уже существует.\nВсё равно добавить?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    switch (sure)
+                    {
+                        case MessageBoxResult.Yes:
+                            // Добавление в бд
+                            newCategoryElement = CRUDDataBase.AddCategory(newCategoryName);
+                            // Добавление в список
+                            CategoryNames.Add(newCategoryElement);
+                            MessageBox.Show("Категория добавлена.", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                            break;
+                        case MessageBoxResult.No:
+                            break;
+                    }
+                }
+                else
+                {
+                    // Добавление в бд
+                    newCategoryElement = CRUDDataBase.AddCategory(newCategoryName);
+                    // Добавление в список
+                    CategoryNames.Add(newCategoryElement);
+                    MessageBox.Show("Категория добавлена.", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
                 CRUDDataBase.CloseConnection();
-
-                // Добавление в список
-                CategoryNames.Add(newCategoryElement);
             }
         }
 

@@ -6,58 +6,76 @@
         xmlns:local="clr-namespace:ResearchProgram.Forms.HelpWindows"
         xmlns:formNameSpace="clr-namespace:ResearchProgram"
         mc:Ignorable="d"
-        Title="Изменение элемента" Height="210" Width="450">
+        Title="Изменение элемента" Height="145"
+    ResizeMode="NoResize" d:DesignWidth="400"
+        MinWidth="350"
+         MaxWidth ="400">
 
     <Window.Resources>
         <formNameSpace:WindowsHelperConverter x:Key="windowsHelperConverter"/>
+        <formNameSpace:VisibilityToColumnLengthConverter x:Key="visConv"/>
     </Window.Resources>
-    
     <Grid>
+        <Grid.ColumnDefinitions>
+
+        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="130"/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="65*"/>
+            <RowDefinition Height="35*"/>
         </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
 
-        <StackPanel Grid.Row="0"
-                    Orientation="Horizontal">
-            <StackPanel Orientation="Vertical"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                <TextBlock Text="Название"
-                            Margin="30 0 0 4"
-                            FontSize="14"/>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="65*"/>
+                <ColumnDefinition Width="{Binding ElementName=SalaryTextBox, Path=Visibility, Converter={StaticResource visConv}}"/>
+            </Grid.ColumnDefinitions>
 
-                <TextBox Width="300"
-                         Margin="30 0 0 4"
-                        Height="30"
+            <TextBlock Text="Наименование"
+                            Margin="5"
+                            FontSize="14"                        
+                           Grid.Row="0"
+                        Grid.Column="0"/>
+
+            <TextBox
+                         Margin="5"
                         FontSize="14"
-                        Text="{Binding NewNameOfElement}">
-                </TextBox>
-            </StackPanel>
-            
-            <StackPanel Orientation="Vertical"
-                        Visibility="{Binding TypeWindow, Converter={StaticResource windowsHelperConverter}}"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center">
-                <TextBlock Text="Ставка"
-                       Margin="5 0 0 4"
-                       FontSize="14"/>
+                        Text="{Binding NewNameOfElement}"
+                                           Grid.Row="1"
+                Padding="0 4"
+                        Grid.Column="0">
+            </TextBox>
 
-                <TextBox Width="80"
-                         Margin="5 0 0 4"
-                        Height="30"
+            <TextBlock Text="Оклад"
+Visibility="{Binding TypeWindow, Converter={StaticResource windowsHelperConverter}}"
+                       Margin="5"
+                       FontSize="14"
+                    Grid.Row="0"
+                    Grid.Column="1"/>
+
+            <TextBox
+                x:Name="SalaryTextBox"
+                         Margin="5"
                         FontSize="14"
-                        Text="{Binding Salary}">
-                </TextBox>
-            </StackPanel>
-        </StackPanel>
+                        Text="{Binding Salary}"
+                                         Grid.Row="1"
+                Padding="0 4"
+                    Grid.Column="1"
+Visibility="{Binding TypeWindow, Converter={StaticResource windowsHelperConverter}}"/>
 
+
+
+        </Grid>
         <Button Grid.Row="1"
                 IsDefault="True"
                 Content="Сохранить"
                 Width="100"
                 Height="25"
                 HorizontalAlignment="Right"
-                Margin="0 0 10 0" Click="Button_Click"/>
+                Margin="5" Click="Button_Click"/>
     </Grid>
 </Window>

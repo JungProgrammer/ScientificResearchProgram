@@ -67,13 +67,11 @@ namespace ResearchProgram.Forms
             {
                 newInputName = addElementWindow.NewNameOfElement;
                 AddNewDegree(newInputName);
-
-                MessageBox.Show("Информация сохранена");
             }
             else
             {
                 newInputName = string.Empty;
-                MessageBox.Show("Все изменения в этом окне будут сброшены");
+                //MessageBox.Show("Все изменения в этом окне будут сброшены");
             }
         }
 
@@ -93,12 +91,12 @@ namespace ResearchProgram.Forms
                 newInputName = editElementWindow.NewNameOfElement;
                 EditDegree(newInputName);
 
-                MessageBox.Show("Информация сохранена");
+                MessageBox.Show("Информация сохранена.", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
                 newInputName = string.Empty;
-                MessageBox.Show("Все изменения в этом окне будут сброшены");
+                //MessageBox.Show("Все изменения в этом окне будут сброшены");
             }
         }
 
@@ -133,13 +131,32 @@ namespace ResearchProgram.Forms
         {
             if (newDegreeName != null)
             {
-                // Добавление в бд
                 CRUDDataBase.ConnectToDataBase();
-                newDegreeElement = CRUDDataBase.AddDegree(newDegreeName);
+                if (CRUDDataBase.IsDegreeAlreadyExists(newDegreeName))
+                {
+                    MessageBoxResult sure = MessageBox.Show("Степень с такими названием уже существует.\nВсё равно добавить?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    switch (sure)
+                    {
+                        case MessageBoxResult.Yes:
+                            // Добавление в бд
+                            newDegreeElement = CRUDDataBase.AddDegree(newDegreeName);
+                            // Добавление в список
+                            DegreesNames.Add(newDegreeElement);
+                            MessageBox.Show("Степень добавлена.", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                            break;
+                        case MessageBoxResult.No:
+                            break;
+                    }
+                }
+                else
+                {
+                    // Добавление в бд
+                    newDegreeElement = CRUDDataBase.AddDegree(newDegreeName);
+                    // Добавление в список
+                    DegreesNames.Add(newDegreeElement);
+                    MessageBox.Show("Степень добавлена.", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
                 CRUDDataBase.CloseConnection();
-
-                // Добавление в список
-                DegreesNames.Add(newDegreeElement);
             }
         }
 

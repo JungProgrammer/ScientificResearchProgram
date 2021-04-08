@@ -67,13 +67,11 @@ namespace ResearchProgram.Forms
             {
                 newInputName = addElementWindow.NewNameOfElement;
                 AddNewRank(newInputName);
-
-                MessageBox.Show("Информация сохранена");
             }
             else
             {
                 newInputName = string.Empty;
-                MessageBox.Show("Все изменения в этом окне будут сброшены");
+                //MessageBox.Show("Все изменения в этом окне будут сброшены");
             }
         }
 
@@ -93,12 +91,12 @@ namespace ResearchProgram.Forms
                 newInputName = editElementWindow.NewNameOfElement;
                 EditRank(newInputName);
 
-                MessageBox.Show("Информация сохранена");
+                MessageBox.Show("Информация сохранена.", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
                 newInputName = string.Empty;
-                MessageBox.Show("Все изменения в этом окне будут сброшены");
+                //MessageBox.Show("Все изменения в этом окне будут сброшены");
             }
         }
 
@@ -133,13 +131,34 @@ namespace ResearchProgram.Forms
         {
             if (newRankName != null)
             {
-                // Добавление в бд
                 CRUDDataBase.ConnectToDataBase();
-                newRankElement = CRUDDataBase.AddRank(newRankName);
-                CRUDDataBase.CloseConnection();
 
-                // Добавление в список
-                RanksNames.Add(newRankElement);
+                if (CRUDDataBase.IsRankAlreadyExists(newRankName))
+                {
+                    MessageBoxResult sure = MessageBox.Show("Звание с такими названием уже существует.\nВсё равно добавить?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    switch (sure)
+                    {
+                        case MessageBoxResult.Yes:
+                            // Добавление в бд
+                            newRankElement = CRUDDataBase.AddRank(newRankName);
+                            // Добавление в список
+                            RanksNames.Add(newRankElement);
+                            MessageBox.Show("Звание добавлено.", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                            break;
+                        case MessageBoxResult.No:
+                            break;
+                    }
+                }
+                else
+                {
+                    // Добавление в бд
+                    newRankElement = CRUDDataBase.AddRank(newRankName);
+                    // Добавление в список
+                    RanksNames.Add(newRankElement);
+                    MessageBox.Show("Звание добавлено.", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+
+                CRUDDataBase.CloseConnection();
             }
         }
 

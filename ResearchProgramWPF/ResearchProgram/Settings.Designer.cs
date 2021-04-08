@@ -133,7 +133,7 @@ namespace ResearchProgram {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("1.33")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1.36.1")]
         public string ProgrammVersion {
             get {
                 return ((string)(this["ProgrammVersion"]));

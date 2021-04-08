@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ResearchProgram"
         xmlns:dotNetKitControls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
         mc:Ignorable="d"
-        Title="Создать новый договор" Height="550" Width="850" ResizeMode="NoResize">
+        Title="Создать новый договор" Height="550" Width="880" ResizeMode="NoResize">
 
     <Window.Resources>
     </Window.Resources>
@@ -317,10 +317,10 @@
                                 <RowDefinition Height="35"/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="30*"/>
-                                <ColumnDefinition Width="25*"/>
-                                <ColumnDefinition Width="25*"/>
-                                <ColumnDefinition Width="20*"/>
+                                <ColumnDefinition Width="170"/>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="170"/>
                             </Grid.ColumnDefinitions>
 
                             <Grid Grid.Row="0"
@@ -365,7 +365,7 @@
                                        Grid.Column="1"
                                        Margin="-7 0 0 0"/>
 
-                                <Label Content="Сумма без НДС"
+                                <Label Content="Стоимость без НДС"
                                        Grid.Row="1"
                                        FontWeight="Bold"
                                        Grid.Column="2"
@@ -387,26 +387,26 @@
                                    Grid.Row="1"
                                    FontWeight="Bold"
                                    Grid.Column="0"
-                                   Margin="0 2 0 0"
+                                   Margin="6 2 0 0"
                                    FontSize="13"/>
                             <Label Content="Сумма"
                                    x:Name="SummLabel"
                                    Grid.Row="1"
                                    FontWeight="Bold"
                                    Grid.Column="1"
-                                   Margin="0 2 0 0"
+                                   Margin="8 2 0 0"
                                    FontSize="13"/>
                             <Label Content="Без НДС"
                                    Grid.Row="1"
                                    FontWeight="Bold"
                                    Grid.Column="2"
-                                   Margin="0 2 0 0"
+                                   Margin="12 2 0 0"
                                    FontSize="13"/>
                             <Label Content="Дата поступления"
                                    Grid.Row="1"
                                    FontWeight="Bold"
                                    Grid.Column="3"
-                                   Margin="-5 2 0 0"
+                                   Margin="22 2 0 0"
                                    FontSize="13"/>
 
                             <ListView Grid.Row="2"

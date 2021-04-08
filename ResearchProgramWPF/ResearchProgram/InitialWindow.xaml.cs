@@ -57,7 +57,6 @@ namespace ResearchProgram.Forms
                     NewVersionDownloadInfo.Visibility = Visibility.Visible;
                     DownloadProgressBar.Visibility = Visibility.Visible;
                     MainInfoLabel.Content = "Найдна новая версия";
-                    Console.WriteLine("НОВАЯ ВЕРСИЯ ХАХХАХАХА");
                     WebClient client = new WebClient();
                     client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(download_ProgressChanged);
                     client.DownloadFileCompleted += new AsyncCompletedEventHandler(download_Completed);
@@ -94,7 +93,7 @@ namespace ResearchProgram.Forms
             else
             {
                 Console.WriteLine("Нет апдейтера, качаем");
-                MainInfoLabel.Content = "Скачивание установщика";
+                NewVersionDownloadInfo.Content = "Скачивание установщика";
                 WebClient client = new WebClient();
                 client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(download_ProgressChanged);
                 client.DownloadFileCompleted += new AsyncCompletedEventHandler(UpdaterDownloadComplete);

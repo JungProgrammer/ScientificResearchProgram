@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Globalization;
 using System.Linq;
+//using System.Windows.Controls;
 
 namespace ResearchProgram
 {
@@ -25,8 +26,12 @@ namespace ResearchProgram
             {
                 DataType = Type.GetType("System.String"),
                 ColumnName = header,
-                Caption = header
+                Caption = header,
             };
+
+            //DataGridTemplateColumn a = new DataGridTemplateColumn();
+
+
             switch (column.ColumnName)
             {
                 case "№":
@@ -36,7 +41,6 @@ namespace ResearchProgram
                     //column.DataType = Type.GetType("System.Double");
                     break;
             }
-
 
             grantsDataTable.Columns.Add(column);
         }

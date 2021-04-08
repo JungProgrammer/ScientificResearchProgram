@@ -260,19 +260,33 @@ namespace ResearchProgram
                     CRUDDataBase.UpdateDegree(newPerson);
                     CRUDDataBase.UpdateRank(newPerson);
                     MessageBox.Show("Информация о человеке успешно изменена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
-                //((MainWindow)Owner).PersonsList.Add(newPerson);
-
                 }
                 else
                 {
                     // Внесение нового человека в бд
-                    newPerson = CRUDDataBase.InsertNewPersonToDB(newPerson);
-                    //((MainWindow)Owner).LoadPersonsList();
-                    MessageBox.Show("Информация о человеке успешно внесена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                    if (CRUDDataBase.IsPersonAlreadyExists(newPerson))
+                    {
+                        MessageBoxResult sure = MessageBox.Show("Человек с такими именем и датой рождения уже существует.\nВсё равно добавить?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                        switch (sure)
+                        {
+                            case MessageBoxResult.Yes:
+                                newPerson = CRUDDataBase.InsertNewPersonToDB(newPerson);
+                                MessageBox.Show("Информация о человеке успешно внесена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                                ((MainWindow)Owner).PersonsUpdateButton_Click(sender, e);
+                                Close();
+                                break;
+                            case MessageBoxResult.No:
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        newPerson = CRUDDataBase.InsertNewPersonToDB(newPerson);
+                        MessageBox.Show("Информация о человеке успешно внесена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                        ((MainWindow)Owner).PersonsUpdateButton_Click(sender, e);
+                        Close();
+                    }
                 }
-                ((MainWindow)Owner).PersonsUpdateButton_Click(sender, e);
-                Close();
-
 
                 CRUDDataBase.CloseConnection();
             }

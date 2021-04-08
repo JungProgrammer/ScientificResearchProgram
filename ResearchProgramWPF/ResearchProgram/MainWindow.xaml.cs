@@ -66,21 +66,19 @@ namespace ResearchProgram
         // Окно фильтров
         FiltersWindow filtersWindow;
 
-        public List<Person> _personsList;
-        public List<Person> PersonsList {
-        	get{
-        		return _personsList;
-        	}
-        	set{
-        		_personsList = value;
-        		OnPropertyChanged("PersonsList");
-        	}
-        }
+        //public List<Person> _personsList;
+        //public List<Person> PersonsList {
+        //	get{
+        //		return _personsList;
+        //	}
+        //	set{
+        //		_personsList = value;
+        //		OnPropertyChanged("PersonsList");
+        //	}
+        //}
 
         public MainWindow()
         {
-            //SplashScreen splash = new SplashScreen("Images\\splashscreen.png");
-            //splash.Show(false, true);
             InitializeComponent();
 
             Title = "Гранты НИЧ v" + Settings.Default.ProgrammVersion;
@@ -101,9 +99,9 @@ namespace ResearchProgram
             // Загрука окна фильтров без его открытия
             LoadFilterWindow();
 
-            CRUDDataBase.ConnectToDataBase();
-            PersonsList = CRUDDataBase.GetPersons();
-            CRUDDataBase.CloseConnection();
+            //CRUDDataBase.ConnectToDataBase();
+            //PersonsList = CRUDDataBase.GetPersons();
+            //CRUDDataBase.CloseConnection();
 
             DataContext = this;
             //splash.Close(TimeSpan.FromMilliseconds(0));
@@ -569,6 +567,31 @@ namespace ResearchProgram
             };
 
             categoryWindow.ShowDialog();
+        }
+
+        private void GrantsTable_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            var col = e.Column as DataGridTextColumn;
+
+            var style = new Style(typeof(TextBlock));
+            style.Setters.Add(new Setter(TextBlock.TextWrappingProperty, TextWrapping.Wrap));
+            style.Setters.Add(new Setter(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center));
+
+            col.ElementStyle = style;
+
+            col.MaxWidth = 400;
+        }
+
+        private void mainWindow_ContentRendered(object sender, EventArgs e)
+        {
+            if (File.Exists("changelog.txt"))
+            {
+                using (StreamReader sr = new StreamReader("changelog.txt"))
+                {
+                    System.Windows.MessageBox.Show(sr.ReadToEnd(), "Список изменений", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                File.Delete(Path.GetFileName("changelog.txt"));
+            }
         }
     }
 }

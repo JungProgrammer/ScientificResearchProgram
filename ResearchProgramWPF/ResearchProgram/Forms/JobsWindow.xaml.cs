@@ -69,13 +69,11 @@ namespace ResearchProgram.Forms
                 newInputName = addElementWindow.NewNameOfElement;
                 newSalary = addElementWindow.Salary;
                 AddNewJob(newInputName, newSalary);
-
-                MessageBox.Show("Информация сохранена");
             }
             else
             {
                 newInputName = string.Empty;
-                MessageBox.Show("Все изменения в этом окне будут сброшены");
+                //MessageBox.Show("Все изменения в этом окне будут сброшены");
             }
         }
 
@@ -97,12 +95,12 @@ namespace ResearchProgram.Forms
                 newSalary = editElementWindow.Salary;
                 EditJob(newInputName, newSalary);
 
-                MessageBox.Show("Информация сохранена");
+                MessageBox.Show("Информация сохранена.", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
                 newInputName = string.Empty;
-                MessageBox.Show("Все изменения в этом окне будут сброшены");
+                //MessageBox.Show("Все изменения в этом окне будут сброшены");
             }
         }
 
@@ -137,13 +135,34 @@ namespace ResearchProgram.Forms
         {
             if (newJobName != null)
             {
-                // Добавление в бд
                 CRUDDataBase.ConnectToDataBase();
-                newPlaceWorkElement = CRUDDataBase.AddJob(newJobName, newSalary);
-                CRUDDataBase.CloseConnection();
 
-                // Добавление в список
-                JobNames.Add(newPlaceWorkElement);
+                if (CRUDDataBase.IsJobAlreadyExists(newJobName))
+                {
+                    MessageBoxResult sure = MessageBox.Show("Должность с такими названием уже существует.\nВсё равно добавить?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                    switch (sure)
+                    {
+                        case MessageBoxResult.Yes:
+                            // Добавление в бд
+                            newPlaceWorkElement = CRUDDataBase.AddJob(newJobName, newSalary);
+                            // Добавление в список
+                            JobNames.Add(newPlaceWorkElement);
+                            MessageBox.Show("Должность добавлена.", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                            break;
+                        case MessageBoxResult.No:
+                            break;
+                    }
+                }
+                else
+                {
+                    // Добавление в бд
+                    newPlaceWorkElement = CRUDDataBase.AddJob(newJobName, newSalary);
+                    // Добавление в список
+                    JobNames.Add(newPlaceWorkElement);
+                    MessageBox.Show("Должность добавлена.", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+
+                CRUDDataBase.CloseConnection();
             }
         }
 

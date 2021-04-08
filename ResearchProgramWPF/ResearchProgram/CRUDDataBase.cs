@@ -491,6 +491,7 @@ namespace ResearchProgram
         /// <returns></returns>
         public static Job AddJob(string newJobName, string newSalary)
         {
+            newJobName = newJobName.Trim(' ');
             Job job = null;
 
             float salary = ResearchProgram.Parser.ConvertToRightFloat(newSalary);
@@ -524,6 +525,7 @@ namespace ResearchProgram
         /// <returns></returns>
         public static WorkDegree AddDegree(string newDegreeName)
         {
+            newDegreeName = newDegreeName.Trim(' ');
             WorkDegree workDegree = null;
 
             NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO work_degree (title) VALUES (:title);", conn);
@@ -553,6 +555,7 @@ namespace ResearchProgram
         /// <returns></returns>
         public static WorkRank AddRank(string newRankName)
         {
+            newRankName = newRankName.Trim(' ');
             WorkRank workRank = null;
 
             NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO work_rank (title) VALUES (:title);", conn);
@@ -582,6 +585,7 @@ namespace ResearchProgram
         /// <returns></returns>
         public static WorkCategories AddCategory(string newCategoryName)
         {
+            newCategoryName = newCategoryName.Trim(' ');
             WorkCategories workCategory = null;
 
             NpgsqlCommand cmd = new NpgsqlCommand("INSERT INTO work_categories (title) VALUES (:title);", conn);
@@ -857,7 +861,6 @@ namespace ResearchProgram
             return grantHeaders;
         }
 
-
         /// <summary>
         /// Создание заголовков для таблицы договоров
         /// </summary>
@@ -934,7 +937,7 @@ namespace ResearchProgram
         {
             List<Person> personsList = new List<Person>();
             List<int> persons_ids = new List<int>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id FROM persons ORDER BY id; ", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id FROM persons ORDER BY FIO; ", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
             if (reader.HasRows)
                 while (reader.Read())
@@ -1262,7 +1265,6 @@ namespace ResearchProgram
             return scienctTypeTypesList;
         }
 
-
         /// <summary>
         /// Загрузка в БД нового человека
         /// </summary>
@@ -1322,7 +1324,6 @@ namespace ResearchProgram
 
             return person;
         }
-
 
         /// <summary>
         /// Обновление номера гранта в бд
@@ -1763,7 +1764,6 @@ namespace ResearchProgram
             cmd.ExecuteNonQuery();
             CloseConnection();
         }
-
 
         /// <summary>
         /// Загрузка в БД нового договора
@@ -2491,6 +2491,132 @@ namespace ResearchProgram
             connection.Close();
 
             return Version;
+        }
+
+        public static bool IsPersonAlreadyExists(Person person)
+        {
+            bool isPersonExists = false;
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT FIO, birthdate FROM persons;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read() && !isPersonExists)
+                {
+                    if(reader["FIO"].ToString().Trim(' ') == person.FIO.Trim(' ') && Convert.ToDateTime(reader["birthdate"].ToString()) == person.BitrhDate)
+                    {
+                        isPersonExists = true;
+                    }
+                }
+            }
+            reader.Close();
+
+            return isPersonExists;
+        }
+
+        public static bool IsGrantAlreadyExists(Grant grant)
+        {
+            bool isGrantExists = false;
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT grantnumber, nameniokr FROM grants;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read() && !isGrantExists)
+                {
+                    if (reader["grantnumber"].ToString().Trim(' ') == grant.grantNumber.Trim(' ') && reader["nameniokr"].ToString().Trim(' ') == grant.NameNIOKR.Trim(' '))
+                    {
+                        isGrantExists = true;
+                    }
+                }
+            }
+            reader.Close();
+
+            return isGrantExists;
+        }
+
+        public static bool IsRankAlreadyExists(string rankName)
+        {
+            bool isRankExists = false;
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT title FROM work_rank;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read() && !isRankExists)
+                {
+                    if (reader["title"].ToString().Trim(' ') == rankName.Trim(' '))
+                    {
+                        isRankExists = true;
+                    }
+                }
+            }
+            reader.Close();
+
+            return isRankExists;
+        }
+
+        public static bool IsJobAlreadyExists(string jobName)
+        {
+            bool isJobExists = false;
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT title FROM jobs;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read() && !isJobExists)
+                {
+                    if (reader["title"].ToString().Trim(' ') == jobName.Trim(' '))
+                    {
+                        isJobExists = true;
+                    }
+                }
+            }
+            reader.Close();
+
+            return isJobExists;
+        }
+
+        public static bool IsDegreeAlreadyExists(string degreeName)
+        {
+            bool isDegreeExists = false;
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT title FROM work_degree;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read() && !isDegreeExists)
+                {
+                    if (reader["title"].ToString().Trim(' ') == degreeName.Trim(' '))
+                    {
+                        isDegreeExists = true;
+                    }
+                }
+            }
+            reader.Close();
+
+            return isDegreeExists;
+        }
+
+        public static bool IsCategoryAlreadyExists(string categoryName)
+        {
+            bool isCategoryExists = false;
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT title FROM work_categories;", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read() && !isCategoryExists)
+                {
+                    if (reader["title"].ToString().Trim(' ') == categoryName.Trim(' '))
+                    {
+                        isCategoryExists = true;
+                    }
+                }
+            }
+            reader.Close();
+
+            return isCategoryExists;
         }
     }
 }

@@ -31,11 +31,14 @@ namespace ResearchProgram
         //Списки данных из БД
 
         public List<Person> _personsList;
-        public List<Person> PersonsList {
-            get{
+        public List<Person> PersonsList
+        {
+            get
+            {
                 return _personsList;
             }
-            set{
+            set
+            {
                 _personsList = value;
                 OnPropertyChanged("PersonsList");
             }
@@ -82,7 +85,7 @@ namespace ResearchProgram
             PersonsList = CRUDDataBase.GetPersons();
 
             //PersonsList = StaticProperties.PersonsList;
-            
+
             CustomersList = CRUDDataBase.GetCustomers();
             DepositsList = CRUDDataBase.GetDeposits();
             ResearchTypesList = CRUDDataBase.GetResearchTypes();
@@ -185,16 +188,15 @@ namespace ResearchProgram
                     sumTextBox = new TextBox()
                     {
                         Margin = new Thickness(5, 0, 5, 10),
-                        MinWidth = 110,
+                        Width = 110,
                         Text = String.Format("{0:#,0.##}", grantToEdit.DepositorSum[i]),
-                        //IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked
                     };
 
 
                     sumTextBoxNoNDS = new TextBox()
                     {
                         Margin = new Thickness(5, 0, 5, 10),
-                        MinWidth = 110,
+                        Width = 110,
                         Text = String.Format("{0:#,0.##}", grantToEdit.DepositorSumNoNDS[i])
                     };
                     sumTextBoxNoNDS.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
@@ -216,7 +218,7 @@ namespace ResearchProgram
 
                     horizontalStackPanel.Children.Add(depositorComboBox);
                     horizontalStackPanel.Children.Add(sumTextBox);
-                    horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0), /*IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked*/ });
+                    horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0) });
                     horizontalStackPanel.Children.Add(sumTextBoxNoNDS);
                     horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 5, 0) });
                     horizontalStackPanel.Children.Add(dateComboBox);
@@ -241,25 +243,6 @@ namespace ResearchProgram
 
                     executorsVerticalListView.Items.Add(executorComboBox);
                 }
-
-                //// Привязка для структуры университета
-                //UniversityStructure.SelectedInstitution = UniversityStructure.FindInstitution(grantToEdit.Institution.Id);
-                //if (UniversityStructure.SelectedInstitution != null)
-                //{
-                //    UniversityStructure.SelectedUnit = UniversityStructure.FindUnit(UniversityStructure.SelectedInstitution, grantToEdit.Unit.Id);
-                //    if (UniversityStructure.SelectedUnit != null)
-                //    {
-                //        UniversityStructure.SelectedKafedra = UniversityStructure.FindKafedra(UniversityStructure.SelectedUnit, grantToEdit.Kafedra.Id);
-                //        if (UniversityStructure.SelectedKafedra != null)
-                //        {
-                //            UniversityStructure.SelectedLaboratory = UniversityStructure.FindLaboratoryInKafedra(UniversityStructure.SelectedKafedra, grantToEdit.Laboratory.Id);
-                //        }
-                //        if (UniversityStructure.SelectedLaboratory == null)
-                //        {
-                //            UniversityStructure.SelectedLaboratory = UniversityStructure.FindLaboratoryInUnit(UniversityStructure.SelectedUnit, grantToEdit.Laboratory.Id);
-                //        }
-                //    }
-                //}
 
                 FirstNodeComboBox.SelectedIndex = -1;
                 if (grantToEdit.FirstNode.Title != null)
@@ -482,7 +465,7 @@ namespace ResearchProgram
 
             horizontalStackPanel.Children.Add(depositorComboBox);
             horizontalStackPanel.Children.Add(sumTextBox);
-            horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0), /*IsEnabled = !(bool)GrantWithoutNDSCheckBox.IsChecked*/ });
+            horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0) });
             horizontalStackPanel.Children.Add(sumTextBoxNoNDS);
             horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 5, 0) });
             horizontalStackPanel.Children.Add(datePicker);
@@ -909,15 +892,32 @@ namespace ResearchProgram
                     // Подключаюсь к БД
                     CRUDDataBase.ConnectToDataBase();
 
-                    CRUDDataBase.InsertNewGrantToDB(newGrant);
+                    if (CRUDDataBase.IsGrantAlreadyExists(newGrant))
+                    {
+                        MessageBoxResult sure = MessageBox.Show("Договор с такими номером и наименованием НИОКР уже существует.\nВсё равно добавить?", "Внимание", MessageBoxButton.YesNo, MessageBoxImage.Warning);
+                        switch (sure)
+                        {
+                            case MessageBoxResult.Yes:
+                                CRUDDataBase.InsertNewGrantToDB(newGrant);
+                                MessageBox.Show("Договор успешно создан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                                ((MainWindow)Owner).GrantsUpdateButton_Click(sender, e);
+                                Close();
+                                break;
+                            case MessageBoxResult.No:
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        CRUDDataBase.InsertNewGrantToDB(newGrant);
+                        // Закрываем соединение с БД
 
-                    // Закрываем соединение с БД
+                        MessageBox.Show("Договор успешно создан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                        ((MainWindow)Owner).GrantsUpdateButton_Click(sender, e);
+                        Close();
+                    }
                     CRUDDataBase.CloseConnection();
-
-                    MessageBox.Show("Договор успешно создан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
-                ((MainWindow)Owner).GrantsUpdateButton_Click(sender, e);
-                Close();
             }
             else
             {
@@ -954,7 +954,38 @@ namespace ResearchProgram
 
         private void GrantWithoutNDSCheckBox_Checked(object sender, RoutedEventArgs e)
         {
+            if (priceTextBox.Text.Length > 0)
+            {
+                priceNoNDSTextBox.Text = String.Format("{0:#,0.##}", Math.Round(Convert.ToDouble(priceTextBox.Text) * 1 / ((bool)GrantWithoutNDSCheckBox.IsChecked ? 1 : Settings.Default.NDSValue), 2));
 
+                //Если пользователь поставил запятую, то чтобы она не сбрасывалась
+                if (priceTextBox.Text[priceTextBox.Text.Length - 1] != ',' && !priceTextBox.Text.Contains(",0") && !priceTextBox.Text.Contains(",00"))
+                {
+                    // запомнить, где текущий индекс сейчас курсора в текстбоксе
+                    int index = priceTextBox.CaretIndex;
+                    priceTextBox.Text = Convert.ToDouble(priceTextBox.Text) < 0.0000001 ? "" : String.Format("{0:#,0.#####}", Convert.ToDouble(priceTextBox.Text));
+                    priceTextBox.SelectionStart = index;
+                }
+            }
+            else
+                priceNoNDSTextBox.Text = "";
+
+            TextBox partSum;
+            TextBox partSumNoNDS;
+
+            foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
+            {
+                partSum = (TextBox)sp.Children[1];
+                partSumNoNDS = (TextBox)sp.Children[3];
+                if (partSumNoNDS.Text.Length > 0)
+                {
+                    partSumNoNDS.Text = String.Format("{0:#,0.##}", Math.Round(Convert.ToDouble(partSum.Text) * 1 / ((bool)GrantWithoutNDSCheckBox.IsChecked ? 1 : Settings.Default.NDSValue), 2));
+                }
+                else
+                {
+                    partSumNoNDS.Text = "";
+                }
+            }
         }
 
         private void priceNoNDSTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -983,7 +1014,6 @@ namespace ResearchProgram
                     int index = priceTextBox.CaretIndex;
                     priceTextBox.Text = Convert.ToDouble(priceTextBox.Text) < 0.0000001 ? "" : String.Format("{0:#,0.#####}", Convert.ToDouble(priceTextBox.Text));
                     priceTextBox.SelectionStart = index;
-                    
                 }
             }
             else
