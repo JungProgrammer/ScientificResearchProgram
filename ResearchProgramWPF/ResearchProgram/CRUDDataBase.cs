@@ -786,7 +786,7 @@ namespace ResearchProgram
                 new OKVED() {Title = "72.19"},
                 new OKVED() {Title = "72.20"}
             };
-            List<Customer> customerList = GetCustomers();
+            ObservableCollection<Customer> customerList = GetCustomers();
             ObservableCollection<ScienceType> scienceTypeList = GetScienceTypes();
             ObservableCollection<ResearchType> researchTypeList = GetResearchTypes();
             ObservableCollection<PriorityTrend> priorityTrendList = GetPriorityTrends();
@@ -1123,9 +1123,9 @@ namespace ResearchProgram
             return newPerson;
         }
 
-        public static List<Customer> GetCustomers()
+        public static ObservableCollection<Customer> GetCustomers()
         {
-            List<Customer> customersList = new List<Customer>();
+            ObservableCollection<Customer> customersList = new ObservableCollection<Customer>();
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT customerid, title, short_title FROM customers ORDER BY title;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
@@ -2076,7 +2076,7 @@ namespace ResearchProgram
         public static Customer GetCustomerByCustomerId(string customerId)
         {
             ConnectToDataBase();
-            List<Customer> customers = GetCustomers();
+            ObservableCollection<Customer> customers = GetCustomers();
             CloseConnection();
             Customer customer = new Customer();
             for (int i = 0; i < customers.Count; i++)

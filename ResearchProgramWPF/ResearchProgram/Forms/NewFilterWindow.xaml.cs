@@ -39,8 +39,8 @@ namespace ResearchProgram.Forms
         private ObservableCollection<Person> _people;
         public ObservableCollection<Person> People { get { return _people; } set { _people = value; OnPropertyChanged(nameof(People)); } }
 
-        private ObservableCollection<Person> _customers;
-        public ObservableCollection<Person> Customers { get { return _customers; } set { _customers = value; OnPropertyChanged(nameof(Customers)); } }
+        private ObservableCollection<Customer> _customers;
+        public ObservableCollection<Customer> Customers { get { return _customers; } set { _customers = value; OnPropertyChanged(nameof(Customers)); } }
 
         private ObservableCollection<UniversityStructureNode> _firstNodeList;
         private ObservableCollection<UniversityStructureNode> _secondNodeList;
@@ -59,6 +59,8 @@ namespace ResearchProgram.Forms
         public ObservableCollection<ScienceType> ScienceTypes { get { return _scienceTypes; } set { _scienceTypes = value; OnPropertyChanged(nameof(ScienceTypes)); } }
         public ObservableCollection<PriorityTrend> PriorityTrends { get { return _priorityTrends; } set { _priorityTrends = value; OnPropertyChanged(nameof(PriorityTrends)); } }
 
+        private ObservableCollection<OKVED> _okved;
+        public ObservableCollection<OKVED> Okved { get { return _okved; } set { _okved = value; OnPropertyChanged(nameof(Okved)); } }
 
         public event PropertyChangedEventHandler PropertyChanged;
         public void OnPropertyChanged([CallerMemberName] string prop = "")
@@ -73,6 +75,7 @@ namespace ResearchProgram.Forms
             CRUDDataBase.ConnectToDataBase();
 
             People = CRUDDataBase.GetPersons();
+            Customers = CRUDDataBase.GetCustomers();
             Console.WriteLine(People.Count);
 
             FirstNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+$'"); // получение всех узлов с адресом первого уровня
@@ -90,6 +93,11 @@ namespace ResearchProgram.Forms
             CustomerMultiselectComboBox.ItemsSource = Customers;
             ExecutorMultiselectComboBox.ItemsSource = new ObservableCollection<Person>(People);
 
+            Okved = new ObservableCollection<OKVED>
+            {
+                new OKVED() {Title = "72.19"},
+                new OKVED() {Title = "72.20"}
+            };
 
 
             DataContext = this;
@@ -118,6 +126,26 @@ namespace ResearchProgram.Forms
             WindowHeight = Height;
             Left = (ScreenWidth / 2) - (WindowWidth / 2);
             Top = (ScreenHeight / 2) - (WindowHeight / 2);
+        }
+
+        private void NIR_Checked(object sender, RoutedEventArgs e)
+        {
+            UslugaCheckBox.IsChecked = false;
+        }
+
+        private void UslugaCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            NIRCheckBox.IsChecked = false;
+        }
+
+        private void NOCYesCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            NOCNoCheckBox.IsChecked = false;
+        }
+
+        private void NOCNoCheckBox_Checked(object sender, RoutedEventArgs e)
+        {
+            NOCYesCheckBox.IsChecked = false;
         }
     }
 }

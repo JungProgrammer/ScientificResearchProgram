@@ -7,7 +7,7 @@
         xmlns:sdl="http://schemas.sdl.com/xaml"
 
         mc:Ignorable="d"
-        Title="NewFilterWindow" Height="auto" Width="auto"
+        Title="Поиск" Height="auto" Width="auto"
         
         
         ResizeMode="NoResize" d:DesignWidth="903" d:DesignHeight="632">
@@ -91,48 +91,52 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="105*"/>
+                                    <ColumnDefinition Width="37*"/>
+                                    <ColumnDefinition Width="289*"/>
+                                    <ColumnDefinition Width="430*"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Content="ОКВЭД"
                                    FontWeight="Bold"
                                    Grid.Row="0"
-                                   Margin="0 5 0 0"/>
+                                   Margin="0 5 0 0" Grid.ColumnSpan="3"/>
 
-                                <ComboBox Grid.Row="1"
-                                      Name="OKVEDTextBox"
-                                      Margin="5 0">
-                                    <TextBlock>72.19</TextBlock>
-                                    <TextBlock>72.20</TextBlock>
-                                </ComboBox>
+                                <sdl:MultiSelectComboBox 
+                                    Grid.Row="1"
+                                    x:Name="OKVEDMultiSelectComboBox"
+                                    Margin="5 0"
+                                    ItemsSource="{Binding Okved}"
+                                    MinHeight="30" 
+                                    Grid.ColumnSpan="3"
+                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>
 
                                 <Label Content="ГРНТИ"
                                    Grid.Row="0"
-                                   Grid.Column="1"
+                                   Grid.Column="3"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
 
                                 <TextBox Grid.Row="1"
-                                     Grid.Column="1"
+                                     Grid.Column="3"
                                      Name="GRNTITextBox"
                                      Margin="5 0"/>
 
                                 <Label Content="Номер договора"
                                    Grid.Row="2"
                                    FontWeight="Bold"
-                                   Margin="0 5 0 0"/>
+                                   Margin="0 5 0 0" Grid.ColumnSpan="3"/>
 
                                 <TextBox Grid.Row="3"
                                      Name="grantNumberTextBox"
                                      Margin="5 0"
-                                     Height="23"
-                                         Grid.ColumnSpan="2"/>
+                                     Height="25"
+                                         Grid.ColumnSpan="4"/>
 
                                 <Label Content="Руководитель НИОКР"
                                    Grid.Row="4"
                                    Grid.Column="0"
                                    FontWeight="Bold"
-                                   Margin="0 5 0 0"/>
+                                   Margin="0 5 0 0" Grid.ColumnSpan="3"/>
 
                                 <sdl:MultiSelectComboBox
                                 x:Name="LeadNIOKRMultiselectComboBox"
@@ -140,18 +144,19 @@
                                 Grid.Row="5"
                                 Grid.Column="0"
                                 SelectionMode="Multiple"
-                                    Grid.ColumnSpan="2"
-                                    Margin="5 0"/>
+                                    Grid.ColumnSpan="4"
+                                    Margin="5 0"
+                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>
 
                                 <Label Content="Наименование НИОКР"
                                    Grid.Row="6"
                                    Grid.Column="0"
                                    FontWeight="Bold"
-                                   Margin="0 5 0 0"/>
+                                   Margin="0 5 0 0" Grid.ColumnSpan="3"/>
 
                                 <TextBox Grid.Row="7"
                                    Grid.Column="0"
-                                   Grid.ColumnSpan="2"
+                                   Grid.ColumnSpan="4"
                                      x:Name="NIOKRTextBox"
                                      Margin="5 0"
                                      TextWrapping="Wrap"
@@ -162,49 +167,53 @@
                                 <Label Content="НИР или Услуга"
                                    Grid.Row="8"
                                    FontWeight="Bold"
-                                   Margin="0 5 0 0"/>
+                                   Margin="0 5 0 0" Grid.ColumnSpan="3"/>
 
                                 <StackPanel Name="nirStackPanel"
                                         Grid.Row="9"
-                                            Margin="5">
+                                            Margin="5" Grid.ColumnSpan="3">
                                     <CheckBox   Content="НИР"   
-                                            x:Name="NIR"/>
+                                            x:Name="NIRCheckBox"
+                                                Checked="NIR_Checked"/>
                                     <CheckBox  Content="Услуга"
-                                           x:Name="USLUGA"/>
+                                           x:Name="UslugaCheckBox"
+                                               Checked="UslugaCheckBox_Checked"/>
                                 </StackPanel>
 
                                 <Label Content="НОЦ"
                                    Grid.Row="8"
-                                   Grid.Column="1"
+                                   Grid.Column="3"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
                                 <StackPanel Name="NOCStackPanel"
                                         Grid.Row="9"
-                                        Grid.Column ="1"
+                                        Grid.Column ="3"
                                             Margin="5">
                                     <CheckBox  
                                     Content="Да"   
-                                    x:Name="NOC"/>
+                                    x:Name="NOCYesCheckBox"
+                                        Checked="NOCYesCheckBox_Checked"/>
                                     <CheckBox Content="Нет"
-                                          x:Name="NotNOC"/>
+                                          x:Name="NOCNoCheckBox"
+                                              Checked="NOCNoCheckBox_Checked"/>
                                 </StackPanel>
 
                                 <Label Content="Дата начала"
                                    Grid.Row="10"
                                    FontWeight="Bold"
-                                   Margin="0 5 0 0"/>
+                                   Margin="0 5 0 0" Grid.ColumnSpan="3"/>
                                 <DatePicker Name="startDateDatePicker"
                                         Grid.Row="11"
-                                        Margin="5"/>
+                                        Margin="5" Grid.ColumnSpan="3"/>
 
                                 <Label Content="Дата окончания"
                                    Grid.Row="10"
-                                   Grid.Column="1"
+                                   Grid.Column="3"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
                                 <DatePicker Name="endDateDatePicker"
                                         Grid.Row="11"
-                                        Grid.Column="9"
+                                        Grid.Column="3"
                                         Margin="5"/>
                             </Grid>
                         </DockPanel>
@@ -227,20 +236,32 @@
                                     <ColumnDefinition/>
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
+
+                                <Label Content="Заказчик"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   FontWeight="Bold"/>
                                 <sdl:MultiSelectComboBox
                                 x:Name="CustomerMultiselectComboBox"
                                 Height="60"
-                                Grid.Row="0"
+                                Grid.Row="1"
                                 Grid.Column="0"
                                 SelectionMode="Multiple"
-                                Margin="5"/>
+                                Margin="5"
+                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>
+
+                                <Label Content="Исполнитель"
+                                   Grid.Row="0"
+                                   Grid.Column="1"
+                                   FontWeight="Bold"/>
                                 <sdl:MultiSelectComboBox
                                 x:Name="ExecutorMultiselectComboBox"
                                 Height="60"
-                                Grid.Row="0"
+                                Grid.Row="1"
                                 Grid.Column="1"
                                 SelectionMode="Multiple"
-                                Margin="5"/>
+                                Margin="5"
+                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>
                             </Grid>
                         </DockPanel>
                     </Expander>
@@ -253,6 +274,643 @@
                                FontWeight="DemiBold">Источники финансирования</TextBlock>
                             </DockPanel>
                         </Expander.Header>
+                        <DockPanel>
+                            <Grid Margin="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="130"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="130"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Content="Договор без НДС"
+                                          Margin="5"
+                                          FontSize="14"/>
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="5"/>
+                                <ComboBox
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="5">
+                                    <TextBlock Text=""/>
+                                    <TextBlock Text="Больше"/>
+                                    <TextBlock Text="Больше/равно"/>
+                                </ComboBox>
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Content="Стоимость договора"
+                                    HorizontalAlignment="Center"
+                                    FontWeight="Bold"
+                                    Margin="5"/>
+                                <ComboBox
+                                    Grid.Row="1"
+                                    Grid.Column="3"
+                                    Margin="5">
+                                    <TextBlock Text=""/>
+                                    <TextBlock Text="Меньше"/>
+                                    <TextBlock Text="Меньше/равно"/>
+                                </ComboBox>
+                                <TextBox
+                                    Grid.Row="1"
+                                    Grid.Column="4"
+                                    Margin="5"/>
+
+                                <Expander Grid.Row="2"
+                                          Grid.ColumnSpan="5"
+                                          Margin="5 0">
+                                    <Expander.Header>
+                                        <DockPanel VerticalAlignment="Stretch">
+                                            <TextBlock 
+                                                FontStyle="Italic"
+                                                FontSize="15"
+                                                FontWeight="DemiBold">Иностранные средства</TextBlock>
+                                        </DockPanel>
+                                    </Expander.Header>
+                                    <DockPanel>
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Grid.Row="1"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Больше"/>
+                                                <TextBlock Text="Больше/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="1"
+                                                Grid.Column="2"
+                                                Content="Сумма поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Меньше"/>
+                                                <TextBlock Text="Меньше/равно"/>
+                                            </ComboBox>
+                                            <TextBox Grid.Row="1"
+                                                    Grid.Column="4"
+                                                    Margin="5"/>
+
+
+                                            <DatePicker Grid.Row="2"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Grid.Row="2"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="От"/>
+                                                <TextBlock Text="От/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="2"
+                                                Grid.Column="2"
+                                                Content="Дата поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Grid.Row="2"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="До"/>
+                                                <TextBlock Text="До/равно"/>
+                                            </ComboBox>
+                                            <DatePicker Grid.Row="2"
+                                                        Grid.Column="4"
+                                                        Margin="5"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Expander>
+
+                                <Expander Grid.Row="3"
+                                          Grid.ColumnSpan="5"
+                                          Margin="5 0">
+                                    <Expander.Header>
+                                        <DockPanel VerticalAlignment="Stretch">
+                                            <TextBlock 
+                                                FontStyle="Italic"
+                                                FontSize="15"
+                                                FontWeight="DemiBold">Собственные средства</TextBlock>
+                                        </DockPanel>
+                                    </Expander.Header>
+                                    <DockPanel>
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Grid.Row="1"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Больше"/>
+                                                <TextBlock Text="Больше/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="1"
+                                                Grid.Column="2"
+                                                Content="Сумма поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Меньше"/>
+                                                <TextBlock Text="Меньше/равно"/>
+                                            </ComboBox>
+                                            <TextBox Grid.Row="1"
+                                                    Grid.Column="4"
+                                                    Margin="5"/>
+
+
+                                            <DatePicker Grid.Row="2"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Grid.Row="2"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="От"/>
+                                                <TextBlock Text="От/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="2"
+                                                Grid.Column="2"
+                                                Content="Дата поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Grid.Row="2"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="До"/>
+                                                <TextBlock Text="До/равно"/>
+                                            </ComboBox>
+                                            <DatePicker Grid.Row="2"
+                                                        Grid.Column="4"
+                                                        Margin="5"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Expander>
+
+                                <Expander Grid.Row="4"
+                                          Grid.ColumnSpan="5"
+                                          Margin="5 0">
+                                    <Expander.Header>
+                                        <DockPanel VerticalAlignment="Stretch">
+                                            <TextBlock 
+                                                FontStyle="Italic"
+                                                FontSize="15"
+                                                FontWeight="DemiBold">Средства бюджета субъекта Федерации</TextBlock>
+                                        </DockPanel>
+                                    </Expander.Header>
+                                    <DockPanel>
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Grid.Row="1"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Больше"/>
+                                                <TextBlock Text="Больше/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="1"
+                                                Grid.Column="2"
+                                                Content="Сумма поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Меньше"/>
+                                                <TextBlock Text="Меньше/равно"/>
+                                            </ComboBox>
+                                            <TextBox Grid.Row="1"
+                                                    Grid.Column="4"
+                                                    Margin="5"/>
+
+
+                                            <DatePicker Grid.Row="2"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Grid.Row="2"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="От"/>
+                                                <TextBlock Text="От/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="2"
+                                                Grid.Column="2"
+                                                Content="Дата поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Grid.Row="2"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="До"/>
+                                                <TextBlock Text="До/равно"/>
+                                            </ComboBox>
+                                            <DatePicker Grid.Row="2"
+                                                        Grid.Column="4"
+                                                        Margin="5"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Expander>
+
+                                <Expander Grid.Row="5"
+                                          Grid.ColumnSpan="5"
+                                          Margin="5 0">
+                                    <Expander.Header>
+                                        <DockPanel VerticalAlignment="Stretch">
+                                            <TextBlock 
+                                                FontStyle="Italic"
+                                                FontSize="15"
+                                                FontWeight="DemiBold">Средства Российских фондов поддержки науки</TextBlock>
+                                        </DockPanel>
+                                    </Expander.Header>
+                                    <DockPanel>
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Grid.Row="1"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Больше"/>
+                                                <TextBlock Text="Больше/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="1"
+                                                Grid.Column="2"
+                                                Content="Сумма поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Меньше"/>
+                                                <TextBlock Text="Меньше/равно"/>
+                                            </ComboBox>
+                                            <TextBox Grid.Row="1"
+                                                    Grid.Column="4"
+                                                    Margin="5"/>
+
+
+                                            <DatePicker Grid.Row="2"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Grid.Row="2"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="От"/>
+                                                <TextBlock Text="От/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="2"
+                                                Grid.Column="2"
+                                                Content="Дата поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Grid.Row="2"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="До"/>
+                                                <TextBlock Text="До/равно"/>
+                                            </ComboBox>
+                                            <DatePicker Grid.Row="2"
+                                                        Grid.Column="4"
+                                                        Margin="5"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Expander>
+
+                                <Expander Grid.Row="6"
+                                          Grid.ColumnSpan="5"
+                                          Margin="5 0">
+                                    <Expander.Header>
+                                        <DockPanel VerticalAlignment="Stretch">
+                                            <TextBlock 
+                                                FontStyle="Italic"
+                                                FontSize="15"
+                                                FontWeight="DemiBold">Средства хозяйствующих субъектов</TextBlock>
+                                        </DockPanel>
+                                    </Expander.Header>
+                                    <DockPanel>
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Grid.Row="1"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Больше"/>
+                                                <TextBlock Text="Больше/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="1"
+                                                Grid.Column="2"
+                                                Content="Сумма поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Меньше"/>
+                                                <TextBlock Text="Меньше/равно"/>
+                                            </ComboBox>
+                                            <TextBox Grid.Row="1"
+                                                    Grid.Column="4"
+                                                    Margin="5"/>
+
+
+                                            <DatePicker Grid.Row="2"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Grid.Row="2"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="От"/>
+                                                <TextBlock Text="От/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="2"
+                                                Grid.Column="2"
+                                                Content="Дата поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Grid.Row="2"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="До"/>
+                                                <TextBlock Text="До/равно"/>
+                                            </ComboBox>
+                                            <DatePicker Grid.Row="2"
+                                                        Grid.Column="4"
+                                                        Margin="5"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Expander>
+
+                                <Expander Grid.Row="7"
+                                          Grid.ColumnSpan="5"
+                                          Margin="5 0">
+                                    <Expander.Header>
+                                        <DockPanel VerticalAlignment="Stretch">
+                                            <TextBlock 
+                                                FontStyle="Italic"
+                                                FontSize="15"
+                                                FontWeight="DemiBold">Физ. лица</TextBlock>
+                                        </DockPanel>
+                                    </Expander.Header>
+                                    <DockPanel>
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Grid.Row="1"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Больше"/>
+                                                <TextBlock Text="Больше/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="1"
+                                                Grid.Column="2"
+                                                Content="Сумма поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Меньше"/>
+                                                <TextBlock Text="Меньше/равно"/>
+                                            </ComboBox>
+                                            <TextBox Grid.Row="1"
+                                                    Grid.Column="4"
+                                                    Margin="5"/>
+
+
+                                            <DatePicker Grid.Row="2"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Grid.Row="2"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="От"/>
+                                                <TextBlock Text="От/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="2"
+                                                Grid.Column="2"
+                                                Content="Дата поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Grid.Row="2"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="До"/>
+                                                <TextBlock Text="До/равно"/>
+                                            </ComboBox>
+                                            <DatePicker Grid.Row="2"
+                                                        Grid.Column="4"
+                                                        Margin="5"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Expander>
+
+                                <Expander Grid.Row="8"
+                                          Grid.ColumnSpan="5"
+                                          Margin="5 0">
+                                    <Expander.Header>
+                                        <DockPanel VerticalAlignment="Stretch">
+                                            <TextBlock 
+                                                FontStyle="Italic"
+                                                FontSize="15"
+                                                FontWeight="DemiBold">ФЦП мин обра или иные источники госзаказа(бюджет)</TextBlock>
+                                        </DockPanel>
+                                    </Expander.Header>
+                                    <DockPanel>
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Grid.Row="1"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Больше"/>
+                                                <TextBlock Text="Больше/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="1"
+                                                Grid.Column="2"
+                                                Content="Сумма поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Меньше"/>
+                                                <TextBlock Text="Меньше/равно"/>
+                                            </ComboBox>
+                                            <TextBox Grid.Row="1"
+                                                    Grid.Column="4"
+                                                    Margin="5"/>
+
+
+                                            <DatePicker Grid.Row="2"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Grid.Row="2"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="От"/>
+                                                <TextBlock Text="От/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="2"
+                                                Grid.Column="2"
+                                                Content="Дата поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Grid.Row="2"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="До"/>
+                                                <TextBlock Text="До/равно"/>
+                                            </ComboBox>
+                                            <DatePicker Grid.Row="2"
+                                                        Grid.Column="4"
+                                                        Margin="5"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Expander>
+                            </Grid>
+                        </DockPanel>
                     </Expander>
 
                     <Expander>
@@ -287,7 +945,6 @@
                                 SelectionMode="Multiple"
                                 Margin="5"
                                 OpenDropDownListAlsoWhenNotInEditMode="True"
-                                
                                 ItemsSource="{Binding FirstNodeList}"/>
 
                                 <Label Content="Подразделение"
@@ -423,24 +1080,5 @@
                 </StackPanel>
             </ScrollViewer>
         </Expander>
-
-        <!--<Grid Grid.Row="2"
-              Margin="0 2 0 0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="170"/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Separator Grid.Column="0"
-                       Margin="6 0 0 0"/>
-            <Button Content="🠗 Расширенный поиск 🠗"
-                    x:Name="ExtendedSearchButton"
-                    Grid.Column="1"
-                    Margin="5 1"
-                    Click="ExtendedSearchButton_Click"/>
-            <Separator Grid.Column="2"
-                       Margin="0 0 6 0"/>
-        </Grid>-->
-
     </Grid>
 </Window>

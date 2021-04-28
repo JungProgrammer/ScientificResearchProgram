@@ -44,7 +44,7 @@ namespace ResearchProgram
             }
         }
 
-        public List<Customer> CustomersList { get; set; }
+        public ObservableCollection<Customer> CustomersList { get; set; }
 
         public List<Depositor> DepositsList { get; set; }
         public ObservableCollection<ScienceType> ScienceTypeList { get; set; }
