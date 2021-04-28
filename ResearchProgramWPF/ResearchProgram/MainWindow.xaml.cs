@@ -225,7 +225,16 @@ namespace ResearchProgram
         // Открытые окна фильтров
         private void GrantsFiltersButton_Click(object sender, RoutedEventArgs e)
         {
-            filtersWindow.Show();
+            //filtersWindow.Show();
+            NewFilterWindow newFilterWindow = new NewFilterWindow()
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Owner = this
+            };
+            // Эта штука нужна чтобы родительское окно не скрывалось, когда дочернее закрывается
+            newFilterWindow.Closing += (senders, args) => { newFilterWindow.Owner = null; };
+            newFilterWindow.Show();
+
         }
 
         /// <summary>

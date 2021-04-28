@@ -69,141 +69,145 @@
                 <TabItem Name="CommonInfo"
                          Visibility="Collapsed">
                     <TabItem.Content>
-                        <Grid x:Name="CommonInfoGrid">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition/>
-                                <ColumnDefinition/>
-                            </Grid.ColumnDefinitions>
+                        <ScrollViewer>
+                            <Grid x:Name="CommonInfoGrid">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
 
-                            <Label Content="ОКВЭД"
+                                <Label Content="ОКВЭД"
                                    FontWeight="Bold"
                                    Grid.Row="0"
                                    Margin="0 5 0 0"/>
 
-                            <ComboBox Grid.Row="1"
+                                <ComboBox Grid.Row="1"
                                       Name="OKVEDTextBox"
                                       Margin="5 0">
-                                <TextBlock>72.19</TextBlock>
-                                <TextBlock>72.20</TextBlock>
-                            </ComboBox>
+                                    <TextBlock>72.19</TextBlock>
+                                    <TextBlock>72.20</TextBlock>
+                                </ComboBox>
 
-                            <Label Content="ГРНТИ"
+                                <Label Content="ГРНТИ"
                                    Grid.Row="0"
                                    Grid.Column="1"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
 
-                            <TextBox Grid.Row="1"
+                                <TextBox Grid.Row="1"
                                      Grid.Column="1"
                                      Name="GRNTITextBox"
                                      Margin="5 0"/>
 
-                            <Label Content="Номер договора"
+                                <Label Content="Номер договора"
                                    Grid.Row="2"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
 
-                            <TextBox Grid.Row="3"
+                                <TextBox Grid.Row="3"
                                      Name="grantNumberTextBox"
                                      Margin="5 0"
                                      Height="23"></TextBox>
 
-                            <Label Content="Наименование НИОКР"
+                                <Label Content="Наименование НИОКР"
                                    Grid.Row="4"
                                    Grid.Column="0"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
 
-                            <TextBox Grid.Row="5"
+                                <TextBox Grid.Row="5"
                                    Grid.Column="0"
                                    Grid.ColumnSpan="2"
-                                     
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     VerticalScrollBarVisibility="Visible"
                                      x:Name="NIOKRTextBox"
                                      Margin="5 0">
-                            </TextBox>
+                                </TextBox>
 
-                            <Label Content="Руководитель НИОКР"
+                                <Label Content="Руководитель НИОКР"
                                    Grid.Row="2"
                                    Grid.Column="1"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
-                            
-                            <dotNetKitControls:AutoCompleteComboBox
+
+                                <dotNetKitControls:AutoCompleteComboBox
                                 Grid.Row="3"
                                 Grid.Column="1"
                                 Margin="5"
                                 x:Name="LeadNIOKRAutoCompleteComboBox"
                                 SelectionChanged="LeadNIOKRAutoCompleteComboBox_SelectionChanged"/>
-                            
-                            <Label Content="НИР или Услуга"
+
+                                <Label Content="НИР или Услуга"
                                    Grid.Row="6"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
 
-                            <StackPanel Name="nirStackPanel"
+                                <StackPanel Name="nirStackPanel"
                                         Grid.Row="7">
-                                <RadioButton GroupName="NIRRadio" 
+                                    <RadioButton GroupName="NIRRadio" 
                                              Content="НИР"   
                                              Checked="NIRRadioChecked"
                                              x:Name="NIR"/>
-                                <RadioButton GroupName="NIRRadio"
+                                    <RadioButton GroupName="NIRRadio"
                                              Content="Услуга"
                                              Checked="NIRRadioChecked"
                                              x:Name="USLUGA"/>
-                            </StackPanel>
+                                </StackPanel>
 
-                            <Label Content="НОЦ"
+                                <Label Content="НОЦ"
                                    Grid.Row="6"
                                    Grid.Column="1"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
-                            <StackPanel Name="NOCStackPanel"
+                                <StackPanel Name="NOCStackPanel"
                                         Grid.Row="7"
                                         Grid.Column ="1">
-                                <RadioButton GroupName="NOCRadio" 
+                                    <RadioButton GroupName="NOCRadio" 
                                              Content="Да"   
                                              Checked="NOCRadioChecked"
                                              x:Name="NOC"/>
-                                <RadioButton GroupName="NOCRadio"
+                                    <RadioButton GroupName="NOCRadio"
                                              Content="Нет"
                                              Checked="NOCRadioChecked"
                                              x:Name="NotNOC"/>
-                            </StackPanel>
+                                </StackPanel>
 
-                            <Label Content="Дата начала"
+                                <Label Content="Дата начала"
                                    Grid.Row="8"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
-                            <DatePicker Name="startDateDatePicker"
+                                <DatePicker Name="startDateDatePicker"
                                         Grid.Row="9"
                                         Margin="5"/>
 
-                            <Label Content="Дата окончания"
+                                <Label Content="Дата окончания"
                                    Grid.Row="8"
                                    Grid.Column="1"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
-                            <DatePicker Name="endDateDatePicker"
+                                <DatePicker Name="endDateDatePicker"
                                         Grid.Row="9"
                                         Grid.Column="9"
                                         Margin="5"/>
-                        </Grid>
+                            </Grid>
+                        </ScrollViewer>
                     </TabItem.Content>
                 </TabItem>
 

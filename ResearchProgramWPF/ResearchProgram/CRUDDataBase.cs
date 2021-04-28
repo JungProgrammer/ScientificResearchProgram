@@ -375,7 +375,7 @@ namespace ResearchProgram
         public static void LoadPersonsTable(DataTable dataTable)
         {
             dataTable.Rows.Clear();
-            List<Person> persons = GetPersons();
+            ObservableCollection<Person> persons = GetPersons();
             for (int i = 0; i < persons.Count; i++)
             {
                 WorkerWithTablesOnMainForm.AddRowToPersonsTable(dataTable, persons[i]);
@@ -787,10 +787,10 @@ namespace ResearchProgram
                 new OKVED() {Title = "72.20"}
             };
             List<Customer> customerList = GetCustomers();
-            List<ScienceType> scienceTypeList = GetScienceTypes();
-            List<ResearchType> researchTypeList = GetResearchTypes();
-            List<PriorityTrend> priorityTrendList = GetPriorityTrends();
-            List<Person> peopleList = GetPersons();
+            ObservableCollection<ScienceType> scienceTypeList = GetScienceTypes();
+            ObservableCollection<ResearchType> researchTypeList = GetResearchTypes();
+            ObservableCollection<PriorityTrend> priorityTrendList = GetPriorityTrends();
+            ObservableCollection<Person> peopleList = GetPersons();
             List<Depositor> depositList = GetDeposits();
             List<Nir> nirList = new List<Nir>() {
                 new Nir() {Title = "НИР" },
@@ -818,36 +818,36 @@ namespace ResearchProgram
                         Is_comparison_needed = (bool)reader[5],
                         Is_date_needed = (bool)reader[6]
                     };
-                    switch (curId)
-                    {
-                        case DataToComboBox.okved:
-                            newGrantHeader.DataToComboBox = new List<IContainer>(okvedList);
-                            break;
-                        case DataToComboBox.customer:
-                            newGrantHeader.DataToComboBox = new List<IContainer>(customerList);
-                            break;
-                        case DataToComboBox.deposits:
-                            newGrantHeader.DataToComboBox = depositList.ConvertAll(x => (IContainer)x);
-                            break;
-                        case DataToComboBox.leadNIOKR:
-                            newGrantHeader.DataToComboBox = new List<IContainer>(peopleList);
-                            break;
-                        case DataToComboBox.executors:
-                            newGrantHeader.DataToComboBox = new List<IContainer>(peopleList);
-                            break;
-                        case DataToComboBox.researchTypes:
-                            newGrantHeader.DataToComboBox = researchTypeList.ConvertAll(x => (IContainer)x);
-                            break;
-                        case DataToComboBox.priorityTrends:
-                            newGrantHeader.DataToComboBox = priorityTrendList.ConvertAll(x => (IContainer)x);
-                            break;
-                        case DataToComboBox.ScienceTypeItem:
-                            newGrantHeader.DataToComboBox = scienceTypeList.ConvertAll(x => (IContainer)x);
-                            break;
-                        case DataToComboBox.NIRItem:
-                            newGrantHeader.DataToComboBox = nirList.ConvertAll(x => (IContainer)x);
-                            break;
-                    }
+                    //switch (curId)
+                    //{
+                    //    case DataToComboBox.okved:
+                    //        newGrantHeader.DataToComboBox = new List<IContainer>(okvedList);
+                    //        break;
+                    //    case DataToComboBox.customer:
+                    //        newGrantHeader.DataToComboBox = new List<IContainer>(customerList);
+                    //        break;
+                    //    case DataToComboBox.deposits:
+                    //        newGrantHeader.DataToComboBox = depositList.ConvertAll(x => (IContainer)x);
+                    //        break;
+                    //    case DataToComboBox.leadNIOKR:
+                    //        newGrantHeader.DataToComboBox = new List<IContainer>(peopleList);
+                    //        break;
+                    //    case DataToComboBox.executors:
+                    //        newGrantHeader.DataToComboBox = new List<IContainer>(peopleList);
+                    //        break;
+                    //    case DataToComboBox.researchTypes:
+                    //        newGrantHeader.DataToComboBox = researchTypeList.ConvertAll(x => (IContainer)x);
+                    //        break;
+                    //    case DataToComboBox.priorityTrends:
+                    //        newGrantHeader.DataToComboBox = priorityTrendList.ConvertAll(x => (IContainer)x);
+                    //        break;
+                    //    case DataToComboBox.ScienceTypeItem:
+                    //        newGrantHeader.DataToComboBox = scienceTypeList.ConvertAll(x => (IContainer)x);
+                    //        break;
+                    //    case DataToComboBox.NIRItem:
+                    //        newGrantHeader.DataToComboBox = nirList.ConvertAll(x => (IContainer)x);
+                    //        break;
+                    //}
 
                     grantHeaders.Add(newGrantHeader);
                 }
@@ -933,15 +933,16 @@ namespace ResearchProgram
         /// Получение списка людей
         /// </summary>
         /// <returns></returns>
-        public static List<Person> GetPersons(bool is_jobs_needed = false)
+        public static ObservableCollection<Person> GetPersons(bool is_jobs_needed = false)
         {
-            List<Person> personsList = new List<Person>();
+            ObservableCollection<Person> personsList = new ObservableCollection<Person>();
             List<int> persons_ids = new List<int>();
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT id FROM persons ORDER BY FIO; ", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
             if (reader.HasRows)
                 while (reader.Read())
                     persons_ids.Add(Convert.ToInt32(reader[0]));
+
             reader.Close();
             for (int i = 0; i < persons_ids.Count; i++)
             {
@@ -1182,9 +1183,9 @@ namespace ResearchProgram
         /// Получение приоритетных направлений
         /// </summary>
         /// <returns></returns>
-        public static List<PriorityTrend> GetPriorityTrends()
+        public static ObservableCollection<PriorityTrend> GetPriorityTrends()
         {
-            List<PriorityTrend> priorityTrendsList = new List<PriorityTrend>();
+            ObservableCollection<PriorityTrend> priorityTrendsList = new ObservableCollection<PriorityTrend>();
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM prioritytrends ORDER BY title;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
@@ -1211,9 +1212,9 @@ namespace ResearchProgram
         /// Получение списка типов исследования
         /// </summary>
         /// <returns></returns>
-        public static List<ResearchType> GetResearchTypes()
+        public static ObservableCollection<ResearchType> GetResearchTypes()
         {
-            List<ResearchType> researchTypesList = new List<ResearchType>();
+            ObservableCollection<ResearchType> researchTypesList = new ObservableCollection<ResearchType>();
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM researchTypes ORDER BY title;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
@@ -1240,9 +1241,9 @@ namespace ResearchProgram
         /// Получение списка типов науки
         /// </summary>
         /// <returns></returns>
-        public static List<ScienceType> GetScienceTypes()
+        public static ObservableCollection<ScienceType> GetScienceTypes()
         {
-            List<ScienceType> scienctTypeTypesList = new List<ScienceType>();
+            ObservableCollection<ScienceType> scienctTypeTypesList = new ObservableCollection<ScienceType>();
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM scienceTypes ORDER BY title;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
@@ -2250,11 +2251,11 @@ namespace ResearchProgram
 
         public static ObservableCollection<UniversityStructureNode> GetStructureNodes(string regex)
         {
-            ConnectToDataBase();
+            NpgsqlConnection con = GetNewConnection();
 
             ObservableCollection<UniversityStructureNode> NodeList = new ObservableCollection<UniversityStructureNode>();
 
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, address, title, short_title FROM work_place_structure WHERE address ~ " + regex + "ORDER BY title;", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, address, title, short_title FROM work_place_structure WHERE address ~ " + regex + "ORDER BY title;", con);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -2275,7 +2276,7 @@ namespace ResearchProgram
                 Debug.WriteLine("No rows found.");
             }
             reader.Close();
-            CloseConnection();
+            con.Close();
             return NodeList;
         }
 

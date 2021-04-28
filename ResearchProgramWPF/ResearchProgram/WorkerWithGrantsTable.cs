@@ -195,16 +195,9 @@ namespace ResearchProgram
             row["ФИО"] = person.FIO;
             row["Дата рождения"] = person.BitrhDate == new DateTime(1, 1, 1) ? "" : person.BitrhDate.ToString("dd.MM.yyyy");
             row["Пол"] = person.Sex ? "M" : "Ж";
-            //row["Место работы"]                 = person.PlaceOfWork;
-            //row["Категория"]                    = person.Category;
             row["Степень"] = person.Degree.Title;
             row["Звание"] = person.Rank.Title;
-            //row["Должность"]                    = string.Join("\n", person.Jobs);
-            //row["Оклад"]                        = string.Join("\n", Job.GetSalariesFromPerson(person.Jobs));
-            //row["Ставка"]                       = string.Join("\n", Job.GetSalaryRatesFromPerson(person.Jobs));
             personsDataTable.Rows.Add(row);
-
-
         }
 
         public static void AddRowToCustomersTable(DataTable customersDataTable, Customer customer)
