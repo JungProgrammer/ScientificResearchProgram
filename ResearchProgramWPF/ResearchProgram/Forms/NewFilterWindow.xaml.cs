@@ -1,4 +1,5 @@
 ﻿using ResearchProgram.Classes;
+using Sdl.MultiSelectComboBox.Themes.Generic;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -33,6 +34,7 @@ namespace ResearchProgram.Forms
         private readonly double ScreenHeight = SystemParameters.PrimaryScreenHeight;
         private double WindowWidth;
         private double WindowHeight;
+
 
         //ObservableCollection<Person> persons = CrGetPersons();
 
@@ -99,6 +101,29 @@ namespace ResearchProgram.Forms
                 new OKVED() {Title = "72.20"}
             };
 
+            GrantPriceLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+            GrantPriceRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+
+            FirstDepositLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+            FirstDepositRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+
+            SecondDepositLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+            SecondDepositRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+
+            ThirdDepositLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+            ThirdDepositRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+
+            FourthDepositLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+            FourthDepositRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+
+            FifthDepositLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+            FifthDepositRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+
+            SixthDepositLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+            SixthDepositRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+
+            SeventhDepositLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+            SeventhDepositRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
 
             DataContext = this;
         }
@@ -146,6 +171,33 @@ namespace ResearchProgram.Forms
         private void NOCNoCheckBox_Checked(object sender, RoutedEventArgs e)
         {
             NOCYesCheckBox.IsChecked = false;
+        }
+
+        private void DropSearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            IEnumerable<TextBox> textBoxes = Utilities.FindVisualChildren<TextBox>(this);
+            foreach(TextBox textBox in textBoxes)
+            {
+                textBox.Text = "";
+            }
+
+            IEnumerable<ComboBox> comboBoxes = Utilities.FindVisualChildren<ComboBox>(this);
+            foreach (ComboBox comboBox in comboBoxes)
+            {
+                comboBox.SelectedIndex = -1;
+            }
+
+            IEnumerable<DatePicker> datePickers = Utilities.FindVisualChildren<DatePicker>(this);
+            foreach (DatePicker datePicker in datePickers)
+            {
+                datePicker.SelectedDate = null;
+            }
+
+            IEnumerable<MultiSelectComboBox> multiSelectComboBoxes = Utilities.FindVisualChildren<MultiSelectComboBox>(this);
+            foreach (MultiSelectComboBox multiSelectComboBox in multiSelectComboBoxes)
+            {
+                multiSelectComboBox.SelectedItems = new ObservableCollection<object>();
+            }
         }
     }
 }

@@ -3,14 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ResearchProgram.Forms"
-        xmlns:sdl="http://schemas.sdl.com/xaml"
-
+        xmlns:sdl="http://schemas.sdl.com/xaml" 
+        xmlns:local="clr-namespace:ResearchProgram"
         mc:Ignorable="d"
         Title="Поиск" Height="auto" Width="auto"
-        
-        
         ResizeMode="NoResize" d:DesignWidth="903" d:DesignHeight="632">
+
     <Window.Resources>
         <Style TargetType="Separator">
             <Setter Property="Template">
@@ -22,6 +20,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
     </Window.Resources>
 
     <Grid>
@@ -63,7 +62,8 @@
                 </DockPanel>
             </Expander.Header>
             <ScrollViewer>
-                <StackPanel Margin="10 5 5 5">
+                <StackPanel x:Name="SearchMainPanel"
+                    Margin="10 5 5 5">
                     <Expander>
                         <Expander.Header>
                             <DockPanel VerticalAlignment="Stretch">
@@ -91,7 +91,10 @@
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="105*"/>
+                                    <ColumnDefinition Width="7*"/>
+                                    <ColumnDefinition Width="11*"/>
+                                    <ColumnDefinition Width="79*"/>
+                                    <ColumnDefinition Width="8*"/>
                                     <ColumnDefinition Width="37*"/>
                                     <ColumnDefinition Width="289*"/>
                                     <ColumnDefinition Width="430*"/>
@@ -99,7 +102,7 @@
                                 <Label Content="ОКВЭД"
                                    FontWeight="Bold"
                                    Grid.Row="0"
-                                   Margin="0 5 0 0" Grid.ColumnSpan="3"/>
+                                   Margin="0 5 0 0" Grid.ColumnSpan="6"/>
 
                                 <sdl:MultiSelectComboBox 
                                     Grid.Row="1"
@@ -107,36 +110,36 @@
                                     Margin="5 0"
                                     ItemsSource="{Binding Okved}"
                                     MinHeight="30" 
-                                    Grid.ColumnSpan="3"
+                                    Grid.ColumnSpan="6"
                                     OpenDropDownListAlsoWhenNotInEditMode="True"/>
 
                                 <Label Content="ГРНТИ"
                                    Grid.Row="0"
-                                   Grid.Column="3"
+                                   Grid.Column="6"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
 
                                 <TextBox Grid.Row="1"
-                                     Grid.Column="3"
+                                     Grid.Column="6"
                                      Name="GRNTITextBox"
                                      Margin="5 0"/>
 
                                 <Label Content="Номер договора"
                                    Grid.Row="2"
                                    FontWeight="Bold"
-                                   Margin="0 5 0 0" Grid.ColumnSpan="3"/>
+                                   Margin="0 5 0 0" Grid.ColumnSpan="6"/>
 
                                 <TextBox Grid.Row="3"
                                      Name="grantNumberTextBox"
                                      Margin="5 0"
                                      Height="25"
-                                         Grid.ColumnSpan="4"/>
+                                         Grid.ColumnSpan="7"/>
 
                                 <Label Content="Руководитель НИОКР"
                                    Grid.Row="4"
                                    Grid.Column="0"
                                    FontWeight="Bold"
-                                   Margin="0 5 0 0" Grid.ColumnSpan="3"/>
+                                   Margin="0 5 0 0" Grid.ColumnSpan="6"/>
 
                                 <sdl:MultiSelectComboBox
                                 x:Name="LeadNIOKRMultiselectComboBox"
@@ -144,7 +147,7 @@
                                 Grid.Row="5"
                                 Grid.Column="0"
                                 SelectionMode="Multiple"
-                                    Grid.ColumnSpan="4"
+                                    Grid.ColumnSpan="7"
                                     Margin="5 0"
                                     OpenDropDownListAlsoWhenNotInEditMode="True"/>
 
@@ -152,11 +155,11 @@
                                    Grid.Row="6"
                                    Grid.Column="0"
                                    FontWeight="Bold"
-                                   Margin="0 5 0 0" Grid.ColumnSpan="3"/>
+                                   Margin="0 5 0 0" Grid.ColumnSpan="6"/>
 
                                 <TextBox Grid.Row="7"
                                    Grid.Column="0"
-                                   Grid.ColumnSpan="4"
+                                   Grid.ColumnSpan="7"
                                      x:Name="NIOKRTextBox"
                                      Margin="5 0"
                                      TextWrapping="Wrap"
@@ -167,11 +170,11 @@
                                 <Label Content="НИР или Услуга"
                                    Grid.Row="8"
                                    FontWeight="Bold"
-                                   Margin="0 5 0 0" Grid.ColumnSpan="3"/>
+                                   Margin="0 5 0 0" Grid.ColumnSpan="6"/>
 
                                 <StackPanel Name="nirStackPanel"
                                         Grid.Row="9"
-                                            Margin="5" Grid.ColumnSpan="3">
+                                            Margin="5" Grid.ColumnSpan="6">
                                     <CheckBox   Content="НИР"   
                                             x:Name="NIRCheckBox"
                                                 Checked="NIR_Checked"/>
@@ -182,12 +185,12 @@
 
                                 <Label Content="НОЦ"
                                    Grid.Row="8"
-                                   Grid.Column="3"
+                                   Grid.Column="6"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
                                 <StackPanel Name="NOCStackPanel"
                                         Grid.Row="9"
-                                        Grid.Column ="3"
+                                        Grid.Column ="6"
                                             Margin="5">
                                     <CheckBox  
                                     Content="Да"   
@@ -201,19 +204,19 @@
                                 <Label Content="Дата начала"
                                    Grid.Row="10"
                                    FontWeight="Bold"
-                                   Margin="0 5 0 0" Grid.ColumnSpan="3"/>
+                                   Margin="0 5 0 0" Grid.ColumnSpan="6"/>
                                 <DatePicker Name="startDateDatePicker"
                                         Grid.Row="11"
-                                        Margin="5" Grid.ColumnSpan="3"/>
+                                        Margin="5" Grid.ColumnSpan="6"/>
 
                                 <Label Content="Дата окончания"
                                    Grid.Row="10"
-                                   Grid.Column="3"
+                                   Grid.Column="6"
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
                                 <DatePicker Name="endDateDatePicker"
                                         Grid.Row="11"
-                                        Grid.Column="3"
+                                        Grid.Column="6"
                                         Margin="5"/>
                             </Grid>
                         </DockPanel>
@@ -265,7 +268,6 @@
                             </Grid>
                         </DockPanel>
                     </Expander>
-
                     <Expander>
                         <Expander.Header>
                             <DockPanel VerticalAlignment="Stretch">
@@ -295,13 +297,17 @@
                                     <ColumnDefinition/>
                                 </Grid.ColumnDefinitions>
                                 <CheckBox Content="Договор без НДС"
+                                          x:Name="NoNDSCheckBox"
                                           Margin="5"
                                           FontSize="14"/>
                                 <TextBox
+                                    x:Name="GrantPriceLeftTextBox"
                                     Grid.Row="1"
                                     Grid.Column="0"
-                                    Margin="5"/>
+                                    Margin="5"
+                                    />
                                 <ComboBox
+                                    x:Name="GrantPriceLeftComboBox"
                                     Grid.Row="1"
                                     Grid.Column="1"
                                     Margin="5">
@@ -317,6 +323,7 @@
                                     FontWeight="Bold"
                                     Margin="5"/>
                                 <ComboBox
+                                    x:Name="GrantPriceRightComboBox"
                                     Grid.Row="1"
                                     Grid.Column="3"
                                     Margin="5">
@@ -325,6 +332,7 @@
                                     <TextBlock Text="Меньше/равно"/>
                                 </ComboBox>
                                 <TextBox
+                                    x:Name="GrantPriceRightTextBox"
                                     Grid.Row="1"
                                     Grid.Column="4"
                                     Margin="5"/>
@@ -354,10 +362,13 @@
                                                 <ColumnDefinition Width="130"/>
                                                 <ColumnDefinition/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBox Grid.Row="1"
+                                            <TextBox x:Name="FirstDepositLeftTextBox"
+                                                Grid.Row="1"
                                                     Grid.Column="0"
-                                                    Margin="5"/>
-                                            <ComboBox Grid.Row="1"
+                                                    Margin="5"
+                />
+                                            <ComboBox x:Name="FirstDepositLeftComboBox"
+                                                Grid.Row="1"
                                                       Grid.Column="1"
                                                       Margin="5">
                                                 <TextBlock Text=""/>
@@ -370,22 +381,27 @@
                                                 HorizontalAlignment="Center"
                                                 FontWeight="Bold"
                                                 Margin="5"/>
-                                            <ComboBox Grid.Row="1"
+                                            <ComboBox x:Name="FirstDepositRightComboBox"
+                                                Grid.Row="1"
                                                     Grid.Column="3"
                                                     Margin="5">
                                                 <TextBlock Text=""/>
                                                 <TextBlock Text="Меньше"/>
                                                 <TextBlock Text="Меньше/равно"/>
                                             </ComboBox>
-                                            <TextBox Grid.Row="1"
+                                            <TextBox x:Name="FirstDepositRightTextBox"
+                                                Grid.Row="1"
                                                     Grid.Column="4"
-                                                    Margin="5"/>
+                                                    Margin="5"
+                />
 
 
-                                            <DatePicker Grid.Row="2"
+                                            <DatePicker x:Name="FirstDepositLeftDatePicker"
+                                                Grid.Row="2"
                                                     Grid.Column="0"
                                                     Margin="5"/>
-                                            <ComboBox Grid.Row="2"
+                                            <ComboBox x:Name="FirstDepositLeftDateComboBox"
+                                                Grid.Row="2"
                                                       Grid.Column="1"
                                                       Margin="5">
                                                 <TextBlock Text=""/>
@@ -398,14 +414,16 @@
                                                 HorizontalAlignment="Center"
                                                 FontWeight="Bold"
                                                 Margin="5"/>
-                                            <ComboBox Grid.Row="2"
+                                            <ComboBox x:Name="FirstDepositRightDateComboBox"
+                                                Grid.Row="2"
                                                     Grid.Column="3"
                                                     Margin="5">
                                                 <TextBlock Text=""/>
                                                 <TextBlock Text="До"/>
                                                 <TextBlock Text="До/равно"/>
                                             </ComboBox>
-                                            <DatePicker Grid.Row="2"
+                                            <DatePicker x:Name="FirstDepositRightDatePicker"
+                                                Grid.Row="2"
                                                         Grid.Column="4"
                                                         Margin="5"/>
                                         </Grid>
@@ -439,7 +457,9 @@
                                             </Grid.ColumnDefinitions>
                                             <TextBox Grid.Row="1"
                                                     Grid.Column="0"
-                                                    Margin="5"/>
+                                                    Margin="5"
+                
+                                                     x:Name="SecondDepositLeftTextBox"/>
                                             <ComboBox Grid.Row="1"
                                                       Grid.Column="1"
                                                       Margin="5">
@@ -462,7 +482,8 @@
                                             </ComboBox>
                                             <TextBox Grid.Row="1"
                                                     Grid.Column="4"
-                                                    Margin="5"/>
+                                                    Margin="5"
+                                                     x:Name="SecondDepositRightTextBox"/>
 
 
                                             <DatePicker Grid.Row="2"
@@ -522,7 +543,9 @@
                                             </Grid.ColumnDefinitions>
                                             <TextBox Grid.Row="1"
                                                     Grid.Column="0"
-                                                    Margin="5"/>
+                                                    Margin="5"
+                
+                                                     x:Name="ThirdDepositLeftTextBox"/>
                                             <ComboBox Grid.Row="1"
                                                       Grid.Column="1"
                                                       Margin="5">
@@ -545,7 +568,9 @@
                                             </ComboBox>
                                             <TextBox Grid.Row="1"
                                                     Grid.Column="4"
-                                                    Margin="5"/>
+                                                    Margin="5"
+                
+                                                     x:Name="ThirdDepositRightTextBox"/>
 
 
                                             <DatePicker Grid.Row="2"
@@ -605,7 +630,8 @@
                                             </Grid.ColumnDefinitions>
                                             <TextBox Grid.Row="1"
                                                     Grid.Column="0"
-                                                    Margin="5"/>
+                                                    Margin="5"
+                                                     x:Name="FourthDepositLeftTextBox"/>
                                             <ComboBox Grid.Row="1"
                                                       Grid.Column="1"
                                                       Margin="5">
@@ -628,7 +654,8 @@
                                             </ComboBox>
                                             <TextBox Grid.Row="1"
                                                     Grid.Column="4"
-                                                    Margin="5"/>
+                                                    Margin="5"
+                                                     x:Name="FourthDepositRightTextBox"/>
 
 
                                             <DatePicker Grid.Row="2"
@@ -688,7 +715,8 @@
                                             </Grid.ColumnDefinitions>
                                             <TextBox Grid.Row="1"
                                                     Grid.Column="0"
-                                                    Margin="5"/>
+                                                    Margin="5"
+                                                     x:Name="FifthDepositLeftTextBox"/>
                                             <ComboBox Grid.Row="1"
                                                       Grid.Column="1"
                                                       Margin="5">
@@ -711,7 +739,8 @@
                                             </ComboBox>
                                             <TextBox Grid.Row="1"
                                                     Grid.Column="4"
-                                                    Margin="5"/>
+                                                    Margin="5"
+                                                     x:Name="FifthDepositRightTextBox"/>
 
 
                                             <DatePicker Grid.Row="2"
@@ -771,7 +800,8 @@
                                             </Grid.ColumnDefinitions>
                                             <TextBox Grid.Row="1"
                                                     Grid.Column="0"
-                                                    Margin="5"/>
+                                                    Margin="5"
+                                                     x:Name="SixthDepositLeftTextBox"/>
                                             <ComboBox Grid.Row="1"
                                                       Grid.Column="1"
                                                       Margin="5">
@@ -794,7 +824,8 @@
                                             </ComboBox>
                                             <TextBox Grid.Row="1"
                                                     Grid.Column="4"
-                                                    Margin="5"/>
+                                                    Margin="5"
+                                                     x:Name="SixthDepositRightTextBox"/>
 
 
                                             <DatePicker Grid.Row="2"
@@ -854,7 +885,8 @@
                                             </Grid.ColumnDefinitions>
                                             <TextBox Grid.Row="1"
                                                     Grid.Column="0"
-                                                    Margin="5"/>
+                                                    Margin="5"
+                                                     x:Name="SeventhDepositLeftTextBox"/>
                                             <ComboBox Grid.Row="1"
                                                       Grid.Column="1"
                                                       Margin="5">
@@ -877,7 +909,8 @@
                                             </ComboBox>
                                             <TextBox Grid.Row="1"
                                                     Grid.Column="4"
-                                                    Margin="5"/>
+                                                    Margin="5"
+                                                     x:Name="SeventhDepositRightTextBox"/>
 
 
                                             <DatePicker Grid.Row="2"
@@ -1071,6 +1104,8 @@
                         Width="70"/>
 
                         <Button Content="Сброс"
+                                x:Name="DropSearchButton"
+                                Click="DropSearchButton_Click"
                         HorizontalAlignment="Left"
                         Height="29"
                         Width="70"/>
