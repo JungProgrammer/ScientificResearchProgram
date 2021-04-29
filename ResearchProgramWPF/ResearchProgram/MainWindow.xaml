@@ -14,7 +14,7 @@
         ContentRendered="mainWindow_ContentRendered">
     <Window.Resources>
         <local:NDSConverter x:Key="NDSConverter" />
-        <local:DepositsConverter x:Key="DepositsConverter"/>
+        <local:DepositsConverter x:Key="depositsConverter"/>
     </Window.Resources>
     <Grid>
 
@@ -100,7 +100,7 @@
                             VerticalAlignment="Center"
                             HorizontalAlignment="Right"
                             Click="GrantsUpdateButton_Click">
-                        <Image Source="/ResearchProgram;component/Icons/update.png"
+                        <Image Source="pack://application:,,,/Icons/update.png"
                                    Width="25"/>
                     </Button>
 
@@ -116,18 +116,19 @@
                               CurrentItem="{Binding Path=SelectedGrantRow, Mode=TwoWay}" 
                               LoadingRow="GrantsTable_LoadingRow"
                               AutoGeneratingColumn="GrantsTable_AutoGeneratingColumn">
-                        
+
                         <DataGrid.RowStyle>
                             <Style TargetType="DataGridRow">
-                                <Setter Property="Background" Value="{Binding Path=Средства, Converter={StaticResource DepositsConverter}}"/>
+                                <Setter Property="Background" Value="{Binding Path='Номер договора', Converter={StaticResource depositsConverter}}"/>
                             </Style>
                         </DataGrid.RowStyle>
+                        
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Показать полную информацию"
                                           Click="ShowFullInformation">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/info.jpg"
+                                        <Image Source="pack://application:,,,/Icons/info.jpg"
                                                Width="18"
                                                Height="18"/>
                                     </MenuItem.Icon>
@@ -135,7 +136,7 @@
                                 <MenuItem Header="Редактировать" 
                                           Click="EditGrant">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/edit.png"
+                                        <Image Source="pack://application:,,,/Icons/edit.png"
                                                Width="15"
                                                Height="15"/>
                                     </MenuItem.Icon>
@@ -143,7 +144,7 @@
                                 <MenuItem Header="Скрыть выделенные столбцы" 
                                           Click="HideSelectedColumns">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/hide.png"
+                                        <Image Source="pack://application:,,,/Icons/hide.png"
                                                Width="16"
                                                Height="16"/>
                                     </MenuItem.Icon>
@@ -151,7 +152,7 @@
                                 <MenuItem Header="Показать скрытые столбцы" 
                                           Click="ShowHiddenColumns">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/show.png"
+                                        <Image Source="pack://application:,,,/Icons/show.png"
                                                Width="16"
                                                Height="16"/>
                                     </MenuItem.Icon>
@@ -207,7 +208,7 @@
                                 <MenuItem Header="Редактировать" 
                                               Click="EditPeople">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/edit.png"
+                                        <Image Source="pack://application:,,,/Icons/edit.png"
                                                Width="18"
                                                Height="18"/>
                                     </MenuItem.Icon>
@@ -224,7 +225,7 @@
                             VerticalAlignment="Center"
                             HorizontalAlignment="Right"
                             Click="PersonsUpdateButton_Click">
-                        <Image Source="/ResearchProgram;component/Icons/update.png"
+                        <Image Source="pack://application:,,,/Icons/update.png"
                                Width="25"/>
                     </Button>
                 </Grid>
@@ -249,7 +250,7 @@
                                 <MenuItem Header="Редактировать" 
                                           Click="EditCustomer">
                                     <MenuItem.Icon>
-                                        <Image Source="/ResearchProgram;component/Icons/edit.png"
+                                        <Image Source="pack://application:,,,/Icons/edit.png"
                                                Width="18"
                                                Height="18"/>
                                     </MenuItem.Icon>
@@ -265,7 +266,7 @@
                             VerticalAlignment="Center"
                             HorizontalAlignment="Right"
                             Click="CustomersUpdateButton_Click">
-                        <Image Source="/ResearchProgram;component/Icons/update.png"
+                        <Image Source="pack://application:,,,/Icons/update.png"
                                Width="25"/>
                     </Button>
                 </Grid>

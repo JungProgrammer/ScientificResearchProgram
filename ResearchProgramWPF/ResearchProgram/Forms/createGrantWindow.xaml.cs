@@ -146,6 +146,8 @@ namespace ResearchProgram
                 priceTextBox.Text = String.Format("{0:#,0.##}", grantToEdit.Price);
                 priceNoNDSTextBox.Text = String.Format("{0:#,0.##}", grantToEdit.PriceNoNDS);
                 GrantWithoutNDSCheckBox.IsChecked = !grantToEdit.isWIthNDS;
+
+                // Добавление источников финансирования
                 for (int i = 0; i < grantToEdit.Depositor.Count; i++)
                 {
                     StackPanel horizontalStackPanel = new StackPanel()
@@ -171,7 +173,16 @@ namespace ResearchProgram
                         }
                         else
                             sumTextBoxNoNDS.Text = "";
+
+                        CalculateDepositorsSum();
+                        CalculateDepositorsSumNoNDS();
                     }
+
+                    void sumTextBoxNoNDSTextChangedEventHandler(object senderr, TextChangedEventArgs args)
+                    {
+                        CalculateDepositorsSumNoNDS();
+                    }
+
 
                     ComboBox depositorComboBox = new ComboBox()
                     {
@@ -199,6 +210,7 @@ namespace ResearchProgram
                     };
                     sumTextBoxNoNDS.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
                     sumTextBoxNoNDS.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
+                    sumTextBoxNoNDS.TextChanged += sumTextBoxNoNDSTextChangedEventHandler;
 
                     sumTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
                     sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler;
@@ -224,6 +236,10 @@ namespace ResearchProgram
 
                     depositsVerticalListView.Items.Add(horizontalStackPanel);
                 }
+                CalculateDepositorsSum();
+                CalculateDepositorsSumNoNDS();
+
+
                 for (int i = 0; i < PersonsList.Count; i++)
                     if (PersonsList[i].FIO == grantToEdit.LeadNIOKR.FIO)
                         LeadNIOKRAutoCompleteComboBox.SelectedIndex = i;
@@ -420,6 +436,14 @@ namespace ResearchProgram
                 }
                 else
                     sumTextBoxNoNDS.Text = "";
+
+                CalculateDepositorsSum();
+                CalculateDepositorsSumNoNDS();
+            }
+
+            void sumTextBoxNoNDSTextChangedEventHandler(object senderr, TextChangedEventArgs args)
+            {
+                CalculateDepositorsSumNoNDS();
             }
 
             StackPanel horizontalStackPanel = new StackPanel()
@@ -454,6 +478,7 @@ namespace ResearchProgram
 
             sumTextBoxNoNDS.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
             sumTextBoxNoNDS.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
+            sumTextBoxNoNDS.TextChanged += sumTextBoxNoNDSTextChangedEventHandler;
 
             DatePicker datePicker = new DatePicker()
             {
@@ -984,6 +1009,8 @@ namespace ResearchProgram
                     partSumNoNDS.Text = "";
                 }
             }
+
+            CalculateDepositorsSumNoNDS();
         }
 
         private void priceNoNDSTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -1127,6 +1154,43 @@ namespace ResearchProgram
             }
             set.Clear();
             CRUDDataBase.CloseConnection();
+        }
+
+        /// <summary>
+        /// Подсчет общей суммы вкладчиков. Считается c НДС
+        /// Результат выводится в окно под договорами.
+        /// </summary>
+        private void CalculateDepositorsSum()
+        {
+            Double sumDeposits = 0;
+
+            foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
+            {
+                TextBox partSum = (TextBox)sp.Children[1];
+
+                sumDeposits += partSum.Text != "" ? Double.Parse(partSum.Text) : 0;
+            }
+
+            sumDepositsTextBox.Text = String.Format("{0:#,0.##}", sumDeposits);
+        }
+
+
+        /// <summary>
+        /// Подсчет общей суммы вкладчиков. Считается без НДС
+        /// Результат выводится в окно под договорами.
+        /// </summary>
+        private void CalculateDepositorsSumNoNDS()
+        {
+            Double sumDeposits = 0;
+
+            foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
+            {
+                TextBox partSum = (TextBox)sp.Children[3];
+
+                sumDeposits += partSum.Text != "" ? Double.Parse(partSum.Text) : 0;
+            }
+
+            sumDepositsNoNDSTextBox.Text = String.Format("{0:#,0.##}", sumDeposits);
         }
     }
 }

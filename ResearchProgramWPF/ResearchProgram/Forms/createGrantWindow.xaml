@@ -315,7 +315,7 @@
                     <TabItem.Content>
                         <Grid Name="depositsGrid">
                             <Grid.RowDefinitions>
-                                <RowDefinition Height="90"/>
+                                <RowDefinition Height="140"/>
                                 <RowDefinition Height="35"/>
                                 <RowDefinition Height="15*"/>
                                 <RowDefinition Height="35"/>
@@ -330,6 +330,8 @@
                             <Grid Grid.Row="0"
                                   Grid.ColumnSpan="100">
                                 <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
@@ -383,6 +385,42 @@
                                          Padding="0 3"/>
                                 <Label Content="руб."
                                        Grid.Row="2"
+                                       Grid.Column="3"
+                                       Margin="-7 0 0 0"/>
+
+                                <Label Content="Сумма источников"
+                                       Grid.Row="3"
+                                       FontWeight="Bold"
+                                       Grid.Column="0"
+                                       Margin="0 5 0 0"/>
+
+                                <TextBox Grid.Row="4"
+                                         Grid.Column="0"
+                                         Name="sumDepositsTextBox"
+                                         Margin="5 0"
+                                         Padding="0 3"
+                                         IsReadOnly="True"/>
+
+                                <Label Content="руб."
+                                       Grid.Row="4"
+                                       Grid.Column="1"
+                                       Margin="-7 0 0 0"/>
+
+                                <Label Content="Сумма источников без НДС"
+                                       Grid.Row="3"
+                                       FontWeight="Bold"
+                                       Grid.Column="2"
+                                       Margin="0 5 0 0"/>
+
+                                <TextBox Grid.Row="4"
+                                         Grid.Column="2"
+                                         Name="sumDepositsNoNDSTextBox"
+                                         Margin="5 0"
+                                         Padding="0 3"
+                                         IsReadOnly="True"/>
+
+                                <Label Content="руб."
+                                       Grid.Row="4"
                                        Grid.Column="3"
                                        Margin="-7 0 0 0"/>
                             </Grid>
