@@ -226,7 +226,7 @@ namespace ResearchProgram
         private void GrantsFiltersButton_Click(object sender, RoutedEventArgs e)
         {
             //filtersWindow.Show();
-            NewFilterWindow newFilterWindow = new NewFilterWindow()
+            NewFilterWindow newFilterWindow = new NewFilterWindow(GrantsDataTable)
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Owner = this
@@ -277,6 +277,9 @@ namespace ResearchProgram
         {
             GrantsFilters.StartDepositDate.Data = _selectedStartDate.ToString();
             GrantsFilters.EndDepositDate.Data = _selectedEndDate.ToString();
+
+            GrantsDataTable.DefaultView.RowFilter = null;
+
 
             CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);

@@ -4,9 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -70,9 +72,14 @@ namespace ResearchProgram.Forms
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        public NewFilterWindow()
+        // Таблица, которая отвечает за гранты
+        DataTable GrantsDataTable { get; set; }
+
+        public NewFilterWindow(DataTable grantsDataTable)
         {
             InitializeComponent();
+
+            GrantsDataTable = grantsDataTable;
 
             CRUDDataBase.ConnectToDataBase();
 
@@ -198,6 +205,35 @@ namespace ResearchProgram.Forms
             {
                 multiSelectComboBox.SelectedItems = new ObservableCollection<object>();
             }
+        }
+        /// <summary>
+        /// Простой поиск по тексту таблицы без обращения к БД
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void SimpleSearchButton_Click(object sender, RoutedEventArgs e)
+        {
+            string searchQuarry = SimpleSearchTextBox.Text;
+            searchQuarry = searchQuarry.Trim();
+            if (searchQuarry == "")
+            {
+                GrantsDataTable.DefaultView.RowFilter = null;
+                return;
+            }
+
+            // составляется условие поиска и происходит фильтрация
+            DataColumnCollection columns = GrantsDataTable.Columns;
+
+            string filter = string.Empty;
+            for (int i = 0; i < columns.Count; i++)
+            {
+                filter += "[" + columns[i].ColumnName + "] LIKE \'%" + searchQuarry + "%\'";
+                if (i != columns.Count - 1)
+                {
+                    filter += " OR ";
+                }
+            }
+            GrantsDataTable.DefaultView.RowFilter = filter;
         }
     }
 }

@@ -42,13 +42,15 @@
                 <ColumnDefinition/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
-            <TextBox
+            <TextBox x:Name="SimpleSearchTextBox"
                  Margin="5 3"
                  Padding="1 4"
                 FontSize="14"/>
-            <Button Grid.Column="1"
+            <Button x:Name="SimpleSearchButton"
+                Grid.Column="1"
                     Margin="5 3"
-                    Content="Поиск"/>
+                    Content="Поиск"
+                    Click="SimpleSearchButton_Click"/>
         </Grid>
 
         <Expander Grid.Row="2" 

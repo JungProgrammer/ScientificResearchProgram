@@ -32,15 +32,15 @@ namespace ResearchProgram
             //DataGridTemplateColumn a = new DataGridTemplateColumn();
 
 
-            switch (column.ColumnName)
-            {
-                case "№":
-                    column.DataType = Type.GetType("System.Int32");
-                    break;
-                case "Стоимость договора":
-                    //column.DataType = Type.GetType("System.Double");
-                    break;
-            }
+            //switch (column.ColumnName)
+            //{
+            //    case "№":
+            //        column.DataType = Type.GetType("System.Int32");
+            //        break;
+            //    case "Стоимость договора":
+            //        //column.DataType = Type.GetType("System.Double");
+            //        break;
+            //}
 
             grantsDataTable.Columns.Add(column);
         }
@@ -151,7 +151,7 @@ namespace ResearchProgram
 
                 if (grantsDataTable.Rows.Count == 0) countOfGrantRows = 0;
                 countOfGrantRows++;
-                 DataRow row = grantsDataTable.NewRow();
+                DataRow row = grantsDataTable.NewRow();
                 row["id"] = grant.Id;
                 row["№"] = countOfGrantRows.ToString();
                 row["Номер договора"] = grant.grantNumber;
