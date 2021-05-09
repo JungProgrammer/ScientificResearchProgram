@@ -26,6 +26,9 @@ namespace ThreadTest
         public MainWindow()
         {
             InitializeComponent();
+
+            TestAsyncWindow testAsyncWindow = new TestAsyncWindow();
+            testAsyncWindow.Show();
         }
     }
 }
