@@ -68,6 +68,8 @@ namespace ResearchProgram.Forms
             {
                 newInputName = addElementWindow.NewNameOfElement;
                 AddNewCategory(newInputName);
+                
+                FormsManager.UpdateOpenedWindows();
             }
             else
             {

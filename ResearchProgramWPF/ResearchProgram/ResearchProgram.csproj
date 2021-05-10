@@ -147,6 +147,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\FormsManager.cs" />
     <Compile Include="Classes\OKVED.cs" />
     <Compile Include="Classes\PersonWorkPlace.cs" />
     <Compile Include="Classes\TreeNode.cs" />

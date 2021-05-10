@@ -42,6 +42,8 @@ namespace ResearchProgram.Forms
                     System.Windows.MessageBox.Show("Добавление успешно", "Добавление новой структурной единицы", MessageBoxButton.OK, MessageBoxImage.Information);
                     ((UniversityStructureWindow)Owner).ReloadTree();
                     Close();
+
+                    FormsManager.UpdateOpenedWindows();
                 }
                 else
                 {

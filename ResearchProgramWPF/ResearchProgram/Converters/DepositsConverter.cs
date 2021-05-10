@@ -11,20 +11,6 @@ namespace ResearchProgram
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var result = value;
-
-            //if (result.Value < 0)
-            //{
-            //    color = Colors.Red;
-            //}
-            //else if (result.Value == 0)
-            //{
-            //    color = Colors.Yellow;
-            //}
-            //else
-            //{
-            //    color = Colors.Green;
-            //}
 
             int seed = (int)DateTime.Now.Ticks & 0x0000FFFF;
 

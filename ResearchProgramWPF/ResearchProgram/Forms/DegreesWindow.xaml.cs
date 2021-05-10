@@ -67,6 +67,8 @@ namespace ResearchProgram.Forms
             {
                 newInputName = addElementWindow.NewNameOfElement;
                 AddNewDegree(newInputName);
+
+                FormsManager.UpdateOpenedWindows();
             }
             else
             {

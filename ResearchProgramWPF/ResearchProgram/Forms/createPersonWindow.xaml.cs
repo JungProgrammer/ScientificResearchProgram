@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -19,15 +20,70 @@ namespace ResearchProgram
 
         public string sexChecked;
 
-        public List<Job> jobsList { get; set; }
+        //public List<Job> JobsList { get; set; }
+        //public List<WorkCategories> WorkCategoriesList { get; set; }
+
+        private List<WorkDegree> _workDegreesList;
+        public List<WorkDegree> WorkDegreesList
+        {
+            get
+            {
+                return _workDegreesList;
+            }
+            set
+            {
+                _workDegreesList = value;
+                NotifyPropertyChanged(nameof(WorkDegreesList));
+            }
+        }
+
+        private WorkDegree _workDegreeSelectedItem;
+        public WorkDegree WorkDegreeSelectedItem
+        {
+            get
+            {
+                return _workDegreeSelectedItem;
+            }
+            set
+            {
+                if(value != null) _workDegreeSelectedItem = value;
+                NotifyPropertyChanged(nameof(WorkDegreeSelectedItem));
+            }
+        }
+
+
+        private List<WorkRank> _workRanksList;
+        public List<WorkRank> WorkRanksList
+        {
+            get
+            {
+                return _workRanksList;
+            }
+            set
+            {
+                _workRanksList = value;
+                NotifyPropertyChanged(nameof(WorkRanksList));
+            }
+        }
+
+        private WorkRank _workRankSelectedItem;
+        public WorkRank WorkRankSelectedItem
+        {
+            get
+            {
+                return _workRankSelectedItem;
+            }
+            set
+            {
+                if(value != null) _workRankSelectedItem = value;
+                NotifyPropertyChanged(nameof(WorkRankSelectedItem));
+            }
+        }
+
 
         private bool _isEditPerson = false;
         private int _editedPersonId;
         private string _personFIO;
-
-        public List<WorkCategories> WorkCategoriesList { get; set; }
-        public List<WorkDegree> WorkDegreesList { get; set; }
-        public List<WorkRank> WorkRanksList { get; set; }
 
         /// <summary>
         /// Выбранный пол человека
@@ -43,56 +99,138 @@ namespace ResearchProgram
             }
         }
 
+        private Person _personToEdit;
+
         public createPersonWindow(DataTable personsDataTable, Person personToEdit = null)
         {
             InitializeComponent();
 
+
+            FormsManager.CreatePersonWindow = this;
+
+
             peopleDataTable = personsDataTable;
 
-            CRUDDataBase.ConnectToDataBase();
-            jobsList = CRUDDataBase.GetJobs();
-            WorkCategoriesList = CRUDDataBase.GetWorkCategories();
-            WorkDegreesList = CRUDDataBase.GetWorkDegrees();
-            WorkRanksList = CRUDDataBase.GetWorkRanks();
+            _personToEdit = personToEdit;
 
+            LoadDataAsync();
+
+
+            DataContext = this;
+        }
+
+
+        public async void UpdateDataAsync()
+        {
+            await Task.Run(() => UpdateData());
+        }
+
+
+        private void UpdateData()
+        {
+            CRUDDataBase.ConnectToDataBase();
+            Dispatcher.Invoke(() => WorkDegreesList = CRUDDataBase.GetWorkDegrees());
+            Dispatcher.Invoke(() => WorkRanksList = CRUDDataBase.GetWorkRanks());
             CRUDDataBase.CloseConnection();
 
-            if (personToEdit != null)
+            List<PersonWorkPlace> copiedPersonWorkPlaces = null;
+            Dispatcher.Invoke(() => copiedPersonWorkPlaces = PersonWorkPlace.ConvertListViewToWorkPlaceList(workPlaceListView));
+
+
+            int itemsCount = workPlaceListView.Items.Count;
+            for (int i = 0; i < itemsCount; i++)
             {
-                DeletePersonButton.Visibility = Visibility.Visible;
+                Dispatcher.Invoke(() => workPlaceListView.Items.RemoveAt(0));
+            }
+
+
+            foreach (PersonWorkPlace personWorkPlace in copiedPersonWorkPlaces)
+            {
+                Dispatcher.Invoke(() => workPlaceListView.Items.Add(personWorkPlace.getPersonGrid()));
+                Dispatcher.Invoke(() => personWorkPlace.isMainWorkPlace.Checked += IsMainWorkPlace_Checked);
+            }
+
+
+            for (int i = 0; i < WorkDegreesList.Count; i++)
+            {
+                if (_workDegreeSelectedItem != null)
+                {
+                    if (_workDegreeSelectedItem.Id == WorkDegreesList[i].Id)
+                        Dispatcher.Invoke(() => WorkDegreeSelectedItem = WorkDegreesList[i]);
+                }
+            }
+
+            for (int i = 0; i < WorkRanksList.Count; i++)
+            {
+                if (_workRankSelectedItem != null)
+                {
+                    if (_workRankSelectedItem.Id == WorkRanksList[i].Id)
+                        Dispatcher.Invoke(() => WorkRankSelectedItem = WorkRanksList[i]);
+                }
+            }
+        }
+
+        
+        /// <summary>
+        /// Изначальная загрузка данных в форму
+        /// </summary>
+        public async void LoadDataAsync()
+        {
+            await Task.Run(() => LoadData());
+        }
+
+
+        /// <summary>
+        /// Загрузка данных в списки, на которые ссылаются комбобоксы
+        /// </summary>
+        private void LoadData()
+        {
+            CRUDDataBase.ConnectToDataBase();
+            //JobsList = CRUDDataBase.GetJobs();
+            //WorkCategoriesList = CRUDDataBase.GetWorkCategories();
+            Dispatcher.Invoke(() => WorkDegreesList = CRUDDataBase.GetWorkDegrees());
+            Dispatcher.Invoke(() => WorkRanksList = CRUDDataBase.GetWorkRanks());
+            CRUDDataBase.CloseConnection();
+
+
+            if (_personToEdit != null)
+            {
+                Dispatcher.Invoke(() => DeletePersonButton.Visibility = Visibility.Visible);
+
                 _isEditPerson = true;
-                _editedPersonId = personToEdit.Id;
-                _personFIO = personToEdit.FIO;
-                Title = "Изменение информации о человеке";
-                createPersonButton.Content = "Сохранить";
-                FIOTextBox.Text = personToEdit.FIO;
+                _editedPersonId = _personToEdit.Id;
+                _personFIO = _personToEdit.FIO;
+                Dispatcher.Invoke(() => Title = "Изменение информации о человеке");
+
+                Dispatcher.Invoke(() => createPersonButton.Content = "Сохранить");
+                Dispatcher.Invoke(() => FIOTextBox.Text = _personToEdit.FIO);
 
                 for (int i = 0; i < WorkDegreesList.Count; i++)
                 {
-                    if (personToEdit.Degree.Id == WorkDegreesList[i].Id)
-                        degreeComboBox.SelectedIndex = i;
+                    if (_personToEdit.Degree.Id == WorkDegreesList[i].Id)
+                        Dispatcher.Invoke(() => WorkDegreeSelectedItem = WorkDegreesList[i]);
                 }
 
                 for (int i = 0; i < WorkRanksList.Count; i++)
                 {
-                    if (personToEdit.Rank.Id == WorkRanksList[i].Id)
-                        rankComboBox.SelectedIndex = i;
+                    if (_personToEdit.Rank.Id == WorkRanksList[i].Id)
+                        Dispatcher.Invoke(() => WorkRankSelectedItem = WorkRanksList[i]);
                 }
 
-                BirthDateDatePicker.SelectedDate = personToEdit.BitrhDate;
-                if (personToEdit.Sex)
-                    sexMan.IsChecked = true;
+                Dispatcher.Invoke(() => BirthDateDatePicker.SelectedDate = _personToEdit.BitrhDate);
+                if (_personToEdit.Sex)
+                    Dispatcher.Invoke(() => sexMan.IsChecked = true);
                 else
-                    sexWoman.IsChecked = true;
+                    Dispatcher.Invoke(() => sexWoman.IsChecked = true);
 
-                foreach (PersonWorkPlace workPlace in personToEdit.workPlaces)
+                foreach (PersonWorkPlace workPlace in _personToEdit.workPlaces)
                 {
-                    workPlaceListView.Items.Add(workPlace.getPersonGrid());
-                    workPlace.isMainWorkPlace.Checked += IsMainWorkPlace_Checked;
+                    Dispatcher.Invoke(() => workPlaceListView.Items.Add(workPlace.getPersonGrid()));
+                    Dispatcher.Invoke(() => workPlace.isMainWorkPlace.Checked += IsMainWorkPlace_Checked);
                 }
             }
-            DataContext = this;
         }
+
 
         /// <summary>
         /// Запоминание выбора пола человека
@@ -120,8 +258,7 @@ namespace ResearchProgram
         private void createPersonButtonClick(object sender, RoutedEventArgs e)
         {
             Person newPerson = new Person();
-
-            // Булевская переменная, которая отвечает за правильное создание договора. Если все необходимые данные были внесены, то договор создается
+            
             bool isAllOkey = true;
             string incorrectDataString = "";
 
@@ -154,97 +291,7 @@ namespace ResearchProgram
 
             if (workPlaceListView.Items != null)
             {
-                foreach (Grid grid in workPlaceListView.Items.OfType<Grid>())
-                {
-                    ComboBox categoryComboBox = (ComboBox)grid.Children[1];
-                    CheckBox isMainWorkPlace = (CheckBox)grid.Children[2];
-
-                    ComboBox workPlaceComboBox = (ComboBox)grid.Children[4];
-                    ComboBox UnitComboBox = (ComboBox)grid.Children[6];
-                    ComboBox DepartmentComboBox = (ComboBox)grid.Children[8];
-                    ComboBox StructNodeComboBox = (ComboBox)grid.Children[10];
-
-                    Grid jobGrid = (Grid)grid.Children[11];
-                    ListView jobListView = (ListView)jobGrid.Children[3];
-
-
-                    PersonWorkPlace personWorkPlace = new PersonWorkPlace();
-                    if (workPlaceComboBox.SelectedItem != null || categoryComboBox.SelectedItem != null)
-                    {
-                        personWorkPlace.IsMainWorkPlace = (bool)isMainWorkPlace.IsChecked;
-                        if (categoryComboBox.SelectedItem != null)
-                        {
-                            personWorkPlace.workCategory = (WorkCategories)categoryComboBox.SelectedItem;
-                        }
-                        else
-                        {
-                            personWorkPlace.workCategory = new WorkCategories();
-                        }
-
-                        if (workPlaceComboBox.SelectedItem != null)
-                        {
-                            personWorkPlace.firstNode = (UniversityStructureNode)workPlaceComboBox.SelectedItem;
-                        }
-                        else
-                        {
-                            personWorkPlace.firstNode = new UniversityStructureNode();
-                        }
-
-                        if (UnitComboBox.SelectedItem != null)
-                        {
-                            personWorkPlace.secondNode = (UniversityStructureNode)UnitComboBox.SelectedItem;
-                        }
-                        else
-                        {
-                            personWorkPlace.secondNode = new UniversityStructureNode();
-                        }
-
-                        if (DepartmentComboBox.SelectedItem != null)
-                        {
-                            personWorkPlace.thirdNode = (UniversityStructureNode)DepartmentComboBox.SelectedItem;
-                        }
-                        else
-                        {
-                            personWorkPlace.thirdNode = new UniversityStructureNode();
-                        }
-
-                        if (StructNodeComboBox.SelectedItem != null)
-                        {
-                            personWorkPlace.fourthNode = (UniversityStructureNode)StructNodeComboBox.SelectedItem;
-                        }
-                        else
-                        {
-                            personWorkPlace.fourthNode = new UniversityStructureNode();
-                        }
-
-                        personWorkPlace.jobList = new List<Job>();
-                        foreach (Grid grid1 in jobListView.Items.OfType<Grid>())
-                        {
-                            ComboBox jobComboBox = (ComboBox)grid1.Children[0];
-                            TextBox salaryRateTextBox = (TextBox)grid1.Children[2];
-                            if (jobComboBox.SelectedItem != null)
-                            {
-                                Job job = (Job)jobComboBox.SelectedItem;
-                                if (salaryRateTextBox.Text != "")
-                                {
-                                    job.SalaryRate = float.Parse(salaryRateTextBox.Text);
-                                }
-                                else
-                                {
-                                    job.SalaryRate = 0;
-                                }
-                                Console.WriteLine(job.Id);
-                                Console.WriteLine(job.Salary);
-                                Console.WriteLine(job.SalaryRate);
-
-                                personWorkPlace.jobList.Add(job);
-                            }
-                        }
-                        newPerson.workPlaces.Add(personWorkPlace);
-
-                    }
-
-                }
+                newPerson.workPlaces = PersonWorkPlace.ConvertListViewToWorkPlaceList(workPlaceListView);
             }
             if (isAllOkey)
             {
@@ -313,10 +360,10 @@ namespace ResearchProgram
 
         private void workPlaceAddButton_Click(object sender, RoutedEventArgs e)
         {
-            PersonWorkPlace personWorkPalce = new PersonWorkPlace();
+            PersonWorkPlace personWorkPlace = new PersonWorkPlace();
 
-            workPlaceListView.Items.Add(personWorkPalce.getPersonGrid());
-            personWorkPalce.isMainWorkPlace.Checked += IsMainWorkPlace_Checked;
+            workPlaceListView.Items.Add(personWorkPlace.getPersonGrid());
+            personWorkPlace.isMainWorkPlace.Checked += IsMainWorkPlace_Checked;
 
         }
 
@@ -352,5 +399,9 @@ namespace ResearchProgram
             }
         }
 
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            FormsManager.CreatePersonWindow = null;
+        }
     }
 }

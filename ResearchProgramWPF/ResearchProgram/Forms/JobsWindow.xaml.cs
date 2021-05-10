@@ -69,6 +69,8 @@ namespace ResearchProgram.Forms
                 newInputName = addElementWindow.NewNameOfElement;
                 newSalary = addElementWindow.Salary;
                 AddNewJob(newInputName, newSalary);
+
+                FormsManager.UpdateOpenedWindows();
             }
             else
             {
