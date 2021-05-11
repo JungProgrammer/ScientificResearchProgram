@@ -140,10 +140,10 @@ namespace ResearchProgram.Classes
             grid.Children.Add(isMainWorkPlace);
             Grid.SetRow(isMainWorkPlace, 1);
             Grid.SetColumn(isMainWorkPlace, 1);
-            if (IsMainWorkPlace != null)
-            {
-                isMainWorkPlace.IsChecked = IsMainWorkPlace;
-            }
+            //if (IsMainWorkPlace != null)
+            //{
+            isMainWorkPlace.IsChecked = IsMainWorkPlace;
+            //}
 
 
             Label workPlaceLabel = new Label

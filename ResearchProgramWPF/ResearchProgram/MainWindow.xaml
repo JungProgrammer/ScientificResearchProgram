@@ -9,7 +9,7 @@
         Height="900"
         Width="1300"
         x:Name="mainWindow" 
-        Closing="mainWindow_Closing"
+        Closing="MainWindow_Closing"
         WindowState="Maximized"
         ContentRendered="mainWindow_ContentRendered">
     <Window.Resources>

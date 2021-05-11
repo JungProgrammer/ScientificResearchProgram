@@ -140,41 +140,41 @@ namespace ResearchProgram
         /// <param name="e"></param>
         private void addNewFilterParameter(object sender, RoutedEventArgs e)
         {
-            GrantHeader curGrantHeader = ((GrantHeader)filtersTabControl.SelectedItem);
+            //GrantHeader curGrantHeader = ((GrantHeader)filtersTabControl.SelectedItem);
 
-            // Если на странице ComboBox
-            if (curGrantHeader.Is_combobox_needed)
-            {
-                curGrantHeader.FilterElementsData.Add(new FilterElement()
-                {
-                    Data = curGrantHeader.ChooseDataFromCombobox != null ? curGrantHeader.ChooseDataFromCombobox.GetTitle() : ""
-                });
-            }
-            // Если на странице textbox
-            else if (curGrantHeader.Is_textbox_needed)
-            {
-                curGrantHeader.FilterElementsData.Add(new FilterElement()
-                {
-                    Data = curGrantHeader.ChooseDataFromTextBox
-                });
-            }
-            // Если на странице Data
-            else if (curGrantHeader.Is_date_needed)
-            {
-                curGrantHeader.FilterElementsData.Add(new FilterElement()
-                {
-                    Data = curGrantHeader.ChooseDateFromDatePicker.ToString("dd.MM.yyyy")
-                });
-            }
-            // Если на странице сумма
-            else if (curGrantHeader.Is_comparison_needed)
-            {
-                curGrantHeader.FilterElementsData.Add(new FilterElement()
-                {
-                    Data = curGrantHeader.ChooseAllSum,
-                    Sign = curGrantHeader.ChooseComparisonSign
-                });
-            }
+            //// Если на странице ComboBox
+            //if (curGrantHeader.Is_combobox_needed)
+            //{
+            //    curGrantHeader.FilterElementsData.Add(new FilterElement()
+            //    {
+            //        Data = curGrantHeader.ChooseDataFromCombobox != null ? curGrantHeader.ChooseDataFromCombobox.GetTitle() : ""
+            //    });
+            //}
+            //// Если на странице textbox
+            //else if (curGrantHeader.Is_textbox_needed)
+            //{
+            //    curGrantHeader.FilterElementsData.Add(new FilterElement()
+            //    {
+            //        Data = curGrantHeader.ChooseDataFromTextBox
+            //    });
+            //}
+            //// Если на странице Data
+            //else if (curGrantHeader.Is_date_needed)
+            //{
+            //    curGrantHeader.FilterElementsData.Add(new FilterElement()
+            //    {
+            //        Data = curGrantHeader.ChooseDateFromDatePicker.ToString("dd.MM.yyyy")
+            //    });
+            //}
+            //// Если на странице сумма
+            //else if (curGrantHeader.Is_comparison_needed)
+            //{
+            //    curGrantHeader.FilterElementsData.Add(new FilterElement()
+            //    {
+            //        Data = curGrantHeader.ChooseAllSum,
+            //        Sign = curGrantHeader.ChooseComparisonSign
+            //    });
+            //}
         }
 
         /// <summary>
@@ -184,7 +184,7 @@ namespace ResearchProgram
         /// <param name="e"></param>
         private void deleteFilterParameter(object sender, RoutedEventArgs e)
         {
-            SelectedGrantHeaderOnTabControl.FilterElementsData.Remove(SelectedGrantHeaderOnTabControl.SelectedFilter);
+            //SelectedGrantHeaderOnTabControl.FilterElementsData.Remove(SelectedGrantHeaderOnTabControl.SelectedFilter);
         }
 
         /// <summary>
@@ -212,26 +212,26 @@ namespace ResearchProgram
             GrantsFilters.ResetFilters();
 
             // Поиск фильтров
-            GrantsFilters.grantNumber = FindGrantHeader(GrantItemsForControlPanel, "grantNumber") != null ? FindGrantHeader(GrantItemsForControlPanel, "grantNumber").FilterElementsData : null;
-            GrantsFilters.OKVED = FindGrantHeader(GrantItemsForControlPanel, "OKVED") != null ? FindGrantHeader(GrantItemsForControlPanel, "OKVED").FilterElementsData : null;
-            GrantsFilters.NameNIOKR = FindGrantHeader(GrantItemsForControlPanel, "NIOKR") != null ? FindGrantHeader(GrantItemsForControlPanel, "NIOKR").FilterElementsData : null;
-            GrantsFilters.Customer = FindGrantHeader(GrantItemsForControlPanel, "customer") != null ? FindGrantHeader(GrantItemsForControlPanel, "customer").FilterElementsData : null;
-            GrantsFilters.StartDate = FindGrantHeader(GrantItemsForControlPanel, "startDate") != null ? FindGrantHeader(GrantItemsForControlPanel, "startDate").FilterElementsData : null;
-            GrantsFilters.EndDate = FindGrantHeader(GrantItemsForControlPanel, "endDate") != null ? FindGrantHeader(GrantItemsForControlPanel, "endDate").FilterElementsData : null;
-            GrantsFilters.Price = FindGrantHeader(GrantItemsForControlPanel, "price") != null ? FindGrantHeader(GrantItemsForControlPanel, "price").FilterElementsData : null;
-            GrantsFilters.Depositor = FindGrantHeader(GrantItemsForControlPanel, "deposits") != null ? FindGrantHeader(GrantItemsForControlPanel, "deposits").FilterElementsData : null;
-            GrantsFilters.LeadNIOKR = FindGrantHeader(GrantItemsForControlPanel, "leadNIOKR") != null ? FindGrantHeader(GrantItemsForControlPanel, "leadNIOKR").FilterElementsData : null;
-            GrantsFilters.Executor = FindGrantHeader(GrantItemsForControlPanel, "executors") != null ? FindGrantHeader(GrantItemsForControlPanel, "executors").FilterElementsData : null;
-            GrantsFilters.Kafedra = FindGrantHeader(GrantItemsForControlPanel, "kafedra") != null ? FindGrantHeader(GrantItemsForControlPanel, "kafedra").FilterElementsData : null;
-            GrantsFilters.Unit = FindGrantHeader(GrantItemsForControlPanel, "unit") != null ? FindGrantHeader(GrantItemsForControlPanel, "unit").FilterElementsData : null;
-            GrantsFilters.Laboratory = FindGrantHeader(GrantItemsForControlPanel, "laboratory") != null ? FindGrantHeader(GrantItemsForControlPanel, "laboratory").FilterElementsData : null;
-            GrantsFilters.Institution = FindGrantHeader(GrantItemsForControlPanel, "institution") != null ? FindGrantHeader(GrantItemsForControlPanel, "institution").FilterElementsData : null;
-            GrantsFilters.GRNTI = FindGrantHeader(GrantItemsForControlPanel, "GRNTI") != null ? FindGrantHeader(GrantItemsForControlPanel, "GRNTI").FilterElementsData : null;
-            GrantsFilters.ResearchTypes = FindGrantHeader(GrantItemsForControlPanel, "researchTypes") != null ? FindGrantHeader(GrantItemsForControlPanel, "researchTypes").FilterElementsData : null;
-            GrantsFilters.PriorityTrands = FindGrantHeader(GrantItemsForControlPanel, "priorityTrends") != null ? FindGrantHeader(GrantItemsForControlPanel, "priorityTrends").FilterElementsData : null;
-            GrantsFilters.ScienceTypes = FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem") != null ? FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem").FilterElementsData : null;
-            GrantsFilters.NIR = FindGrantHeader(GrantItemsForControlPanel, "NIRItem") != null ? FindGrantHeader(GrantItemsForControlPanel, "NIRItem").FilterElementsData : null;
-            GrantsFilters.NOC = FindGrantHeader(GrantItemsForControlPanel, "NOCItem") != null ? FindGrantHeader(GrantItemsForControlPanel, "NOCItem").FilterElementsData : null;
+            //GrantsFilters.grantNumber = FindGrantHeader(GrantItemsForControlPanel, "grantNumber") != null ? FindGrantHeader(GrantItemsForControlPanel, "grantNumber").FilterElementsData : null;
+            //GrantsFilters.OKVED = FindGrantHeader(GrantItemsForControlPanel, "OKVED") != null ? FindGrantHeader(GrantItemsForControlPanel, "OKVED").FilterElementsData : null;
+            //GrantsFilters.NameNIOKR = FindGrantHeader(GrantItemsForControlPanel, "NIOKR") != null ? FindGrantHeader(GrantItemsForControlPanel, "NIOKR").FilterElementsData : null;
+            //GrantsFilters.Customer = FindGrantHeader(GrantItemsForControlPanel, "customer") != null ? FindGrantHeader(GrantItemsForControlPanel, "customer").FilterElementsData : null;
+            //GrantsFilters.StartDate = FindGrantHeader(GrantItemsForControlPanel, "startDate") != null ? FindGrantHeader(GrantItemsForControlPanel, "startDate").FilterElementsData : null;
+            //GrantsFilters.EndDate = FindGrantHeader(GrantItemsForControlPanel, "endDate") != null ? FindGrantHeader(GrantItemsForControlPanel, "endDate").FilterElementsData : null;
+            //GrantsFilters.Price = FindGrantHeader(GrantItemsForControlPanel, "price") != null ? FindGrantHeader(GrantItemsForControlPanel, "price").FilterElementsData : null;
+            //GrantsFilters.Depositor = FindGrantHeader(GrantItemsForControlPanel, "deposits") != null ? FindGrantHeader(GrantItemsForControlPanel, "deposits").FilterElementsData : null;
+            //GrantsFilters.LeadNIOKR = FindGrantHeader(GrantItemsForControlPanel, "leadNIOKR") != null ? FindGrantHeader(GrantItemsForControlPanel, "leadNIOKR").FilterElementsData : null;
+            //GrantsFilters.Executor = FindGrantHeader(GrantItemsForControlPanel, "executors") != null ? FindGrantHeader(GrantItemsForControlPanel, "executors").FilterElementsData : null;
+            //GrantsFilters.Kafedra = FindGrantHeader(GrantItemsForControlPanel, "kafedra") != null ? FindGrantHeader(GrantItemsForControlPanel, "kafedra").FilterElementsData : null;
+            //GrantsFilters.Unit = FindGrantHeader(GrantItemsForControlPanel, "unit") != null ? FindGrantHeader(GrantItemsForControlPanel, "unit").FilterElementsData : null;
+            //GrantsFilters.Laboratory = FindGrantHeader(GrantItemsForControlPanel, "laboratory") != null ? FindGrantHeader(GrantItemsForControlPanel, "laboratory").FilterElementsData : null;
+            //GrantsFilters.Institution = FindGrantHeader(GrantItemsForControlPanel, "institution") != null ? FindGrantHeader(GrantItemsForControlPanel, "institution").FilterElementsData : null;
+            //GrantsFilters.GRNTI = FindGrantHeader(GrantItemsForControlPanel, "GRNTI") != null ? FindGrantHeader(GrantItemsForControlPanel, "GRNTI").FilterElementsData : null;
+            //GrantsFilters.ResearchTypes = FindGrantHeader(GrantItemsForControlPanel, "researchTypes") != null ? FindGrantHeader(GrantItemsForControlPanel, "researchTypes").FilterElementsData : null;
+            //GrantsFilters.PriorityTrands = FindGrantHeader(GrantItemsForControlPanel, "priorityTrends") != null ? FindGrantHeader(GrantItemsForControlPanel, "priorityTrends").FilterElementsData : null;
+            //GrantsFilters.ScienceTypes = FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem") != null ? FindGrantHeader(GrantItemsForControlPanel, "ScienceTypeItem").FilterElementsData : null;
+            //GrantsFilters.NIR = FindGrantHeader(GrantItemsForControlPanel, "NIRItem") != null ? FindGrantHeader(GrantItemsForControlPanel, "NIRItem").FilterElementsData : null;
+            //GrantsFilters.NOC = FindGrantHeader(GrantItemsForControlPanel, "NOCItem") != null ? FindGrantHeader(GrantItemsForControlPanel, "NOCItem").FilterElementsData : null;
         }
 
         /// <summary>

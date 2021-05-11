@@ -159,6 +159,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\FilterRange.cs" />
     <Compile Include="Classes\OKVED.cs" />
     <Compile Include="Classes\PersonWorkPlace.cs" />
     <Compile Include="Classes\TreeNode.cs" />
@@ -186,7 +187,6 @@
     <Compile Include="Classes\Customer.cs" />
     <Compile Include="Classes\Depositor.cs" />
     <Compile Include="Converters\DepositsConverter.cs" />
-    <Compile Include="FilterElement.cs" />
     <Compile Include="Forms\DegreesWindow.xaml.cs">
       <DependentUpon>DegreesWindow.xaml</DependentUpon>
     </Compile>
@@ -238,6 +238,7 @@
     <Compile Include="Forms\UniversityStructureWindow.xaml.cs">
       <DependentUpon>UniversityStructureWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StaticDataTemp.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Converters\VisibilityConveter.cs" />
     <Compile Include="WorkerWithGrantsTable.cs" />

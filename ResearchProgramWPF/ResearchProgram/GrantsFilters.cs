@@ -1,59 +1,79 @@
-﻿using System;
+﻿using ResearchProgram.Classes;
+using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
+using System.Linq;
+using System.Reflection;
 
 namespace ResearchProgram
 {
     public static class GrantsFilters
     {
-        // Номер договора
-        public static ObservableCollection<FilterElement> grantNumber;
+
         // ОКВЕД
-        public static ObservableCollection<FilterElement> OKVED;
-        // Наименование НИОКР
-        public static ObservableCollection<FilterElement> NameNIOKR;
-        // Заказчик
-        public static ObservableCollection<FilterElement> Customer;
-        // Дата начала договора
-        public static ObservableCollection<FilterElement> StartDate;
-        // Дата окончания договора
-        public static ObservableCollection<FilterElement> EndDate;
-        // Цена договора
-        public static ObservableCollection<FilterElement> Price;
-        // Средства
-        public static ObservableCollection<FilterElement> Depositor;
-        // Дата начала поступлений средств
-        public static FilterElement StartDepositDate;
-        // Дата окончания поступлений средств
-        public static FilterElement EndDepositDate;
-        // руководитель
-        public static ObservableCollection<FilterElement> LeadNIOKR;
-        // Исполнитель
-        public static ObservableCollection<FilterElement> Executor;
-        // Кафедра
-        public static ObservableCollection<FilterElement> Kafedra;
-        // Подразделение
-        public static ObservableCollection<FilterElement> Unit;
-        // Учреждение
-        public static ObservableCollection<FilterElement> Institution;
-        // Лаборатория
-        public static ObservableCollection<FilterElement> Laboratory;
+        public static ObservableCollection<OKVED> OKVED;
         // ГРНТИ
-        public static ObservableCollection<FilterElement> GRNTI;
-        // Тип исследования
-        public static ObservableCollection<FilterElement> ResearchTypes;
-        // Приоритетные направления
-        public static ObservableCollection<FilterElement> PriorityTrands;
-        // Тип науки
-        public static ObservableCollection<FilterElement> ScienceTypes;
+        public static string GRNTI;
+        // Номер договора
+        public static string grantNumber;
+        // руководитель
+        public static ObservableCollection<Person> LeadNIOKR;
+        // Наименование НИОКР
+        public static string NameNIOKR;
         // НИР или услуга
-        public static ObservableCollection<FilterElement> NIR;
+        public static string NIR;
         // НОЦ
-        public static ObservableCollection<FilterElement> NOC;
+        public static bool? NOC;
+        // Дата начала договора
+        public static DateTime? StartDate;
+        // Дата окончания договора
+        public static DateTime? EndDate;
+
+        // Заказчик
+        public static ObservableCollection<Customer> Customer;
+        // Исполнитель
+        public static ObservableCollection<Person> Executor;
+
+        // Без НДС
+        public static bool? IsNoNDS;
+        // Цена договора
+        public static FilterRange Price;
+        // Иностранные Средства
+        public static FilterRange FirstDepositor;
+        // Собственные средства
+        public static FilterRange SecondDepositor;
+        // Средства бюджета субъекта Федерации
+        public static FilterRange ThirdDepositor;
+        // Средства Российских фондов поддержки науки
+        public static FilterRange FourthDepositor;
+        // Средства хозяйствующих субъектов
+        public static FilterRange FifthDepositor;
+        // Физ. лица
+        public static FilterRange SixthDepositor;
+        // ФЦП мин обра или иные источники госзаказа(бюджет)
+        public static FilterRange SeventhDepositor;
+
+        // Кафедра
+        public static ObservableCollection<UniversityStructureNode> FirstNode;
+        // Подразделение
+        public static ObservableCollection<UniversityStructureNode> SecondNode;
+        // Учреждение
+        public static ObservableCollection<UniversityStructureNode> ThirdNode;
+        // Лаборатория
+        public static ObservableCollection<UniversityStructureNode> FourthNode;
+
+        // Тип исследования
+        public static ObservableCollection<ResearchType> ResearchType;
+        // Приоритетные направления
+        public static ObservableCollection<PriorityTrend> PriorityTrend;
+        // Тип науки
+        public static ObservableCollection<ScienceType> ScienceType;
 
 
-        /// <summary>
-        /// Обнуляет все фильтры
-        /// </summary>
+
+        ///// <summary>
+        ///// Обнуляет все фильтры
+        ///// </summary>
         public static void ResetFilters()
         {
             grantNumber = null;
@@ -63,290 +83,382 @@ namespace ResearchProgram
             StartDate = null;
             EndDate = null;
             Price = null;
-            Depositor = null;
+            IsNoNDS = null;
+            FirstDepositor = null;
+            SecondDepositor = null;
+            ThirdDepositor = null;
+            FourthDepositor = null;
+            FifthDepositor = null;
+            SixthDepositor = null;
+            SeventhDepositor = null;
             LeadNIOKR = null;
             Executor = null;
-            Kafedra = null;
-            Unit = null;
-            Institution = null;
-            Laboratory = null;
+            FirstNode = null;
+            SecondNode = null;
+            ThirdNode = null;
+            FourthNode = null;
             GRNTI = null;
-            ResearchTypes = null;
-            PriorityTrands = null;
-            ScienceTypes = null;
+            ResearchType = null;
+            PriorityTrend = null;
+            ScienceType = null;
             NIR = null;
             NOC = null;
         }
 
-
         /// <summary>
-        /// Функция возвращает истину, если договор подходит под текущие фильтры
+        /// Проверка, есть ли в фильтре хоть одно заполненное значение
         /// </summary>
-        /// <param name="grant"></param>
         /// <returns></returns>
-        public static bool CheckGrantOnCurFilter(Grant grant)
+        public static bool IsActive()
         {
-            bool IsAllOkey = true;
-
-            // Проверка номера договора
-            if (grantNumber != null && grantNumber.Count > 0 && IsAllOkey)
+            Type thisType = typeof(GrantsFilters);
+            FieldInfo[] Field = thisType.GetFields();
+            for (int i = 0; i < Field.Length; i++)
             {
-                IsAllOkey = false;
-                foreach (FilterElement _grantNumber in grantNumber)
+                if (Field[i].GetValue(null) != null)
                 {
-                    if (_grantNumber.Data == grant.grantNumber) IsAllOkey = true;
+                    return true;
                 }
             }
-
-
-            // Проверка ОКВЕД
-            if (OKVED != null && OKVED.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-                foreach (FilterElement _okved in OKVED)
-                {
-                    if (_okved.Data == grant.OKVED) IsAllOkey = true;
-                }
-            }
-
-
-            // Проверка наименования НИОКР
-            if (NameNIOKR != null && NameNIOKR.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-                foreach (FilterElement _nameNIOKR in NameNIOKR)
-                {
-                    if (_nameNIOKR.Data == grant.NameNIOKR) IsAllOkey = true;
-                }
-            }
-
-
-
-            // Проверка заказчика
-            if (Customer != null && Customer.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach (Customer customer in grant.Customer)
-                {
-                    foreach (FilterElement customerFilter in Customer)
-                    {
-                        if (customer.Title == customerFilter.Data) IsAllOkey = true;
-                    }
-                }
-            }
-
-
-            // Проверка даты
-            // Если указана дата начала
-            if (StartDate != null && StartDate.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                // Если дата окончания не выбрана
-                if (EndDate == null || EndDate.Count == 0)
-                {
-                    foreach (FilterElement date in StartDate)
-                    {
-                        if (grant.StartDate >= DateTime.Parse(date.Data))
-                        {
-                            IsAllOkey = true;
-                        }
-                    }
-                }
-                // Если выбрана и дата начала, и дата конца
-                else
-                {
-                    foreach (FilterElement date in StartDate)
-                    {
-                        if (grant.StartDate >= DateTime.Parse(date.Data))
-                        {
-                            IsAllOkey = true;
-                        }
-                    }
-
-                    if (IsAllOkey)
-                    {
-                        IsAllOkey = false;
-
-                        foreach (FilterElement date in EndDate)
-                        {
-                            if (grant.EndDate <= DateTime.Parse(date.Data))
-                            {
-                                IsAllOkey = true;
-                            }
-                        }
-                    }
-                }
-            }
-            // Если указана только дата окончания
-            else if (EndDate != null && EndDate.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach (FilterElement date in EndDate)
-                {
-                    if (grant.EndDate <= DateTime.Parse(date.Data))
-                    {
-                        IsAllOkey = true;
-                    }
-                }
-            }
-
-
-            // Проверка общей суммы договора
-            if (Price != null && Price.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach (FilterElement price in Price)
-                {
-                    if (Utilities.ComparativeOperator(price.Sign, grant.Price.ToString(), price.Data)) IsAllOkey = true;
-                }
-            }
-
-
-            // Проверка средств
-            if (Depositor != null && Depositor.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach (Depositor grantDepositor in grant.Depositor)
-                {
-                    foreach (FilterElement depositor in Depositor)
-                    {
-                        if (depositor.Data == grantDepositor.Title) IsAllOkey = true;
-                    }
-                }
-            }
-
-
-            // Проверка руководителя НИОКР
-            if (LeadNIOKR != null && LeadNIOKR.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach (FilterElement leadNIOKR in LeadNIOKR)
-                {
-                    if (leadNIOKR.Data == grant.LeadNIOKR.FIO) IsAllOkey = true;
-                }
-            }
-
-
-            // Проверка исполнителей
-            if (Executor != null && Executor.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach (Person executor in grant.Executor)
-                {
-                    foreach (FilterElement person in Executor)
-                    {
-                        if (person.Data == executor.FIO) IsAllOkey = true;
-                    }
-                }
-            }
-
-
-            // Проверка ГРНТИ
-            if (GRNTI != null && GRNTI.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach (FilterElement grnti in GRNTI)
-                {
-                    if (grnti.Data == grant.GRNTI) IsAllOkey = true;
-                }
-            }
-
-
-            // Проверка типов исследования
-            if (ResearchTypes != null && ResearchTypes.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach (ResearchType researchType in grant.ResearchType)
-                {
-                    foreach (FilterElement _researchType in ResearchTypes)
-                    {
-                        if (_researchType.Data == researchType.Title) IsAllOkey = true;
-                    }
-                }
-            }
-
-
-            // Проверка приоритетных направлений
-            if (PriorityTrands != null && PriorityTrands.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach (PriorityTrend priorityTrend in grant.PriorityTrands)
-                {
-                    foreach (FilterElement _priorityTrend in PriorityTrands)
-                    {
-                        if (_priorityTrend.Data == priorityTrend.Title) IsAllOkey = true;
-                    }
-                }
-            }
-
-
-            // Проверка типов наук
-            if (ScienceTypes != null && ScienceTypes.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach (ScienceType scienceType in grant.ScienceType)
-                {
-                    foreach (FilterElement _scienceType in ScienceTypes)
-                    {
-                        if (_scienceType.Data == scienceType.Title) IsAllOkey = true;
-                    }
-                }
-            }
-
-
-            // Проверка Нир или Услуга
-            if (NIR != null && NIR.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach (FilterElement nir in NIR)
-                {
-                    if (nir.Data == grant.NIR) IsAllOkey = true;
-                }
-            }
-
-
-            // Проверка НОЦ
-            if (NOC != null && NOC.Count > 0 && IsAllOkey)
-            {
-                IsAllOkey = false;
-
-                foreach (FilterElement noc in NOC)
-                {
-                    if (noc.Data == grant.NOC) IsAllOkey = true;
-                }
-            }
-
-
-            return IsAllOkey;
+            return false;
         }
 
-        public static bool CheckReceiptDate(string receiptDate)
+        public static string GetSignLiteral(FilterRange.Signs sign)
         {
-            DateTime convertedReceiptDate;
-            DateTime startDepositDate;
-            DateTime endDepositDate;
-
-            DateTime.TryParse(receiptDate, out convertedReceiptDate);
-            DateTime.TryParse(StartDepositDate.Data, out startDepositDate);
-            DateTime.TryParse(EndDepositDate.Data, out endDepositDate);
-
-            if (convertedReceiptDate >= startDepositDate && convertedReceiptDate <= endDepositDate)
+            switch (sign)
             {
-                return true;
+                case FilterRange.Signs.More:
+                    return " > ";
+                case FilterRange.Signs.MoreEqual:
+                    return " >= ";
+                case FilterRange.Signs.Equal:
+                    return " = ";
+                case FilterRange.Signs.Less:
+                    return " < ";
+                case FilterRange.Signs.LessEqual:
+                    return " <= ";
+                default:
+                    return " = ";
             }
-            else return false;
         }
+
+        public static string GetResearchTypesQuarry()
+        {
+            string quarry = "SELECT grantId FROM grantResearchType " +
+                "JOIN researchTypes rT on grantResearchType.researchTypeId = rT.id ";
+            if (ResearchType.Count > 0)
+            {
+                quarry += " WHERE rT.id = " + string.Join(" OR rT.id = ", ResearchType.Select(x => x.Id).ToArray());
+                quarry.Replace("WHERE OR", "WHERE");
+            }
+
+            quarry += " ORDER BY grantId; ";
+            Console.WriteLine(quarry);
+            return quarry;
+        }
+
+        public static string GetPriorityTrendsQuarry()
+        {
+            string quarry = "SELECT grantId FROM grantPriorityTrends " +
+                "JOIN priorityTrends pT on grantPriorityTrends.priorityTrendsId = pT.id ";
+            if (PriorityTrend.Count > 0)
+            {
+                quarry += " WHERE pT.id = " + string.Join(" OR pT.id = ", PriorityTrend.Select(x => x.Id).ToArray());
+                quarry.Replace("WHERE OR", "WHERE");
+            }
+
+            quarry += " ORDER BY grantId; ";
+            Console.WriteLine(quarry);
+            return quarry;
+        }
+        public static string GetScienceTypesQuarry()
+        {
+            string quarry = "SELECT grantId FROM grantScienceTypes " +
+                "JOIN scienceTypes sT on grantScienceTypes.scienceTypesId = sT.id ";
+            if (ScienceType.Count > 0)
+            {
+                quarry += " WHERE sT.id = " + string.Join(" OR sT.id = ", ScienceType.Select(x => x.Id).ToArray());
+                quarry.Replace("WHERE OR", "WHERE");
+            }
+
+            quarry += " ORDER BY grantId; ";
+            Console.WriteLine(quarry);
+            return quarry;
+        }
+
+        public static string GetFirstDepositorsQuarry()
+        {
+            string quarry = "SELECT DISTINCT grantId FROM grantDeposits " +
+                "JOIN depositors d on grantDeposits.sourceId = d.id ";
+            if (FirstDepositor != null)
+            {
+                bool isCondition = false;
+                quarry += "WHERE d.title = '" + StaticDataTemp.DepositsVerbose["first"] + "' ";
+                if (FirstDepositor.LeftDate != null)
+                {
+                    quarry += " AND receiptdate " + GetSignLiteral(FirstDepositor.LeftDateSign) + "'" + FirstDepositor.LeftDate?.ToString("yyyy-MM-dd") + "'";
+                }
+                if (FirstDepositor.RightDate != null)
+                {
+                    quarry += " AND receiptdate " + GetSignLiteral(FirstDepositor.RightDateSign) + "'" + FirstDepositor.RightDate?.ToString("yyyy-MM-dd") + "'";
+                }
+                isCondition = false;
+                quarry += " GROUP BY grantId ";
+                if (FirstDepositor.LeftValue != null)
+                {
+                    quarry += " HAVING sum(partsum) " + GetSignLiteral(FirstDepositor.LeftSign) + FirstDepositor.LeftValue.ToString();
+                    isCondition = true;
+                }
+                if (FirstDepositor.RightValue != null)
+                {
+                    if (!isCondition)
+                    {
+                        quarry += " HAVING sum(partsum) " + GetSignLiteral(FirstDepositor.RightSign) + FirstDepositor.RightValue.ToString();
+                    }
+                    else
+                    {
+                        quarry += " AND sum(partsum) " + GetSignLiteral(FirstDepositor.RightSign) + FirstDepositor.RightValue.ToString();
+                    }
+                }
+            }
+            Console.WriteLine(quarry);
+            return quarry;
+        }
+
+        public static string GetSecondDepositorsQuarry()
+        {
+            string quarry = "SELECT DISTINCT grantId FROM grantDeposits " +
+                "JOIN depositors d on grantDeposits.sourceId = d.id ";
+            if (SecondDepositor != null)
+            {
+                bool isCondition = false;
+                quarry += "WHERE d.title = '" + StaticDataTemp.DepositsVerbose["second"] + "' ";
+                if (SecondDepositor.LeftDate != null)
+                {
+                    quarry += " AND receiptdate " + GetSignLiteral(SecondDepositor.LeftDateSign) + "'" + SecondDepositor.LeftDate?.ToString("yyyy-MM-dd") + "'";
+                }
+                if (SecondDepositor.RightDate != null)
+                {
+                    quarry += " AND receiptdate " + GetSignLiteral(SecondDepositor.RightDateSign) + "'" + SecondDepositor.RightDate?.ToString("yyyy-MM-dd") + "'";
+                }
+                isCondition = false;
+                quarry += " GROUP BY grantId ";
+                if (SecondDepositor.LeftValue != null)
+                {
+                    quarry += " HAVING sum(partsum) " + GetSignLiteral(SecondDepositor.LeftSign) + SecondDepositor.LeftValue.ToString();
+                    isCondition = true;
+                }
+                if (SecondDepositor.RightValue != null)
+                {
+                    if (!isCondition)
+                    {
+                        quarry += " HAVING sum(partsum) " + GetSignLiteral(SecondDepositor.RightSign) + SecondDepositor.RightValue.ToString();
+                    }
+                    else
+                    {
+                        quarry += " AND sum(partsum) " + GetSignLiteral(SecondDepositor.RightSign) + SecondDepositor.RightValue.ToString();
+                    }
+                }
+            }
+            Console.WriteLine(quarry);
+            return quarry;
+        }
+
+        public static string GetThirdDepositorsQuarry()
+        {
+            string quarry = "SELECT DISTINCT grantId FROM grantDeposits " +
+                "JOIN depositors d on grantDeposits.sourceId = d.id ";
+            if (ThirdDepositor != null)
+            {
+                bool isCondition = false;
+                quarry += "WHERE d.title = '" + StaticDataTemp.DepositsVerbose["third"] + "' ";
+                if (ThirdDepositor.LeftDate != null)
+                {
+                    quarry += " AND receiptdate " + GetSignLiteral(ThirdDepositor.LeftDateSign) + "'" + ThirdDepositor.LeftDate?.ToString("yyyy-MM-dd") + "'";
+                }
+                if (ThirdDepositor.RightDate != null)
+                {
+                    quarry += " AND receiptdate " + GetSignLiteral(ThirdDepositor.RightDateSign) + "'" + ThirdDepositor.RightDate?.ToString("yyyy-MM-dd") + "'";
+                }
+                isCondition = false;
+                quarry += " GROUP BY grantId ";
+                if (ThirdDepositor.LeftValue != null)
+                {
+                    quarry += " HAVING sum(partsum) " + GetSignLiteral(ThirdDepositor.LeftSign) + ThirdDepositor.LeftValue.ToString();
+                    isCondition = true;
+                }
+                if (ThirdDepositor.RightValue != null)
+                {
+                    if (!isCondition)
+                    {
+                        quarry += " HAVING sum(partsum) " + GetSignLiteral(ThirdDepositor.RightSign) + ThirdDepositor.RightValue.ToString();
+                    }
+                    else
+                    {
+                        quarry += " AND sum(partsum) " + GetSignLiteral(ThirdDepositor.RightSign) + ThirdDepositor.RightValue.ToString();
+                    }
+                }
+            }
+            Console.WriteLine(quarry);
+            return quarry;
+        }
+
+        public static string GetFourthDepositorsQuarry()
+        {
+            string quarry = "SELECT DISTINCT grantId FROM grantDeposits " +
+                "JOIN depositors d on grantDeposits.sourceId = d.id ";
+            if (FourthDepositor != null)
+            {
+                bool isCondition = false;
+                quarry += "WHERE d.title = '" + StaticDataTemp.DepositsVerbose["fourth"] + "' ";
+                if (FourthDepositor.LeftDate != null)
+                {
+                    quarry += " AND receiptdate " + GetSignLiteral(FourthDepositor.LeftDateSign) + "'" + FourthDepositor.LeftDate?.ToString("yyyy-MM-dd") + "'";
+                }
+                if (FourthDepositor.RightDate != null)
+                {
+                    quarry += " AND receiptdate " + GetSignLiteral(FourthDepositor.RightDateSign) + "'" + FourthDepositor.RightDate?.ToString("yyyy-MM-dd") + "'";
+                }
+                isCondition = false;
+                quarry += " GROUP BY grantId ";
+                if (FourthDepositor.LeftValue != null)
+                {
+                    quarry += " HAVING sum(partsum) " + GetSignLiteral(FourthDepositor.LeftSign) + FourthDepositor.LeftValue.ToString();
+                    isCondition = true;
+                }
+                if (FourthDepositor.RightValue != null)
+                {
+                    if (!isCondition)
+                    {
+                        quarry += " HAVING sum(partsum) " + GetSignLiteral(FourthDepositor.RightSign) + FourthDepositor.RightValue.ToString();
+                    }
+                    else
+                    {
+                        quarry += " AND sum(partsum) " + GetSignLiteral(FourthDepositor.RightSign) + FourthDepositor.RightValue.ToString();
+                    }
+                }
+            }
+            Console.WriteLine(quarry);
+            return quarry;
+        }
+
+        public static string GetFifthDepositorsQuarry()
+        {
+            string quarry = "SELECT DISTINCT grantId FROM grantDeposits " +
+                "JOIN depositors d on grantDeposits.sourceId = d.id ";
+            if (FifthDepositor != null)
+            {
+                bool isCondition = false;
+                quarry += "WHERE d.title = '" + StaticDataTemp.DepositsVerbose["fifth"] + "' ";
+                if (FifthDepositor.LeftDate != null)
+                {
+                    quarry += " AND receiptdate " + GetSignLiteral(FifthDepositor.LeftDateSign) + "'" + FifthDepositor.LeftDate?.ToString("yyyy-MM-dd") + "'";
+                }
+                if (FifthDepositor.RightDate != null)
+                {
+                    quarry += " AND receiptdate " + GetSignLiteral(FifthDepositor.RightDateSign) + "'" + FifthDepositor.RightDate?.ToString("yyyy-MM-dd") + "'";
+                }
+                isCondition = false;
+                quarry += " GROUP BY grantId ";
+                if (FifthDepositor.LeftValue != null)
+                {
+                    quarry += " HAVING sum(partsum) " + GetSignLiteral(FifthDepositor.LeftSign) + FifthDepositor.LeftValue.ToString();
+                    isCondition = true;
+                }
+                if (FifthDepositor.RightValue != null)
+                {
+                    if (!isCondition)
+                    {
+                        quarry += " HAVING sum(partsum) " + GetSignLiteral(FifthDepositor.RightSign) + FifthDepositor.RightValue.ToString();
+                    }
+                    else
+                    {
+                        quarry += " AND sum(partsum) " + GetSignLiteral(FifthDepositor.RightSign) + FifthDepositor.RightValue.ToString();
+                    }
+                }
+            }
+            Console.WriteLine(quarry);
+            return quarry;
+        }
+
+        public static string GetSixthDepositorsQuarry()
+        {
+            string quarry = "SELECT DISTINCT grantId FROM grantDeposits " +
+                "JOIN depositors d on grantDeposits.sourceId = d.id ";
+            if (SixthDepositor != null)
+            {
+                bool isCondition = false;
+                quarry += "WHERE d.title = '" + StaticDataTemp.DepositsVerbose["sixth"] + "' ";
+                if (SixthDepositor.LeftDate != null)
+                {
+                    quarry += " AND receiptdate " + GetSignLiteral(SixthDepositor.LeftDateSign) + "'" + SixthDepositor.LeftDate?.ToString("yyyy-MM-dd") + "'";
+                }
+                if (SixthDepositor.RightDate != null)
+                {
+                    quarry += " AND receiptdate " + GetSignLiteral(SixthDepositor.RightDateSign) + "'" + SixthDepositor.RightDate?.ToString("yyyy-MM-dd") + "'";
+                }
+                isCondition = false;
+                quarry += " GROUP BY grantId ";
+                if (SixthDepositor.LeftValue != null)
+                {
+                    quarry += " HAVING sum(partsum) " + GetSignLiteral(SixthDepositor.LeftSign) + SixthDepositor.LeftValue.ToString();
+                    isCondition = true;
+                }
+                if (SixthDepositor.RightValue != null)
+                {
+                    if (!isCondition)
+                    {
+                        quarry += " HAVING sum(partsum) " + GetSignLiteral(SixthDepositor.RightSign) + SixthDepositor.RightValue.ToString();
+                    }
+                    else
+                    {
+                        quarry += " AND sum(partsum) " + GetSignLiteral(SixthDepositor.RightSign) + SixthDepositor.RightValue.ToString();
+                    }
+                }
+            }
+            Console.WriteLine(quarry);
+            return quarry;
+        }
+
+        public static string GetSeventhDepositorsQuarry()
+        {
+            string quarry = "SELECT DISTINCT grantId FROM grantDeposits " +
+                "JOIN depositors d on grantDeposits.sourceId = d.id ";
+            if (SeventhDepositor != null)
+            {
+                bool isCondition = false;
+                quarry += "WHERE d.title = '" + StaticDataTemp.DepositsVerbose["seventh"] + "' ";
+                if (SeventhDepositor.LeftDate != null)
+                {
+                    quarry += " AND receiptdate " + GetSignLiteral(SeventhDepositor.LeftDateSign) + "'" + SeventhDepositor.LeftDate?.ToString("yyyy-MM-dd") + "'";
+                }
+                if (SeventhDepositor.RightDate != null)
+                {
+                    quarry += " AND receiptdate " + GetSignLiteral(SeventhDepositor.RightDateSign) + "'" + SeventhDepositor.RightDate?.ToString("yyyy-MM-dd") + "'";
+                }
+                isCondition = false;
+                quarry += " GROUP BY grantId ";
+                if (SeventhDepositor.LeftValue != null)
+                {
+                    quarry += " HAVING sum(partsum) " + GetSignLiteral(SeventhDepositor.LeftSign) + SeventhDepositor.LeftValue.ToString();
+                    isCondition = true;
+                }
+                if (SeventhDepositor.RightValue != null)
+                {
+                    if (!isCondition)
+                    {
+                        quarry += " HAVING sum(partsum) " + GetSignLiteral(SeventhDepositor.RightSign) + SeventhDepositor.RightValue.ToString();
+                    }
+                    else
+                    {
+                        quarry += " AND sum(partsum) " + GetSignLiteral(SeventhDepositor.RightSign) + SeventhDepositor.RightValue.ToString();
+                    }
+                }
+            }
+            Console.WriteLine(quarry);
+            return quarry;
+        }
+
+
     }
 }

@@ -87,8 +87,287 @@ namespace ResearchProgram
             conn.Close();
         }
 
+        /// <summary>
+        /// Получение id грантов, которые необходимо отобразить в таблице(тут учитываются примененные фильтры)
+        /// </summary>
+        /// <returns></returns>
+        public static HashSet<int> GetGrantIds()
+        {
+            NpgsqlCommand cmd;
+            NpgsqlDataReader reader;
+            int grantId;
 
-        public static Grant[] GetAllGrants()
+            //Множество из id грантов, которые необходимо получить(например в запросе без фильтров тут будут храниться все id. Но если будет активен фильтр, то id отфильтруются)
+            HashSet<int> grantIds = new HashSet<int>();
+
+            //Фильтры не активны
+            cmd = new NpgsqlCommand("SELECT id FROM grants ORDER BY id;", conn);
+            reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    grantId = Convert.ToInt32(reader["id"]);
+                    grantIds.Add(grantId);
+                }
+            }
+            else
+            {
+                //Грантов нет, возвращаем пустой список
+                return grantIds;
+            }
+            reader.Close();
+
+
+            if (GrantsFilters.IsActive())
+            {
+                //Фильтры активны
+
+                HashSet<int> tempHash = new HashSet<int>();
+
+                //Типы исследований
+                if (GrantsFilters.ResearchType.Count > 0)
+                {
+                    cmd = new NpgsqlCommand(GrantsFilters.GetResearchTypesQuarry(), conn);
+                    reader = cmd.ExecuteReader();
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            grantId = Convert.ToInt32(reader["grantId"]);
+                            tempHash.Add(grantId);
+                        }
+                        grantIds.IntersectWith(tempHash);
+
+                    }
+                    reader.Close();
+                    if (grantIds.Count == 0)
+                    {
+                        return grantIds;
+                    }
+                }
+
+                //Приоритетные направления
+                if (GrantsFilters.PriorityTrend.Count > 0)
+                {
+                    cmd = new NpgsqlCommand(GrantsFilters.GetPriorityTrendsQuarry(), conn);
+                    reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            grantId = Convert.ToInt32(reader["grantId"]);
+                            tempHash.Add(grantId);
+                        }
+                        grantIds.IntersectWith(tempHash);
+                    }
+                    reader.Close();
+                    if (grantIds.Count == 0)
+                    {
+                        return grantIds;
+                    }
+
+                    tempHash = new HashSet<int>();
+                }
+
+                //Типы наук
+                if (GrantsFilters.ScienceType.Count > 0)
+                {
+                    cmd = new NpgsqlCommand(GrantsFilters.GetScienceTypesQuarry(), conn);
+                    reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            grantId = Convert.ToInt32(reader["grantId"]);
+                            tempHash.Add(grantId);
+                        }
+                        grantIds.IntersectWith(tempHash);
+                    }
+                    reader.Close();
+                    if (grantIds.Count == 0)
+                    {
+                        return grantIds;
+                    }
+                    tempHash = new HashSet<int>();
+                }
+                //Иностранные средства
+                if (GrantsFilters.FirstDepositor != null)
+                {
+                    cmd = new NpgsqlCommand(GrantsFilters.GetFirstDepositorsQuarry(), conn);
+                    reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            grantId = Convert.ToInt32(reader["grantId"]);
+                            tempHash.Add(grantId);
+                        }
+                        grantIds.IntersectWith(tempHash);
+                    }
+                    reader.Close();
+                    if (grantIds.Count == 0)
+                    {
+                        return grantIds;
+                    }
+                    reader.Close();
+                    tempHash = new HashSet<int>();
+                }
+
+                //Собственные средства
+                if (GrantsFilters.SecondDepositor != null)
+                {
+                    cmd = new NpgsqlCommand(GrantsFilters.GetSecondDepositorsQuarry(), conn);
+                    reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            grantId = Convert.ToInt32(reader["grantId"]);
+                            tempHash.Add(grantId);
+                        }
+                        grantIds.IntersectWith(tempHash);
+                    }
+                    reader.Close();
+                    if (grantIds.Count == 0)
+                    {
+                        return grantIds;
+                    }
+                    reader.Close();
+                    tempHash = new HashSet<int>();
+                }
+
+                //Средства бюджета субъекта Федерации
+                if (GrantsFilters.ThirdDepositor != null)
+                {
+                    cmd = new NpgsqlCommand(GrantsFilters.GetThirdDepositorsQuarry(), conn);
+                    reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            grantId = Convert.ToInt32(reader["grantId"]);
+                            tempHash.Add(grantId);
+                        }
+                        grantIds.IntersectWith(tempHash);
+                    }
+                    reader.Close();
+                    if (grantIds.Count == 0)
+                    {
+                        return grantIds;
+                    }
+                    reader.Close();
+                    tempHash = new HashSet<int>();
+                }
+
+                //Средства Российских фондов поддержки науки
+                if (GrantsFilters.FourthDepositor != null)
+                {
+                    cmd = new NpgsqlCommand(GrantsFilters.GetFourthDepositorsQuarry(), conn);
+                    reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            grantId = Convert.ToInt32(reader["grantId"]);
+                            tempHash.Add(grantId);
+                        }
+                        grantIds.IntersectWith(tempHash);
+                    }
+                    reader.Close();
+                    if (grantIds.Count == 0)
+                    {
+                        return grantIds;
+                    }
+                    reader.Close();
+                    tempHash = new HashSet<int>();
+                }
+
+                //Средства хозяйствующих субъектов
+                if (GrantsFilters.FifthDepositor != null)
+                {
+                    cmd = new NpgsqlCommand(GrantsFilters.GetFifthDepositorsQuarry(), conn);
+                    reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            grantId = Convert.ToInt32(reader["grantId"]);
+                            tempHash.Add(grantId);
+                        }
+                        grantIds.IntersectWith(tempHash);
+                    }
+                    reader.Close();
+                    if (grantIds.Count == 0)
+                    {
+                        return grantIds;
+                    }
+                    reader.Close();
+                    tempHash = new HashSet<int>();
+                }
+
+                //Физ. лица
+                if (GrantsFilters.SixthDepositor != null)
+                {
+                    cmd = new NpgsqlCommand(GrantsFilters.GetSixthDepositorsQuarry(), conn);
+                    reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            grantId = Convert.ToInt32(reader["grantId"]);
+                            tempHash.Add(grantId);
+                        }
+                        grantIds.IntersectWith(tempHash);
+                    }
+                    reader.Close();
+                    if (grantIds.Count == 0)
+                    {
+                        return grantIds;
+                    }
+                    reader.Close();
+                    tempHash = new HashSet<int>();
+                }
+
+                //ФЦП мин обра или иные источники госзаказа(бюджет)
+                if (GrantsFilters.SeventhDepositor != null)
+                {
+                    cmd = new NpgsqlCommand(GrantsFilters.GetSeventhDepositorsQuarry(), conn);
+                    reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            grantId = Convert.ToInt32(reader["grantId"]);
+                            tempHash.Add(grantId);
+                        }
+                        grantIds.IntersectWith(tempHash);
+                    }
+                    reader.Close();
+                    if (grantIds.Count == 0)
+                    {
+                        return grantIds;
+                    }
+                    reader.Close();
+                    tempHash = new HashSet<int>();
+                }
+
+            }
+
+            return grantIds;
+        }
+
+        public static Grant[] GetGrants()
         {
             int grant_index;
             int grant_id;
@@ -154,11 +433,7 @@ namespace ResearchProgram
             {
                 Debug.WriteLine("No rows found.");
             }
-
-
             reader.Close();
-
-
 
             // Получение приоритетных направлений
             cmd = new NpgsqlCommand("SELECT grantId, title FROM grantPriorityTrends " +
@@ -182,11 +457,6 @@ namespace ResearchProgram
                     });
                 }
             }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
-
             reader.Close();
 
             // Получение типов наук
@@ -360,7 +630,7 @@ namespace ResearchProgram
         {
             dataTable.Rows.Clear();
 
-            Grant[] grants = GetAllGrants();
+            Grant[] grants = GetGrants();
 
             for (int i = 0; i < grants.Length; i++)
             {
@@ -2051,7 +2321,7 @@ namespace ResearchProgram
         public static Grant GetGrantById(string grantId)
         {
             ConnectToDataBase();
-            Grant[] grants = GetAllGrants();
+            Grant[] grants = GetGrants();
             CloseConnection();
             Grant grant = new Grant();
             for (int i = 0; i < grants.Length; i++)
@@ -2504,7 +2774,7 @@ namespace ResearchProgram
             {
                 while (reader.Read() && !isPersonExists)
                 {
-                    if(reader["FIO"].ToString().Trim(' ') == person.FIO.Trim(' ') && Convert.ToDateTime(reader["birthdate"].ToString()) == person.BitrhDate)
+                    if (reader["FIO"].ToString().Trim(' ') == person.FIO.Trim(' ') && Convert.ToDateTime(reader["birthdate"].ToString()) == person.BitrhDate)
                     {
                         isPersonExists = true;
                     }
@@ -2618,6 +2888,23 @@ namespace ResearchProgram
             reader.Close();
 
             return isCategoryExists;
+        }
+
+        public static void GetDepositsVerbose()
+        {
+            NpgsqlConnection connection = GetNewConnection();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT title, verbose_name FROM depositors;", connection);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    StaticDataTemp.DepositsVerbose.Add(reader["verbose_name"].ToString(), reader["title"].ToString());
+                }
+            }
+            reader.Close();
+            connection.Close();
         }
     }
 }
