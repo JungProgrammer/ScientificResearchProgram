@@ -23,7 +23,6 @@ namespace ResearchProgram
 
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        private DataTable _grantsDataTable;
         // Выбранная начальная дата оплат
         private DateTime _selectedStartDate;
         public DateTime SelectedStartDate
@@ -48,7 +47,9 @@ namespace ResearchProgram
             }
         }
 
+
         // Таблица договоров
+        private DataTable _grantsDataTable;
         public DataTable GrantsDataTable
         {
             get => _grantsDataTable;

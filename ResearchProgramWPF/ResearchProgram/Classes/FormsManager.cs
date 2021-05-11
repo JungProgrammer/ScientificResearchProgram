@@ -9,6 +9,7 @@ namespace ResearchProgram
     static class FormsManager
     {
         public static createPersonWindow CreatePersonWindow;
+
         public static CreateGrantWindow CreateGrantWindow;
 
 
@@ -23,7 +24,7 @@ namespace ResearchProgram
             // Обновление окна создания/редактирования договора
             if(CreateGrantWindow != null)
             {
-
+                CreateGrantWindow.UpdateDataAsync();
             } 
         }
     }

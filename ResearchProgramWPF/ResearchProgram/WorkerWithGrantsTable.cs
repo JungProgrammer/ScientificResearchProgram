@@ -29,6 +29,8 @@ namespace ResearchProgram
                 Caption = header,
             };
 
+            
+
             //DataGridTemplateColumn a = new DataGridTemplateColumn();
 
 
@@ -36,9 +38,6 @@ namespace ResearchProgram
             {
                 case "№":
                     column.DataType = Type.GetType("System.Int32");
-                    break;
-                case "Стоимость договора":
-                    //column.DataType = Type.GetType("System.Double");
                     break;
             }
 
@@ -138,7 +137,7 @@ namespace ResearchProgram
             }
             foreach (double depositorSum in depositDict.Values)
             {
-                depositsSum += String.Format("{0:0.##}", depositorSum) + '\n';
+                depositsSum += String.Format("{0:#,0.##}", depositorSum) + '\n';
             }
 
 
@@ -160,7 +159,7 @@ namespace ResearchProgram
                 row["Заказчик"] = string.Join("\n", grant.Customer);
                 row["Дата начала"] = grant.StartDate == new DateTime(1, 1, 1) ? "" : grant.StartDate.ToString("dd.MM.yyyy");
                 row["Дата завершения"] = grant.EndDate == new DateTime(1, 1, 1) ? "" : grant.EndDate.ToString("dd.MM.yyyy");
-                row["Стоимость договора"] = (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey) ? String.Format("{0:0.##}", grant.PriceNoNDS) : String.Format("{0:0.##}", grant.Price);
+                row["Стоимость договора"] = (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey) ? String.Format("{0:#,0.##}", grant.PriceNoNDS) : String.Format("{0:#,0.##}", grant.Price);
                 row["Источник финансирования"] = depositors;
                 row["Поступления"] = depositsSum;
                 row["Руководитель НИОКР"] = grant.LeadNIOKR.shortName();

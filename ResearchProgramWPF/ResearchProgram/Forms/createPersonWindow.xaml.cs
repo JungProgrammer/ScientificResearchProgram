@@ -128,10 +128,8 @@ namespace ResearchProgram
 
         private void UpdateData()
         {
-            CRUDDataBase.ConnectToDataBase();
-            Dispatcher.Invoke(() => WorkDegreesList = CRUDDataBase.GetWorkDegrees());
-            Dispatcher.Invoke(() => WorkRanksList = CRUDDataBase.GetWorkRanks());
-            CRUDDataBase.CloseConnection();
+            Dispatcher.Invoke(() => WorkDegreesList = CRUDDataBase.GetWorkDegreesInNewThread());
+            Dispatcher.Invoke(() => WorkRanksList = CRUDDataBase.GetWorkRanksInNewThreads());
 
             List<PersonWorkPlace> copiedPersonWorkPlaces = null;
             Dispatcher.Invoke(() => copiedPersonWorkPlaces = PersonWorkPlace.ConvertListViewToWorkPlaceList(workPlaceListView));
@@ -307,6 +305,8 @@ namespace ResearchProgram
                     CRUDDataBase.UpdateDegree(newPerson);
                     CRUDDataBase.UpdateRank(newPerson);
                     MessageBox.Show("Информация о человеке успешно изменена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                    FormsManager.UpdateOpenedWindows();
                 }
                 else
                 {
@@ -321,6 +321,8 @@ namespace ResearchProgram
                                 MessageBox.Show("Информация о человеке успешно внесена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
                                 ((MainWindow)Owner).PersonsUpdateButton_Click(sender, e);
                                 Close();
+
+                                FormsManager.UpdateOpenedWindows();
                                 break;
                             case MessageBoxResult.No:
                                 break;
@@ -331,6 +333,8 @@ namespace ResearchProgram
                         newPerson = CRUDDataBase.InsertNewPersonToDB(newPerson);
                         MessageBox.Show("Информация о человеке успешно внесена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
                         ((MainWindow)Owner).PersonsUpdateButton_Click(sender, e);
+                        FormsManager.UpdateOpenedWindows();
+
                         Close();
                     }
                 }
