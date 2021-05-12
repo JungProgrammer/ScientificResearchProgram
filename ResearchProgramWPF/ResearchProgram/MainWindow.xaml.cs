@@ -289,13 +289,13 @@ namespace ResearchProgram
             string grantId = "";
             try
             {
-                grantId = SelectedGrantRow.Row.Field<String>("id");
+                grantId = SelectedGrantRow.Row.Field<string>("id");
             }
             catch
             { return; }
             Console.WriteLine(grantId);
 
-            Grant grant = CRUDDataBase.GetGrantById(grantId);
+            Grant grant = CRUDDataBase.GetGrantById(Convert.ToInt32(grantId));
 
             CreateGrantWindow newGrantWindow = new CreateGrantWindow(GrantsDataTable, grant)
             {
@@ -485,8 +485,8 @@ namespace ResearchProgram
 
         private void ShowFullInformation(object sender, RoutedEventArgs e)
         {
-            string grantId = SelectedGrantRow.Row.Field<String>("id");
-            Grant grant = CRUDDataBase.GetGrantById(grantId);
+            string grantId = SelectedGrantRow.Row.Field<string>("id");
+            Grant grant = CRUDDataBase.GetGrantById(Convert.ToInt32(grantId));
 
             FullGrantInfo fullGrantInfonewGrantWindow = new FullGrantInfo(grant)
             {

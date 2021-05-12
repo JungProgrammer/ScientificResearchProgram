@@ -124,7 +124,6 @@ namespace ResearchProgram
             if (GrantsFilters.IsActive())
             {
                 //Фильтры активны
-
                 HashSet<int> tempHash = new HashSet<int>();
 
                 // Основные поля гранта
@@ -266,8 +265,6 @@ namespace ResearchProgram
                     }
                     reader.Close();
                     tempHash = new HashSet<int>();
-
-                    reader.Close();
                 }
 
                 // Исполнители
@@ -292,270 +289,192 @@ namespace ResearchProgram
                     }
                     reader.Close();
                     tempHash = new HashSet<int>();
-
-                    reader.Close();
                 }
-
             }
-
-
             return grantIds;
         }
 
-        public static Grant[] GetGrants()
+        public static Grant GetGrantById(int grantId)
         {
-            int grant_index;
-            int grant_id;
-            int countOfGrants;
-            // массив договоров
-            Grant[] grants = null;
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, (SELECT COUNT(*) FROM grants) FROM grants ORDER BY id;", conn);
+            Grant grant = new Grant();
+            Console.WriteLine(grantId);
+
+            // Получение типов исследования
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT title FROM grantResearchType " +
+                                    "JOIN researchTypes rT on grantResearchType.researchTypeId = rT.id " +
+                                    "WHERE grantId = :grantId; ", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
-                int i;
-                reader.Read();
-                countOfGrants = Convert.ToInt32(reader[1]);
-                // Инициализация договоров
-                grants = new Grant[countOfGrants];
-                for (i = 0; i < countOfGrants; i++) grants[i] = new Grant();
-
-                grant_id = Convert.ToInt32(reader[0]);
-                grants[0].Id = grant_id;
-
-                i = 1;
                 while (reader.Read())
                 {
-                    grant_id = Convert.ToInt32(reader[0]);
-                    grants[i].Id = grant_id;
-                    i++;
-                }
-            }
-            else
-            {
-                //Грантов нет, возвращаем пустой массив
-                return new Grant[0];
-            }
-
-            reader.Close();
-
-
-            // Получение типов исследования
-            cmd = new NpgsqlCommand("SELECT grantId, rT.title FROM grantResearchType " +
-                                    "JOIN researchTypes rT on grantResearchType.researchTypeId = rT.id " +
-                                    "JOIN grants g on grantResearchType.grantId = g.id " +
-                                    "ORDER BY grantId; ", conn);
-            reader = cmd.ExecuteReader();
-
-
-            if (reader.HasRows)
-            {
-                string researchType;
-                while (reader.Read())
-                {
-                    grant_id = Convert.ToInt32(reader[0]);
-                    grant_index = ShowGrantIndex(grants, grant_id);
-
-                    researchType = reader[1].ToString();
-                    grants[grant_index].ResearchType.Add(new ResearchType()
+                    grant.ResearchType.Add(new ResearchType()
                     {
-                        Title = researchType
+                        Title = reader["title"].ToString()
                     });
                 }
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
             }
             reader.Close();
 
             // Получение приоритетных направлений
-            cmd = new NpgsqlCommand("SELECT grantId, title FROM grantPriorityTrends " +
+            cmd = new NpgsqlCommand("SELECT title FROM grantPriorityTrends " +
                                         "JOIN priorityTrends on grantPriorityTrends.priorityTrendsId = priorityTrends.id " +
-                                        "JOIN grants on grantPriorityTrends.grantId = grants.id " +
-                                        "ORDER BY grantId;", conn);
+                                    "WHERE grantId = :grantId; ", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
             reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
-                string priorityTrend;
                 while (reader.Read())
                 {
-                    grant_id = Convert.ToInt32(reader[0]);
-                    grant_index = ShowGrantIndex(grants, grant_id);
-
-                    priorityTrend = reader[1].ToString();
-                    grants[grant_index].PriorityTrands.Add(new PriorityTrend()
+                    grant.PriorityTrands.Add(new PriorityTrend()
                     {
-                        Title = priorityTrend
+                        Title = reader["title"].ToString()
                     });
                 }
             }
             reader.Close();
 
             // Получение типов наук
-            cmd = new NpgsqlCommand("SELECT grantId, title FROM grantScienceTypes " +
+            cmd = new NpgsqlCommand("SELECT  title FROM grantScienceTypes " +
                                         "JOIN scienceTypes sT on grantScienceTypes.scienceTypesId = sT.id " +
-                                        "JOIN grants g on grantScienceTypes.grantId = g.id " +
-                                        "ORDER BY grantId; ", conn);
+                                    "WHERE grantId = :grantId; ", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
             reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
-                string scienceType;
                 while (reader.Read())
                 {
-                    grant_id = Convert.ToInt32(reader[0]);
-                    grant_index = ShowGrantIndex(grants, grant_id);
-
-                    scienceType = reader[1].ToString();
-                    grants[grant_index].ScienceType.Add(new ScienceType()
+                    grant.ScienceType.Add(new ScienceType()
                     {
-                        Title = scienceType
+                        Title = reader["title"].ToString()
                     });
                 }
             }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
-
             reader.Close();
 
             // Получение спонсоров
-            cmd = new NpgsqlCommand("SELECT grantId, title, PartSum, receiptDate, PartSumNoNDS FROM grantDeposits " +
+            cmd = new NpgsqlCommand("SELECT title, PartSum, receiptDate, PartSumNoNDS FROM grantDeposits " +
                                         "JOIN depositors d on grantDeposits.sourceId = d.id " +
-                                        "JOIN grants g on grantDeposits.grantId = g.id " +
-                                        "ORDER BY grantId, sourceid; ", conn);
+                                    "WHERE grantId = :grantId; ", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
             reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
-                string grantDeposit;
                 double grantDepositSum;
                 double grantDepositSumNoNDS;
                 string receiptDate;
                 while (reader.Read())
                 {
-                    grant_id = Convert.ToInt32(reader[0]);
-                    grant_index = ShowGrantIndex(grants, grant_id);
-
-                    grantDeposit = reader[1].ToString();
-                    grantDepositSum = reader.GetDouble(2);
-                    grantDepositSumNoNDS = reader.GetDouble(4);
-                    receiptDate = reader[3] != DBNull.Value ? DateTime.Parse(reader[3].ToString()).ToShortDateString() : string.Empty;
-                    grants[grant_index].Depositor.Add(new Depositor()
+                    grantDepositSum = reader.GetDouble(1);
+                    grantDepositSumNoNDS = reader.GetDouble(3);
+                    receiptDate = reader["receiptDate"] != DBNull.Value ? DateTime.Parse(reader["receiptDate"].ToString()).ToShortDateString() : string.Empty;
+                    grant.Depositor.Add(new Depositor()
                     {
-                        Title = grantDeposit,
+                        Title = reader["title"].ToString(),
                     });
-                    grants[grant_index].DepositorSum.Add(grantDepositSum);
-                    grants[grant_index].DepositorSumNoNDS.Add(grantDepositSumNoNDS);
-                    grants[grant_index].ReceiptDate.Add(receiptDate);
+                    grant.DepositorSum.Add(grantDepositSum);
+                    grant.DepositorSumNoNDS.Add(grantDepositSumNoNDS);
+                    grant.ReceiptDate.Add(receiptDate);
                 }
             }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
-
             reader.Close();
-
 
             // Получение заказчиков
-            cmd = new NpgsqlCommand("SELECT grant_id, customer_id, customers.title, customers.short_title FROM grants " +
-                                        "JOIN grants_customers ON grants.id = grants_customers.grant_id " +
-                                        "JOIN customers ON customers.customerid = grants_customers.customer_id; ", conn);
+            cmd = new NpgsqlCommand("SELECT customer_id, title, short_title FROM grants_customers " +
+                                        "JOIN customers ON customers.customerid = grants_customers.customer_id " +
+                                                                            "WHERE grant_id = :grantId; ", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
             reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    grant_id = Convert.ToInt32(reader[0]);
-                    grant_index = ShowGrantIndex(grants, grant_id);
-
-                    grants[grant_index].Customer.Add(new Customer()
+                    grant.Customer.Add(new Customer()
                     {
-                        Id = Convert.ToInt32(reader[1]),
-                        Title = reader[2].ToString(),
-                        ShortTitle = reader[3].ToString()
+                        Id = Convert.ToInt32(reader["customer_id"]),
+                        Title = reader["title"].ToString(),
+                        ShortTitle = reader["short_title"].ToString()
                     });
                 }
             }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
-
             reader.Close();
 
-
-
             // Получение исполнителей
-            cmd = new NpgsqlCommand("SELECT grantId, FIO, executorId FROM executors " +
-                                        "JOIN persons p on executors.executorId = p.id " +
-                                        "JOIN grants g on executors.grantId = g.id " +
-                                        "ORDER BY grantId; ", conn);
+            cmd = new NpgsqlCommand("SELECT  FIO, executorId FROM executors " +
+                                    "JOIN persons p on executors.executorId = p.id " +
+                                    "WHERE grantId = :grantId; ", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
+
             reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
             {
                 while (reader.Read())
                 {
-                    grant_id = Convert.ToInt32(reader[0]);
-                    grant_index = ShowGrantIndex(grants, grant_id);
-
-                    grants[grant_index].Executor.Add(new Person()
+                    grant.Executor.Add(new Person()
                     {
-                        Id = Convert.ToInt32(reader[2]),
-                        FIO = reader[1].ToString()
+                        Id = Convert.ToInt32(reader["executorId"]),
+                        FIO = reader["FIO"].ToString()
                     });
                 }
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
             }
 
             reader.Close();
 
             // Получение остальных столбцов
-            cmd = new NpgsqlCommand("SELECT grants.id as gid, grants.grantnumber as ggn, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO as lead_niokr, " +
-                " GRNTI, NIR, NOC, pricenonds, is_with_nds, " +
-                "first_node_id, second_node_id, third_node_id, fourth_node_id FROM grants " +
-                                                        "LEFT JOIN persons p2 on grants.leadNIOKRId = p2.id ORDER BY grants.id;", conn);
+            cmd = new NpgsqlCommand("SELECT grants.grantnumber as ggn, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO as lead_niokr, " +
+                                    " GRNTI, NIR, NOC, pricenonds, is_with_nds, " +
+                                    "first_node_id, second_node_id, third_node_id, fourth_node_id FROM grants " +
+                                    "LEFT JOIN persons p2 on grants.leadNIOKRId = p2.id " +
+                                    "WHERE grants.id = :grantId " +
+                                    "ORDER BY grants.id; ", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
             reader = cmd.ExecuteReader();
-
 
             if (reader.HasRows)
             {
-                while (reader.Read())
-                {
-                    grant_id = Convert.ToInt32(reader["gid"]);
-                    grant_index = ShowGrantIndex(grants, grant_id);
+                reader.Read();
 
-                    grants[grant_index].grantNumber = reader["ggn"].ToString();
-                    grants[grant_index].OKVED = reader["OKVED"].ToString();
-                    grants[grant_index].NameNIOKR = reader["nameNIOKR"].ToString();
-                    grants[grant_index].StartDate = Convert.ToDateTime(reader["startDate"]);
-                    grants[grant_index].EndDate = Convert.ToDateTime(reader["endDate"]);
-                    grants[grant_index].Price = reader.GetDouble(6);
-                    grants[grant_index].PriceNoNDS = reader.GetDouble(11);
-                    grants[grant_index].LeadNIOKR = new Person() { FIO = reader["lead_niokr"].ToString() };
-                    grants[grant_index].GRNTI = reader["GRNTI"].ToString();
-                    grants[grant_index].NIR = reader["NIR"].ToString();
-                    grants[grant_index].NOC = reader["NOC"].ToString();
-                    grants[grant_index].isWIthNDS = Convert.ToBoolean(reader["is_with_nds"]);
-                    grants[grant_index].FirstNode = reader["first_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["first_node_id"])) : new UniversityStructureNode();
-                    grants[grant_index].SecondNode = reader["second_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["second_node_id"])) : new UniversityStructureNode();
-                    grants[grant_index].ThirdNode = reader["third_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["third_node_id"])) : new UniversityStructureNode();
-                    grants[grant_index].FourthNode = reader["fourth_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["fourth_node_id"])) : new UniversityStructureNode();
-                }
+                grant.grantNumber = reader["ggn"].ToString();
+                grant.OKVED = reader["OKVED"].ToString();
+                grant.NameNIOKR = reader["nameNIOKR"].ToString();
+                grant.StartDate = Convert.ToDateTime(reader["startDate"]);
+                grant.EndDate = Convert.ToDateTime(reader["endDate"]);
+                grant.Price = reader.GetDouble(5);
+                grant.PriceNoNDS = reader.GetDouble(10);
+                grant.LeadNIOKR = new Person() { FIO = reader["lead_niokr"].ToString() };
+                grant.GRNTI = reader["GRNTI"].ToString();
+                grant.NIR = reader["NIR"].ToString();
+                grant.NOC = reader["NOC"].ToString();
+                grant.isWIthNDS = Convert.ToBoolean(reader["is_with_nds"]);
+                grant.FirstNode = reader["first_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["first_node_id"])) : new UniversityStructureNode();
+                grant.SecondNode = reader["second_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["second_node_id"])) : new UniversityStructureNode();
+                grant.ThirdNode = reader["third_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["third_node_id"])) : new UniversityStructureNode();
+                grant.FourthNode = reader["fourth_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["fourth_node_id"])) : new UniversityStructureNode();
             }
             reader.Close();
+            return grant;
+
+        }
+        public static List<Grant> GetGrants()
+        {
+            List<Grant> grants = new List<Grant>();
+
+            List<int> grantIds = GetGrantIds().ToList();
+
+            for (int i = 0; i < grantIds.Count; i++)
+            {
+                grants.Add(GetGrantById(grantIds[i]));
+            }
             return grants;
         }
+
 
         /// <summary>
         /// Выгружает таблицу договоров на гланый экран
@@ -565,9 +484,9 @@ namespace ResearchProgram
         {
             dataTable.Rows.Clear();
 
-            Grant[] grants = GetGrants();
+            List<Grant> grants = GetGrants();
 
-            for (int i = 0; i < grants.Length; i++)
+            for (int i = 0; i < grants.Count; i++)
             {
                 WorkerWithTablesOnMainForm.AddRowToGrantTable(dataTable, grants[i]);
             }
@@ -949,16 +868,16 @@ namespace ResearchProgram
         /// <param name="grants"></param>
         /// <param name="id"></param>
         /// <returns></returns>
-        static int ShowGrantIndex(Grant[] grants, int id)
-        {
-            int index = 0;
-            for (int i = 0; i < grants.Length; i++)
-            {
-                if (grants[i].Id == id) index = i;
-            }
+        //static int ShowGrantIndex(Grant[] grants, int id)
+        //{
+        //    int index = 0;
+        //    for (int i = 0; i < grants.Length; i++)
+        //    {
+        //        if (grants[i].Id == id) index = i;
+        //    }
 
-            return index;
-        }
+        //    return index;
+        //}
 
         // Для метода GetGrantsHeadersForFilters
         enum DataToComboBox
@@ -2251,23 +2170,6 @@ namespace ResearchProgram
             }
             reader.Close();
             return jobsList;
-        }
-
-        public static Grant GetGrantById(string grantId)
-        {
-            ConnectToDataBase();
-            Grant[] grants = GetGrants();
-            CloseConnection();
-            Grant grant = new Grant();
-            for (int i = 0; i < grants.Length; i++)
-            {
-                if (grants[i].Id == Convert.ToInt32(grantId))
-                {
-                    grant = grants[i];
-                    break;
-                }
-            }
-            return grant;
         }
 
         public static Person GetPersonByPersonId(string personId)
