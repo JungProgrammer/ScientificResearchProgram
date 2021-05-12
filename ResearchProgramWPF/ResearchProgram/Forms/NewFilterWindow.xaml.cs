@@ -18,6 +18,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Xceed.Wpf.AvalonDock.Layout;
 
 namespace ResearchProgram.Forms
 {
@@ -236,6 +237,13 @@ namespace ResearchProgram.Forms
             {
                 datePicker.SelectedDate = null;
             }
+
+            IEnumerable<CheckBox> checkBoxes = Utilities.FindVisualChildren<CheckBox>(this);
+            foreach (CheckBox checkBox in checkBoxes)
+            {
+                checkBox.IsChecked = false;
+            }
+
             SelectedOkved = new ObservableCollection<OKVED>();
             SelectedLeadNIOKR = new ObservableCollection<Person>();
             SelectedCustomer = new ObservableCollection<Customer>();
@@ -399,15 +407,31 @@ namespace ResearchProgram.Forms
                 GrantsFilters.Price = filterRange;
             }
 
-            //Иностранные средства
+            //Средства
+            List<FrameworkElement> logicalElements = new List<FrameworkElement>();
+            Utilities.GetLogicalElements(this, logicalElements, "DepositorDockPanel");
+
+            int dockPanelCount = 0;
+            foreach (FrameworkElement element in logicalElements)
             {
+                ComboBox comboBox;
+                TextBox textBox;
+                DatePicker datePicker;
                 filterRange = new FilterRange();
-                if (FirstDepositLeftComboBox.SelectedIndex != -1 && FirstDepositLeftComboBox.SelectedIndex != 0)
+
+                List<FrameworkElement> tempLogicalElemenets = new List<FrameworkElement>();
+                Utilities.GetLogicalElements(element, tempLogicalElemenets, "LeftTextBox");
+                textBox = (TextBox)tempLogicalElemenets[0];
+
+                tempLogicalElemenets = new List<FrameworkElement>();
+                Utilities.GetLogicalElements(element, tempLogicalElemenets, "LeftComboBox");
+                comboBox = (ComboBox)tempLogicalElemenets[0];
+                if (comboBox.SelectedIndex != -1 && comboBox.SelectedIndex != 0)
                 {
-                    if (FirstDepositLeftTextBox.Text != "")
+                    if (textBox.Text != "")
                     {
-                        filterRange.LeftValue = FirstDepositLeftTextBox.Text;
-                        switch (FirstDepositLeftComboBox.SelectedIndex)
+                        filterRange.LeftValue = textBox.Text;
+                        switch (comboBox.SelectedIndex)
                         {
                             case 1:
                                 filterRange.LeftSign = FilterRange.Signs.More;
@@ -418,12 +442,20 @@ namespace ResearchProgram.Forms
                         }
                     }
                 }
-                if (FirstDepositRightComboBox.SelectedIndex != -1 && FirstDepositRightComboBox.SelectedIndex != 0)
+
+                tempLogicalElemenets = new List<FrameworkElement>();
+                Utilities.GetLogicalElements(element, tempLogicalElemenets, "RightTextBox");
+                textBox = (TextBox)tempLogicalElemenets[0];
+
+                tempLogicalElemenets = new List<FrameworkElement>();
+                Utilities.GetLogicalElements(element, tempLogicalElemenets, "RightComboBox");
+                comboBox = (ComboBox)tempLogicalElemenets[0];
+                if (comboBox.SelectedIndex != -1 && comboBox.SelectedIndex != 0)
                 {
-                    if (FirstDepositRightTextBox.Text != "")
+                    if (textBox.Text != "")
                     {
-                        filterRange.RightValue = FirstDepositRightTextBox.Text;
-                        switch (FirstDepositRightComboBox.SelectedIndex)
+                        filterRange.RightValue = textBox.Text;
+                        switch (comboBox.SelectedIndex)
                         {
                             case 1:
                                 filterRange.RightSign = FilterRange.Signs.Less;
@@ -434,12 +466,20 @@ namespace ResearchProgram.Forms
                         }
                     }
                 }
-                if (FirstDepositLeftDateComboBox.SelectedIndex != -1 && FirstDepositLeftDateComboBox.SelectedIndex != 0)
+
+                tempLogicalElemenets = new List<FrameworkElement>();
+                Utilities.GetLogicalElements(element, tempLogicalElemenets, "LeftDatePicker");
+                datePicker = (DatePicker)tempLogicalElemenets[0];
+
+                tempLogicalElemenets = new List<FrameworkElement>();
+                Utilities.GetLogicalElements(element, tempLogicalElemenets, "LeftDateComboBox");
+                comboBox = (ComboBox)tempLogicalElemenets[0];
+                if (comboBox.SelectedIndex != -1 && comboBox.SelectedIndex != 0)
                 {
-                    if (FirstDepositLeftDatePicker.SelectedDate != null)
+                    if (datePicker.SelectedDate != null)
                     {
-                        filterRange.LeftDate = FirstDepositLeftDatePicker.SelectedDate;
-                        switch (FirstDepositLeftDateComboBox.SelectedIndex)
+                        filterRange.LeftDate = datePicker.SelectedDate;
+                        switch (comboBox.SelectedIndex)
                         {
                             case 1:
                                 filterRange.LeftDateSign = FilterRange.Signs.More;
@@ -450,12 +490,21 @@ namespace ResearchProgram.Forms
                         }
                     }
                 }
-                if (FirstDepositRightDateComboBox.SelectedIndex != -1 && FirstDepositRightDateComboBox.SelectedIndex != 0)
+
+                tempLogicalElemenets = new List<FrameworkElement>();
+                Utilities.GetLogicalElements(element, tempLogicalElemenets, "RightDatePicker");
+                datePicker = (DatePicker)tempLogicalElemenets[0];
+
+                tempLogicalElemenets = new List<FrameworkElement>();
+                Utilities.GetLogicalElements(element, tempLogicalElemenets, "RightDateComboBox");
+                comboBox = (ComboBox)tempLogicalElemenets[0];
+
+                if (comboBox.SelectedIndex != -1 && comboBox.SelectedIndex != 0)
                 {
-                    if (FirstDepositRightDatePicker.SelectedDate != null)
+                    if (datePicker.SelectedDate != null)
                     {
-                        filterRange.RightDate = FirstDepositRightDatePicker.SelectedDate;
-                        switch (FirstDepositRightDateComboBox.SelectedIndex)
+                        filterRange.RightDate = datePicker.SelectedDate;
+                        switch (comboBox.SelectedIndex)
                         {
                             case 1:
                                 filterRange.RightDateSign = FilterRange.Signs.Less;
@@ -466,446 +515,23 @@ namespace ResearchProgram.Forms
                         }
                     }
                 }
+
                 if (filterRange.isActive())
                 {
-                    GrantsFilters.FirstDepositor = filterRange;
-                }
-            }
-            //Собственные средства
-            {
-                filterRange = new FilterRange();
-                if (SecondDepositLeftComboBox.SelectedIndex != -1 && SecondDepositLeftComboBox.SelectedIndex != 0)
-                {
-                    if (SecondDepositLeftTextBox.Text != "")
+                    if (GrantsFilters.Depositors == null)
                     {
-                        filterRange.LeftValue = SecondDepositLeftTextBox.Text;
-                        switch (SecondDepositLeftComboBox.SelectedIndex)
+                        GrantsFilters.Depositors = new ObservableCollection<FilterRange>();
+                        for (int i = 0; i < StaticDataTemp.DepositsVerbose.Count; i++)
                         {
-                            case 1:
-                                filterRange.LeftSign = FilterRange.Signs.More;
-                                break;
-                            case 2:
-                                filterRange.LeftSign = FilterRange.Signs.MoreEqual;
-                                break;
+                            GrantsFilters.Depositors.Add(new FilterRange());
                         }
                     }
+                    GrantsFilters.Depositors[dockPanelCount] = filterRange;
                 }
-                if (SecondDepositRightComboBox.SelectedIndex != -1 && SecondDepositRightComboBox.SelectedIndex != 0)
-                {
-                    if (SecondDepositRightTextBox.Text != "")
-                    {
-                        filterRange.RightValue = SecondDepositRightTextBox.Text;
-                        switch (SecondDepositRightComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.RightSign = FilterRange.Signs.Less;
-                                break;
-                            case 2:
-                                filterRange.RightSign = FilterRange.Signs.LessEqual;
-                                break;
-                        }
-                    }
-                }
-                if (SecondDepositLeftDateComboBox.SelectedIndex != -1 && SecondDepositLeftDateComboBox.SelectedIndex != 0)
-                {
-                    if (SecondDepositLeftDatePicker.SelectedDate != null)
-                    {
-                        filterRange.LeftDate = SecondDepositLeftDatePicker.SelectedDate;
-                        switch (SecondDepositLeftDateComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.LeftDateSign = FilterRange.Signs.More;
-                                break;
-                            case 2:
-                                filterRange.LeftDateSign = FilterRange.Signs.MoreEqual;
-                                break;
-                        }
-                    }
-                }
-                if (SecondDepositRightDateComboBox.SelectedIndex != -1 && SecondDepositRightDateComboBox.SelectedIndex != 0)
-                {
-                    if (SecondDepositRightDatePicker.SelectedDate != null)
-                    {
-                        filterRange.RightDate = SecondDepositRightDatePicker.SelectedDate;
-                        switch (SecondDepositRightDateComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.RightDateSign = FilterRange.Signs.Less;
-                                break;
-                            case 2:
-                                filterRange.RightDateSign = FilterRange.Signs.LessEqual;
-                                break;
-                        }
-                    }
-                }
-                if (filterRange.isActive())
-                {
-                    GrantsFilters.SecondDepositor = filterRange;
-                }
-            }
-            //Средства бюджета субъекта Федерации
-            {
-                filterRange = new FilterRange();
-                if (ThirdDepositLeftComboBox.SelectedIndex != -1 && ThirdDepositLeftComboBox.SelectedIndex != 0)
-                {
-                    if (ThirdDepositLeftTextBox.Text != "")
-                    {
-                        filterRange.LeftValue = ThirdDepositLeftTextBox.Text;
-                        switch (ThirdDepositLeftComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.LeftSign = FilterRange.Signs.More;
-                                break;
-                            case 2:
-                                filterRange.LeftSign = FilterRange.Signs.MoreEqual;
-                                break;
-                        }
-                    }
-                }
-                if (ThirdDepositRightComboBox.SelectedIndex != -1 && ThirdDepositRightComboBox.SelectedIndex != 0)
-                {
-                    if (ThirdDepositRightTextBox.Text != "")
-                    {
-                        filterRange.RightValue = ThirdDepositRightTextBox.Text;
-                        switch (ThirdDepositRightComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.RightSign = FilterRange.Signs.Less;
-                                break;
-                            case 2:
-                                filterRange.RightSign = FilterRange.Signs.LessEqual;
-                                break;
-                        }
-                    }
-                }
-                if (ThirdDepositLeftDateComboBox.SelectedIndex != -1 && ThirdDepositLeftDateComboBox.SelectedIndex != 0)
-                {
-                    if (ThirdDepositLeftDatePicker.SelectedDate != null)
-                    {
-                        filterRange.LeftDate = ThirdDepositLeftDatePicker.SelectedDate;
-                        switch (ThirdDepositLeftDateComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.LeftDateSign = FilterRange.Signs.More;
-                                break;
-                            case 2:
-                                filterRange.LeftDateSign = FilterRange.Signs.MoreEqual;
-                                break;
-                        }
-                    }
-                }
-                if (ThirdDepositRightDateComboBox.SelectedIndex != -1 && ThirdDepositRightDateComboBox.SelectedIndex != 0)
-                {
-                    if (ThirdDepositRightDatePicker.SelectedDate != null)
-                    {
-                        filterRange.RightDate = ThirdDepositRightDatePicker.SelectedDate;
-                        switch (ThirdDepositRightDateComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.RightDateSign = FilterRange.Signs.Less;
-                                break;
-                            case 2:
-                                filterRange.RightDateSign = FilterRange.Signs.LessEqual;
-                                break;
-                        }
-                    }
-                }
-                if (filterRange.isActive())
-                {
-                    GrantsFilters.ThirdDepositor = filterRange;
-                }
-            }
-            //Средства Российских фондов поддержки науки
-            {
-                filterRange = new FilterRange();
-                if (FourthDepositLeftComboBox.SelectedIndex != -1 && FourthDepositLeftComboBox.SelectedIndex != 0)
-                {
-                    if (FourthDepositLeftTextBox.Text != "")
-                    {
-                        filterRange.LeftValue = FourthDepositLeftTextBox.Text;
-                        switch (FourthDepositLeftComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.LeftSign = FilterRange.Signs.More;
-                                break;
-                            case 2:
-                                filterRange.LeftSign = FilterRange.Signs.MoreEqual;
-                                break;
-                        }
-                    }
-                }
-                if (FourthDepositRightComboBox.SelectedIndex != -1 && FourthDepositRightComboBox.SelectedIndex != 0)
-                {
-                    if (FourthDepositRightTextBox.Text != "")
-                    {
-                        filterRange.RightValue = FourthDepositRightTextBox.Text;
-                        switch (FourthDepositRightComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.RightSign = FilterRange.Signs.Less;
-                                break;
-                            case 2:
-                                filterRange.RightSign = FilterRange.Signs.LessEqual;
-                                break;
-                        }
-                    }
-                }
-                if (FourthDepositLeftDateComboBox.SelectedIndex != -1 && FourthDepositLeftDateComboBox.SelectedIndex != 0)
-                {
-                    if (FourthDepositLeftDatePicker.SelectedDate != null)
-                    {
-                        filterRange.LeftDate = FourthDepositLeftDatePicker.SelectedDate;
-                        switch (FourthDepositLeftDateComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.LeftDateSign = FilterRange.Signs.More;
-                                break;
-                            case 2:
-                                filterRange.LeftDateSign = FilterRange.Signs.MoreEqual;
-                                break;
-                        }
-                    }
-                }
-                if (FourthDepositRightDateComboBox.SelectedIndex != -1 && FourthDepositRightDateComboBox.SelectedIndex != 0)
-                {
-                    if (FourthDepositRightDatePicker.SelectedDate != null)
-                    {
-                        filterRange.RightDate = FourthDepositRightDatePicker.SelectedDate;
-                        switch (FourthDepositRightDateComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.RightDateSign = FilterRange.Signs.Less;
-                                break;
-                            case 2:
-                                filterRange.RightDateSign = FilterRange.Signs.LessEqual;
-                                break;
-                        }
-                    }
-                }
-                if (filterRange.isActive())
-                {
-                    GrantsFilters.FourthDepositor = filterRange;
-                }
-            }
-            //Средства хозяйствующих субъектов
-            {
-                filterRange = new FilterRange();
-                if (FifthDepositLeftComboBox.SelectedIndex != -1 && FifthDepositLeftComboBox.SelectedIndex != 0)
-                {
-                    if (FifthDepositLeftTextBox.Text != "")
-                    {
-                        filterRange.LeftValue = FifthDepositLeftTextBox.Text;
-                        switch (FifthDepositLeftComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.LeftSign = FilterRange.Signs.More;
-                                break;
-                            case 2:
-                                filterRange.LeftSign = FilterRange.Signs.MoreEqual;
-                                break;
-                        }
-                    }
-                }
-                if (FifthDepositRightComboBox.SelectedIndex != -1 && FifthDepositRightComboBox.SelectedIndex != 0)
-                {
-                    if (FifthDepositRightTextBox.Text != "")
-                    {
-                        filterRange.RightValue = FifthDepositRightTextBox.Text;
-                        switch (FifthDepositRightComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.RightSign = FilterRange.Signs.Less;
-                                break;
-                            case 2:
-                                filterRange.RightSign = FilterRange.Signs.LessEqual;
-                                break;
-                        }
-                    }
-                }
-                if (FifthDepositLeftDateComboBox.SelectedIndex != -1 && FifthDepositLeftDateComboBox.SelectedIndex != 0)
-                {
-                    if (FifthDepositLeftDatePicker.SelectedDate != null)
-                    {
-                        filterRange.LeftDate = FifthDepositLeftDatePicker.SelectedDate;
-                        switch (FifthDepositLeftDateComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.LeftDateSign = FilterRange.Signs.More;
-                                break;
-                            case 2:
-                                filterRange.LeftDateSign = FilterRange.Signs.MoreEqual;
-                                break;
-                        }
-                    }
-                }
-                if (FifthDepositRightDateComboBox.SelectedIndex != -1 && FifthDepositRightDateComboBox.SelectedIndex != 0)
-                {
-                    if (FifthDepositRightDatePicker.SelectedDate != null)
-                    {
-                        filterRange.RightDate = FifthDepositRightDatePicker.SelectedDate;
-                        switch (FifthDepositRightDateComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.RightDateSign = FilterRange.Signs.Less;
-                                break;
-                            case 2:
-                                filterRange.RightDateSign = FilterRange.Signs.LessEqual;
-                                break;
-                        }
-                    }
-                }
-                if (filterRange.isActive())
-                {
-                    GrantsFilters.FifthDepositor = filterRange;
-                }
-            }
-            //Физ. лица
-            {
-                filterRange = new FilterRange();
-                if (SixthDepositLeftComboBox.SelectedIndex != -1 && SixthDepositLeftComboBox.SelectedIndex != 0)
-                {
-                    if (SixthDepositLeftTextBox.Text != "")
-                    {
-                        filterRange.LeftValue = SixthDepositLeftTextBox.Text;
-                        switch (SixthDepositLeftComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.LeftSign = FilterRange.Signs.More;
-                                break;
-                            case 2:
-                                filterRange.LeftSign = FilterRange.Signs.MoreEqual;
-                                break;
-                        }
-                    }
-                }
-                if (SixthDepositRightComboBox.SelectedIndex != -1 && SixthDepositRightComboBox.SelectedIndex != 0)
-                {
-                    if (SixthDepositRightTextBox.Text != "")
-                    {
-                        filterRange.RightValue = SixthDepositRightTextBox.Text;
-                        switch (SixthDepositRightComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.RightSign = FilterRange.Signs.Less;
-                                break;
-                            case 2:
-                                filterRange.RightSign = FilterRange.Signs.LessEqual;
-                                break;
-                        }
-                    }
-                }
-                if (SixthDepositLeftDateComboBox.SelectedIndex != -1 && SixthDepositLeftDateComboBox.SelectedIndex != 0)
-                {
-                    if (SixthDepositLeftDatePicker.SelectedDate != null)
-                    {
-                        filterRange.LeftDate = SixthDepositLeftDatePicker.SelectedDate;
-                        switch (SixthDepositLeftDateComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.LeftDateSign = FilterRange.Signs.More;
-                                break;
-                            case 2:
-                                filterRange.LeftDateSign = FilterRange.Signs.MoreEqual;
-                                break;
-                        }
-                    }
-                }
-                if (SixthDepositRightDateComboBox.SelectedIndex != -1 && SixthDepositRightDateComboBox.SelectedIndex != 0)
-                {
-                    if (SixthDepositRightDatePicker.SelectedDate != null)
-                    {
-                        filterRange.RightDate = SixthDepositRightDatePicker.SelectedDate;
-                        switch (SixthDepositRightDateComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.RightDateSign = FilterRange.Signs.Less;
-                                break;
-                            case 2:
-                                filterRange.RightDateSign = FilterRange.Signs.LessEqual;
-                                break;
-                        }
-                    }
-                }
-                if (filterRange.isActive())
-                {
-                    GrantsFilters.SixthDepositor = filterRange;
-                }
-            }
-            //ФЦП мин обра или иные источники госзаказа(бюджет)
-            {
-                filterRange = new FilterRange();
-                if (SeventhDepositLeftComboBox.SelectedIndex != -1 && SeventhDepositLeftComboBox.SelectedIndex != 0)
-                {
-                    if (SeventhDepositLeftTextBox.Text != "")
-                    {
-                        filterRange.LeftValue = SeventhDepositLeftTextBox.Text;
-                        switch (SeventhDepositLeftComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.LeftSign = FilterRange.Signs.More;
-                                break;
-                            case 2:
-                                filterRange.LeftSign = FilterRange.Signs.MoreEqual;
-                                break;
-                        }
-                    }
-                }
-                if (SeventhDepositRightComboBox.SelectedIndex != -1 && SeventhDepositRightComboBox.SelectedIndex != 0)
-                {
-                    if (SeventhDepositRightTextBox.Text != "")
-                    {
-                        filterRange.RightValue = SeventhDepositRightTextBox.Text;
-                        switch (SeventhDepositRightComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.RightSign = FilterRange.Signs.Less;
-                                break;
-                            case 2:
-                                filterRange.RightSign = FilterRange.Signs.LessEqual;
-                                break;
-                        }
-                    }
-                }
-                if (SeventhDepositLeftDateComboBox.SelectedIndex != -1 && SeventhDepositLeftDateComboBox.SelectedIndex != 0)
-                {
-                    if (SeventhDepositLeftDatePicker.SelectedDate != null)
-                    {
-                        filterRange.LeftDate = SeventhDepositLeftDatePicker.SelectedDate;
-                        switch (SeventhDepositLeftDateComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.LeftDateSign = FilterRange.Signs.More;
-                                break;
-                            case 2:
-                                filterRange.LeftDateSign = FilterRange.Signs.MoreEqual;
-                                break;
-                        }
-                    }
-                }
-                if (SeventhDepositRightDateComboBox.SelectedIndex != -1 && SeventhDepositRightDateComboBox.SelectedIndex != 0)
-                {
-                    if (SeventhDepositRightDatePicker.SelectedDate != null)
-                    {
-                        filterRange.RightDate = SeventhDepositRightDatePicker.SelectedDate;
-                        switch (SeventhDepositRightDateComboBox.SelectedIndex)
-                        {
-                            case 1:
-                                filterRange.RightDateSign = FilterRange.Signs.Less;
-                                break;
-                            case 2:
-                                filterRange.RightDateSign = FilterRange.Signs.LessEqual;
-                                break;
-                        }
-                    }
-                }
-                if (filterRange.isActive())
-                {
-                    GrantsFilters.SeventhDepositor = filterRange;
-                }
+                dockPanelCount++;
             }
 
-
-            if (SelectedSecondNode.Count > 0)
+            if (SelectedFirstNode.Count > 0)
             {
                 GrantsFilters.FirstNode = SelectedFirstNode;
             }
@@ -915,12 +541,12 @@ namespace ResearchProgram.Forms
                 GrantsFilters.SecondNode = SelectedSecondNode;
             }
 
-            if(SelectedThirdNode.Count > 0)
+            if (SelectedThirdNode.Count > 0)
             {
                 GrantsFilters.ThirdNode = SelectedThirdNode;
             }
-            
-            if(SelectedFourthNode.Count > 0)
+
+            if (SelectedFourthNode.Count > 0)
             {
                 GrantsFilters.FourthNode = SelectedFourthNode;
             }
@@ -939,8 +565,7 @@ namespace ResearchProgram.Forms
             {
                 GrantsFilters.PriorityTrend = SelectedPriorityTrend;
             }
-
-            GrantsFilters.GetFirstDepositorsQuarry();
+            Console.WriteLine(CRUDDataBase.GetGrantIds().Count);
         }
     }
 }

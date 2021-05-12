@@ -1,5 +1,6 @@
 ﻿using ResearchProgram.Classes;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
@@ -38,21 +39,8 @@ namespace ResearchProgram
         public static bool? IsNoNDS;
         // Цена договора
         public static FilterRange Price;
-        // Иностранные Средства
-        public static FilterRange FirstDepositor;
-        // Собственные средства
-        public static FilterRange SecondDepositor;
-        // Средства бюджета субъекта Федерации
-        public static FilterRange ThirdDepositor;
-        // Средства Российских фондов поддержки науки
-        public static FilterRange FourthDepositor;
-        // Средства хозяйствующих субъектов
-        public static FilterRange FifthDepositor;
-        // Физ. лица
-        public static FilterRange SixthDepositor;
-        // ФЦП мин обра или иные источники госзаказа(бюджет)
-        public static FilterRange SeventhDepositor;
-
+        // Средства
+        public static ObservableCollection<FilterRange> Depositors;
         // Кафедра
         public static ObservableCollection<UniversityStructureNode> FirstNode;
         // Подразделение
@@ -84,13 +72,7 @@ namespace ResearchProgram
             EndDate = null;
             Price = null;
             IsNoNDS = null;
-            FirstDepositor = null;
-            SecondDepositor = null;
-            ThirdDepositor = null;
-            FourthDepositor = null;
-            FifthDepositor = null;
-            SixthDepositor = null;
-            SeventhDepositor = null;
+            Depositors = null;
             LeadNIOKR = null;
             Executor = null;
             FirstNode = null;
@@ -144,12 +126,10 @@ namespace ResearchProgram
 
         public static string GetResearchTypesQuarry()
         {
-            string quarry = "SELECT grantId FROM grantResearchType " +
-                "JOIN researchTypes rT on grantResearchType.researchTypeId = rT.id ";
+            string quarry = "SELECT grantId FROM grantResearchType ";
             if (ResearchType.Count > 0)
             {
-                quarry += " WHERE rT.id = " + string.Join(" OR rT.id = ", ResearchType.Select(x => x.Id).ToArray());
-                quarry.Replace("WHERE OR", "WHERE");
+                quarry += " WHERE researchtypeid = " + string.Join(" OR researchtypeid = ", ResearchType.Select(x => x.Id).ToArray());
             }
 
             quarry += " ORDER BY grantId; ";
@@ -159,12 +139,10 @@ namespace ResearchProgram
 
         public static string GetPriorityTrendsQuarry()
         {
-            string quarry = "SELECT grantId FROM grantPriorityTrends " +
-                "JOIN priorityTrends pT on grantPriorityTrends.priorityTrendsId = pT.id ";
+            string quarry = "SELECT grantId FROM grantPriorityTrends ";
             if (PriorityTrend.Count > 0)
             {
-                quarry += " WHERE pT.id = " + string.Join(" OR pT.id = ", PriorityTrend.Select(x => x.Id).ToArray());
-                quarry.Replace("WHERE OR", "WHERE");
+                quarry += " WHERE prioritytrendsid = " + string.Join(" OR prioritytrendsid = ", PriorityTrend.Select(x => x.Id).ToArray());
             }
 
             quarry += " ORDER BY grantId; ";
@@ -173,12 +151,10 @@ namespace ResearchProgram
         }
         public static string GetScienceTypesQuarry()
         {
-            string quarry = "SELECT grantId FROM grantScienceTypes " +
-                "JOIN scienceTypes sT on grantScienceTypes.scienceTypesId = sT.id ";
+            string quarry = "SELECT grantId FROM grantScienceTypes ";
             if (ScienceType.Count > 0)
             {
-                quarry += " WHERE sT.id = " + string.Join(" OR sT.id = ", ScienceType.Select(x => x.Id).ToArray());
-                quarry.Replace("WHERE OR", "WHERE");
+                quarry += " WHERE sciencetypesid = " + string.Join(" OR sciencetypesid = ", ScienceType.Select(x => x.Id).ToArray());
             }
 
             quarry += " ORDER BY grantId; ";
@@ -186,279 +162,245 @@ namespace ResearchProgram
             return quarry;
         }
 
-        public static string GetFirstDepositorsQuarry()
+        public static string GetDepositorQuarryByIndex(int index)
         {
             string quarry = "SELECT DISTINCT grantId FROM grantDeposits " +
                 "JOIN depositors d on grantDeposits.sourceId = d.id ";
-            if (FirstDepositor != null)
+            if (Depositors != null)
             {
-                bool isCondition = false;
-                quarry += "WHERE d.title = '" + StaticDataTemp.DepositsVerbose["first"] + "' ";
-                if (FirstDepositor.LeftDate != null)
+                if (Depositors[index] != null)
                 {
-                    quarry += " AND receiptdate " + GetSignLiteral(FirstDepositor.LeftDateSign) + "'" + FirstDepositor.LeftDate?.ToString("yyyy-MM-dd") + "'";
-                }
-                if (FirstDepositor.RightDate != null)
-                {
-                    quarry += " AND receiptdate " + GetSignLiteral(FirstDepositor.RightDateSign) + "'" + FirstDepositor.RightDate?.ToString("yyyy-MM-dd") + "'";
-                }
-                isCondition = false;
-                quarry += " GROUP BY grantId ";
-                if (FirstDepositor.LeftValue != null)
-                {
-                    quarry += " HAVING sum(partsum) " + GetSignLiteral(FirstDepositor.LeftSign) + FirstDepositor.LeftValue.ToString();
-                    isCondition = true;
-                }
-                if (FirstDepositor.RightValue != null)
-                {
-                    if (!isCondition)
+                    bool isCondition = false;
+                    quarry += "WHERE d.title = '" + StaticDataTemp.DepositsVerbose[index.ToString()] + "' ";
+                    if (Depositors[index].LeftDate != null)
                     {
-                        quarry += " HAVING sum(partsum) " + GetSignLiteral(FirstDepositor.RightSign) + FirstDepositor.RightValue.ToString();
+                        quarry += " AND receiptdate " + GetSignLiteral(Depositors[index].LeftDateSign) + "'" + Depositors[index].LeftDate?.ToString("yyyy-MM-dd") + "'";
                     }
-                    else
+                    if (Depositors[index].RightDate != null)
                     {
-                        quarry += " AND sum(partsum) " + GetSignLiteral(FirstDepositor.RightSign) + FirstDepositor.RightValue.ToString();
+                        quarry += " AND receiptdate " + GetSignLiteral(Depositors[index].RightDateSign) + "'" + Depositors[index].RightDate?.ToString("yyyy-MM-dd") + "'";
+                    }
+                    isCondition = false;
+                    quarry += " GROUP BY grantId ";
+                    if (Depositors[index].LeftValue != null)
+                    {
+                        quarry += " HAVING sum(partsum) " + GetSignLiteral(Depositors[index].LeftSign) + Depositors[index].LeftValue.ToString();
+                        isCondition = true;
+                    }
+                    if (Depositors[index].RightValue != null)
+                    {
+                        if (!isCondition)
+                        {
+                            quarry += " HAVING sum(partsum) " + GetSignLiteral(Depositors[index].RightSign) + Depositors[index].RightValue.ToString();
+                        }
+                        else
+                        {
+                            quarry += " AND sum(partsum) " + GetSignLiteral(Depositors[index].RightSign) + Depositors[index].RightValue.ToString();
+                        }
                     }
                 }
             }
             Console.WriteLine(quarry);
             return quarry;
         }
-
-        public static string GetSecondDepositorsQuarry()
+        public static string GetCustomersQuarry()
         {
-            string quarry = "SELECT DISTINCT grantId FROM grantDeposits " +
-                "JOIN depositors d on grantDeposits.sourceId = d.id ";
-            if (SecondDepositor != null)
+            string quarry = "SELECT grant_id FROM grants_customers ";
+            if (Customer.Count > 0)
             {
-                bool isCondition = false;
-                quarry += "WHERE d.title = '" + StaticDataTemp.DepositsVerbose["second"] + "' ";
-                if (SecondDepositor.LeftDate != null)
-                {
-                    quarry += " AND receiptdate " + GetSignLiteral(SecondDepositor.LeftDateSign) + "'" + SecondDepositor.LeftDate?.ToString("yyyy-MM-dd") + "'";
-                }
-                if (SecondDepositor.RightDate != null)
-                {
-                    quarry += " AND receiptdate " + GetSignLiteral(SecondDepositor.RightDateSign) + "'" + SecondDepositor.RightDate?.ToString("yyyy-MM-dd") + "'";
-                }
-                isCondition = false;
-                quarry += " GROUP BY grantId ";
-                if (SecondDepositor.LeftValue != null)
-                {
-                    quarry += " HAVING sum(partsum) " + GetSignLiteral(SecondDepositor.LeftSign) + SecondDepositor.LeftValue.ToString();
-                    isCondition = true;
-                }
-                if (SecondDepositor.RightValue != null)
-                {
-                    if (!isCondition)
-                    {
-                        quarry += " HAVING sum(partsum) " + GetSignLiteral(SecondDepositor.RightSign) + SecondDepositor.RightValue.ToString();
-                    }
-                    else
-                    {
-                        quarry += " AND sum(partsum) " + GetSignLiteral(SecondDepositor.RightSign) + SecondDepositor.RightValue.ToString();
-                    }
-                }
+                quarry += " WHERE customer_id = " + string.Join(" OR customer_id = ", Customer.Select(x => x.Id).ToArray());
             }
+
+            quarry += " ORDER BY grant_id; ";
             Console.WriteLine(quarry);
             return quarry;
         }
 
-        public static string GetThirdDepositorsQuarry()
+        public static string GetExecutorsQuarry()
         {
-            string quarry = "SELECT DISTINCT grantId FROM grantDeposits " +
-                "JOIN depositors d on grantDeposits.sourceId = d.id ";
-            if (ThirdDepositor != null)
+            string quarry = "SELECT grantId FROM executors ";
+            if (Executor.Count > 0)
             {
-                bool isCondition = false;
-                quarry += "WHERE d.title = '" + StaticDataTemp.DepositsVerbose["third"] + "' ";
-                if (ThirdDepositor.LeftDate != null)
-                {
-                    quarry += " AND receiptdate " + GetSignLiteral(ThirdDepositor.LeftDateSign) + "'" + ThirdDepositor.LeftDate?.ToString("yyyy-MM-dd") + "'";
-                }
-                if (ThirdDepositor.RightDate != null)
-                {
-                    quarry += " AND receiptdate " + GetSignLiteral(ThirdDepositor.RightDateSign) + "'" + ThirdDepositor.RightDate?.ToString("yyyy-MM-dd") + "'";
-                }
-                isCondition = false;
-                quarry += " GROUP BY grantId ";
-                if (ThirdDepositor.LeftValue != null)
-                {
-                    quarry += " HAVING sum(partsum) " + GetSignLiteral(ThirdDepositor.LeftSign) + ThirdDepositor.LeftValue.ToString();
-                    isCondition = true;
-                }
-                if (ThirdDepositor.RightValue != null)
-                {
-                    if (!isCondition)
-                    {
-                        quarry += " HAVING sum(partsum) " + GetSignLiteral(ThirdDepositor.RightSign) + ThirdDepositor.RightValue.ToString();
-                    }
-                    else
-                    {
-                        quarry += " AND sum(partsum) " + GetSignLiteral(ThirdDepositor.RightSign) + ThirdDepositor.RightValue.ToString();
-                    }
-                }
+                quarry += " WHERE executorid = " + string.Join(" OR executorid = ", Executor.Select(x => x.Id).ToArray());
             }
+
+            quarry += " ORDER BY grantId; ";
             Console.WriteLine(quarry);
             return quarry;
         }
 
-        public static string GetFourthDepositorsQuarry()
+        public static string GetGrantQuarry()
         {
-            string quarry = "SELECT DISTINCT grantId FROM grantDeposits " +
-                "JOIN depositors d on grantDeposits.sourceId = d.id ";
-            if (FourthDepositor != null)
+            string quarry = "SELECT id FROM grants ";
+
+            List<string> quarryList = new List<string>();
+
+            string tempQuarry;
+            if (OKVED != null)
             {
-                bool isCondition = false;
-                quarry += "WHERE d.title = '" + StaticDataTemp.DepositsVerbose["fourth"] + "' ";
-                if (FourthDepositor.LeftDate != null)
+                tempQuarry = "( ";
+
+                for (int i = 0; i < OKVED.Count; i++)
                 {
-                    quarry += " AND receiptdate " + GetSignLiteral(FourthDepositor.LeftDateSign) + "'" + FourthDepositor.LeftDate?.ToString("yyyy-MM-dd") + "'";
-                }
-                if (FourthDepositor.RightDate != null)
-                {
-                    quarry += " AND receiptdate " + GetSignLiteral(FourthDepositor.RightDateSign) + "'" + FourthDepositor.RightDate?.ToString("yyyy-MM-dd") + "'";
-                }
-                isCondition = false;
-                quarry += " GROUP BY grantId ";
-                if (FourthDepositor.LeftValue != null)
-                {
-                    quarry += " HAVING sum(partsum) " + GetSignLiteral(FourthDepositor.LeftSign) + FourthDepositor.LeftValue.ToString();
-                    isCondition = true;
-                }
-                if (FourthDepositor.RightValue != null)
-                {
-                    if (!isCondition)
+                    tempQuarry += " okved LIKE '%" + OKVED[i].Title + "%' ";
+                    if (i != OKVED.Count - 1)
                     {
-                        quarry += " HAVING sum(partsum) " + GetSignLiteral(FourthDepositor.RightSign) + FourthDepositor.RightValue.ToString();
+                        tempQuarry += " OR ";
                     }
-                    else
-                    {
-                        quarry += " AND sum(partsum) " + GetSignLiteral(FourthDepositor.RightSign) + FourthDepositor.RightValue.ToString();
-                    }
+                }
+                tempQuarry += ") ";
+                quarryList.Add(tempQuarry);
+            }
+
+            if (GRNTI != null)
+            {
+                quarryList.Add("( grnti LIKE '%" + GRNTI + "%' )");
+            }
+
+            if (grantNumber != null)
+            {
+                quarryList.Add("( grantnumber LIKE '%" + grantNumber + "%' )");
+            }
+
+            if (LeadNIOKR != null)
+            {
+                tempQuarry = "( ";
+                tempQuarry += " leadniokrid = " + string.Join(" OR leadniokrid = ", LeadNIOKR.Select(x => x.Id).ToArray());
+
+                tempQuarry += ") ";
+                quarryList.Add(tempQuarry);
+            }
+
+            if (NameNIOKR != null)
+            {
+                quarryList.Add("( nameniokr LIKE '%" + NameNIOKR + "%' )");
+            }
+
+            if (NIR != null)
+            {
+                quarryList.Add("( nir LIKE '%" + NIR + "%' )");
+            }
+
+            if (NOC != null)
+            {
+                if ((bool)NOC)
+                {
+                    quarryList.Add("( noc = true) ");
+                }
+                else
+                {
+                    quarryList.Add("( noc = false) ");
                 }
             }
+
+            if (StartDate != null)
+            {
+                quarryList.Add("( startdate >= '" + StartDate?.ToString("yyyy-MM-dd") + "') ");
+            }
+
+            if (EndDate != null)
+            {
+                quarryList.Add("( enddate <= '" + EndDate?.ToString("yyyy-MM-dd") + "') ");
+            }
+
+            if (IsNoNDS != null)
+            {
+                if ((bool)IsNoNDS)
+                {
+                    quarryList.Add("( is_with_nds = false )");
+                }
+                else
+                {
+                    quarryList.Add("( is_with_nds = true )");
+                }
+            }
+
+            if (Price != null)
+            {
+                //if(IsNoNDS != null)
+                //{
+                //    if ((bool)IsNoNDS)
+                //    {
+                //        if (Price.LeftValue != null)
+                //        {
+                //            quarryList.Add("( pricenonds " + GetSignLiteral(Price.LeftSign) + " " + Price.LeftValue + ") ");
+                //        }
+                //        if (Price.RightValue != null)
+                //        {
+                //            quarryList.Add("( pricenonds " + GetSignLiteral(Price.RightSign) + " " + Price.RightValue + ") ");
+                //        }
+                //    }
+                //    else
+                //    {
+                //        if (Price.LeftValue != null)
+                //        {
+                //            quarryList.Add("( price " + GetSignLiteral(Price.LeftSign) + " " + Price.LeftValue + ") ");
+                //        }
+                //        if (Price.RightValue != null)
+                //        {
+                //            quarryList.Add("( price " + GetSignLiteral(Price.RightSign) + " " + Price.RightValue + ") ");
+                //        }
+                //    }
+                //}
+                //else
+                //{
+                if (Price.LeftValue != null)
+                {
+                    quarryList.Add("( price " + GetSignLiteral(Price.LeftSign) + " " + Price.LeftValue + ") ");
+                }
+                if (Price.RightValue != null)
+                {
+                    quarryList.Add("( price " + GetSignLiteral(Price.RightSign) + " " + Price.RightValue + ") ");
+                }
+                //}
+
+            }
+
+            if (FirstNode != null)
+            {
+                tempQuarry = "( ";
+                tempQuarry += " first_node_id = " + string.Join(" OR first_node_id = ", FirstNode.Select(x => x.Id).ToArray());
+
+                tempQuarry += ") ";
+                quarryList.Add(tempQuarry);
+            }
+
+            if (SecondNode != null)
+            {
+                tempQuarry = "( ";
+                tempQuarry += " second_node_id = " + string.Join(" OR second_node_id = ", SecondNode.Select(x => x.Id).ToArray());
+
+                tempQuarry += ") ";
+                quarryList.Add(tempQuarry);
+            }
+
+            if (ThirdNode != null)
+            {
+                tempQuarry = "( ";
+                tempQuarry += " third_node_id = " + string.Join(" OR third_node_id = ", ThirdNode.Select(x => x.Id).ToArray());
+
+                tempQuarry += ") ";
+                quarryList.Add(tempQuarry);
+            }
+
+            if (FourthNode != null)
+            {
+                tempQuarry = "( ";
+                tempQuarry += " fourth_node_id = " + string.Join(" OR fourth_node_id = ", FourthNode.Select(x => x.Id).ToArray());
+
+                tempQuarry += ") ";
+                quarryList.Add(tempQuarry);
+            }
+
+
+            if (quarryList.Count > 0)
+            {
+                quarry += " WHERE " + string.Join(" AND ", quarryList);
+            }
+            quarry += " ORDER BY id; ";
+
             Console.WriteLine(quarry);
             return quarry;
         }
-
-        public static string GetFifthDepositorsQuarry()
-        {
-            string quarry = "SELECT DISTINCT grantId FROM grantDeposits " +
-                "JOIN depositors d on grantDeposits.sourceId = d.id ";
-            if (FifthDepositor != null)
-            {
-                bool isCondition = false;
-                quarry += "WHERE d.title = '" + StaticDataTemp.DepositsVerbose["fifth"] + "' ";
-                if (FifthDepositor.LeftDate != null)
-                {
-                    quarry += " AND receiptdate " + GetSignLiteral(FifthDepositor.LeftDateSign) + "'" + FifthDepositor.LeftDate?.ToString("yyyy-MM-dd") + "'";
-                }
-                if (FifthDepositor.RightDate != null)
-                {
-                    quarry += " AND receiptdate " + GetSignLiteral(FifthDepositor.RightDateSign) + "'" + FifthDepositor.RightDate?.ToString("yyyy-MM-dd") + "'";
-                }
-                isCondition = false;
-                quarry += " GROUP BY grantId ";
-                if (FifthDepositor.LeftValue != null)
-                {
-                    quarry += " HAVING sum(partsum) " + GetSignLiteral(FifthDepositor.LeftSign) + FifthDepositor.LeftValue.ToString();
-                    isCondition = true;
-                }
-                if (FifthDepositor.RightValue != null)
-                {
-                    if (!isCondition)
-                    {
-                        quarry += " HAVING sum(partsum) " + GetSignLiteral(FifthDepositor.RightSign) + FifthDepositor.RightValue.ToString();
-                    }
-                    else
-                    {
-                        quarry += " AND sum(partsum) " + GetSignLiteral(FifthDepositor.RightSign) + FifthDepositor.RightValue.ToString();
-                    }
-                }
-            }
-            Console.WriteLine(quarry);
-            return quarry;
-        }
-
-        public static string GetSixthDepositorsQuarry()
-        {
-            string quarry = "SELECT DISTINCT grantId FROM grantDeposits " +
-                "JOIN depositors d on grantDeposits.sourceId = d.id ";
-            if (SixthDepositor != null)
-            {
-                bool isCondition = false;
-                quarry += "WHERE d.title = '" + StaticDataTemp.DepositsVerbose["sixth"] + "' ";
-                if (SixthDepositor.LeftDate != null)
-                {
-                    quarry += " AND receiptdate " + GetSignLiteral(SixthDepositor.LeftDateSign) + "'" + SixthDepositor.LeftDate?.ToString("yyyy-MM-dd") + "'";
-                }
-                if (SixthDepositor.RightDate != null)
-                {
-                    quarry += " AND receiptdate " + GetSignLiteral(SixthDepositor.RightDateSign) + "'" + SixthDepositor.RightDate?.ToString("yyyy-MM-dd") + "'";
-                }
-                isCondition = false;
-                quarry += " GROUP BY grantId ";
-                if (SixthDepositor.LeftValue != null)
-                {
-                    quarry += " HAVING sum(partsum) " + GetSignLiteral(SixthDepositor.LeftSign) + SixthDepositor.LeftValue.ToString();
-                    isCondition = true;
-                }
-                if (SixthDepositor.RightValue != null)
-                {
-                    if (!isCondition)
-                    {
-                        quarry += " HAVING sum(partsum) " + GetSignLiteral(SixthDepositor.RightSign) + SixthDepositor.RightValue.ToString();
-                    }
-                    else
-                    {
-                        quarry += " AND sum(partsum) " + GetSignLiteral(SixthDepositor.RightSign) + SixthDepositor.RightValue.ToString();
-                    }
-                }
-            }
-            Console.WriteLine(quarry);
-            return quarry;
-        }
-
-        public static string GetSeventhDepositorsQuarry()
-        {
-            string quarry = "SELECT DISTINCT grantId FROM grantDeposits " +
-                "JOIN depositors d on grantDeposits.sourceId = d.id ";
-            if (SeventhDepositor != null)
-            {
-                bool isCondition = false;
-                quarry += "WHERE d.title = '" + StaticDataTemp.DepositsVerbose["seventh"] + "' ";
-                if (SeventhDepositor.LeftDate != null)
-                {
-                    quarry += " AND receiptdate " + GetSignLiteral(SeventhDepositor.LeftDateSign) + "'" + SeventhDepositor.LeftDate?.ToString("yyyy-MM-dd") + "'";
-                }
-                if (SeventhDepositor.RightDate != null)
-                {
-                    quarry += " AND receiptdate " + GetSignLiteral(SeventhDepositor.RightDateSign) + "'" + SeventhDepositor.RightDate?.ToString("yyyy-MM-dd") + "'";
-                }
-                isCondition = false;
-                quarry += " GROUP BY grantId ";
-                if (SeventhDepositor.LeftValue != null)
-                {
-                    quarry += " HAVING sum(partsum) " + GetSignLiteral(SeventhDepositor.LeftSign) + SeventhDepositor.LeftValue.ToString();
-                    isCondition = true;
-                }
-                if (SeventhDepositor.RightValue != null)
-                {
-                    if (!isCondition)
-                    {
-                        quarry += " HAVING sum(partsum) " + GetSignLiteral(SeventhDepositor.RightSign) + SeventhDepositor.RightValue.ToString();
-                    }
-                    else
-                    {
-                        quarry += " AND sum(partsum) " + GetSignLiteral(SeventhDepositor.RightSign) + SeventhDepositor.RightValue.ToString();
-                    }
-                }
-            }
-            Console.WriteLine(quarry);
-            return quarry;
-        }
-
-
     }
 }

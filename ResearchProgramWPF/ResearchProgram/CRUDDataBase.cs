@@ -22,7 +22,7 @@ namespace ResearchProgram
 #if DEBUG
         public static bool DEBUG = true;
 #else
-            public static bool DEBUG = false;
+        public static bool DEBUG = false;
 #endif
 
 
@@ -100,8 +100,9 @@ namespace ResearchProgram
             //Множество из id грантов, которые необходимо получить(например в запросе без фильтров тут будут храниться все id. Но если будет активен фильтр, то id отфильтруются)
             HashSet<int> grantIds = new HashSet<int>();
 
+            NpgsqlConnection connection = GetNewConnection();
             //Фильтры не активны
-            cmd = new NpgsqlCommand("SELECT id FROM grants ORDER BY id;", conn);
+            cmd = new NpgsqlCommand("SELECT id FROM grants ORDER BY id;", connection);
             reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -126,10 +127,32 @@ namespace ResearchProgram
 
                 HashSet<int> tempHash = new HashSet<int>();
 
-                //Типы исследований
-                if (GrantsFilters.ResearchType.Count > 0)
+                // Основные поля гранта
                 {
-                    cmd = new NpgsqlCommand(GrantsFilters.GetResearchTypesQuarry(), conn);
+                    cmd = new NpgsqlCommand(GrantsFilters.GetGrantQuarry(), connection);
+                    reader = cmd.ExecuteReader();
+
+                    if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            grantId = Convert.ToInt32(reader["id"]);
+                            tempHash.Add(grantId);
+                        }
+                    }
+                    reader.Close();
+                    grantIds.IntersectWith(tempHash);
+                    if (grantIds.Count == 0)
+                    {
+                        return grantIds;
+                    }
+                    reader.Close();
+                    tempHash = new HashSet<int>();
+                }
+                //Типы исследований
+                if (GrantsFilters.ResearchType != null)
+                {
+                    cmd = new NpgsqlCommand(GrantsFilters.GetResearchTypesQuarry(), connection);
                     reader = cmd.ExecuteReader();
                     if (reader.HasRows)
                     {
@@ -138,10 +161,10 @@ namespace ResearchProgram
                             grantId = Convert.ToInt32(reader["grantId"]);
                             tempHash.Add(grantId);
                         }
-                        grantIds.IntersectWith(tempHash);
 
                     }
                     reader.Close();
+                    grantIds.IntersectWith(tempHash);
                     if (grantIds.Count == 0)
                     {
                         return grantIds;
@@ -149,9 +172,9 @@ namespace ResearchProgram
                 }
 
                 //Приоритетные направления
-                if (GrantsFilters.PriorityTrend.Count > 0)
+                if (GrantsFilters.PriorityTrend != null)
                 {
-                    cmd = new NpgsqlCommand(GrantsFilters.GetPriorityTrendsQuarry(), conn);
+                    cmd = new NpgsqlCommand(GrantsFilters.GetPriorityTrendsQuarry(), connection);
                     reader = cmd.ExecuteReader();
 
                     if (reader.HasRows)
@@ -161,9 +184,9 @@ namespace ResearchProgram
                             grantId = Convert.ToInt32(reader["grantId"]);
                             tempHash.Add(grantId);
                         }
-                        grantIds.IntersectWith(tempHash);
                     }
                     reader.Close();
+                    grantIds.IntersectWith(tempHash);
                     if (grantIds.Count == 0)
                     {
                         return grantIds;
@@ -173,9 +196,9 @@ namespace ResearchProgram
                 }
 
                 //Типы наук
-                if (GrantsFilters.ScienceType.Count > 0)
+                if (GrantsFilters.ScienceType != null)
                 {
-                    cmd = new NpgsqlCommand(GrantsFilters.GetScienceTypesQuarry(), conn);
+                    cmd = new NpgsqlCommand(GrantsFilters.GetScienceTypesQuarry(), connection);
                     reader = cmd.ExecuteReader();
 
                     if (reader.HasRows)
@@ -185,43 +208,72 @@ namespace ResearchProgram
                             grantId = Convert.ToInt32(reader["grantId"]);
                             tempHash.Add(grantId);
                         }
-                        grantIds.IntersectWith(tempHash);
                     }
                     reader.Close();
+                    grantIds.IntersectWith(tempHash);
                     if (grantIds.Count == 0)
                     {
                         return grantIds;
                     }
                     tempHash = new HashSet<int>();
                 }
-                //Иностранные средства
-                if (GrantsFilters.FirstDepositor != null)
+
+                //Средства
+                if (GrantsFilters.Depositors != null)
                 {
-                    cmd = new NpgsqlCommand(GrantsFilters.GetFirstDepositorsQuarry(), conn);
+                    for (int i = 0; i < GrantsFilters.Depositors.Count; i++)
+                    {
+                        cmd = new NpgsqlCommand(GrantsFilters.GetDepositorQuarryByIndex(i), connection);
+                        reader = cmd.ExecuteReader();
+
+                        if (reader.HasRows)
+                        {
+                            while (reader.Read())
+                            {
+                                grantId = Convert.ToInt32(reader["grantId"]);
+                                tempHash.Add(grantId);
+                            }
+                        }
+                        reader.Close();
+                        grantIds.IntersectWith(tempHash);
+                        if (grantIds.Count == 0)
+                        {
+                            return grantIds;
+                        }
+                        reader.Close();
+                        tempHash = new HashSet<int>();
+                    }
+                }
+                // Заказчики
+                if (GrantsFilters.Customer != null)
+                {
+                    cmd = new NpgsqlCommand(GrantsFilters.GetCustomersQuarry(), connection);
                     reader = cmd.ExecuteReader();
 
                     if (reader.HasRows)
                     {
                         while (reader.Read())
                         {
-                            grantId = Convert.ToInt32(reader["grantId"]);
+                            grantId = Convert.ToInt32(reader["grant_id"]);
                             tempHash.Add(grantId);
                         }
-                        grantIds.IntersectWith(tempHash);
                     }
                     reader.Close();
+                    grantIds.IntersectWith(tempHash);
                     if (grantIds.Count == 0)
                     {
                         return grantIds;
                     }
                     reader.Close();
                     tempHash = new HashSet<int>();
+
+                    reader.Close();
                 }
 
-                //Собственные средства
-                if (GrantsFilters.SecondDepositor != null)
+                // Исполнители
+                if (GrantsFilters.Executor != null)
                 {
-                    cmd = new NpgsqlCommand(GrantsFilters.GetSecondDepositorsQuarry(), conn);
+                    cmd = new NpgsqlCommand(GrantsFilters.GetExecutorsQuarry(), connection);
                     reader = cmd.ExecuteReader();
 
                     if (reader.HasRows)
@@ -231,138 +283,21 @@ namespace ResearchProgram
                             grantId = Convert.ToInt32(reader["grantId"]);
                             tempHash.Add(grantId);
                         }
-                        grantIds.IntersectWith(tempHash);
                     }
                     reader.Close();
+                    grantIds.IntersectWith(tempHash);
                     if (grantIds.Count == 0)
                     {
                         return grantIds;
                     }
                     reader.Close();
                     tempHash = new HashSet<int>();
-                }
 
-                //Средства бюджета субъекта Федерации
-                if (GrantsFilters.ThirdDepositor != null)
-                {
-                    cmd = new NpgsqlCommand(GrantsFilters.GetThirdDepositorsQuarry(), conn);
-                    reader = cmd.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            grantId = Convert.ToInt32(reader["grantId"]);
-                            tempHash.Add(grantId);
-                        }
-                        grantIds.IntersectWith(tempHash);
-                    }
                     reader.Close();
-                    if (grantIds.Count == 0)
-                    {
-                        return grantIds;
-                    }
-                    reader.Close();
-                    tempHash = new HashSet<int>();
-                }
-
-                //Средства Российских фондов поддержки науки
-                if (GrantsFilters.FourthDepositor != null)
-                {
-                    cmd = new NpgsqlCommand(GrantsFilters.GetFourthDepositorsQuarry(), conn);
-                    reader = cmd.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            grantId = Convert.ToInt32(reader["grantId"]);
-                            tempHash.Add(grantId);
-                        }
-                        grantIds.IntersectWith(tempHash);
-                    }
-                    reader.Close();
-                    if (grantIds.Count == 0)
-                    {
-                        return grantIds;
-                    }
-                    reader.Close();
-                    tempHash = new HashSet<int>();
-                }
-
-                //Средства хозяйствующих субъектов
-                if (GrantsFilters.FifthDepositor != null)
-                {
-                    cmd = new NpgsqlCommand(GrantsFilters.GetFifthDepositorsQuarry(), conn);
-                    reader = cmd.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            grantId = Convert.ToInt32(reader["grantId"]);
-                            tempHash.Add(grantId);
-                        }
-                        grantIds.IntersectWith(tempHash);
-                    }
-                    reader.Close();
-                    if (grantIds.Count == 0)
-                    {
-                        return grantIds;
-                    }
-                    reader.Close();
-                    tempHash = new HashSet<int>();
-                }
-
-                //Физ. лица
-                if (GrantsFilters.SixthDepositor != null)
-                {
-                    cmd = new NpgsqlCommand(GrantsFilters.GetSixthDepositorsQuarry(), conn);
-                    reader = cmd.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            grantId = Convert.ToInt32(reader["grantId"]);
-                            tempHash.Add(grantId);
-                        }
-                        grantIds.IntersectWith(tempHash);
-                    }
-                    reader.Close();
-                    if (grantIds.Count == 0)
-                    {
-                        return grantIds;
-                    }
-                    reader.Close();
-                    tempHash = new HashSet<int>();
-                }
-
-                //ФЦП мин обра или иные источники госзаказа(бюджет)
-                if (GrantsFilters.SeventhDepositor != null)
-                {
-                    cmd = new NpgsqlCommand(GrantsFilters.GetSeventhDepositorsQuarry(), conn);
-                    reader = cmd.ExecuteReader();
-
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            grantId = Convert.ToInt32(reader["grantId"]);
-                            tempHash.Add(grantId);
-                        }
-                        grantIds.IntersectWith(tempHash);
-                    }
-                    reader.Close();
-                    if (grantIds.Count == 0)
-                    {
-                        return grantIds;
-                    }
-                    reader.Close();
-                    tempHash = new HashSet<int>();
                 }
 
             }
+
 
             return grantIds;
         }

@@ -42,6 +42,9 @@ namespace ResearchProgram
             int count = (s.Length - s.Replace(substr, "").Length) / substr.Length;
             return count;
         }
+        /// <summary>
+        /// Нахождение всех отрендеренных элементов на форме
+        /// </summary>
         public static IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
         {
             if (depObj != null)
@@ -59,6 +62,42 @@ namespace ResearchProgram
                         yield return childOfChild;
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Нахождение всех элементов в xaml дереве
+        /// Опциональный параметр - тэг, с которым нужно найти элементы
+        /// </summary>
+        public static void GetLogicalElements(object parent, List<FrameworkElement> logicalElements, string tag=null)
+        {
+            if (parent == null) return;
+
+            if (parent.GetType().IsSubclassOf(typeof(FrameworkElement)))
+            {
+                if (tag == null)
+                {
+                    logicalElements.Add((FrameworkElement)parent);
+                }
+                else
+                {
+                    if (((FrameworkElement)parent).Tag != null)
+                    {
+                        if(((FrameworkElement)parent).Tag.ToString() == tag)
+                        {
+                            logicalElements.Add((FrameworkElement)parent);
+                        }
+                    }
+                }
+            }
+
+            DependencyObject doParent = parent as DependencyObject;
+
+            if (doParent == null) return;
+
+            foreach (object child in LogicalTreeHelper.GetChildren(doParent))
+            {
+                GetLogicalElements(child, logicalElements, tag);
             }
         }
 
