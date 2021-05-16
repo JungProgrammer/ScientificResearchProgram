@@ -73,7 +73,7 @@
                            Grid.Row="0"
                            FontSize="12"/>
 
-                    <StackPanel Orientation="Horizontal"
+                    <!--<StackPanel Orientation="Horizontal"
                                 Grid.Row="0"
                                 HorizontalAlignment="Center">
                         <Label Content="Даты поступления с"
@@ -90,7 +90,7 @@
                                     Margin="2 1 2 1"
                                     BorderThickness="0"
                                     SelectedDate="{Binding SelectedEndDate}"/>
-                    </StackPanel>
+                    </StackPanel>-->
 
                     <Button x:Name="grantsUpdateButton"
                             Grid.Row="0"

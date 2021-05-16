@@ -6,7 +6,7 @@
         xmlns:sdl="http://schemas.sdl.com/xaml" 
         xmlns:local="clr-namespace:ResearchProgram"
         mc:Ignorable="d"
-        Title="Поиск" Height="auto" Width="auto"
+        Title="Поиск" Height="150" Width="600"
         ResizeMode="NoResize" d:DesignWidth="903" d:DesignHeight="632">
 
     <Window.Resources>
@@ -311,7 +311,8 @@
                                     x:Name="GrantPriceLeftTextBox"
                                     Grid.Row="1"
                                     Grid.Column="0"
-                                    Margin="5"/>
+                                    Margin="5"
+                                    Tag="LeftTextBox"/>
                                 <ComboBox
                                     x:Name="GrantPriceLeftComboBox"
                                     Grid.Row="1"
@@ -341,7 +342,8 @@
                                     x:Name="GrantPriceRightTextBox"
                                     Grid.Row="1"
                                     Grid.Column="4"
-                                    Margin="5"/>
+                                    Margin="5"
+                                    Tag="RightTextBox"/>
 
                                 <Expander Grid.Row="2"
                                           Grid.ColumnSpan="5"

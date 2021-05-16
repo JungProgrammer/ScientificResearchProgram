@@ -254,10 +254,9 @@ namespace ResearchProgram
 
         public void GrantsUpdateButton_Click(object sender, EventArgs e)
         {
-            //GrantsFilters.StartDepositDate.Data = _selectedStartDate.ToString();
-            //GrantsFilters.EndDepositDate.Data = _selectedEndDate.ToString();
 
             GrantsDataTable.DefaultView.RowFilter = null;
+            GrantsFilters.ResetFilters();
 
             CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);

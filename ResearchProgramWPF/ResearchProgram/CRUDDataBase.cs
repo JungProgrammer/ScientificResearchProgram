@@ -462,16 +462,184 @@ namespace ResearchProgram
             return grant;
 
         }
+
         public static List<Grant> GetGrants()
         {
             List<Grant> grants = new List<Grant>();
-
-            List<int> grantIds = GetGrantIds().ToList();
-
-            for (int i = 0; i < grantIds.Count; i++)
+            if (GrantsFilters.IsActive())
             {
-                grants.Add(GetGrantById(grantIds[i]));
+                Console.WriteLine("FILTERS ACTIVE");
+                List<int> grantIds = GetGrantIds().ToList();
+                for(int i = 0; i < grantIds.Count; i++)
+                {
+                    grants.Add(GetGrantById(grantIds[i]));
+                }
             }
+            else
+            {
+                Console.WriteLine("FILTERS INACTIVE");
+                grants = GetGrantsInBulk();
+            }
+            return grants;
+        }
+        public static List<Grant> GetGrantsInBulk()
+        {
+            List<Grant> grants = new List<Grant>();
+            Dictionary<int, Grant> grantsDict = new Dictionary<int, Grant>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT grants.id as gid, grants.grantnumber as ggn, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO as lead_niokr, " +
+                                    " GRNTI, NIR, NOC, pricenonds, is_with_nds, " +
+                                    " first_node_id, second_node_id, third_node_id, fourth_node_id FROM grants " +
+                                    " LEFT JOIN persons p2 on grants.leadNIOKRId = p2.id " +
+                                    " ORDER BY grants.id; ", conn);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    int grantId = reader.GetInt16(0);
+                    grantsDict[grantId] = new Grant()
+                    {
+                        Id = grantId,
+                        grantNumber = reader["ggn"].ToString(),
+                        OKVED = reader["OKVED"].ToString(),
+                        NameNIOKR = reader["nameNIOKR"].ToString(),
+                        StartDate = Convert.ToDateTime(reader["startDate"]),
+                        EndDate = Convert.ToDateTime(reader["endDate"]),
+                        Price = reader.GetDouble(6),
+                        PriceNoNDS = reader.GetDouble(11),
+                        LeadNIOKR = new Person() { FIO = reader["lead_niokr"].ToString() },
+                        GRNTI = reader["GRNTI"].ToString(),
+                        NIR = reader["NIR"].ToString(),
+                        NOC = reader["NOC"].ToString(),
+                        isWIthNDS = Convert.ToBoolean(reader["is_with_nds"]),
+                        FirstNode = reader["first_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["first_node_id"])) : new UniversityStructureNode(),
+                        SecondNode = reader["second_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["second_node_id"])) : new UniversityStructureNode(),
+                        ThirdNode = reader["third_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["third_node_id"])) : new UniversityStructureNode(),
+                        FourthNode = reader["fourth_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["fourth_node_id"])) : new UniversityStructureNode()
+                    };
+                }
+            }
+            reader.Close();
+
+            // Получение типов исследования
+            cmd = new NpgsqlCommand("SELECT grantid, title FROM grantResearchType " +
+                                    "JOIN researchTypes rT on grantResearchType.researchTypeId = rT.id; ", conn);
+            reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    grantsDict[reader.GetInt16(0)].ResearchType.Add(new ResearchType()
+                    {
+                        Title = reader["title"].ToString()
+                    });
+                }
+            }
+            reader.Close();
+
+            // Получение приоритетных направлений
+            cmd = new NpgsqlCommand("SELECT grantid, title FROM grantPriorityTrends " +
+                                        "JOIN priorityTrends on grantPriorityTrends.priorityTrendsId = priorityTrends.id;", conn);
+            reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    grantsDict[reader.GetInt16(0)].PriorityTrands.Add(new PriorityTrend()
+                    {
+                        Title = reader["title"].ToString()
+                    });
+                }
+            }
+            reader.Close();
+
+            // Получение типов наук
+            cmd = new NpgsqlCommand("SELECT grantid, title FROM grantScienceTypes " +
+                                        "JOIN scienceTypes sT on grantScienceTypes.scienceTypesId = sT.id;", conn);
+            reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    grantsDict[reader.GetInt16(0)].ScienceType.Add(new ScienceType()
+                    {
+                        Title = reader["title"].ToString()
+                    });
+                }
+            }
+            reader.Close();
+
+            // Получение спонсоров
+            cmd = new NpgsqlCommand("SELECT grantid, title, PartSum, receiptDate, PartSumNoNDS FROM grantDeposits " +
+                                        "JOIN depositors d on grantDeposits.sourceId = d.id;", conn);
+            reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                double grantDepositSum;
+                double grantDepositSumNoNDS;
+                string receiptDate;
+                while (reader.Read())
+                {
+                    grantDepositSum = reader.GetDouble(2);
+                    grantDepositSumNoNDS = reader.GetDouble(4);
+                    receiptDate = reader["receiptDate"] != DBNull.Value ? DateTime.Parse(reader["receiptDate"].ToString()).ToShortDateString() : string.Empty;
+                    grantsDict[reader.GetInt16(0)].Depositor.Add(new Depositor()
+                    {
+                        Title = reader["title"].ToString(),
+                    });
+                    grantsDict[reader.GetInt16(0)].DepositorSum.Add(grantDepositSum);
+                    grantsDict[reader.GetInt16(0)].DepositorSumNoNDS.Add(grantDepositSumNoNDS);
+                    grantsDict[reader.GetInt16(0)].ReceiptDate.Add(receiptDate);
+                }
+            }
+            reader.Close();
+
+            // Получение заказчиков
+            cmd = new NpgsqlCommand("SELECT grant_id, customer_id, title, short_title FROM grants_customers " +
+                                        "JOIN customers ON customers.customerid = grants_customers.customer_id;", conn);
+            reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    grantsDict[reader.GetInt16(0)].Customer.Add(new Customer()
+                    {
+                        Id = Convert.ToInt32(reader["customer_id"]),
+                        Title = reader["title"].ToString(),
+                        ShortTitle = reader["short_title"].ToString()
+                    });
+                }
+            }
+            reader.Close();
+
+            // Получение исполнителей
+            cmd = new NpgsqlCommand("SELECT grantid, FIO, executorId FROM executors " +
+                                    "JOIN persons p on executors.executorId = p.id;", conn);
+            reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    grantsDict[reader.GetInt16(0)].Executor.Add(new Person()
+                    {
+                        Id = Convert.ToInt32(reader["executorId"]),
+                        FIO = reader["FIO"].ToString()
+                    });
+                }
+            }
+
+            reader.Close();
+
+            grants = grantsDict.Values.ToList();
+
             return grants;
         }
 
@@ -860,129 +1028,6 @@ namespace ResearchProgram
             {
                 WorkerWithTablesOnMainForm.AddRowToCustomersTable(dataTable, customers[i]);
             }
-        }
-
-        /// <summary>
-        /// Ищет индекс гранта в массиве по id гранта
-        /// </summary>
-        /// <param name="grants"></param>
-        /// <param name="id"></param>
-        /// <returns></returns>
-        //static int ShowGrantIndex(Grant[] grants, int id)
-        //{
-        //    int index = 0;
-        //    for (int i = 0; i < grants.Length; i++)
-        //    {
-        //        if (grants[i].Id == id) index = i;
-        //    }
-
-        //    return index;
-        //}
-
-        // Для метода GetGrantsHeadersForFilters
-        enum DataToComboBox
-        {
-            okved = 1,
-            customer = 4,
-            deposits = 8,
-            leadNIOKR = 9,
-            institution = 10,
-            unit = 11,
-            kafedra = 12,
-            laboratory = 13,
-            executors = 14,
-            researchTypes = 15,
-            priorityTrends = 16,
-            ScienceTypeItem = 17,
-            NIRItem = 18
-        }
-
-        /// <summary>
-        /// Получение названия полей
-        /// </summary>
-        /// <returns></returns>
-        public static ObservableCollection<GrantHeader> GetGrantsHeadersForFilters()
-        {
-            ObservableCollection<GrantHeader> grantHeaders = new ObservableCollection<GrantHeader>();
-
-            List<OKVED> okvedList = new List<OKVED>
-            {
-                new OKVED() {Title = "72.19"},
-                new OKVED() {Title = "72.20"}
-            };
-            ObservableCollection<Customer> customerList = GetCustomers();
-            ObservableCollection<ScienceType> scienceTypeList = GetScienceTypes();
-            ObservableCollection<ResearchType> researchTypeList = GetResearchTypes();
-            ObservableCollection<PriorityTrend> priorityTrendList = GetPriorityTrends();
-            ObservableCollection<Person> peopleList = GetPersons();
-            List<Depositor> depositList = GetDeposits();
-            List<Nir> nirList = new List<Nir>() {
-                new Nir() {Title = "НИР" },
-                new Nir() {Title = "УСЛУГА" }
-            };
-
-
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, field_russian, field_english, is_combobox_needed, is_textbox_needed, is_comparison_needed, is_date_needed FROM filter_fields ORDER BY id", conn);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                GrantHeader newGrantHeader;
-                DataToComboBox curId;
-                while (reader.Read())
-                {
-                    curId = (DataToComboBox)reader[0];
-
-                    newGrantHeader = new GrantHeader()
-                    {
-                        nameOnRussia = reader[1].ToString(),
-                        nameForElement = reader[2].ToString(),
-                        Is_combobox_needed = (bool)reader[3],
-                        Is_textbox_needed = (bool)reader[4],
-                        Is_comparison_needed = (bool)reader[5],
-                        Is_date_needed = (bool)reader[6]
-                    };
-                    //switch (curId)
-                    //{
-                    //    case DataToComboBox.okved:
-                    //        newGrantHeader.DataToComboBox = new List<IContainer>(okvedList);
-                    //        break;
-                    //    case DataToComboBox.customer:
-                    //        newGrantHeader.DataToComboBox = new List<IContainer>(customerList);
-                    //        break;
-                    //    case DataToComboBox.deposits:
-                    //        newGrantHeader.DataToComboBox = depositList.ConvertAll(x => (IContainer)x);
-                    //        break;
-                    //    case DataToComboBox.leadNIOKR:
-                    //        newGrantHeader.DataToComboBox = new List<IContainer>(peopleList);
-                    //        break;
-                    //    case DataToComboBox.executors:
-                    //        newGrantHeader.DataToComboBox = new List<IContainer>(peopleList);
-                    //        break;
-                    //    case DataToComboBox.researchTypes:
-                    //        newGrantHeader.DataToComboBox = researchTypeList.ConvertAll(x => (IContainer)x);
-                    //        break;
-                    //    case DataToComboBox.priorityTrends:
-                    //        newGrantHeader.DataToComboBox = priorityTrendList.ConvertAll(x => (IContainer)x);
-                    //        break;
-                    //    case DataToComboBox.ScienceTypeItem:
-                    //        newGrantHeader.DataToComboBox = scienceTypeList.ConvertAll(x => (IContainer)x);
-                    //        break;
-                    //    case DataToComboBox.NIRItem:
-                    //        newGrantHeader.DataToComboBox = nirList.ConvertAll(x => (IContainer)x);
-                    //        break;
-                    //}
-
-                    grantHeaders.Add(newGrantHeader);
-                }
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
-            reader.Close();
-
-            return grantHeaders;
         }
 
         /// <summary>

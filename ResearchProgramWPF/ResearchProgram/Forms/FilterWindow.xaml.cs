@@ -133,29 +133,14 @@ namespace ResearchProgram.Forms
                 new OKVED() {Title = "72.20"}
             };
 
-            GrantPriceLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-            GrantPriceRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+            List<FrameworkElement> frameworkElements = new List<FrameworkElement>();
+            Utilities.GetLogicalElements(this, frameworkElements, "LeftTextBox");
+            Utilities.GetLogicalElements(this, frameworkElements, "RightTextBox");
+            foreach (FrameworkElement frameworkElement in frameworkElements)
+            {
+                frameworkElement.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
+            }
 
-            FirstDepositLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-            FirstDepositRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-
-            SecondDepositLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-            SecondDepositRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-
-            ThirdDepositLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-            ThirdDepositRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-
-            FourthDepositLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-            FourthDepositRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-
-            FifthDepositLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-            FifthDepositRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-
-            SixthDepositLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-            SixthDepositRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-
-            SeventhDepositLeftTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-            SeventhDepositRightTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
 
 
             SelectedOkved = new ObservableCollection<OKVED>();
@@ -565,7 +550,10 @@ namespace ResearchProgram.Forms
             {
                 GrantsFilters.PriorityTrend = SelectedPriorityTrend;
             }
-            Console.WriteLine(CRUDDataBase.GetGrantIds().Count);
+            Console.WriteLine(GrantsFilters.IsActive());
+            CRUDDataBase.ConnectToDataBase();
+            CRUDDataBase.LoadGrantsTable(GrantsDataTable);
+            CRUDDataBase.CloseConnection();
         }
     }
 }
