@@ -200,7 +200,6 @@
     <Compile Include="Forms\RanksWindow.xaml.cs">
       <DependentUpon>RanksWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GrantHeader.cs" />
     <Compile Include="Classes\GrantsFilters.cs" />
     <Compile Include="IContainer.cs" />
     <Compile Include="Classes\Job.cs" />

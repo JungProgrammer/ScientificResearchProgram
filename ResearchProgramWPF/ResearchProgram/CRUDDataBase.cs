@@ -299,11 +299,12 @@ namespace ResearchProgram
         {
             Grant grant = new Grant();
             Console.WriteLine(grantId);
+            NpgsqlConnection connection = GetNewConnection();
 
             // Получение типов исследования
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT title FROM grantResearchType " +
                                     "JOIN researchTypes rT on grantResearchType.researchTypeId = rT.id " +
-                                    "WHERE grantId = :grantId; ", conn);
+                                    "WHERE grantId = :grantId; ", connection);
             cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
@@ -322,7 +323,7 @@ namespace ResearchProgram
             // Получение приоритетных направлений
             cmd = new NpgsqlCommand("SELECT title FROM grantPriorityTrends " +
                                         "JOIN priorityTrends on grantPriorityTrends.priorityTrendsId = priorityTrends.id " +
-                                    "WHERE grantId = :grantId; ", conn);
+                                    "WHERE grantId = :grantId; ", connection);
             cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
             reader = cmd.ExecuteReader();
 
@@ -341,7 +342,7 @@ namespace ResearchProgram
             // Получение типов наук
             cmd = new NpgsqlCommand("SELECT  title FROM grantScienceTypes " +
                                         "JOIN scienceTypes sT on grantScienceTypes.scienceTypesId = sT.id " +
-                                    "WHERE grantId = :grantId; ", conn);
+                                    "WHERE grantId = :grantId; ", connection);
             cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
             reader = cmd.ExecuteReader();
 
@@ -360,7 +361,7 @@ namespace ResearchProgram
             // Получение спонсоров
             cmd = new NpgsqlCommand("SELECT title, PartSum, receiptDate, PartSumNoNDS FROM grantDeposits " +
                                         "JOIN depositors d on grantDeposits.sourceId = d.id " +
-                                    "WHERE grantId = :grantId; ", conn);
+                                    "WHERE grantId = :grantId; ", connection);
             cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
             reader = cmd.ExecuteReader();
 
@@ -388,7 +389,7 @@ namespace ResearchProgram
             // Получение заказчиков
             cmd = new NpgsqlCommand("SELECT customer_id, title, short_title FROM grants_customers " +
                                         "JOIN customers ON customers.customerid = grants_customers.customer_id " +
-                                                                            "WHERE grant_id = :grantId; ", conn);
+                                                                            "WHERE grant_id = :grantId; ", connection);
             cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
             reader = cmd.ExecuteReader();
 
@@ -409,7 +410,7 @@ namespace ResearchProgram
             // Получение исполнителей
             cmd = new NpgsqlCommand("SELECT  FIO, executorId FROM executors " +
                                     "JOIN persons p on executors.executorId = p.id " +
-                                    "WHERE grantId = :grantId; ", conn);
+                                    "WHERE grantId = :grantId; ", connection);
             cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
 
             reader = cmd.ExecuteReader();
@@ -434,7 +435,7 @@ namespace ResearchProgram
                                     "first_node_id, second_node_id, third_node_id, fourth_node_id FROM grants " +
                                     "LEFT JOIN persons p2 on grants.leadNIOKRId = p2.id " +
                                     "WHERE grants.id = :grantId " +
-                                    "ORDER BY grants.id; ", conn);
+                                    "ORDER BY grants.id; ", connection);
             cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
             reader = cmd.ExecuteReader();
 
@@ -460,6 +461,8 @@ namespace ResearchProgram
                 grant.FourthNode = reader["fourth_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["fourth_node_id"])) : new UniversityStructureNode();
             }
             reader.Close();
+
+            connection.Close();
             return grant;
 
         }
