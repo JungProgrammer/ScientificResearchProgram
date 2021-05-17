@@ -404,49 +404,61 @@ namespace ResearchProgram
                 }
 
                 Dispatcher.Invoke(() => FirstNodeComboBox.SelectedIndex = -1);
-                if (grantToEdit.FirstNode.Title != null)
+                if (grantToEdit.FirstNode != null)
                 {
-                    for (int i = 0; i < FirstNodeList.Count; i++)
+                    if (grantToEdit.FirstNode.Title != null)
                     {
-                        if (grantToEdit.FirstNode.Id == FirstNodeList[i].Id)
+                        for (int i = 0; i < FirstNodeList.Count; i++)
                         {
-                            Dispatcher.Invoke(() => FirstNodeComboBox.SelectedIndex = i);
+                            if (grantToEdit.FirstNode.Id == FirstNodeList[i].Id)
+                            {
+                                Dispatcher.Invoke(() => FirstNodeComboBox.SelectedIndex = i);
+                            }
                         }
                     }
                 }
 
                 Dispatcher.Invoke(() => SecondNodeComboBox.SelectedIndex = -1);
-                if (grantToEdit.SecondNode.Title != null)
+                if (grantToEdit.SecondNode != null)
                 {
-                    for (int i = 0; i < SecondNodeList.Count; i++)
+                    if (grantToEdit.SecondNode.Title != null)
                     {
-                        if (grantToEdit.SecondNode.Id == SecondNodeList[i].Id)
+                        for (int i = 0; i < SecondNodeList.Count; i++)
                         {
-                            Dispatcher.Invoke(() => SecondNodeComboBox.SelectedIndex = i);
+                            if (grantToEdit.SecondNode.Id == SecondNodeList[i].Id)
+                            {
+                                Dispatcher.Invoke(() => SecondNodeComboBox.SelectedIndex = i);
+                            }
                         }
                     }
                 }
 
                 Dispatcher.Invoke(() => ThirdNodeComboBox.SelectedIndex = -1);
-                if (grantToEdit.ThirdNode.Title != null)
+                if (grantToEdit.ThirdNode != null)
                 {
-                    for (int i = 0; i < ThirdNodeList.Count; i++)
+                    if (grantToEdit.ThirdNode.Title != null)
                     {
-                        if (grantToEdit.ThirdNode.Id == ThirdNodeList[i].Id)
+                        for (int i = 0; i < ThirdNodeList.Count; i++)
                         {
-                            Dispatcher.Invoke(() => ThirdNodeComboBox.SelectedIndex = i);
+                            if (grantToEdit.ThirdNode.Id == ThirdNodeList[i].Id)
+                            {
+                                Dispatcher.Invoke(() => ThirdNodeComboBox.SelectedIndex = i);
+                            }
                         }
                     }
                 }
 
                 Dispatcher.Invoke(() => FourthComboBox.SelectedIndex = -1);
-                if (grantToEdit.FourthNode.Title != null)
+                if (grantToEdit.FourthNode != null)
                 {
-                    for (int i = 0; i < FourthNodeList.Count; i++)
+                    if (grantToEdit.FourthNode.Title != null)
                     {
-                        if (grantToEdit.FourthNode.Id == FourthNodeList[i].Id)
+                        for (int i = 0; i < FourthNodeList.Count; i++)
                         {
-                            Dispatcher.Invoke(() => FourthComboBox.SelectedIndex = i);
+                            if (grantToEdit.FourthNode.Id == FourthNodeList[i].Id)
+                            {
+                                Dispatcher.Invoke(() => FourthComboBox.SelectedIndex = i);
+                            }
                         }
                     }
                 }
@@ -832,12 +844,12 @@ namespace ResearchProgram
 
             if (startDateDatePicker.SelectedDate != null)
             {
-                newGrant.StartDate = (DateTime)startDateDatePicker.SelectedDate;
+                newGrant.StartDate = startDateDatePicker.SelectedDate;
             }
 
             if (endDateDatePicker.SelectedDate != null)
             {
-                newGrant.EndDate = (DateTime)endDateDatePicker.SelectedDate;
+                newGrant.EndDate = endDateDatePicker.SelectedDate;
             }
 
             if (priceTextBox.Text.ToString() != "")
@@ -1056,6 +1068,7 @@ namespace ResearchProgram
                     // Закрываем соединение с БД
                     CRUDDataBase.CloseConnection();
 
+                    ((MainWindow)Owner).ReloadGrantsWithFilters();
                     MessageBox.Show("Информация о договоре успешно изменена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
                 // Если создание нового договора
@@ -1072,7 +1085,7 @@ namespace ResearchProgram
                             case MessageBoxResult.Yes:
                                 CRUDDataBase.InsertNewGrantToDB(newGrant);
                                 MessageBox.Show("Договор успешно создан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
-                                ((MainWindow)Owner).GrantsUpdateButton_Click(sender, e);
+                                ((MainWindow)Owner).ReloadGrantsWithFilters();
                                 Close();
                                 break;
                             case MessageBoxResult.No:
@@ -1085,7 +1098,7 @@ namespace ResearchProgram
                         // Закрываем соединение с БД
 
                         MessageBox.Show("Договор успешно создан", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
-                        ((MainWindow)Owner).GrantsUpdateButton_Click(sender, e);
+                        ((MainWindow)Owner).ReloadGrantsWithFilters();
                         Close();
                     }
                     CRUDDataBase.CloseConnection();
@@ -1106,7 +1119,7 @@ namespace ResearchProgram
                 case MessageBoxResult.Yes:
                     CRUDDataBase.DeleteGrant(grantNumber);
                     MessageBox.Show("Удаление успешно", "Удаление договора", MessageBoxButton.OK, MessageBoxImage.Information);
-                    ((MainWindow)Owner).GrantsUpdateButton_Click(sender, e);
+                    ((MainWindow)Owner).ReloadGrantsWithFilters();
                     Close();
                     break;
             }

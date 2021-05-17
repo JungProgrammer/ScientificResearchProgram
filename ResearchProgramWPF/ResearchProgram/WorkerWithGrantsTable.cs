@@ -132,7 +132,7 @@ namespace ResearchProgram
             }
             foreach (double depositorSum in depositDict.Values)
             {
-                depositsSum += string.Format("{0:0.##}", depositorSum) + '\n';
+                depositsSum += string.Format("{0:#,0.##}", depositorSum) + '\n';
             }
 
 
@@ -149,9 +149,9 @@ namespace ResearchProgram
             row["ОКВЭД"] = grant.OKVED;
             row["Наименование НИОКР"] = grant.NameNIOKR;
             row["Заказчик"] = string.Join("\n", grant.Customer);
-            row["Дата начала"] = grant.StartDate == new DateTime(1, 1, 1) ? "" : grant.StartDate.ToString("dd.MM.yyyy");
-            row["Дата завершения"] = grant.EndDate == new DateTime(1, 1, 1) ? "" : grant.EndDate.ToString("dd.MM.yyyy");
-            row["Стоимость договора"] = (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey) ? String.Format("{0:0.##}", grant.PriceNoNDS) : String.Format("{0:0.##}", grant.Price);
+            row["Дата начала"] = grant.StartDate == null ? "" : grant.StartDate?.ToString("dd.MM.yyyy");
+            row["Дата завершения"] = grant.EndDate == null ? "" : grant.EndDate?.ToString("dd.MM.yyyy");
+            row["Стоимость договора"] = (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey) ? String.Format("{0:#,0.##}", grant.PriceNoNDS) : String.Format("{0:#,0.##}", grant.Price);
             row["Источник финансирования"] = depositors;
             row["Поступления"] = depositsSum;
             row["Руководитель НИОКР"] = grant.LeadNIOKR.shortName();
@@ -183,7 +183,7 @@ namespace ResearchProgram
             row["#"] = countOfPersonRows.ToString();
             row["id"] = person.Id;
             row["ФИО"] = person.FIO;
-            row["Дата рождения"] = person.BitrhDate == new DateTime(1, 1, 1) ? "" : person.BitrhDate.ToString("dd.MM.yyyy");
+            row["Дата рождения"] = person.BitrhDate == null ? "" : person.BitrhDate?.ToString("dd.MM.yyyy");
             row["Пол"] = person.Sex ? "M" : "Ж";
             row["Степень"] = person.Degree.Title;
             row["Звание"] = person.Rank.Title;

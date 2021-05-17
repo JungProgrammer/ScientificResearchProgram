@@ -298,6 +298,8 @@ namespace ResearchProgram
         public static Grant GetGrantById(int grantId)
         {
             Grant grant = new Grant();
+            grant.Id = grantId;
+
             Console.WriteLine(grantId);
             NpgsqlConnection connection = GetNewConnection();
 
@@ -446,8 +448,8 @@ namespace ResearchProgram
                 grant.grantNumber = reader["ggn"].ToString();
                 grant.OKVED = reader["OKVED"].ToString();
                 grant.NameNIOKR = reader["nameNIOKR"].ToString();
-                grant.StartDate = Convert.ToDateTime(reader["startDate"]);
-                grant.EndDate = Convert.ToDateTime(reader["endDate"]);
+                grant.StartDate = reader["startDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(reader["startDate"]) : null;
+                grant.EndDate = reader["endDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(reader["endDate"]) : null;
                 grant.Price = reader.GetDouble(5);
                 grant.PriceNoNDS = reader.GetDouble(10);
                 grant.LeadNIOKR = new Person() { FIO = reader["lead_niokr"].ToString() };
@@ -509,8 +511,8 @@ namespace ResearchProgram
                         grantNumber = reader["ggn"].ToString(),
                         OKVED = reader["OKVED"].ToString(),
                         NameNIOKR = reader["nameNIOKR"].ToString(),
-                        StartDate = Convert.ToDateTime(reader["startDate"]),
-                        EndDate = Convert.ToDateTime(reader["endDate"]),
+                        StartDate = reader["startDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(reader["startDate"]) : null,
+                        EndDate = reader["endDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(reader["endDate"]) : null,
                         Price = reader.GetDouble(6),
                         PriceNoNDS = reader.GetDouble(11),
                         LeadNIOKR = new Person() { FIO = reader["lead_niokr"].ToString() },
@@ -1108,6 +1110,7 @@ namespace ResearchProgram
         /// <returns></returns>
         public static ObservableCollection<Person> GetPersons(bool is_jobs_needed = false)
         {
+            // МОЖНО ПЕРЕПИСАТЬ ДЛЯ УВЕЛИЧЕНИЯ ПРОИЗВОДИТЕЛЬНОСТИ (КАК В GetGrantsInBulk() )
             ObservableCollection<Person> personsList = new ObservableCollection<Person>();
             List<int> persons_ids = new List<int>();
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT id FROM persons ORDER BY FIO; ", conn);
@@ -1119,7 +1122,7 @@ namespace ResearchProgram
             reader.Close();
             for (int i = 0; i < persons_ids.Count; i++)
             {
-                personsList.Add(GetPerson(persons_ids[i], is_jobs_needed));
+                personsList.Add(GetPersonById(persons_ids[i], is_jobs_needed));
             }
 
             return personsList;
@@ -1144,7 +1147,7 @@ namespace ResearchProgram
             reader.Close();
             for (int i = 0; i < persons_ids.Count; i++)
             {
-                personsList.Add(GetPerson(persons_ids[i], is_jobs_needed, connection));
+                personsList.Add(GetPersonById(persons_ids[i], is_jobs_needed, connection));
             }
 
             connection.Close();
@@ -1152,7 +1155,7 @@ namespace ResearchProgram
             return personsList;
         }
 
-        public static Person GetPerson(int person_id, bool is_jobs_needed = false, NpgsqlConnection connection = null)
+        public static Person GetPersonById(int person_id, bool is_jobs_needed = false, NpgsqlConnection connection = null)
         {
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT persons.id as pid, fio, birthdate, sex, degree_id,wd.title, rank_id, wr.title FROM persons " +
                                                     "LEFT  JOIN work_degree wd ON persons.degree_id = wd.id " +
@@ -1170,7 +1173,7 @@ namespace ResearchProgram
 
                 newPerson.FIO = reader[1].ToString();
 
-                newPerson.BitrhDate = (DateTime)reader[2];
+                newPerson.BitrhDate = reader["birthdate"] is DBNull ? null : (DateTime?)reader["birthdate"];
 
                 newPerson.Sex = (bool)reader[3];
 
@@ -1521,7 +1524,14 @@ namespace ResearchProgram
                 ":degree_id, " +
                 ":rank_id);", conn);
             cmd.Parameters.Add(new NpgsqlParameter("fio", person.FIO));
-            cmd.Parameters.Add(new NpgsqlParameter("birthdate", person.BitrhDate));
+            if (person.BitrhDate == null)
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("birthdate", DBNull.Value));
+            }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("birthdate", person.BitrhDate));
+            }
             cmd.Parameters.Add(new NpgsqlParameter("sex", person.Sex));
             if (person.Degree.Title != null)
             {
@@ -1614,7 +1624,14 @@ namespace ResearchProgram
         public static void UpdateStartDate(Grant fixedGrant)
         {
             NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET startdate = :startdate WHERE id = :id", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("startdate", fixedGrant.StartDate));
+            if (fixedGrant.StartDate == null)
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("startdate", DBNull.Value));
+            }
+            else 
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("startdate", fixedGrant.StartDate));
+            }
             cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
             cmd.ExecuteNonQuery();
         }
@@ -1625,7 +1642,14 @@ namespace ResearchProgram
         public static void UpdateEndDate(Grant fixedGrant)
         {
             NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET enddate = :enddate WHERE id = :id", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("enddate", fixedGrant.EndDate));
+            if (fixedGrant.EndDate == null)
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("enddate", DBNull.Value));
+            }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("enddate", fixedGrant.EndDate));
+            }
             cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
             cmd.ExecuteNonQuery();
         }
@@ -1840,7 +1864,14 @@ namespace ResearchProgram
         public static void UpdateBirthDate(Person fixedPerson)
         {
             NpgsqlCommand cmd = new NpgsqlCommand("UPDATE persons SET birthdate = :bd WHERE id = :id", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("bd", fixedPerson.BitrhDate));
+            if (fixedPerson.BitrhDate == null)
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("bd", DBNull.Value));
+            }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("bd", fixedPerson.BitrhDate));
+            }
             cmd.Parameters.Add(new NpgsqlParameter("id", fixedPerson.Id));
             cmd.ExecuteNonQuery();
         }
@@ -2048,8 +2079,24 @@ namespace ResearchProgram
             cmd.Parameters.Add(new NpgsqlParameter("grantnumber", grant.grantNumber));
             cmd.Parameters.Add(new NpgsqlParameter("okved", grant.OKVED));
             cmd.Parameters.Add(new NpgsqlParameter("nameniokr", grant.NameNIOKR));
-            cmd.Parameters.Add(new NpgsqlParameter("startdate", grant.StartDate));
-            cmd.Parameters.Add(new NpgsqlParameter("enddate", grant.EndDate));
+
+            if (grant.StartDate == null)
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("startdate", DBNull.Value));
+            }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("startdate", grant.StartDate));
+            }
+            if (grant.EndDate == null)
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("enddate", DBNull.Value));
+            }
+            else
+            {
+                cmd.Parameters.Add(new NpgsqlParameter("enddate", grant.EndDate));
+            }
+
             if (grant.LeadNIOKR != null)
                 cmd.Parameters.Add(new NpgsqlParameter("leadniokrid", grant.LeadNIOKR.Id));
             else
@@ -2286,7 +2333,7 @@ namespace ResearchProgram
         public static Person GetPersonByPersonId(string personId)
         {
             ConnectToDataBase();
-            Person person = GetPerson(Convert.ToInt32(personId), true);
+            Person person = GetPersonById(Convert.ToInt32(personId), true);
             CloseConnection();
             return person;
         }

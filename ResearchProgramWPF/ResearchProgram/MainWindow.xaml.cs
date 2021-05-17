@@ -64,20 +64,6 @@ namespace ResearchProgram
 
         public DataTable CustomersDataTable { get; set; }
 
-        //// Окно фильтров
-        //FiltersWindow filtersWindow;
-
-        //public List<Person> _personsList;
-        //public List<Person> PersonsList {
-        //	get{
-        //		return _personsList;
-        //	}
-        //	set{
-        //		_personsList = value;
-        //		OnPropertyChanged("PersonsList");
-        //	}
-        //}
-
         public MainWindow()
         {
             InitializeComponent();
@@ -93,13 +79,6 @@ namespace ResearchProgram
             LoadPeopleTable();
             //Загружаем данные в таблицу заказчиков
             LoadCustomerTable();
-
-            // Загрука окна фильтров без его открытия
-            //LoadFilterWindow();
-
-            //CRUDDataBase.ConnectToDataBase();
-            //PersonsList = CRUDDataBase.GetPersons();
-            //CRUDDataBase.CloseConnection();
 
             CRUDDataBase.GetDepositsVerbose();
 
@@ -253,9 +232,14 @@ namespace ResearchProgram
             }
         }
 
+        public void ReloadGrantsWithFilters()
+        {
+            CRUDDataBase.ConnectToDataBase();
+            CRUDDataBase.LoadGrantsTable(GrantsDataTable);
+            CRUDDataBase.CloseConnection();
+        }
         public void GrantsUpdateButton_Click(object sender, EventArgs e)
         {
-
             GrantsDataTable.DefaultView.RowFilter = null;
             GrantsFilters.ResetFilters();
 

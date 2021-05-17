@@ -272,7 +272,7 @@ namespace ResearchProgram
 
             if (BirthDateDatePicker.SelectedDate != null)
             {
-                newPerson.BitrhDate = (DateTime)BirthDateDatePicker.SelectedDate;
+                newPerson.BitrhDate = (DateTime?)BirthDateDatePicker.SelectedDate;
             }
 
             newPerson.Sex = _sexSelected;

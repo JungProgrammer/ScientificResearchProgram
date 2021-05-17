@@ -11,7 +11,7 @@ namespace ResearchProgram
         {
             Id = 0;
             FIO = "";
-            BitrhDate = DateTime.MinValue;
+            BitrhDate = null;
             Sex = true;
             Degree = new WorkDegree();
             Rank = new WorkRank();
@@ -20,7 +20,7 @@ namespace ResearchProgram
 
         public int Id { get; set; }
         public string FIO { get; set; }
-        public DateTime BitrhDate { get; set; }
+        public DateTime? BitrhDate { get; set; }
         public bool Sex { get; set; }
         public WorkDegree Degree { get; set; }
         public WorkRank Rank { get; set; }

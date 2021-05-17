@@ -550,6 +550,8 @@ namespace ResearchProgram.Forms
             {
                 GrantsFilters.PriorityTrend = SelectedPriorityTrend;
             }
+            GrantsDataTable.DefaultView.RowFilter = null;
+
             Console.WriteLine(GrantsFilters.IsActive());
             CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);

@@ -35,9 +35,9 @@ namespace ResearchProgram
         // Заказчик
         public List<Customer> Customer { get; set; }
         // Дата начала договора
-        public DateTime StartDate { get; set; }
+        public DateTime? StartDate { get; set; }
         // Дата окончания договора
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; }
         // Цена договора
         public double Price { get; set; }
         // Цена договора без НДС
