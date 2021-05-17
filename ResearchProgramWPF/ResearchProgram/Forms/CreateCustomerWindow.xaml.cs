@@ -44,6 +44,9 @@ namespace ResearchProgram
                     CRUDDataBase.AddNewCustomer(customer);
                     MessageBox.Show("Добавление успешно ", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
+
+                FormsManager.UpdateOpenedWindows();
+
                 ((MainWindow)Owner).CustomersUpdateButton_Click(sender, e);
                 Close();
             }

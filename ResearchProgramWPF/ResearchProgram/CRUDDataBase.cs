@@ -27,6 +27,7 @@ namespace ResearchProgram
 
 
         private static NpgsqlConnection conn;
+        
 
         /// <summary>
         /// Подключение к БД
@@ -1121,12 +1122,39 @@ namespace ResearchProgram
             return personsList;
         }
 
-        public static Person GetPerson(int person_id, bool is_jobs_needed = false)
+        /// <summary>
+        /// Получение списка людей в новом соедигении
+        /// </summary>
+        /// <returns></returns>
+        public static ObservableCollection<Person> GetPersonsInNewThread(bool is_jobs_needed = false)
+        {
+            NpgsqlConnection connection = GetNewConnection();
+
+            ObservableCollection<Person> personsList = new ObservableCollection<Person>();
+            List<int> persons_ids = new List<int>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id FROM persons ORDER BY FIO; ", connection);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+            if (reader.HasRows)
+                while (reader.Read())
+                    persons_ids.Add(Convert.ToInt32(reader[0]));
+
+            reader.Close();
+            for (int i = 0; i < persons_ids.Count; i++)
+            {
+                personsList.Add(GetPerson(persons_ids[i], is_jobs_needed, connection));
+            }
+
+            connection.Close();
+
+            return personsList;
+        }
+
+        public static Person GetPerson(int person_id, bool is_jobs_needed = false, NpgsqlConnection connection = null)
         {
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT persons.id as pid, fio, birthdate, sex, degree_id,wd.title, rank_id, wr.title FROM persons " +
                                                     "LEFT  JOIN work_degree wd ON persons.degree_id = wd.id " +
                                                     "LEFT JOIN work_rank wr on persons.rank_id = wr.id " +
-                                                    "WHERE persons.id = :person_id; ", conn);
+                                                    "WHERE persons.id = :person_id; ", connection == null ? conn : connection);
             cmd.Parameters.Add(new NpgsqlParameter(":person_id", person_id));
 
             NpgsqlDataReader reader = cmd.ExecuteReader();
@@ -1315,6 +1343,41 @@ namespace ResearchProgram
                 Debug.WriteLine("No rows found.");
             }
             reader.Close();
+
+            return customersList;
+        }
+
+        /// <summary>
+        /// Получить заказчиков в новом потоке
+        /// </summary>
+        /// <returns></returns>
+        public static ObservableCollection<Customer> GetCustomersInNewThread()
+        {
+            NpgsqlConnection connection = GetNewConnection();
+
+            ObservableCollection<Customer> customersList = new ObservableCollection<Customer>();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT customerid, title, short_title FROM customers ORDER BY title;", connection);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    customersList.Add(new Customer()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString(),
+                        ShortTitle = reader[2].ToString()
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+            connection.Close();
 
             return customersList;
         }
@@ -2375,6 +2438,36 @@ namespace ResearchProgram
             return workDegrees;
         }
 
+        public static List<WorkDegree> GetWorkDegreesInNewThread()
+        {
+            NpgsqlConnection connection = GetNewConnection();
+
+            List<WorkDegree> workDegrees = new List<WorkDegree>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM work_degree ORDER BY title;", connection);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    workDegrees.Add(new WorkDegree()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+            connection.Close();
+            return workDegrees;
+        }
+
         public static List<WorkRank> GetWorkRanks()
         {
             List<WorkRank> workRanks = new List<WorkRank>();
@@ -2398,6 +2491,36 @@ namespace ResearchProgram
                 Debug.WriteLine("No rows found.");
             }
             reader.Close();
+            return workRanks;
+        }
+
+        public static List<WorkRank> GetWorkRanksInNewThreads()
+        {
+            NpgsqlConnection connection = GetNewConnection();
+
+            List<WorkRank> workRanks = new List<WorkRank>();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM work_rank ORDER BY title;", connection);
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    workRanks.Add(new WorkRank()
+                    {
+                        Id = Convert.ToInt32(reader[0]),
+                        Title = reader[1].ToString()
+                    });
+                }
+            }
+            else
+            {
+                Debug.WriteLine("No rows found.");
+            }
+            reader.Close();
+
+            connection.Close();
             return workRanks;
         }
 

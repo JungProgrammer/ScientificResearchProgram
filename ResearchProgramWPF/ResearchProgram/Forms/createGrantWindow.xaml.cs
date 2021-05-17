@@ -1,4 +1,5 @@
 ﻿using DotNetKit.Windows.Controls;
+using Npgsql;
 using ResearchProgram.Classes;
 using System;
 using System.Collections.Generic;
@@ -7,6 +8,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -72,31 +74,168 @@ namespace ResearchProgram
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
+
         public CreateGrantWindow(DataTable grantsDataTable, Grant grantToEdit = null, MainWindow Owner = null)
         {
             InitializeComponent();
 
+            FormsManager.CreateGrantWindow = this;
+
             this.grantToEdit = grantToEdit;
+
+            LoadDataAsync();
+
+            DataContext = this;
+        }
+
+
+        /// <summary>
+        /// Асинхронный метод обновления комбобоксов
+        /// </summary>
+        public async void UpdateDataAsync()
+        {
+            await Task.Run(() => UpdateData());
+        }
+
+        private void UpdateData()
+        {
+            PersonsList = CRUDDataBase.GetPersonsInNewThread();
+            CustomersList = CRUDDataBase.GetCustomersInNewThread();
+
+            // Обновление комбобокса для руководителя
+            Person selectedLead = null;
+            bool leadIsSelected = false;
+            Dispatcher.Invoke(() => leadIsSelected = LeadNIOKRAutoCompleteComboBox.SelectedItem != null);
+            if (leadIsSelected)
+            {
+                Dispatcher.Invoke(() => selectedLead = new Person()
+                {
+                    Id = ((Person)LeadNIOKRAutoCompleteComboBox.SelectedItem).Id,
+                    FIO = ((Person)LeadNIOKRAutoCompleteComboBox.SelectedItem).FIO
+                });
+            }
+            Dispatcher.Invoke(() => LeadNIOKRAutoCompleteComboBox.ItemsSource = PersonsList);
+            if (leadIsSelected)
+            {
+                for (int i = 0; i < PersonsList.Count; i++)
+                {
+                    if (PersonsList[i].Id == selectedLead.Id)
+                    {
+                        Dispatcher.Invoke(() => LeadNIOKRAutoCompleteComboBox.SelectedItem = PersonsList[i]);
+                    }
+                }
+            }
+
+
+
+            // Обновление комбобоксов для заказчиков
+            Customer selectedCustomer = null;
+            foreach (AutoCompleteComboBox cmb in customersVerticalListView.Items.OfType<AutoCompleteComboBox>())
+            {
+                bool isCmbItemSelected = false;
+                Dispatcher.Invoke(() => isCmbItemSelected = cmb.SelectedItem != null);
+
+                if (isCmbItemSelected)
+                {
+                    Dispatcher.Invoke(() => selectedCustomer = new Customer()
+                    {
+                        Id = ((Customer)cmb.SelectedItem).Id,
+                        Title = ((Customer)cmb.SelectedItem).Title
+                    });
+                }
+
+
+                Dispatcher.Invoke(() => cmb.ItemsSource = CustomersList);
+
+
+                if (isCmbItemSelected)
+                {
+                    for (int i = 0; i < CustomersList.Count; i++)
+                    {
+                        if (CustomersList[i].Id == selectedCustomer.Id)
+                        {
+                            Dispatcher.Invoke(() => cmb.SelectedItem = CustomersList[i]);
+                        }
+                    }
+                }
+            }
+
+
+            // Обновление комбобоксов у исполнителей
+            Person selectedExecutor = null;
+            foreach (AutoCompleteComboBox cmb in executorsVerticalListView.Items.OfType<AutoCompleteComboBox>())
+            {
+                bool isCmbItemSelected = false;
+                Dispatcher.Invoke(() => isCmbItemSelected = cmb.SelectedItem != null);
+
+                if (isCmbItemSelected)
+                {
+                    Dispatcher.Invoke(() => selectedExecutor = new Person()
+                    {
+                        Id = ((Person)cmb.SelectedItem).Id,
+                        FIO = ((Person)cmb.SelectedItem).FIO
+                    });
+                }
+
+                Dispatcher.Invoke(() => cmb.ItemsSource = PersonsList);
+
+                if (isCmbItemSelected)
+                {
+                    for(int i = 0; i < PersonsList.Count; i++)
+                    {
+                        if(PersonsList[i].Id == selectedExecutor.Id)
+                        {
+                            Dispatcher.Invoke(() => cmb.SelectedItem = PersonsList[i]);
+                        }
+                    }
+                }
+            }
+
+        }
+        
+
+        /// <summary>
+        /// Асинхронный метод обновления
+        /// </summary>
+        private async void LoadDataAsync()
+        {
+            await Task.Run(() => LoadData());
+        }
+
+
+        /// <summary>
+        /// Изначальная загрузка данных при открытии окна
+        /// </summary>
+        private void LoadData()
+        {
+            if(grantToEdit != null) Dispatcher.Invoke(() => Title = "Редактирование договора");
+            string oldTitle = "";
+            Dispatcher.Invoke(() => oldTitle = Title);
+            Dispatcher.Invoke(() => Title = String.Format("{0} (Загрузка данных...)", Title));
+
             // Подключение к базе данных
             CRUDDataBase.ConnectToDataBase();
-
             PersonsList = CRUDDataBase.GetPersons();
-
             //PersonsList = StaticProperties.PersonsList;
-
             CustomersList = CRUDDataBase.GetCustomers();
             DepositsList = CRUDDataBase.GetDeposits();
             ResearchTypesList = CRUDDataBase.GetResearchTypes();
             ScienceTypeList = CRUDDataBase.GetScienceTypes();
             PriorityTrendList = CRUDDataBase.GetPriorityTrends();
+            // Закрытие подключения к базе данных
+            CRUDDataBase.CloseConnection();
 
+
+            // Список инвесторов
             EnteredDepositsList = new List<object[]>();
+            // Список типов наук
             EnteredScienceTypesList = new List<ComboBox>();
+            // Список исполнителей
             EnteredExecutorsList = new List<ComboBox>();
 
-            LeadNIOKRAutoCompleteComboBox.ItemsSource = new ObservableCollection<Person>(PersonsList);
-
-            researchTypeComboBox.ItemsSource = new ObservableCollection<ResearchType>(ResearchTypesList);
+            
+            Dispatcher.Invoke(() => LeadNIOKRAutoCompleteComboBox.ItemsSource = new ObservableCollection<Person>(PersonsList));
+            Dispatcher.Invoke(() => researchTypeComboBox.ItemsSource = new ObservableCollection<ResearchType>(ResearchTypesList));
 
             FirstNodeList = new ObservableCollection<UniversityStructureNode>();
             SecondNodeList = new ObservableCollection<UniversityStructureNode>();
@@ -107,53 +246,56 @@ namespace ResearchProgram
             priceTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
             priceNoNDSTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
 
-            // Закрытие подключения к базе данных
-            CRUDDataBase.CloseConnection();
 
 
             // Если открыта форма редактирования, то вставим в нее данные
             if (grantToEdit != null)
             {
-                DeleteGrantButton.Visibility = System.Windows.Visibility.Visible;
                 _isEditGrant = true;
                 grantEditId = grantToEdit.Id;
                 grantNumber = grantToEdit.grantNumber;
-                Title = "Редактирование договора";
-                createGrantButton.Content = "Сохранить";
-                OKVEDTextBox.Text = grantToEdit.OKVED;
-                grantNumberTextBox.Text = grantToEdit.grantNumber;
-                NIOKRTextBox.Text = grantToEdit.NameNIOKR;
+
+                Dispatcher.Invoke(() => DeleteGrantButton.Visibility = System.Windows.Visibility.Visible);
+                Dispatcher.Invoke(() => createGrantButton.Content = "Сохранить");
+                Dispatcher.Invoke(() => OKVEDTextBox.Text = grantToEdit.OKVED);
+                Dispatcher.Invoke(() => grantNumberTextBox.Text = grantToEdit.grantNumber);
+                Dispatcher.Invoke(() => NIOKRTextBox.Text = grantToEdit.NameNIOKR);
 
                 for (int i = 0; i < grantToEdit.Customer.Count; i++)
                 {
-                    AutoCompleteComboBox customerComboBox = new AutoCompleteComboBox()
+                    AutoCompleteComboBox customerComboBox = null;
+                    Dispatcher.Invoke(() => customerComboBox = new AutoCompleteComboBox()
                     {
                         Margin = new Thickness(5),
                         ItemsSource = new List<Customer>(CustomersList),
                         Width = 270
-                    };
+                    });
 
                     for (int j = 0; j < CustomersList.Count; j++)
                         if (CustomersList[j].Title == grantToEdit.Customer[i].Title)
-                            customerComboBox.SelectedIndex = j;
+                            Dispatcher.Invoke(() => customerComboBox.SelectedIndex = j);
 
-                    customersVerticalListView.Items.Add(customerComboBox);
+                    Dispatcher.Invoke(() => customersVerticalListView.Items.Add(customerComboBox));
                 }
 
 
-                startDateDatePicker.SelectedDate = grantToEdit.StartDate;
-                endDateDatePicker.SelectedDate = grantToEdit.EndDate;
-                priceTextBox.Text = String.Format("{0:#,0.##}", grantToEdit.Price);
-                priceNoNDSTextBox.Text = String.Format("{0:#,0.##}", grantToEdit.PriceNoNDS);
-                GrantWithoutNDSCheckBox.IsChecked = !grantToEdit.isWIthNDS;
+                Dispatcher.Invoke(() => startDateDatePicker.SelectedDate = grantToEdit.StartDate);
+                Dispatcher.Invoke(() => endDateDatePicker.SelectedDate = grantToEdit.EndDate);
+                Dispatcher.Invoke(() => priceTextBox.Text = String.Format("{0:#,0.##}", grantToEdit.Price));
+                Dispatcher.Invoke(() => priceNoNDSTextBox.Text = String.Format("{0:#,0.##}", grantToEdit.PriceNoNDS));
+                Dispatcher.Invoke(() => GrantWithoutNDSCheckBox.IsChecked = !grantToEdit.isWIthNDS);
+
+                // Добавление источников финансирования
                 for (int i = 0; i < grantToEdit.Depositor.Count; i++)
                 {
-                    StackPanel horizontalStackPanel = new StackPanel()
+                    StackPanel horizontalStackPanel = null;
+                    Dispatcher.Invoke(() => horizontalStackPanel = new StackPanel()
                     {
                         Orientation = Orientation.Horizontal,
-                    };
-                    TextBox sumTextBox;
-                    TextBox sumTextBoxNoNDS;
+                    });
+
+                    TextBox sumTextBox = null;
+                    TextBox sumTextBoxNoNDS = null;
                     void sumTextBoxTextChangedEventHandler(object senderr, TextChangedEventArgs args)
                     {
                         if (sumTextBox.Text.Length > 0)
@@ -171,189 +313,212 @@ namespace ResearchProgram
                         }
                         else
                             sumTextBoxNoNDS.Text = "";
+
+                        CalculateDepositorsSum();
+                        CalculateDepositorsSumNoNDS();
                     }
 
-                    ComboBox depositorComboBox = new ComboBox()
+                    void sumTextBoxNoNDSTextChangedEventHandler(object senderr, TextChangedEventArgs args)
+                    {
+                        CalculateDepositorsSumNoNDS();
+                    }
+
+
+                    ComboBox depositorComboBox = null;
+                    Dispatcher.Invoke(() => depositorComboBox = new ComboBox()
                     {
                         Margin = new Thickness(5, 0, 5, 10),
                         ItemsSource = DepositsList,
                         Width = 160,
-                    };
+                    });
                     for (int j = 0; j < DepositsList.Count; j++)
                         if (DepositsList[j].Title == grantToEdit.Depositor[i].Title)
-                            depositorComboBox.SelectedIndex = j;
+                            Dispatcher.Invoke(() => depositorComboBox.SelectedIndex = j);
 
-                    sumTextBox = new TextBox()
+                    Dispatcher.Invoke(() => sumTextBox = new TextBox()
                     {
                         Margin = new Thickness(5, 0, 5, 10),
                         Width = 110,
                         Text = String.Format("{0:#,0.##}", grantToEdit.DepositorSum[i]),
-                    };
+                    });
 
 
-                    sumTextBoxNoNDS = new TextBox()
+                    Dispatcher.Invoke(() => sumTextBoxNoNDS = new TextBox()
                     {
                         Margin = new Thickness(5, 0, 5, 10),
                         Width = 110,
                         Text = String.Format("{0:#,0.##}", grantToEdit.DepositorSumNoNDS[i])
-                    };
-                    sumTextBoxNoNDS.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-                    sumTextBoxNoNDS.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
+                    });
+                    Dispatcher.Invoke(() => sumTextBoxNoNDS.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput);
+                    Dispatcher.Invoke(() => sumTextBoxNoNDS.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown);
+                    Dispatcher.Invoke(() => sumTextBoxNoNDS.TextChanged += sumTextBoxNoNDSTextChangedEventHandler);
 
-                    sumTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-                    sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler;
-                    sumTextBox.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
+                    Dispatcher.Invoke(() => sumTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput);
+                    Dispatcher.Invoke(() => sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler);
+                    Dispatcher.Invoke(() => sumTextBox.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown);
 
 
                     DateTime selectedDate;
                     DateTime.TryParse(grantToEdit.ReceiptDate[i], out selectedDate);
-                    DatePicker dateComboBox = new DatePicker()
+
+                    DatePicker dateComboBox = null;
+                    Dispatcher.Invoke(() => dateComboBox = new DatePicker()
                     {
                         Margin = new Thickness(5, 0, 5, 10),
                         Width = 110,
                         SelectedDate = selectedDate
-                    };
+                    });
 
-                    horizontalStackPanel.Children.Add(depositorComboBox);
-                    horizontalStackPanel.Children.Add(sumTextBox);
-                    horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0) });
-                    horizontalStackPanel.Children.Add(sumTextBoxNoNDS);
-                    horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 5, 0) });
-                    horizontalStackPanel.Children.Add(dateComboBox);
+                    Dispatcher.Invoke(() => horizontalStackPanel.Children.Add(depositorComboBox));
+                    Dispatcher.Invoke(() => horizontalStackPanel.Children.Add(sumTextBox));
+                    Dispatcher.Invoke(() => horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 0, 0) }));
+                    Dispatcher.Invoke(() => horizontalStackPanel.Children.Add(sumTextBoxNoNDS));
+                    Dispatcher.Invoke(() => horizontalStackPanel.Children.Add(new Label() { Content = "руб.", FontSize = 12, Margin = new Thickness(-7, 0, 5, 0) }));
+                    Dispatcher.Invoke(() => horizontalStackPanel.Children.Add(dateComboBox));
 
 
-                    depositsVerticalListView.Items.Add(horizontalStackPanel);
+                    Dispatcher.Invoke(() => depositsVerticalListView.Items.Add(horizontalStackPanel));
                 }
+                Dispatcher.Invoke(() => CalculateDepositorsSum());
+                Dispatcher.Invoke(() => CalculateDepositorsSumNoNDS());
+
+
                 for (int i = 0; i < PersonsList.Count; i++)
                     if (PersonsList[i].FIO == grantToEdit.LeadNIOKR.FIO)
-                        LeadNIOKRAutoCompleteComboBox.SelectedIndex = i;
+                        Dispatcher.Invoke(() => LeadNIOKRAutoCompleteComboBox.SelectedIndex = i);
                 for (int i = 0; i < grantToEdit.Executor.Count; i++)
                 {
-                    AutoCompleteComboBox executorComboBox = new AutoCompleteComboBox()
+                    AutoCompleteComboBox executorComboBox = null;
+                    Dispatcher.Invoke(() => executorComboBox = new AutoCompleteComboBox()
                     {
                         Margin = new Thickness(5),
                         ItemsSource = new List<Person>(PersonsList),
                         Width = 270
-                    };
+                    });
+
                     for (int j = 0; j < PersonsList.Count; j++)
                         if (PersonsList[j].FIO == grantToEdit.Executor[i].FIO)
-                            executorComboBox.SelectedIndex = j;
+                            Dispatcher.Invoke(() => executorComboBox.SelectedIndex = j);
 
-                    executorsVerticalListView.Items.Add(executorComboBox);
+                    Dispatcher.Invoke(() => executorsVerticalListView.Items.Add(executorComboBox));
                 }
 
-                FirstNodeComboBox.SelectedIndex = -1;
+                Dispatcher.Invoke(() => FirstNodeComboBox.SelectedIndex = -1);
                 if (grantToEdit.FirstNode.Title != null)
                 {
                     for (int i = 0; i < FirstNodeList.Count; i++)
                     {
                         if (grantToEdit.FirstNode.Id == FirstNodeList[i].Id)
                         {
-                            FirstNodeComboBox.SelectedIndex = i;
+                            Dispatcher.Invoke(() => FirstNodeComboBox.SelectedIndex = i);
                         }
                     }
                 }
 
-                SecondNodeComboBox.SelectedIndex = -1;
+                Dispatcher.Invoke(() => SecondNodeComboBox.SelectedIndex = -1);
                 if (grantToEdit.SecondNode.Title != null)
                 {
                     for (int i = 0; i < SecondNodeList.Count; i++)
                     {
                         if (grantToEdit.SecondNode.Id == SecondNodeList[i].Id)
                         {
-                            SecondNodeComboBox.SelectedIndex = i;
+                            Dispatcher.Invoke(() => SecondNodeComboBox.SelectedIndex = i);
                         }
                     }
                 }
 
-                ThirdNodeComboBox.SelectedIndex = -1;
+                Dispatcher.Invoke(() => ThirdNodeComboBox.SelectedIndex = -1);
                 if (grantToEdit.ThirdNode.Title != null)
                 {
                     for (int i = 0; i < ThirdNodeList.Count; i++)
                     {
                         if (grantToEdit.ThirdNode.Id == ThirdNodeList[i].Id)
                         {
-                            ThirdNodeComboBox.SelectedIndex = i;
+                            Dispatcher.Invoke(() => ThirdNodeComboBox.SelectedIndex = i);
                         }
                     }
                 }
 
-                FourthComboBox.SelectedIndex = -1;
+                Dispatcher.Invoke(() => FourthComboBox.SelectedIndex = -1);
                 if (grantToEdit.FourthNode.Title != null)
                 {
                     for (int i = 0; i < FourthNodeList.Count; i++)
                     {
                         if (grantToEdit.FourthNode.Id == FourthNodeList[i].Id)
                         {
-                            FourthComboBox.SelectedIndex = i;
+                            Dispatcher.Invoke(() => FourthComboBox.SelectedIndex = i);
                         }
                     }
                 }
 
-                GRNTITextBox.Text = grantToEdit.GRNTI;
+                Dispatcher.Invoke(() => GRNTITextBox.Text = grantToEdit.GRNTI);
 
                 if (grantToEdit.ResearchType.Count > 0)
                 {
                     for (int j = 0; j < ResearchTypesList.Count; j++)
                         if (ResearchTypesList[j].Title == grantToEdit.ResearchType[0].Title)
-                            researchTypeComboBox.SelectedIndex = j;
+                            Dispatcher.Invoke(() => researchTypeComboBox.SelectedIndex = j);
                 }
 
                 for (int i = 0; i < grantToEdit.PriorityTrands.Count; i++)
                 {
-                    AutoCompleteComboBox priorityTrendComboBox = new AutoCompleteComboBox()
+                    AutoCompleteComboBox priorityTrendComboBox = null;
+                    Dispatcher.Invoke(() => priorityTrendComboBox = new AutoCompleteComboBox()
                     {
                         Margin = new Thickness(5),
                         ItemsSource = new List<PriorityTrend>(PriorityTrendList),
                         Width = 270
-                    };
+                    });
                     for (int j = 0; j < PriorityTrendList.Count; j++)
                         if (PriorityTrendList[j].Title == grantToEdit.PriorityTrands[i].Title)
-                            priorityTrendComboBox.SelectedIndex = j;
+                            Dispatcher.Invoke(() => priorityTrendComboBox.SelectedIndex = j);
 
 
-                    priorityTrendsVerticalListView.Items.Add(priorityTrendComboBox);
+                    Dispatcher.Invoke(() => priorityTrendsVerticalListView.Items.Add(priorityTrendComboBox));
                 }
 
                 for (int i = 0; i < grantToEdit.ScienceType.Count; i++)
                 {
-                    AutoCompleteComboBox scienceTypeComboBox = new AutoCompleteComboBox()
+                    AutoCompleteComboBox scienceTypeComboBox = null;
+                    Dispatcher.Invoke(() => scienceTypeComboBox = new AutoCompleteComboBox()
                     {
                         Margin = new Thickness(5),
                         ItemsSource = new List<ScienceType>(ScienceTypeList),
                         Width = 270
-                    };
+                    });
 
                     for (int j = 0; j < ScienceTypeList.Count; j++)
                         if (ScienceTypeList[j].Title == grantToEdit.ScienceType[i].Title)
-                            scienceTypeComboBox.SelectedIndex = j;
+                            Dispatcher.Invoke(() => scienceTypeComboBox.SelectedIndex = j);
 
-                    scienceTypeVerticalListView.Items.Add(scienceTypeComboBox);
+                    Dispatcher.Invoke(() => scienceTypeVerticalListView.Items.Add(scienceTypeComboBox));
                 }
 
                 switch (grantToEdit.NIR)
                 {
                     case "НИР":
-                        NIR.IsChecked = true;
+                        Dispatcher.Invoke(() => NIR.IsChecked = true);
                         break;
                     case "УСЛУГА":
-                        USLUGA.IsChecked = true;
+                        Dispatcher.Invoke(() => USLUGA.IsChecked = true);
                         break;
                 }
 
                 switch (grantToEdit.NOC)
                 {
                     case "True":
-                        NOC.IsChecked = true;
+                        Dispatcher.Invoke(() => NOC.IsChecked = true);
                         break;
                     case "False":
-                        NotNOC.IsChecked = true;
+                        Dispatcher.Invoke(() => NotNOC.IsChecked = true);
                         break;
                 }
             }
 
-            DataContext = this;
+            Dispatcher.Invoke(() => Title = oldTitle);
         }
+
+
 
         /// <summary>
         /// Кнопка добавления у заказчика
@@ -420,6 +585,14 @@ namespace ResearchProgram
                 }
                 else
                     sumTextBoxNoNDS.Text = "";
+
+                CalculateDepositorsSum();
+                CalculateDepositorsSumNoNDS();
+            }
+
+            void sumTextBoxNoNDSTextChangedEventHandler(object senderr, TextChangedEventArgs args)
+            {
+                CalculateDepositorsSumNoNDS();
             }
 
             StackPanel horizontalStackPanel = new StackPanel()
@@ -454,6 +627,7 @@ namespace ResearchProgram
 
             sumTextBoxNoNDS.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
             sumTextBoxNoNDS.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
+            sumTextBoxNoNDS.TextChanged += sumTextBoxNoNDSTextChangedEventHandler;
 
             DatePicker datePicker = new DatePicker()
             {
@@ -984,6 +1158,8 @@ namespace ResearchProgram
                     partSumNoNDS.Text = "";
                 }
             }
+
+            CalculateDepositorsSumNoNDS();
         }
 
         private void priceNoNDSTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
@@ -1020,6 +1196,8 @@ namespace ResearchProgram
 
         private void LeadNIOKRAutoCompleteComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (LeadNIOKRAutoCompleteComboBox.SelectedItem == null) return;
+
             AutoCompleteComboBox autoCompleteComboBox = (AutoCompleteComboBox)sender;
             Person person = (Person)autoCompleteComboBox.SelectedItem;
             CRUDDataBase.ConnectToDataBase();
@@ -1127,6 +1305,48 @@ namespace ResearchProgram
             }
             set.Clear();
             CRUDDataBase.CloseConnection();
+        }
+
+        /// <summary>
+        /// Подсчет общей суммы вкладчиков. Считается c НДС
+        /// Результат выводится в окно под договорами.
+        /// </summary>
+        private void CalculateDepositorsSum()
+        {
+            Double sumDeposits = 0;
+
+            foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
+            {
+                TextBox partSum = (TextBox)sp.Children[1];
+
+                sumDeposits += partSum.Text != "" ? Double.Parse(partSum.Text) : 0;
+            }
+
+            sumDepositsTextBox.Text = String.Format("{0:#,0.##}", sumDeposits);
+        }
+
+
+        /// <summary>
+        /// Подсчет общей суммы вкладчиков. Считается без НДС
+        /// Результат выводится в окно под договорами.
+        /// </summary>
+        private void CalculateDepositorsSumNoNDS()
+        {
+            Double sumDeposits = 0;
+
+            foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
+            {
+                TextBox partSum = (TextBox)sp.Children[3];
+
+                sumDeposits += partSum.Text != "" ? Double.Parse(partSum.Text) : 0;
+            }
+
+            sumDepositsNoNDSTextBox.Text = String.Format("{0:#,0.##}", sumDeposits);
+        }
+
+        private void Window_Closing(object sender, CancelEventArgs e)
+        {
+            FormsManager.CreateGrantWindow = null; 
         }
     }
 }

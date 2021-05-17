@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ResearchProgram"
         xmlns:dotNetKitControls="clr-namespace:DotNetKit.Windows.Controls;assembly=DotNetKit.Wpf.AutoCompleteComboBox"
         mc:Ignorable="d"
-        Title="Добавить нового человека" Height="600" Width="800" ResizeMode="NoResize">
+        Title="Добавить нового человека" Height="600" Width="800" ResizeMode="NoResize" Closing="Window_Closing">
     <Grid>
 
         <Grid.ColumnDefinitions>
@@ -77,11 +77,12 @@
                Margin="0 5 0 0"/>
 
         <ComboBox Grid.Row="1"
-                 Grid.Column="4"
-                 Name="degreeComboBox"
-                  ItemsSource="{Binding WorkDegreesList }"
+                  Grid.Column="4"
+                  Name="degreeComboBox"
+                  ItemsSource="{Binding WorkDegreesList }" 
+                  SelectedItem="{Binding WorkDegreeSelectedItem}"
                   Height="25"
-                 Margin="5 0 26 0"/>
+                  Margin="5 0 26 0"/>
         <!--<Button
             x:Name="degreeAddButton"
             Content="+"
@@ -101,6 +102,7 @@
                  Grid.Column="5"
                  Name="rankComboBox"
                   ItemsSource="{Binding WorkRanksList }"
+                  SelectedItem="{Binding WorkRankSelectedItem}"
                   Height="25"
                  Margin="5 0 26 0"/>
         <!--<Button

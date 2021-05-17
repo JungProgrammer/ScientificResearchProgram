@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -639,6 +640,104 @@ namespace ResearchProgram.Classes
             }
 
             return grid;
+        }
+
+        public static List<PersonWorkPlace> ConvertListViewToWorkPlaceList(ListView workPlaceListView)
+        {
+            List<PersonWorkPlace> convertedWorkPlaceList = new List<PersonWorkPlace>();
+
+            foreach (Grid grid in workPlaceListView.Items.OfType<Grid>())
+            {
+                ComboBox categoryComboBox = (ComboBox)grid.Children[1];
+                CheckBox isMainWorkPlace = (CheckBox)grid.Children[2];
+
+                ComboBox workPlaceComboBox = (ComboBox)grid.Children[4];
+                ComboBox UnitComboBox = (ComboBox)grid.Children[6];
+                ComboBox DepartmentComboBox = (ComboBox)grid.Children[8];
+                ComboBox StructNodeComboBox = (ComboBox)grid.Children[10];
+
+                Grid jobGrid = (Grid)grid.Children[11];
+                ListView jobListView = (ListView)jobGrid.Children[3];
+
+
+                PersonWorkPlace personWorkPlace = new PersonWorkPlace();
+                if (workPlaceComboBox.SelectedItem != null || categoryComboBox.SelectedItem != null)
+                {
+                    personWorkPlace.IsMainWorkPlace = (bool)isMainWorkPlace.IsChecked;
+                    if (categoryComboBox.SelectedItem != null)
+                    {
+                        personWorkPlace.workCategory = (WorkCategories)categoryComboBox.SelectedItem;
+                    }
+                    else
+                    {
+                        personWorkPlace.workCategory = new WorkCategories();
+                    }
+
+                    if (workPlaceComboBox.SelectedItem != null)
+                    {
+                        personWorkPlace.firstNode = (UniversityStructureNode)workPlaceComboBox.SelectedItem;
+                    }
+                    else
+                    {
+                        personWorkPlace.firstNode = new UniversityStructureNode();
+                    }
+
+                    if (UnitComboBox.SelectedItem != null)
+                    {
+                        personWorkPlace.secondNode = (UniversityStructureNode)UnitComboBox.SelectedItem;
+                    }
+                    else
+                    {
+                        personWorkPlace.secondNode = new UniversityStructureNode();
+                    }
+
+                    if (DepartmentComboBox.SelectedItem != null)
+                    {
+                        personWorkPlace.thirdNode = (UniversityStructureNode)DepartmentComboBox.SelectedItem;
+                    }
+                    else
+                    {
+                        personWorkPlace.thirdNode = new UniversityStructureNode();
+                    }
+
+                    if (StructNodeComboBox.SelectedItem != null)
+                    {
+                        personWorkPlace.fourthNode = (UniversityStructureNode)StructNodeComboBox.SelectedItem;
+                    }
+                    else
+                    {
+                        personWorkPlace.fourthNode = new UniversityStructureNode();
+                    }
+
+                    personWorkPlace.jobList = new List<Job>();
+                    foreach (Grid grid1 in jobListView.Items.OfType<Grid>())
+                    {
+                        ComboBox jobComboBox = (ComboBox)grid1.Children[0];
+                        TextBox salaryRateTextBox = (TextBox)grid1.Children[2];
+                        if (jobComboBox.SelectedItem != null)
+                        {
+                            Job job = (Job)jobComboBox.SelectedItem;
+                            if (salaryRateTextBox.Text != "")
+                            {
+                                job.SalaryRate = float.Parse(salaryRateTextBox.Text);
+                            }
+                            else
+                            {
+                                job.SalaryRate = 0;
+                            }
+
+                            personWorkPlace.jobList.Add(job);
+                        }
+                    }
+
+
+                    convertedWorkPlaceList.Add(personWorkPlace);
+
+                }
+
+            }
+
+            return convertedWorkPlaceList;
         }
 
         private void ComboBoxPreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
