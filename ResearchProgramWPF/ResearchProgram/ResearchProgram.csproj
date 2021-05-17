@@ -8,7 +8,7 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>ResearchProgram</RootNamespace>
     <AssemblyName>Гранты НИЧ</AssemblyName>
-    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
@@ -31,6 +31,7 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -82,6 +83,9 @@
     </Reference>
     <Reference Include="Npgsql, Version=4.1.5.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
       <HintPath>..\packages\Npgsql.4.1.5\lib\net461\Npgsql.dll</HintPath>
+    </Reference>
+    <Reference Include="Sdl.MultiSelectComboBox, Version=1.0.19.0, Culture=neutral, PublicKeyToken=a6f9048fb51b33ed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Sdl.MultiSelectComboBox.1.0.35\lib\net48\Sdl.MultiSelectComboBox.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
@@ -155,6 +159,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Classes\FilterRange.cs" />
     <Compile Include="Classes\OKVED.cs" />
     <Compile Include="Classes\PersonWorkPlace.cs" />
     <Compile Include="Classes\TreeNode.cs" />
@@ -182,12 +187,8 @@
     <Compile Include="Classes\Customer.cs" />
     <Compile Include="Classes\Depositor.cs" />
     <Compile Include="Converters\DepositsConverter.cs" />
-    <Compile Include="FilterElement.cs" />
     <Compile Include="Forms\DegreesWindow.xaml.cs">
       <DependentUpon>DegreesWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Forms\FiltersWindow.xaml.cs">
-      <DependentUpon>FiltersWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\FullGrantInfo.xaml.cs">
       <DependentUpon>FullGrantInfo.xaml</DependentUpon>
@@ -197,6 +198,9 @@
     </Compile>
     <Compile Include="Forms\HelpWindows\EditElementWindow.xaml.cs">
       <DependentUpon>EditElementWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\FilterWindow.xaml.cs">
+      <DependentUpon>FilterWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="InitialWindow.xaml.cs">
       <DependentUpon>InitialWindow.xaml</DependentUpon>
@@ -208,7 +212,7 @@
       <DependentUpon>RanksWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="GrantHeader.cs" />
-    <Compile Include="GrantsFilters.cs" />
+    <Compile Include="Classes\GrantsFilters.cs" />
     <Compile Include="IContainer.cs" />
     <Compile Include="Classes\Job.cs" />
     <Compile Include="Converters\JobConverter.cs" />
@@ -231,6 +235,7 @@
     <Compile Include="Forms\UniversityStructureWindow.xaml.cs">
       <DependentUpon>UniversityStructureWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="StaticDataTemp.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Converters\VisibilityConveter.cs" />
     <Compile Include="WorkerWithGrantsTable.cs" />
@@ -258,10 +263,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Forms\FiltersWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Forms\FullGrantInfo.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -271,6 +272,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\HelpWindows\EditElementWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\FilterWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -1,0 +1,1223 @@
+﻿<Window x:Class="ResearchProgram.Forms.NewFilterWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:sdl="http://schemas.sdl.com/xaml" 
+        xmlns:local="clr-namespace:ResearchProgram"
+        mc:Ignorable="d"
+        Title="Поиск" Height="150" Width="600"
+        ResizeMode="NoResize" d:DesignWidth="903" d:DesignHeight="632">
+
+    <Window.Resources>
+        <Style TargetType="Separator">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Separator}">
+                        <Rectangle Height="3"  
+                           Fill="SlateGray" />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <Label Content="Простой поиск"
+               Margin="1 0"
+               FontSize="15"
+               FontWeight="DemiBold"
+               x:Name="SimpleSearchLabel"/>
+
+        <Grid Grid.Row="1"
+              x:Name="SimpleSearchGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition/>
+                <ColumnDefinition Width="80"/>
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="SimpleSearchTextBox"
+                 Margin="5 3"
+                 Padding="1 4"
+                FontSize="14"/>
+            <Button x:Name="SimpleSearchButton"
+                Grid.Column="1"
+                    Margin="5 3"
+                    Content="Поиск"
+                    Click="SimpleSearchButton_Click"/>
+        </Grid>
+
+        <Expander Grid.Row="2" 
+                  Expanded="SearchExpander_Expanded"
+                  Collapsed="SearchExpander_Expanded"
+                  x:Name="SearchExpander">
+            <Expander.Header>
+                <DockPanel VerticalAlignment="Stretch">
+                    <TextBlock FontSize="15"
+                               FontWeight="DemiBold">Расширенный поиск</TextBlock>
+                </DockPanel>
+            </Expander.Header>
+            <ScrollViewer>
+                <StackPanel x:Name="SearchMainPanel"
+                    Margin="10 5 5 5">
+                    <Expander>
+                        <Expander.Header>
+                            <DockPanel VerticalAlignment="Stretch">
+                                <TextBlock FontStyle="Italic"
+                               FontSize="15"
+                               FontWeight="DemiBold">Общая информация</TextBlock>
+                            </DockPanel>
+                        </Expander.Header>
+                        <DockPanel>
+                            <Grid x:Name="CommonInfoGrid">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="7*"/>
+                                    <ColumnDefinition Width="11*"/>
+                                    <ColumnDefinition Width="18*"/>
+                                    <ColumnDefinition Width="61*"/>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="37*"/>
+                                    <ColumnDefinition Width="289*"/>
+                                    <ColumnDefinition Width="430*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Content="ОКВЭД"
+                                   FontWeight="Bold"
+                                   Grid.Row="0"
+                                   Margin="0 5 0 0" Grid.ColumnSpan="7"/>
+
+                                <sdl:MultiSelectComboBox 
+                                    Grid.Row="1"
+                                    x:Name="OKVEDMultiSelectComboBox"
+                                    Margin="5 0"
+                                    ItemsSource="{Binding Okved}"
+                                    SelectedItems="{Binding SelectedOkved}"
+                                    MinHeight="30" 
+                                    Grid.ColumnSpan="7"
+                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>
+
+                                <Label Content="ГРНТИ"
+                                   Grid.Row="0"
+                                   Grid.Column="7"
+                                   FontWeight="Bold"
+                                   Margin="0 5 0 0"/>
+
+                                <TextBox Grid.Row="1"
+                                     Grid.Column="7"
+                                     Name="GRNTITextBox"
+                                     Margin="5 0"/>
+
+                                <Label Content="Номер договора"
+                                   Grid.Row="2"
+                                   FontWeight="Bold"
+                                   Margin="0 5 0 0" Grid.ColumnSpan="7"/>
+
+                                <TextBox Grid.Row="3"
+                                     Name="grantNumberTextBox"
+                                     Margin="5 0"
+                                     Height="25"
+                                         Grid.ColumnSpan="8"/>
+
+                                <Label Content="Руководитель НИОКР"
+                                   Grid.Row="4"
+                                   Grid.Column="0"
+                                   FontWeight="Bold"
+                                   Margin="0 5 0 0" Grid.ColumnSpan="7"/>
+
+                                <sdl:MultiSelectComboBox
+                                x:Name="LeadNIOKRMultiselectComboBox"
+                                    SelectedItems="{Binding SelectedLeadNIOKR}"
+                                Height="45"
+                                Grid.Row="5"
+                                Grid.Column="0"
+                                SelectionMode="Multiple"
+                                    Grid.ColumnSpan="8"
+                                    Margin="5 0"
+                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>
+
+                                <Label Content="Наименование НИОКР"
+                                   Grid.Row="6"
+                                   Grid.Column="0"
+                                   FontWeight="Bold"
+                                   Margin="0 5 0 0" Grid.ColumnSpan="7"/>
+
+                                <TextBox Grid.Row="7"
+                                   Grid.Column="0"
+                                   Grid.ColumnSpan="8"
+                                     x:Name="NIOKRTextBox"
+                                     Margin="5 0"
+                                     TextWrapping="Wrap"
+                                     AcceptsReturn="True"
+                                     VerticalScrollBarVisibility="Visible">
+                                </TextBox>
+
+                                <Label Content="НИР или Услуга"
+                                   Grid.Row="8"
+                                   FontWeight="Bold"
+                                   Margin="0 5 0 0" Grid.ColumnSpan="7"/>
+
+                                <StackPanel Name="nirStackPanel"
+                                        Grid.Row="9"
+                                            Margin="5" Grid.ColumnSpan="7">
+                                    <CheckBox   Content="НИР"   
+                                            x:Name="NIRCheckBox"
+                                                Checked="NIR_Checked"/>
+                                    <CheckBox  Content="Услуга"
+                                           x:Name="UslugaCheckBox"
+                                               Checked="UslugaCheckBox_Checked"/>
+                                </StackPanel>
+
+                                <Label Content="НОЦ"
+                                   Grid.Row="8"
+                                   Grid.Column="7"
+                                   FontWeight="Bold"
+                                   Margin="0 5 0 0"/>
+                                <StackPanel Name="NOCStackPanel"
+                                        Grid.Row="9"
+                                        Grid.Column ="7"
+                                            Margin="5">
+                                    <CheckBox  
+                                    Content="Да"   
+                                    x:Name="NOCYesCheckBox"
+                                        Checked="NOCYesCheckBox_Checked"/>
+                                    <CheckBox Content="Нет"
+                                          x:Name="NOCNoCheckBox"
+                                              Checked="NOCNoCheckBox_Checked"/>
+                                </StackPanel>
+
+                                <Label Content="Дата начала"
+                                   Grid.Row="10"
+                                   FontWeight="Bold"
+                                   Margin="0 5 0 0" Grid.ColumnSpan="7"/>
+                                <DatePicker Name="startDateDatePicker"
+                                        Grid.Row="11"
+                                        Margin="5" Grid.ColumnSpan="7"/>
+
+                                <Label Content="Дата окончания"
+                                   Grid.Row="10"
+                                   Grid.Column="7"
+                                   FontWeight="Bold"
+                                   Margin="0 5 0 0"/>
+                                <DatePicker Name="endDateDatePicker"
+                                        Grid.Row="11"
+                                        Grid.Column="7"
+                                        Margin="5"/>
+                            </Grid>
+                        </DockPanel>
+                    </Expander>
+                    <Expander>
+                        <Expander.Header>
+                            <DockPanel VerticalAlignment="Stretch">
+                                <TextBlock FontStyle="Italic"
+                               FontSize="15"
+                               FontWeight="DemiBold">Заказчики/исполнители</TextBlock>
+                            </DockPanel>
+                        </Expander.Header>
+                        <DockPanel>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label Content="Заказчик"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                   FontWeight="Bold"/>
+                                <sdl:MultiSelectComboBox
+                                x:Name="CustomerMultiselectComboBox"
+                                    SelectedItems="{Binding SelectedCustomer}"
+                                    Height="60"
+                                Grid.Row="1"
+                                Grid.Column="0"
+                                SelectionMode="Multiple"
+                                Margin="5"
+                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>
+
+                                <Label Content="Исполнитель"
+                                   Grid.Row="0"
+                                   Grid.Column="1"
+                                   FontWeight="Bold"/>
+                                <sdl:MultiSelectComboBox
+                                x:Name="ExecutorMultiselectComboBox"
+                                    SelectedItems="{Binding SelectedExecutor}"
+                                Height="60"
+                                Grid.Row="1"
+                                Grid.Column="1"
+                                SelectionMode="Multiple"
+                                Margin="5"
+                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>
+                            </Grid>
+                        </DockPanel>
+                    </Expander>
+                    <Expander>
+                        <Expander.Header>
+                            <DockPanel VerticalAlignment="Stretch">
+                                <TextBlock FontStyle="Italic"
+                               FontSize="15"
+                               FontWeight="DemiBold">Источники финансирования</TextBlock>
+                            </DockPanel>
+                        </Expander.Header>
+                        <DockPanel>
+                            <Grid Margin="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="130"/>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition Width="130"/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <CheckBox Content="Договор без НДС"
+                                          x:Name="NoNDSCheckBox"
+                                          Margin="5"
+                                          FontSize="14"/>
+                                <TextBox
+                                    x:Name="GrantPriceLeftTextBox"
+                                    Grid.Row="1"
+                                    Grid.Column="0"
+                                    Margin="5"
+                                    Tag="LeftTextBox"/>
+                                <ComboBox
+                                    x:Name="GrantPriceLeftComboBox"
+                                    Grid.Row="1"
+                                    Grid.Column="1"
+                                    Margin="5">
+                                    <TextBlock Text=""/>
+                                    <TextBlock Text="Больше"/>
+                                    <TextBlock Text="Больше/равно"/>
+                                </ComboBox>
+                                <Label
+                                    Grid.Row="1"
+                                    Grid.Column="2"
+                                    Content="Стоимость договора"
+                                    HorizontalAlignment="Center"
+                                    FontWeight="Bold"
+                                    Margin="5"/>
+                                <ComboBox
+                                    x:Name="GrantPriceRightComboBox"
+                                    Grid.Row="1"
+                                    Grid.Column="3"
+                                    Margin="5">
+                                    <TextBlock Text=""/>
+                                    <TextBlock Text="Меньше"/>
+                                    <TextBlock Text="Меньше/равно"/>
+                                </ComboBox>
+                                <TextBox
+                                    x:Name="GrantPriceRightTextBox"
+                                    Grid.Row="1"
+                                    Grid.Column="4"
+                                    Margin="5"
+                                    Tag="RightTextBox"/>
+
+                                <Expander Grid.Row="2"
+                                          Grid.ColumnSpan="5"
+                                          Margin="5 0">
+                                    <Expander.Header>
+                                        <DockPanel VerticalAlignment="Stretch">
+                                            <TextBlock 
+                                                FontStyle="Italic"
+                                                FontSize="15"
+                                                FontWeight="DemiBold">Иностранные средства</TextBlock>
+                                        </DockPanel>
+                                    </Expander.Header>
+                                    <DockPanel Tag="DepositorDockPanel">
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Tag="LeftTextBox"
+                                                x:Name="FirstDepositLeftTextBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Tag="LeftComboBox"
+                                                x:Name="FirstDepositLeftComboBox"
+                                                Grid.Row="1"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Больше"/>
+                                                <TextBlock Text="Больше/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="1"
+                                                Grid.Column="2"
+                                                Content="Сумма поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Tag="RightComboBox"
+                                                x:Name="FirstDepositRightComboBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Меньше"/>
+                                                <TextBlock Text="Меньше/равно"/>
+                                            </ComboBox>
+                                            <TextBox Tag="RightTextBox"
+                                                x:Name="FirstDepositRightTextBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="4"
+                                                    Margin="5"/>
+
+
+                                            <DatePicker Tag="LeftDatePicker"
+                                                x:Name="FirstDepositLeftDatePicker"
+                                                Grid.Row="2"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Tag="LeftDateComboBox"
+                                                x:Name="FirstDepositLeftDateComboBox"
+                                                Grid.Row="2"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="От"/>
+                                                <TextBlock Text="От/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="2"
+                                                Grid.Column="2"
+                                                Content="Дата поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Tag="RightDateComboBox"
+                                                x:Name="FirstDepositRightDateComboBox"
+                                                Grid.Row="2"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="До"/>
+                                                <TextBlock Text="До/равно"/>
+                                            </ComboBox>
+                                            <DatePicker Tag="RightDatePicker"
+                                                x:Name="FirstDepositRightDatePicker"
+                                                Grid.Row="2"
+                                                        Grid.Column="4"
+                                                        Margin="5"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Expander>
+
+                                <Expander Grid.Row="3"
+                                          Grid.ColumnSpan="5"
+                                          Margin="5 0">
+                                    <Expander.Header>
+                                        <DockPanel VerticalAlignment="Stretch">
+                                            <TextBlock 
+                                                FontStyle="Italic"
+                                                FontSize="15"
+                                                FontWeight="DemiBold">Собственные средства</TextBlock>
+                                        </DockPanel>
+                                    </Expander.Header>
+                                    <DockPanel Tag="DepositorDockPanel">
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Tag="LeftTextBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Margin="5"
+                                                     x:Name="SecondDepositLeftTextBox"/>
+                                            <ComboBox Tag="LeftComboBox"
+                                                x:Name="SecondDepositLeftComboBox"
+                                                Grid.Row="1"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Больше"/>
+                                                <TextBlock Text="Больше/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="1"
+                                                Grid.Column="2"
+                                                Content="Сумма поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Tag="RightComboBox"
+                                                x:Name="SecondDepositRightComboBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Меньше"/>
+                                                <TextBlock Text="Меньше/равно"/>
+                                            </ComboBox>
+                                            <TextBox Tag="RightTextBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="4"
+                                                    Margin="5"
+                                                     x:Name="SecondDepositRightTextBox"/>
+
+
+                                            <DatePicker Tag="LeftDatePicker"
+                                                x:Name="SecondDepositLeftDatePicker"
+                                                Grid.Row="2"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Tag="LeftDateComboBox"
+                                                x:Name="SecondDepositLeftDateComboBox"
+                                                Grid.Row="2"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="От"/>
+                                                <TextBlock Text="От/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="2"
+                                                Grid.Column="2"
+                                                Content="Дата поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Tag="RightDateComboBox"
+                                                x:Name="SecondDepositRightDateComboBox"
+                                                Grid.Row="2"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="До"/>
+                                                <TextBlock Text="До/равно"/>
+                                            </ComboBox>
+                                            <DatePicker Tag="RightDatePicker"
+                                                x:Name="SecondDepositRightDatePicker"
+                                                Grid.Row="2"
+                                                        Grid.Column="4"
+                                                        Margin="5"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Expander>
+
+                                <Expander Grid.Row="4"
+                                          Grid.ColumnSpan="5"
+                                          Margin="5 0">
+                                    <Expander.Header>
+                                        <DockPanel VerticalAlignment="Stretch">
+                                            <TextBlock 
+                                                FontStyle="Italic"
+                                                FontSize="15"
+                                                FontWeight="DemiBold">Средства бюджета субъекта Федерации</TextBlock>
+                                        </DockPanel>
+                                    </Expander.Header>
+                                    <DockPanel Tag="DepositorDockPanel">
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Tag="LeftTextBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Margin="5"
+                                                     x:Name="ThirdDepositLeftTextBox"/>
+                                            <ComboBox Tag="LeftComboBox"
+                                                x:Name="ThirdDepositLeftComboBox"
+                                                Grid.Row="1"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Больше"/>
+                                                <TextBlock Text="Больше/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="1"
+                                                Grid.Column="2"
+                                                Content="Сумма поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Tag="RightComboBox"
+                                                x:Name="ThirdDepositRightComboBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Меньше"/>
+                                                <TextBlock Text="Меньше/равно"/>
+                                            </ComboBox>
+                                            <TextBox Tag="RightTextBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="4"
+                                                    Margin="5"
+                                                     x:Name="ThirdDepositRightTextBox"/>
+
+                                            <DatePicker Tag="LeftDatePicker"
+                                                x:Name="ThirdDepositLeftDatePicker"
+                                                Grid.Row="2"
+                                                    Grid.Column="0"
+                                                    Margin="5"
+                                                        />
+                                            <ComboBox Tag="LeftDateComboBox"
+                                                x:Name="ThirdDepositLeftDateComboBox"
+                                                Grid.Row="2"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="От"/>
+                                                <TextBlock Text="От/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="2"
+                                                Grid.Column="2"
+                                                Content="Дата поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Tag="RightDateComboBox"
+                                                x:Name="ThirdDepositRightDateComboBox"
+                                                Grid.Row="2"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="До"/>
+                                                <TextBlock Text="До/равно"/>
+                                            </ComboBox>
+                                            <DatePicker Tag="RightDatePicker"
+                                                x:Name="ThirdDepositRightDatePicker"
+                                                Grid.Row="2"
+                                                        Grid.Column="4"
+                                                        Margin="5"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Expander>
+
+                                <Expander Grid.Row="5"
+                                          Grid.ColumnSpan="5"
+                                          Margin="5 0">
+                                    <Expander.Header>
+                                        <DockPanel VerticalAlignment="Stretch">
+                                            <TextBlock 
+                                                FontStyle="Italic"
+                                                FontSize="15"
+                                                FontWeight="DemiBold">Средства Российских фондов поддержки науки</TextBlock>
+                                        </DockPanel>
+                                    </Expander.Header>
+                                    <DockPanel Tag="DepositorDockPanel">
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Tag="LeftTextBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Margin="5"
+                                                     x:Name="FourthDepositLeftTextBox"/>
+                                            <ComboBox Tag="LeftComboBox"
+                                                x:Name="FourthDepositLeftComboBox"
+                                                Grid.Row="1"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Больше"/>
+                                                <TextBlock Text="Больше/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="1"
+                                                Grid.Column="2"
+                                                Content="Сумма поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Tag="RightComboBox"
+                                                x:Name="FourthDepositRightComboBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Меньше"/>
+                                                <TextBlock Text="Меньше/равно"/>
+                                            </ComboBox>
+                                            <TextBox Tag="RightTextBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="4"
+                                                    Margin="5"
+                                                     x:Name="FourthDepositRightTextBox"/>
+
+                                            <DatePicker Tag="LeftDatePicker"
+                                                x:Name="FourthDepositLeftDatePicker"
+                                                Grid.Row="2"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Tag="LeftDateComboBox"
+                                                x:Name="FourthDepositLeftDateComboBox"
+                                                Grid.Row="2"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="От"/>
+                                                <TextBlock Text="От/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="2"
+                                                Grid.Column="2"
+                                                Content="Дата поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Tag="RightDateComboBox"
+                                                x:Name="FourthDepositRightDateComboBox"
+                                                Grid.Row="2"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="До"/>
+                                                <TextBlock Text="До/равно"/>
+                                            </ComboBox>
+                                            <DatePicker Tag="RightDatePicker"
+                                                x:Name="FourthDepositRightDatePicker"
+                                                Grid.Row="2"
+                                                        Grid.Column="4"
+                                                        Margin="5"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Expander>
+
+                                <Expander Grid.Row="6"
+                                          Grid.ColumnSpan="5"
+                                          Margin="5 0">
+                                    <Expander.Header>
+                                        <DockPanel VerticalAlignment="Stretch">
+                                            <TextBlock 
+                                                FontStyle="Italic"
+                                                FontSize="15"
+                                                FontWeight="DemiBold">Средства хозяйствующих субъектов</TextBlock>
+                                        </DockPanel>
+                                    </Expander.Header>
+                                    <DockPanel Tag="DepositorDockPanel">
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Tag="LeftTextBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Margin="5"
+                                                     x:Name="FifthDepositLeftTextBox"/>
+                                            <ComboBox Tag="LeftComboBox"
+                                                x:Name="FifthDepositLeftComboBox"
+                                                Grid.Row="1"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Больше"/>
+                                                <TextBlock Text="Больше/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="1"
+                                                Grid.Column="2"
+                                                Content="Сумма поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Tag="RightComboBox"
+                                                x:Name="FifthDepositRightComboBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Меньше"/>
+                                                <TextBlock Text="Меньше/равно"/>
+                                            </ComboBox>
+                                            <TextBox Tag="RightTextBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="4"
+                                                    Margin="5"
+                                                     x:Name="FifthDepositRightTextBox"/>
+
+
+                                            <DatePicker Tag="LeftDatePicker"
+                                                x:Name="FifthDepositLeftDatePicker"
+                                                Grid.Row="2"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Tag="LeftDateComboBox"
+                                                x:Name="FifthDepositLeftDateComboBox"
+                                                Grid.Row="2"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="От"/>
+                                                <TextBlock Text="От/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="2"
+                                                Grid.Column="2"
+                                                Content="Дата поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Tag="RightDateComboBox"
+                                                x:Name="FifthDepositRightDateComboBox"
+                                                Grid.Row="2"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="До"/>
+                                                <TextBlock Text="До/равно"/>
+                                            </ComboBox>
+                                            <DatePicker Tag="RightDatePicker"
+                                                x:Name="FifthDepositRightDatePicker"
+                                                Grid.Row="2"
+                                                        Grid.Column="4"
+                                                        Margin="5"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Expander>
+
+                                <Expander Grid.Row="7"
+                                          Grid.ColumnSpan="5"
+                                          Margin="5 0">
+                                    <Expander.Header>
+                                        <DockPanel VerticalAlignment="Stretch">
+                                            <TextBlock 
+                                                FontStyle="Italic"
+                                                FontSize="15"
+                                                FontWeight="DemiBold">Физ. лица</TextBlock>
+                                        </DockPanel>
+                                    </Expander.Header>
+                                    <DockPanel Tag="DepositorDockPanel">
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Tag="LeftTextBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Margin="5"
+                                                     x:Name="SixthDepositLeftTextBox"/>
+                                            <ComboBox Tag="LeftComboBox"
+                                                x:Name="SixthDepositLeftComboBox"
+                                                Grid.Row="1"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Больше"/>
+                                                <TextBlock Text="Больше/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="1"
+                                                Grid.Column="2"
+                                                Content="Сумма поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Tag="RightComboBox"
+                                                x:Name="SixthDepositRightComboBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Меньше"/>
+                                                <TextBlock Text="Меньше/равно"/>
+                                            </ComboBox>
+                                            <TextBox Tag="RightTextBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="4"
+                                                    Margin="5"
+                                                     x:Name="SixthDepositRightTextBox"/>
+
+                                            <DatePicker Tag="LeftDatePicker"
+                                                x:Name="SixthDepositLeftDatePicker"
+                                                Grid.Row="2"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Tag="LeftDateComboBox"
+                                                x:Name="SixthDepositLeftDateComboBox"
+                                                Grid.Row="2"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="От"/>
+                                                <TextBlock Text="От/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="2"
+                                                Grid.Column="2"
+                                                Content="Дата поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="5"/>
+                                            <ComboBox Tag="RightDateComboBox"
+                                                x:Name="SixthDepositRightDateComboBox"
+                                                Grid.Row="2"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="До"/>
+                                                <TextBlock Text="До/равно"/>
+                                            </ComboBox>
+                                            <DatePicker Tag="RightDatePicker"
+                                                x:Name="SixthDepositRightDatePicker"
+                                                Grid.Row="2"
+                                                        Grid.Column="4"
+                                                        Margin="5"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Expander>
+
+                                <Expander Grid.Row="8"
+                                          Grid.ColumnSpan="5"
+                                          Margin="5 0">
+                                    <Expander.Header>
+                                        <DockPanel VerticalAlignment="Stretch">
+                                            <TextBlock 
+                                                FontStyle="Italic"
+                                                FontSize="15"
+                                                FontWeight="DemiBold">ФЦП мин обра или иные источники госзаказа(бюджет)</TextBlock>
+                                        </DockPanel>
+                                    </Expander.Header>
+                                    <DockPanel Tag="DepositorDockPanel">
+                                        <Grid Margin="5">
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                                <RowDefinition/>
+                                            </Grid.RowDefinitions>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="190*"/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition Width="190*"/>
+                                                <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition Width="189*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Tag="LeftTextBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="0"
+                                                    Margin="5"
+                                                     x:Name="SeventhDepositLeftTextBox"/>
+                                            <ComboBox Tag="LeftComboBox"
+                                                x:Name="SeventhDepositLeftComboBox"
+                                                Grid.Row="1"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Больше"/>
+                                                <TextBlock Text="Больше/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="1"
+                                                Grid.Column="2"
+                                                Content="Сумма поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="26,5"/>
+                                            <ComboBox Tag="RightComboBox"
+                                                x:Name="SeventhDepositRightComboBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="Меньше"/>
+                                                <TextBlock Text="Меньше/равно"/>
+                                            </ComboBox>
+                                            <TextBox Tag="RightTextBox"
+                                                Grid.Row="1"
+                                                    Grid.Column="4"
+                                                    Margin="5"
+                                                     x:Name="SeventhDepositRightTextBox"/>
+
+
+                                            <DatePicker Tag="LeftDatePicker"
+                                                x:Name="SeventhDepositLeftDatePicker"
+                                                Grid.Row="2"
+                                                    Grid.Column="0"
+                                                    Margin="5"/>
+                                            <ComboBox Tag="LeftDateComboBox"
+                                                x:Name="SeventhDepositLeftDateComboBox"
+                                                Grid.Row="2"
+                                                      Grid.Column="1"
+                                                      Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="От"/>
+                                                <TextBlock Text="От/равно"/>
+                                            </ComboBox>
+                                            <Label Grid.Row="2"
+                                                Grid.Column="2"
+                                                Content="Дата поступлений"
+                                                HorizontalAlignment="Center"
+                                                FontWeight="Bold"
+                                                Margin="32,5"/>
+                                            <ComboBox Tag="RightDateComboBox"
+                                                x:Name="SeventhDepositRightDateComboBox"
+                                                Grid.Row="2"
+                                                    Grid.Column="3"
+                                                    Margin="5">
+                                                <TextBlock Text=""/>
+                                                <TextBlock Text="До"/>
+                                                <TextBlock Text="До/равно"/>
+                                            </ComboBox>
+                                            <DatePicker Tag="RightDatePicker"
+                                                x:Name="SeventhDepositRightDatePicker"
+                                                Grid.Row="2"
+                                                        Grid.Column="4"
+                                                        Margin="5"/>
+                                        </Grid>
+                                    </DockPanel>
+                                </Expander>
+                            </Grid>
+                        </DockPanel>
+                    </Expander>
+
+                    <Expander>
+                        <Expander.Header>
+                            <DockPanel VerticalAlignment="Stretch">
+                                <TextBlock FontStyle="Italic"
+                               FontSize="15"
+                               FontWeight="DemiBold">Учреждение</TextBlock>
+                            </DockPanel>
+                        </Expander.Header>
+                        <DockPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Label Content="Учреждение"
+                                   Grid.Row="0"
+                                   Margin="0 5 0 0"
+                                       FontWeight="Bold"/>
+                                <sdl:MultiSelectComboBox
+                                x:Name="FirstNodeMultiselectComboBox"
+                                    SelectedItems="{Binding SelectedFirstNode}"
+                                Grid.Row="1"
+                                Height="60"
+                                Grid.Column="0"
+                                SelectionMode="Multiple"
+                                Margin="5"
+                                OpenDropDownListAlsoWhenNotInEditMode="True"
+                                ItemsSource="{Binding FirstNodeList}"/>
+
+                                <Label Content="Подразделение"
+                                   Grid.Row="2"
+                                   Margin="0 5 0 0"
+                                       FontWeight="Bold"/>
+
+                                <sdl:MultiSelectComboBox
+                                    Grid.Row="3"
+                                    x:Name="SecondNodeMultiselectComboBox"
+                                    SelectedItems="{Binding SelectedSecondNode}"
+                                    
+                                Height="60"
+                                    Margin="5"
+                                SelectionMode="Multiple"
+                                OpenDropDownListAlsoWhenNotInEditMode="True"
+                                
+                                ItemsSource="{Binding SecondNodeList}"/>
+
+                                <Label Content="Отдел"
+                                   Grid.Row="0"
+                                       Grid.Column="1"
+                                   Margin="0 5 0 0"
+                                       FontWeight="Bold"/>
+
+                                <sdl:MultiSelectComboBox
+                                    Grid.Row="1"
+                                       Grid.Column="1"
+                                Height="60"
+                                    x:Name="ThirdNodeMultiselectComboBox"
+                                    SelectedItems="{Binding SelectedThirdNode}"
+                                    
+                                    Margin="5"
+                                SelectionMode="Multiple"
+                                OpenDropDownListAlsoWhenNotInEditMode="True"
+                                
+                                ItemsSource="{Binding ThirdNodeList}"/>
+
+                                <Label Content="Структурная единица"
+                                         Grid.Row="2"
+                                       Grid.Column="1"
+                                   Margin="0 5 0 0"
+                                       FontWeight="Bold"/>
+
+                                <sdl:MultiSelectComboBox
+                                    Grid.Row="3"
+                                       Grid.Column="1"
+                                    x:Name="FourthMultiselectComboBox"
+                                    SelectedItems="{Binding SelectedFourthNode}"
+                                    Margin="5"
+                                Height="60"
+                                SelectionMode="Multiple"
+                                OpenDropDownListAlsoWhenNotInEditMode="True"
+                                ItemsSource="{Binding FourthNodeList}"/>
+                            </Grid>
+                        </DockPanel>
+                    </Expander>
+
+                    <Expander>
+                        <Expander.Header>
+                            <DockPanel VerticalAlignment="Stretch">
+                                <TextBlock FontStyle="Italic"
+                               FontSize="15"
+                               FontWeight="DemiBold">Наука</TextBlock>
+                            </DockPanel>
+                        </Expander.Header>
+                        <DockPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+                                <Label Content="Тип исследования"
+                                   Grid.Row="0"
+                                   Margin="0 5 0 0"
+                                       FontWeight="Bold"/>
+                                <sdl:MultiSelectComboBox
+                                x:Name="ResearchTypeMultiselectComboBox"
+                                Grid.Row="1"
+                                Height="60"
+                                Grid.Column="0"
+                                SelectionMode="Multiple"
+                                Margin="5"
+                                OpenDropDownListAlsoWhenNotInEditMode="True"
+                                ItemsSource="{Binding ResearchTypes}"
+                                    SelectedItems="{Binding SelectedResearchType}"/>
+
+                                <Label Content="Тип науки"
+                                   Grid.Row="0"
+                                       Grid.Column="1"
+                                   Margin="0 5 0 0"
+                                       FontWeight="Bold"/>
+                                <sdl:MultiSelectComboBox
+                                    Grid.Row="1"
+                                       Grid.Column="1"
+                                Height="60"
+                                    x:Name="ScienceTypeMultiselectComboBox"
+                                    Margin="5"
+                                SelectionMode="Multiple"
+                                OpenDropDownListAlsoWhenNotInEditMode="True"
+                                ItemsSource="{Binding ScienceTypes}"
+                                    SelectedItems="{Binding SelectedScienceType}"/>
+
+                                <Label Content="Приоритетные направления"
+                                   Grid.Row="2"
+                                   Margin="0 5 0 0"
+                                       FontWeight="Bold"/>
+                                <sdl:MultiSelectComboBox
+                                    Grid.Row="3"
+                                    x:Name="PriorityTrendsMultiselectComboBox"
+                                Height="60"
+                                    Margin="5"
+                                SelectionMode="Multiple"
+                                OpenDropDownListAlsoWhenNotInEditMode="True"
+                                    Grid.ColumnSpan="2"
+                                ItemsSource="{Binding PriorityTrends}"
+                                    SelectedItems="{Binding SelectedPriorityTrend}"/>
+                            </Grid>
+                        </DockPanel>
+
+                    </Expander>
+                    <DockPanel Margin="0 5">
+                        <Button x:Name="ComplexSearchButton"
+                            Content="Поиск"
+                        DockPanel.Dock="Right"
+                        Height="29"
+                        Width="70"
+                                Click="ComplexSearchButton_Click"/>
+
+                        <Button Content="Сброс"
+                                x:Name="DropSearchButton"
+                                Click="DropSearchButton_Click"
+                        HorizontalAlignment="Left"
+                        Height="29"
+                        Width="70"/>
+
+                    </DockPanel>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Expander>
+    </Grid>
+</Window>

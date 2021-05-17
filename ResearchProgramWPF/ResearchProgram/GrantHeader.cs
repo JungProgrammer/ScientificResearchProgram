@@ -48,25 +48,25 @@ namespace ResearchProgram
         public DateTime ChooseDateFromDatePicker { get; set; }
 
 
-        public ObservableCollection<FilterElement> FilterElementsData { get; set; }
+        //public ObservableCollection<FilterElement> FilterElementsData { get; set; }
 
-        private FilterElement _selectedFilter;
-        public FilterElement SelectedFilter
-        {
-            get { return _selectedFilter; }
-            set
-            {
-                _selectedFilter = value;
-                OnPropertyChanged(nameof(SelectedFilter));
-            }
-        }
+        //private FilterElement _selectedFilter;
+        //public FilterElement SelectedFilter
+        //{
+        //    get { return _selectedFilter; }
+        //    set
+        //    {
+        //        _selectedFilter = value;
+        //        OnPropertyChanged(nameof(SelectedFilter));
+        //    }
+        //}
 
 
         public GrantHeader()
         {
             nameOnRussia = "";
             nameForElement = "";
-            FilterElementsData = new ObservableCollection<FilterElement>();
+            //FilterElementsData = new ObservableCollection<FilterElement>();
             DataToComboBox = new List<IContainer>();
             ChooseDateFromDatePicker = DateTime.Now;
         }

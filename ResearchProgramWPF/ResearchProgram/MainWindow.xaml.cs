@@ -63,8 +63,8 @@ namespace ResearchProgram
 
         public DataTable CustomersDataTable { get; set; }
 
-        // Окно фильтров
-        FiltersWindow filtersWindow;
+        //// Окно фильтров
+        //FiltersWindow filtersWindow;
 
         //public List<Person> _personsList;
         //public List<Person> PersonsList {
@@ -86,9 +86,6 @@ namespace ResearchProgram
 
             GrantsFilters.ResetFilters();
 
-            // Установка изначальных настроек
-            SetSettings();
-
             // Загружаем данные в таблицу грантов
             LoadGrantsTable();
             // Загружаем данные в таблицу людей
@@ -97,32 +94,15 @@ namespace ResearchProgram
             LoadCustomerTable();
 
             // Загрука окна фильтров без его открытия
-            LoadFilterWindow();
+            //LoadFilterWindow();
 
             //CRUDDataBase.ConnectToDataBase();
             //PersonsList = CRUDDataBase.GetPersons();
             //CRUDDataBase.CloseConnection();
 
+            CRUDDataBase.GetDepositsVerbose();
+
             DataContext = this;
-            //splash.Close(TimeSpan.FromMilliseconds(0));
-        }
-
-        private void SetSettings()
-        {
-            SelectedStartDate = DateTime.MinValue;
-            SelectedEndDate = DateTime.Now;
-
-            GrantsFilters.StartDepositDate = new FilterElement() { Data = _selectedStartDate.ToString() };
-            GrantsFilters.EndDepositDate = new FilterElement() { Data = _selectedEndDate.ToString() };
-        }
-
-        private void LoadFilterWindow()
-        {
-            filtersWindow = new FiltersWindow(GrantsDataTable)
-            {
-
-                WindowStartupLocation = WindowStartupLocation.CenterScreen,
-            };
         }
 
         /// <summary>
@@ -132,7 +112,6 @@ namespace ResearchProgram
         {
             var ds = new DataSet("Grants");
             GrantsDataTable = ds.Tables.Add("GrantsTable");
-
 
             CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.CreateGrantsHeaders(GrantsDataTable);
@@ -225,7 +204,16 @@ namespace ResearchProgram
         // Открытые окна фильтров
         private void GrantsFiltersButton_Click(object sender, RoutedEventArgs e)
         {
-            filtersWindow.Show();
+            //filtersWindow.Show();
+            NewFilterWindow newFilterWindow = new NewFilterWindow(GrantsDataTable)
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Owner = this
+            };
+            // Эта штука нужна чтобы родительское окно не скрывалось, когда дочернее закрывается
+            newFilterWindow.Closing += (senders, args) => { newFilterWindow.Owner = null; };
+            newFilterWindow.Show();
+
         }
 
         /// <summary>
@@ -266,8 +254,9 @@ namespace ResearchProgram
 
         public void GrantsUpdateButton_Click(object sender, EventArgs e)
         {
-            GrantsFilters.StartDepositDate.Data = _selectedStartDate.ToString();
-            GrantsFilters.EndDepositDate.Data = _selectedEndDate.ToString();
+
+            GrantsDataTable.DefaultView.RowFilter = null;
+            GrantsFilters.ResetFilters();
 
             CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
@@ -299,13 +288,13 @@ namespace ResearchProgram
             string grantId = "";
             try
             {
-                grantId = SelectedGrantRow.Row.Field<String>("id");
+                grantId = SelectedGrantRow.Row.Field<string>("id");
             }
             catch
             { return; }
             Console.WriteLine(grantId);
 
-            Grant grant = CRUDDataBase.GetGrantById(grantId);
+            Grant grant = CRUDDataBase.GetGrantById(Convert.ToInt32(grantId));
 
             CreateGrantWindow newGrantWindow = new CreateGrantWindow(GrantsDataTable, grant)
             {
@@ -485,18 +474,18 @@ namespace ResearchProgram
             System.Windows.MessageBox.Show("Отчёт успешно сохранён", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        private void mainWindow_Closing(object sender, CancelEventArgs e)
+        private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
-            filtersWindow.WindowCanToBeClose = true;
-            filtersWindow.Close();
+            //filtersWindow.WindowCanToBeClose = true;
+            //filtersWindow.Close();
             Environment.Exit(0);
         }
 
 
         private void ShowFullInformation(object sender, RoutedEventArgs e)
         {
-            string grantId = SelectedGrantRow.Row.Field<String>("id");
-            Grant grant = CRUDDataBase.GetGrantById(grantId);
+            string grantId = SelectedGrantRow.Row.Field<string>("id");
+            Grant grant = CRUDDataBase.GetGrantById(Convert.ToInt32(grantId));
 
             FullGrantInfo fullGrantInfonewGrantWindow = new FullGrantInfo(grant)
             {

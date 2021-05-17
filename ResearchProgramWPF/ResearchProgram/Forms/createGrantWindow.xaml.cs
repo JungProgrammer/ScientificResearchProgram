@@ -30,8 +30,8 @@ namespace ResearchProgram
 
         //Списки данных из БД
 
-        public List<Person> _personsList;
-        public List<Person> PersonsList
+        public ObservableCollection<Person> _personsList;
+        public ObservableCollection<Person> PersonsList
         {
             get
             {
@@ -44,18 +44,17 @@ namespace ResearchProgram
             }
         }
 
-        public List<Customer> CustomersList { get; set; }
+        public ObservableCollection<Customer> CustomersList { get; set; }
 
         public List<Depositor> DepositsList { get; set; }
-        public List<ScienceType> ScienceTypeList { get; set; }
-        public List<ResearchType> ResearchTypesList { get; set; }
-        public List<PriorityTrend> PriorityTrendList { get; set; }
+        public ObservableCollection<ScienceType> ScienceTypeList { get; set; }
+        public ObservableCollection<ResearchType> ResearchTypesList { get; set; }
+        public ObservableCollection<PriorityTrend> PriorityTrendList { get; set; }
         //Списки данных из формы
         public List<ComboBox> EnteredExecutorsList { get; set; }
         public List<Object[]> EnteredDepositsList { get; set; }
         public List<ComboBox> EnteredScienceTypesList { get; set; }
 
-        MainWindow mainWindow;
         Grant grantToEdit;
         public string NirChecker;
         public string NOCChecker;
@@ -76,7 +75,6 @@ namespace ResearchProgram
         public CreateGrantWindow(DataTable grantsDataTable, Grant grantToEdit = null, MainWindow Owner = null)
         {
             InitializeComponent();
-            mainWindow = Owner;
 
             this.grantToEdit = grantToEdit;
             // Подключение к базе данных
@@ -96,9 +94,9 @@ namespace ResearchProgram
             EnteredScienceTypesList = new List<ComboBox>();
             EnteredExecutorsList = new List<ComboBox>();
 
-            LeadNIOKRAutoCompleteComboBox.ItemsSource = new List<Person>(PersonsList);
+            LeadNIOKRAutoCompleteComboBox.ItemsSource = new ObservableCollection<Person>(PersonsList);
 
-            researchTypeComboBox.ItemsSource = new List<ResearchType>(ResearchTypesList);
+            researchTypeComboBox.ItemsSource = new ObservableCollection<ResearchType>(ResearchTypesList);
 
             FirstNodeList = new ObservableCollection<UniversityStructureNode>();
             SecondNodeList = new ObservableCollection<UniversityStructureNode>();

@@ -60,7 +60,7 @@ namespace ResearchProgram.Classes
             FirstNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+$'"); // получение всех узлов с адресом первого уровня
             SecondNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+\\.[0-9]+$'"); // получение всех узлов с адресом второго уровня
             ThirdNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+\\.[0-9]+\\.[0-9]+$'"); // получение всех узлов с адресом третьего уровня
-            FourthNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$'"); // получение всех узлов с адресом первого уровня
+            FourthNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$'"); // получение всех узлов с адресом четвертого уровня
             CRUDDataBase.CloseConnection();
 
             Grid grid = new Grid();
@@ -140,10 +140,10 @@ namespace ResearchProgram.Classes
             grid.Children.Add(isMainWorkPlace);
             Grid.SetRow(isMainWorkPlace, 1);
             Grid.SetColumn(isMainWorkPlace, 1);
-            if (IsMainWorkPlace != null)
-            {
-                isMainWorkPlace.IsChecked = IsMainWorkPlace;
-            }
+            //if (IsMainWorkPlace != null)
+            //{
+            isMainWorkPlace.IsChecked = IsMainWorkPlace;
+            //}
 
 
             Label workPlaceLabel = new Label
