@@ -154,7 +154,7 @@ namespace ResearchProgram
             row["Стоимость договора"] = (!grant.isWIthNDS && Settings.Default.NDSKey || !Settings.Default.NDSKey) ? String.Format("{0:#,0.##}", grant.PriceNoNDS) : String.Format("{0:#,0.##}", grant.Price);
             row["Источник финансирования"] = depositors;
             row["Поступления"] = depositsSum;
-            row["Руководитель НИОКР"] = grant.LeadNIOKR.shortName();
+            row["Руководитель НИОКР"] = grant.LeadNIOKR != null ? grant.LeadNIOKR.shortName() : "";
             row["Исполнители"] = string.Join("\n", grant.Executor.Select(x => x.shortName()).ToArray());
             row["Учреждение"] = grant.FirstNode;
             row["Подразделение"] = grant.SecondNode;

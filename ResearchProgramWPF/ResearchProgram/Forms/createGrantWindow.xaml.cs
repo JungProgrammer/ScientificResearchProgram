@@ -31,8 +31,7 @@ namespace ResearchProgram
         public ObservableCollection<UniversityStructureNode> SecondNodeList { get { return _secondNodeList; } set { _secondNodeList = value; OnPropertyChanged("SecondNodeList"); } }
         public ObservableCollection<UniversityStructureNode> ThirdNodeList { get { return _thirdNodeList; } set { _thirdNodeList = value; OnPropertyChanged("ThirdNodeList"); } }
         public ObservableCollection<UniversityStructureNode> FourthNodeList { get { return _fourthNodeList; } set { _fourthNodeList = value; OnPropertyChanged("FourthNodeList"); } }
-        private ObservableCollection<Person> _selectedLeadNIOKR;
-        public ObservableCollection<Person> SelectedLeadNIOKR { get { return _selectedLeadNIOKR; } set { _selectedLeadNIOKR = value; OnPropertyChanged("SelectedLeadNIOKR"); } }
+
 
         //Списки данных из БД
 
@@ -41,6 +40,18 @@ namespace ResearchProgram
 
         public ObservableCollection<Person> _leadNiokrSource;
         public ObservableCollection<Person> LeadNiokrSource { get { return _leadNiokrSource; } set { _leadNiokrSource = value; OnPropertyChanged("LeadNiokrSource"); } }
+        private ObservableCollection<Person> _selectedLeadNIOKR;
+        public ObservableCollection<Person> SelectedLeadNIOKR { get { return _selectedLeadNIOKR; } set { _selectedLeadNIOKR = value; OnPropertyChanged("SelectedLeadNIOKR"); } }
+
+        private ObservableCollection<Person> _selectedExecutor;
+        public ObservableCollection<Person> SelectedExecutor { get { return _selectedExecutor; } set { _selectedExecutor = value; OnPropertyChanged("SelectedExecutor"); } }
+        public ObservableCollection<Person> _executorSource;
+        public ObservableCollection<Person> ExecutorSource { get { return _executorSource; } set { _executorSource = value; OnPropertyChanged("ExecutorSource"); } }
+
+        private ObservableCollection<Customer> _selectedCustomer;
+        public ObservableCollection<Customer> SelectedCustomer { get { return _selectedCustomer; } set { _selectedCustomer = value; OnPropertyChanged("SelectedCustomer"); } }
+        public ObservableCollection<Customer> _customerSource;
+        public ObservableCollection<Customer> CustomerSource { get { return _customerSource; } set { _customerSource = value; OnPropertyChanged("CustomerSource"); } }
 
         public ObservableCollection<Customer> CustomersList { get; set; }
 
@@ -57,6 +68,8 @@ namespace ResearchProgram
         public string NirChecker;
         public string NOCChecker;
         public MultiSelectComboBox LeadNIOKRMultiSelectComboBox;
+        public MultiSelectComboBox ExecutorMultiSelectComboBox;
+        public MultiSelectComboBox CustomerMultiSelectComboBox;
 
 
         // Если это окно отрыто для редактирования.
@@ -82,6 +95,8 @@ namespace ResearchProgram
 
 
             LeadNiokrSource = new ObservableCollection<Person>();
+            ExecutorSource = new ObservableCollection<Person>();
+            CustomerSource = new ObservableCollection<Customer>();
 
             LoadDataAsync();
 
@@ -117,12 +132,6 @@ namespace ResearchProgram
             Dispatcher.Invoke(() => LeadNIOKRMultiSelectComboBox.ItemsSource = PersonsList);
             if (leadIsSelected)
             {
-                //for (int i = 0; i < PersonsList.Count; i++)
-                //{
-                //    if (PersonsList[i].Id == selectedLead.Id)
-                //    {
-                //    }
-                //}
                 Dispatcher.Invoke(() => SelectedLeadNIOKR = new ObservableCollection<Person>() { selectedLead });
 
             }
@@ -130,68 +139,47 @@ namespace ResearchProgram
 
 
             // Обновление комбобоксов для заказчиков
-            Customer selectedCustomer = null;
-            foreach (AutoCompleteComboBox cmb in customersVerticalListView.Items.OfType<AutoCompleteComboBox>())
+            ObservableCollection<Customer> tempCustomer = SelectedCustomer;
+            SelectedCustomer.Clear();
+            Dispatcher.Invoke(() => CustomerSource.Clear());
+            foreach(Customer c in CustomersList)
             {
-                bool isCmbItemSelected = false;
-                Dispatcher.Invoke(() => isCmbItemSelected = cmb.SelectedItem != null);
+                Dispatcher.Invoke(() => CustomerSource.Add(c));
+            }
 
-                if (isCmbItemSelected)
-                {
-                    Dispatcher.Invoke(() => selectedCustomer = new Customer()
-                    {
-                        Id = ((Customer)cmb.SelectedItem).Id,
-                        Title = ((Customer)cmb.SelectedItem).Title
-                    });
-                }
-
-
-                Dispatcher.Invoke(() => cmb.ItemsSource = CustomersList);
-
-
-                if (isCmbItemSelected)
-                {
-                    for (int i = 0; i < CustomersList.Count; i++)
-                    {
-                        if (CustomersList[i].Id == selectedCustomer.Id)
-                        {
-                            Dispatcher.Invoke(() => cmb.SelectedItem = CustomersList[i]);
-                        }
-                    }
-                }
+            foreach (Customer c in tempCustomer)
+            {
+                SelectedCustomer.Add(c);
             }
 
 
             // Обновление комбобоксов у исполнителей
-            Person selectedExecutor = null;
-            foreach (AutoCompleteComboBox cmb in executorsVerticalListView.Items.OfType<AutoCompleteComboBox>())
+            ObservableCollection<Person> tempPerson = SelectedExecutor;
+            SelectedExecutor.Clear();
+            Dispatcher.Invoke(() => ExecutorSource.Clear());
+            foreach (Person p in PersonsList)
             {
-                bool isCmbItemSelected = false;
-                Dispatcher.Invoke(() => isCmbItemSelected = cmb.SelectedItem != null);
-
-                if (isCmbItemSelected)
-                {
-                    Dispatcher.Invoke(() => selectedExecutor = new Person()
-                    {
-                        Id = ((Person)cmb.SelectedItem).Id,
-                        FIO = ((Person)cmb.SelectedItem).FIO
-                    });
-                }
-
-                Dispatcher.Invoke(() => cmb.ItemsSource = PersonsList);
-
-                if (isCmbItemSelected)
-                {
-                    for (int i = 0; i < PersonsList.Count; i++)
-                    {
-                        if (PersonsList[i].Id == selectedExecutor.Id)
-                        {
-                            Dispatcher.Invoke(() => cmb.SelectedItem = PersonsList[i]);
-                        }
-                    }
-                }
+                Dispatcher.Invoke(() => ExecutorSource.Add(p));
             }
 
+            foreach (Person p in tempPerson)
+            {
+                SelectedExecutor.Add(p);
+            }
+
+            // Обновление комбобокса LeadNIOKR
+            ObservableCollection<Person> tempLead = SelectedLeadNIOKR;
+            SelectedLeadNIOKR.Clear();
+            Dispatcher.Invoke(() => LeadNiokrSource.Clear());
+            foreach (Person p in PersonsList)
+            {
+                Dispatcher.Invoke(() => LeadNiokrSource.Add(p));
+            }
+
+            foreach (Person p in tempLead)
+            {
+                SelectedLeadNIOKR.Add(p);
+            }
         }
 
 
@@ -235,6 +223,7 @@ namespace ResearchProgram
             // Список исполнителей
             EnteredExecutorsList = new List<ComboBox>();
             SelectedLeadNIOKR = new ObservableCollection<Person>();
+            SelectedExecutor = new ObservableCollection<Person>();
 
             Dispatcher.Invoke(() => LeadNIOKRMultiSelectComboBox = new MultiSelectComboBox()
             {
@@ -256,7 +245,44 @@ namespace ResearchProgram
             foreach (Person p in PersonsList)
             {
                 Dispatcher.Invoke(() => LeadNiokrSource.Add(p));
+                Dispatcher.Invoke(() => ExecutorSource.Add(p));
             }
+
+            Dispatcher.Invoke(() => ExecutorMultiSelectComboBox = new MultiSelectComboBox()
+            {
+                ItemsSource = ExecutorSource,
+                Margin = new Thickness(5),
+                Height = 420,
+                OpenDropDownListAlsoWhenNotInEditMode = true,
+                VerticalAlignment = VerticalAlignment.Top,
+            });
+            Binding executorBinding = new Binding("SelectedExecutor");
+            executorBinding.Source = this;
+            Dispatcher.Invoke(() => ExecutorMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, executorBinding));
+            Dispatcher.Invoke(() => Grid.SetColumn(ExecutorMultiSelectComboBox, 1));
+            Dispatcher.Invoke(() => Grid.SetRow(ExecutorMultiSelectComboBox, 1));
+            Dispatcher.Invoke(() => customersAndExecutorsGrid.Children.Add(ExecutorMultiSelectComboBox));
+
+            Dispatcher.Invoke(() => CustomerMultiSelectComboBox = new MultiSelectComboBox()
+            {
+                ItemsSource = CustomerSource,
+                Margin = new Thickness(5),
+                Height = 420,
+                OpenDropDownListAlsoWhenNotInEditMode = true,
+                VerticalAlignment = VerticalAlignment.Top,
+            });
+            Binding customerBinding = new Binding("SelectedCustomer");
+            customerBinding.Source = this;
+            Dispatcher.Invoke(() => CustomerMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, customerBinding));
+            Dispatcher.Invoke(() => Grid.SetColumn(CustomerMultiSelectComboBox, 0));
+            Dispatcher.Invoke(() => Grid.SetRow(CustomerMultiSelectComboBox, 1));
+            Dispatcher.Invoke(() => customersAndExecutorsGrid.Children.Add(CustomerMultiSelectComboBox));
+
+            foreach (Customer c in CustomersList)
+            {
+                Dispatcher.Invoke(() => CustomerSource.Add(c));
+            }
+
             Dispatcher.Invoke(() => researchTypeComboBox.ItemsSource = new ObservableCollection<ResearchType>(ResearchTypesList));
 
             FirstNodeList = new ObservableCollection<UniversityStructureNode>();
@@ -269,6 +295,9 @@ namespace ResearchProgram
             priceNoNDSTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
 
 
+            SelectedCustomer = new ObservableCollection<Customer>();
+            SelectedLeadNIOKR = new ObservableCollection<Person>();
+            SelectedExecutor = new ObservableCollection<Person>();
 
             // Если открыта форма редактирования, то вставим в нее данные
             if (grantToEdit != null)
@@ -283,23 +312,10 @@ namespace ResearchProgram
                 Dispatcher.Invoke(() => grantNumberTextBox.Text = grantToEdit.grantNumber);
                 Dispatcher.Invoke(() => NIOKRTextBox.Text = grantToEdit.NameNIOKR);
 
-                for (int i = 0; i < grantToEdit.Customer.Count; i++)
+                foreach (Customer c in grantToEdit.Customer)
                 {
-                    AutoCompleteComboBox customerComboBox = null;
-                    Dispatcher.Invoke(() => customerComboBox = new AutoCompleteComboBox()
-                    {
-                        Margin = new Thickness(5),
-                        ItemsSource = new List<Customer>(CustomersList),
-                        Width = 270
-                    });
-
-                    for (int j = 0; j < CustomersList.Count; j++)
-                        if (CustomersList[j].Title == grantToEdit.Customer[i].Title)
-                            Dispatcher.Invoke(() => customerComboBox.SelectedIndex = j);
-
-                    Dispatcher.Invoke(() => customersVerticalListView.Items.Add(customerComboBox));
+                    SelectedCustomer.Add(c);
                 }
-
 
                 Dispatcher.Invoke(() => startDateDatePicker.SelectedDate = grantToEdit.StartDate);
                 Dispatcher.Invoke(() => endDateDatePicker.SelectedDate = grantToEdit.EndDate);
@@ -404,32 +420,14 @@ namespace ResearchProgram
                 Dispatcher.Invoke(() => CalculateDepositorsSum());
                 Dispatcher.Invoke(() => CalculateDepositorsSumNoNDS());
 
-
-                //for (int i = 0; i < PersonsList.Count; i++)
-                //    if (PersonsList[i].FIO == grantToEdit.LeadNIOKR.FIO)
-                //        Dispatcher.Invoke(() => LeadNIOKRAutoCompleteComboBox.SelectedIndex = i);
-                if (grantToEdit.LeadNIOKR.FIO != "")
+                if (grantToEdit.LeadNIOKR != null)
                 {
-                    SelectedLeadNIOKR = new ObservableCollection<Person>();
                     SelectedLeadNIOKR.Add(grantToEdit.LeadNIOKR);
                 }
 
-
-                for (int i = 0; i < grantToEdit.Executor.Count; i++)
+                foreach (Person p in grantToEdit.Executor)
                 {
-                    AutoCompleteComboBox executorComboBox = null;
-                    Dispatcher.Invoke(() => executorComboBox = new AutoCompleteComboBox()
-                    {
-                        Margin = new Thickness(5),
-                        ItemsSource = new List<Person>(PersonsList),
-                        Width = 270
-                    });
-
-                    for (int j = 0; j < PersonsList.Count; j++)
-                        if (PersonsList[j].FIO == grantToEdit.Executor[i].FIO)
-                            Dispatcher.Invoke(() => executorComboBox.SelectedIndex = j);
-
-                    Dispatcher.Invoke(() => executorsVerticalListView.Items.Add(executorComboBox));
+                    SelectedExecutor.Add(p);
                 }
 
                 Dispatcher.Invoke(() => FirstNodeComboBox.SelectedIndex = -1);
@@ -560,44 +558,6 @@ namespace ResearchProgram
         }
 
         /// <summary>
-        /// Кнопка добавления у заказчика
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void customerAddButton_Click(object sender, RoutedEventArgs e)
-        {
-            AutoCompleteComboBox customerComboBox = new AutoCompleteComboBox()
-            {
-                Margin = new Thickness(5),
-                ItemsSource = new List<Customer>(CustomersList),
-                Width = 270
-            };
-
-            customersVerticalListView.Items.Add(customerComboBox);
-        }
-
-        /// <summary>
-        /// Кнопка удаления у заказчика
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        private void customerDeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            int countSelectedElement = customersVerticalListView.SelectedItems.Count;
-            if (countSelectedElement > 0)
-            {
-                for (int i = 0; i < countSelectedElement; i++)
-                {
-                    customersVerticalListView.Items.Remove(customersVerticalListView.SelectedItems[0]);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        /// <summary>
         /// Добавление строки в средства
         /// </summary>
         /// <param name="sender"></param>
@@ -698,35 +658,6 @@ namespace ResearchProgram
                 for (int i = 0; i < countSelectedElement; i++)
                 {
                     depositsVerticalListView.Items.Remove(depositsVerticalListView.SelectedItems[0]);
-                }
-            }
-            else
-            {
-                //MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        private void ExecutorAddButton_Click(object sender, RoutedEventArgs e)
-        {
-
-            AutoCompleteComboBox executorComboBox = new AutoCompleteComboBox()
-            {
-                Margin = new Thickness(5),
-                ItemsSource = new List<Person>(PersonsList),
-                Width = 270
-            };
-
-            executorsVerticalListView.Items.Add(executorComboBox);
-        }
-
-        private void ExecutorDeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            int countSelectedElement = executorsVerticalListView.SelectedItems.Count;
-            if (countSelectedElement > 0)
-            {
-                for (int i = 0; i < countSelectedElement; i++)
-                {
-                    executorsVerticalListView.Items.Remove(executorsVerticalListView.SelectedItems[0]);
                 }
             }
             else
@@ -848,25 +779,9 @@ namespace ResearchProgram
                 newGrant.NameNIOKR = "";
             }
 
-            if (customersVerticalListView.Items != null)
+            foreach (Customer c in SelectedCustomer)
             {
-                foreach (AutoCompleteComboBox cmb in customersVerticalListView.Items.OfType<AutoCompleteComboBox>())
-                {
-                    if (cmb.SelectedItem != null)
-                    {
-                        newGrant.Customer.Add(new Customer()
-                        {
-                            Id = ((Customer)cmb.SelectedItem).Id,
-                            Title = ((Customer)cmb.SelectedItem).Title
-                        });
-                    }
-                }
-            }
-            else
-            {
-                //MessageBox.Show("Необходимо указать заказчика");
-                incorrectDataString += "Необходимо указать заказчика\n";
-                isAllOkey = false;
+                newGrant.Customer.Add(c);
             }
 
             if (startDateDatePicker.SelectedDate != null)
@@ -944,19 +859,9 @@ namespace ResearchProgram
                 newGrant.LeadNIOKR = null;
             }
 
-            if (executorsVerticalListView.Items != null)
+            foreach (Person p in SelectedExecutor)
             {
-                foreach (AutoCompleteComboBox cmb in executorsVerticalListView.Items.OfType<AutoCompleteComboBox>())
-                {
-                    if (cmb.SelectedItem != null)
-                    {
-                        newGrant.Executor.Add(new Person()
-                        {
-                            Id = ((Person)cmb.SelectedItem).Id,
-                            FIO = ((Person)cmb.SelectedItem).FIO
-                        });
-                    }
-                }
+                newGrant.Executor.Add(p);
             }
 
             if (FirstNodeComboBox.SelectedItem != null)

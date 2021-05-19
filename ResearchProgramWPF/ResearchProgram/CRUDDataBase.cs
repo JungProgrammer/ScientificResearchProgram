@@ -432,7 +432,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение остальных столбцов
-            cmd = new NpgsqlCommand("SELECT grants.grantnumber as ggn, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO as lead_niokr, " +
+            cmd = new NpgsqlCommand("SELECT grants.grantnumber as ggn, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO as lead_niokr, p2.ID as lead_niokr_id, " +
                                     " GRNTI, NIR, NOC, pricenonds, is_with_nds, " +
                                     "first_node_id, second_node_id, third_node_id, fourth_node_id FROM grants " +
                                     "LEFT JOIN persons p2 on grants.leadNIOKRId = p2.id " +
@@ -451,8 +451,8 @@ namespace ResearchProgram
                 grant.StartDate = reader["startDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(reader["startDate"]) : null;
                 grant.EndDate = reader["endDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(reader["endDate"]) : null;
                 grant.Price = reader.GetDouble(5);
-                grant.PriceNoNDS = reader.GetDouble(10);
-                grant.LeadNIOKR = new Person() { FIO = reader["lead_niokr"].ToString() };
+                grant.PriceNoNDS = reader.GetDouble(11);
+                grant.LeadNIOKR = reader["lead_niokr"] != DBNull.Value ? new Person() { FIO = reader["lead_niokr"].ToString(), Id = Convert.ToInt32(reader["lead_niokr_id"]) } : null;
                 grant.GRNTI = reader["GRNTI"].ToString();
                 grant.NIR = reader["NIR"].ToString();
                 grant.NOC = reader["NOC"].ToString();
@@ -493,7 +493,7 @@ namespace ResearchProgram
             List<Grant> grants = new List<Grant>();
             Dictionary<int, Grant> grantsDict = new Dictionary<int, Grant>();
             NpgsqlConnection connection = GetNewConnection();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT grants.id as gid, grants.grantnumber as ggn, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO as lead_niokr, " +
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT grants.id as gid, grants.grantnumber as ggn, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO as lead_niokr, p2.ID as lead_niokr_id, " +
                                     " GRNTI, NIR, NOC, pricenonds, is_with_nds, " +
                                     " first_node_id, second_node_id, third_node_id, fourth_node_id FROM grants " +
                                     " LEFT JOIN persons p2 on grants.leadNIOKRId = p2.id " +
@@ -514,8 +514,8 @@ namespace ResearchProgram
                         StartDate = reader["startDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(reader["startDate"]) : null,
                         EndDate = reader["endDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(reader["endDate"]) : null,
                         Price = reader.GetDouble(6),
-                        PriceNoNDS = reader.GetDouble(11),
-                        LeadNIOKR = new Person() { FIO = reader["lead_niokr"].ToString() },
+                        PriceNoNDS = reader.GetDouble(12),
+                        LeadNIOKR = reader["lead_niokr"] != DBNull.Value ? new Person() { FIO = reader["lead_niokr"].ToString(), Id = Convert.ToInt32(reader["lead_niokr_id"]) } : null,
                         GRNTI = reader["GRNTI"].ToString(),
                         NIR = reader["NIR"].ToString(),
                         NOC = reader["NOC"].ToString(),
@@ -525,6 +525,7 @@ namespace ResearchProgram
                         ThirdNode = reader["third_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["third_node_id"])) : new UniversityStructureNode(),
                         FourthNode = reader["fourth_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["fourth_node_id"])) : new UniversityStructureNode()
                     };
+
                 }
             }
             reader.Close();
@@ -2046,7 +2047,7 @@ namespace ResearchProgram
         public static void InsertNewGrantToDB(Grant grant)
         {
             // Id договора, который будет создан
-            int newMaxGrantId = 0;
+            int newGrantId;
 
             // Вставляем в бд новый договор
             NpgsqlCommand cmd = new NpgsqlCommand("insert into grants (" +
@@ -2082,7 +2083,7 @@ namespace ResearchProgram
                 ":first_node_id, " +
                 ":second_node_id, " +
                 ":third_node_id, " +
-                ":fourth_node_id)", conn);
+                ":fourth_node_id) RETURNING Id", conn);
             cmd.Parameters.Add(new NpgsqlParameter("grantnumber", grant.grantNumber));
             cmd.Parameters.Add(new NpgsqlParameter("okved", grant.OKVED));
             cmd.Parameters.Add(new NpgsqlParameter("nameniokr", grant.NameNIOKR));
@@ -2152,35 +2153,20 @@ namespace ResearchProgram
                 cmd.Parameters.Add(new NpgsqlParameter("fourth_node_id", DBNull.Value));
             }
 
-
-            cmd.ExecuteNonQuery();
-
-
-
-            // Ищем id договора, который только что добавили
-            cmd = new NpgsqlCommand("SELECT id FROM grants ORDER BY id DESC", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                reader.Read();
-                newMaxGrantId = Convert.ToInt32(reader[0]);
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
+            reader.Read();
+            newGrantId = Convert.ToInt32(reader[0]);
             reader.Close();
 
 
             // Вставляем заказчиков
-            CRUDDataBase.AddCustomers(grant, newMaxGrantId);
+            CRUDDataBase.AddCustomers(grant, newGrantId);
 
             // Вставляем исполнителей
-            CRUDDataBase.AddExecutors(grant, newMaxGrantId);
+            CRUDDataBase.AddExecutors(grant, newGrantId);
 
             // Добавление источников средств в БД
-            CRUDDataBase.AddDeposits(grant, newMaxGrantId);
+            CRUDDataBase.AddDeposits(grant, newGrantId);
 
             // Добавление типов исследования
             foreach (ResearchType rType in grant.ResearchType)
@@ -2191,16 +2177,16 @@ namespace ResearchProgram
                 "values(" +
                 ":grantid, " +
                 ":researchtypeid)", conn);
-                cmd.Parameters.Add(new NpgsqlParameter("grantid", newMaxGrantId));
+                cmd.Parameters.Add(new NpgsqlParameter("grantid", newGrantId));
                 cmd.Parameters.Add(new NpgsqlParameter("researchtypeid", rType.Id));
                 cmd.ExecuteNonQuery();
             }
 
             // Добавление типов науки
-            CRUDDataBase.AddScienceTypes(grant, newMaxGrantId);
+            CRUDDataBase.AddScienceTypes(grant, newGrantId);
 
             // Добавление приоритетных направлений
-            CRUDDataBase.AddPriorityTrends(grant, newMaxGrantId);
+            CRUDDataBase.AddPriorityTrends(grant, newGrantId);
         }
 
         /// <summary>

@@ -149,16 +149,7 @@
                                    FontWeight="Bold"
                                    Margin="0 5 0 0"/>
 
-                                <!--<sdl:MultiSelectComboBox
-                                Grid.Row="3"
-                                Grid.Column="1"
-                                Margin="5"
-                                    Height="30"
-                                    SelectionMode="Single"
-                                    ItemsSource="{Binding LeadNiokrSource}"
-                                    SelectedItems="{Binding SelectedLeadNIOKR}"
-                                x:Name="LeadNIOKRMultiSelectComboBox"
-                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>-->
+                                <!--Тут находится MultiSelectComboBox для руководителя НИОКР-->
 
                                 <Label Content="НИР или Услуга"
                                    Grid.Row="6"
@@ -222,14 +213,24 @@
                     <TabItem.Content>
                         <Grid x:Name="customersAndExecutorsGrid">
                             <Grid.RowDefinitions>
+                                <RowDefinition  Height="30"/>
                                 <RowDefinition />
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition/>
                                 <ColumnDefinition/>
                             </Grid.ColumnDefinitions>
-
-                            <Grid x:Name="customerGrid"
+                            <Label Content="Заказчики"
+                                   Grid.Row="0"
+                                   Grid.Column="0"
+                                       FontWeight="Bold"
+                                   HorizontalAlignment="Center"/>
+                            <Label Content="Исполнители"
+                                   Grid.Row="0"
+                                   Grid.Column="1"
+                                       FontWeight="Bold"
+                                   HorizontalAlignment="Center"/>
+                            <!--<Grid x:Name="customerGrid"
                                   Grid.Row="0"
                                   Grid.Column="0"
                                   Margin="2">
@@ -268,8 +269,8 @@
                                     Grid.Column="1"
                                     Margin="0 5 20 5"
                                     Width="Auto" Click="customerDeleteButton_Click"/>
-                            </Grid>
-                            <Grid x:Name="executorsGrid"
+                            </Grid>-->
+                            <!--<Grid x:Name="executorsGrid"
                                   Grid.Row="0"
                                   Grid.Column="1"
                                   Margin="2">
@@ -309,7 +310,7 @@
                                     Margin="0 5 20 5"
                                     Width="Auto" Click="ExecutorDeleteButton_Click"/>
 
-                            </Grid>
+                            </Grid>-->
                         </Grid>
 
 
