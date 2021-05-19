@@ -1,6 +1,7 @@
 ﻿using DotNetKit.Windows.Controls;
 using Npgsql;
 using ResearchProgram.Classes;
+using Sdl.MultiSelectComboBox.Themes.Generic;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -11,6 +12,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -29,22 +31,16 @@ namespace ResearchProgram
         public ObservableCollection<UniversityStructureNode> SecondNodeList { get { return _secondNodeList; } set { _secondNodeList = value; OnPropertyChanged("SecondNodeList"); } }
         public ObservableCollection<UniversityStructureNode> ThirdNodeList { get { return _thirdNodeList; } set { _thirdNodeList = value; OnPropertyChanged("ThirdNodeList"); } }
         public ObservableCollection<UniversityStructureNode> FourthNodeList { get { return _fourthNodeList; } set { _fourthNodeList = value; OnPropertyChanged("FourthNodeList"); } }
+        private ObservableCollection<Person> _selectedLeadNIOKR;
+        public ObservableCollection<Person> SelectedLeadNIOKR { get { return _selectedLeadNIOKR; } set { _selectedLeadNIOKR = value; OnPropertyChanged("SelectedLeadNIOKR"); } }
 
         //Списки данных из БД
 
         public ObservableCollection<Person> _personsList;
-        public ObservableCollection<Person> PersonsList
-        {
-            get
-            {
-                return _personsList;
-            }
-            set
-            {
-                _personsList = value;
-                OnPropertyChanged("PersonsList");
-            }
-        }
+        public ObservableCollection<Person> PersonsList { get { return _personsList; } set { _personsList = value; OnPropertyChanged("PersonsList"); } }
+
+        public ObservableCollection<Person> _leadNiokrSource;
+        public ObservableCollection<Person> LeadNiokrSource { get { return _leadNiokrSource; } set { _leadNiokrSource = value; OnPropertyChanged("LeadNiokrSource"); } }
 
         public ObservableCollection<Customer> CustomersList { get; set; }
 
@@ -60,6 +56,7 @@ namespace ResearchProgram
         Grant grantToEdit;
         public string NirChecker;
         public string NOCChecker;
+        public MultiSelectComboBox LeadNIOKRMultiSelectComboBox;
 
 
         // Если это окно отрыто для редактирования.
@@ -83,6 +80,9 @@ namespace ResearchProgram
 
             this.grantToEdit = grantToEdit;
 
+
+            LeadNiokrSource = new ObservableCollection<Person>();
+
             LoadDataAsync();
 
             DataContext = this;
@@ -105,25 +105,26 @@ namespace ResearchProgram
             // Обновление комбобокса для руководителя
             Person selectedLead = null;
             bool leadIsSelected = false;
-            Dispatcher.Invoke(() => leadIsSelected = LeadNIOKRAutoCompleteComboBox.SelectedItem != null);
+            Dispatcher.Invoke(() => leadIsSelected = SelectedLeadNIOKR.Count > 0);
             if (leadIsSelected)
             {
                 Dispatcher.Invoke(() => selectedLead = new Person()
                 {
-                    Id = ((Person)LeadNIOKRAutoCompleteComboBox.SelectedItem).Id,
-                    FIO = ((Person)LeadNIOKRAutoCompleteComboBox.SelectedItem).FIO
+                    Id = SelectedLeadNIOKR[0].Id,
+                    FIO = SelectedLeadNIOKR[0].FIO
                 });
             }
-            Dispatcher.Invoke(() => LeadNIOKRAutoCompleteComboBox.ItemsSource = PersonsList);
+            Dispatcher.Invoke(() => LeadNIOKRMultiSelectComboBox.ItemsSource = PersonsList);
             if (leadIsSelected)
             {
-                for (int i = 0; i < PersonsList.Count; i++)
-                {
-                    if (PersonsList[i].Id == selectedLead.Id)
-                    {
-                        Dispatcher.Invoke(() => LeadNIOKRAutoCompleteComboBox.SelectedItem = PersonsList[i]);
-                    }
-                }
+                //for (int i = 0; i < PersonsList.Count; i++)
+                //{
+                //    if (PersonsList[i].Id == selectedLead.Id)
+                //    {
+                //    }
+                //}
+                Dispatcher.Invoke(() => SelectedLeadNIOKR = new ObservableCollection<Person>() { selectedLead });
+
             }
 
 
@@ -181,9 +182,9 @@ namespace ResearchProgram
 
                 if (isCmbItemSelected)
                 {
-                    for(int i = 0; i < PersonsList.Count; i++)
+                    for (int i = 0; i < PersonsList.Count; i++)
                     {
-                        if(PersonsList[i].Id == selectedExecutor.Id)
+                        if (PersonsList[i].Id == selectedExecutor.Id)
                         {
                             Dispatcher.Invoke(() => cmb.SelectedItem = PersonsList[i]);
                         }
@@ -192,7 +193,7 @@ namespace ResearchProgram
             }
 
         }
-        
+
 
         /// <summary>
         /// Асинхронный метод обновления
@@ -200,6 +201,7 @@ namespace ResearchProgram
         private async void LoadDataAsync()
         {
             await Task.Run(() => LoadData());
+
         }
 
 
@@ -208,7 +210,7 @@ namespace ResearchProgram
         /// </summary>
         private void LoadData()
         {
-            if(grantToEdit != null) Dispatcher.Invoke(() => Title = "Редактирование договора");
+            if (grantToEdit != null) Dispatcher.Invoke(() => Title = "Редактирование договора");
             string oldTitle = "";
             Dispatcher.Invoke(() => oldTitle = Title);
             Dispatcher.Invoke(() => Title = String.Format("{0} (Загрузка данных...)", Title));
@@ -232,9 +234,29 @@ namespace ResearchProgram
             EnteredScienceTypesList = new List<ComboBox>();
             // Список исполнителей
             EnteredExecutorsList = new List<ComboBox>();
+            SelectedLeadNIOKR = new ObservableCollection<Person>();
 
-            
-            Dispatcher.Invoke(() => LeadNIOKRAutoCompleteComboBox.ItemsSource = new ObservableCollection<Person>(PersonsList));
+            Dispatcher.Invoke(() => LeadNIOKRMultiSelectComboBox = new MultiSelectComboBox()
+            {
+                SelectionMode = MultiSelectComboBox.SelectionModes.Single,
+                ItemsSource = LeadNiokrSource,
+                Margin = new Thickness(5),
+                Height = 30,
+                OpenDropDownListAlsoWhenNotInEditMode = true,
+            });
+
+            Binding myBinding = new Binding("SelectedLeadNIOKR");
+            myBinding.Source = this;
+            Dispatcher.Invoke(() => LeadNIOKRMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, myBinding));
+            LeadNIOKRMultiSelectComboBox.SelectedItemsChanged += LeadNIOKRMultiSelectComboBox_SelectedItemsChanged; ;
+            Dispatcher.Invoke(() => Grid.SetColumn(LeadNIOKRMultiSelectComboBox, 1));
+            Dispatcher.Invoke(() => Grid.SetRow(LeadNIOKRMultiSelectComboBox, 3));
+            Dispatcher.Invoke(() => CommonInfoGrid.Children.Add(LeadNIOKRMultiSelectComboBox));
+
+            foreach (Person p in PersonsList)
+            {
+                Dispatcher.Invoke(() => LeadNiokrSource.Add(p));
+            }
             Dispatcher.Invoke(() => researchTypeComboBox.ItemsSource = new ObservableCollection<ResearchType>(ResearchTypesList));
 
             FirstNodeList = new ObservableCollection<UniversityStructureNode>();
@@ -383,9 +405,16 @@ namespace ResearchProgram
                 Dispatcher.Invoke(() => CalculateDepositorsSumNoNDS());
 
 
-                for (int i = 0; i < PersonsList.Count; i++)
-                    if (PersonsList[i].FIO == grantToEdit.LeadNIOKR.FIO)
-                        Dispatcher.Invoke(() => LeadNIOKRAutoCompleteComboBox.SelectedIndex = i);
+                //for (int i = 0; i < PersonsList.Count; i++)
+                //    if (PersonsList[i].FIO == grantToEdit.LeadNIOKR.FIO)
+                //        Dispatcher.Invoke(() => LeadNIOKRAutoCompleteComboBox.SelectedIndex = i);
+                if (grantToEdit.LeadNIOKR.FIO != "")
+                {
+                    SelectedLeadNIOKR = new ObservableCollection<Person>();
+                    SelectedLeadNIOKR.Add(grantToEdit.LeadNIOKR);
+                }
+
+
                 for (int i = 0; i < grantToEdit.Executor.Count; i++)
                 {
                     AutoCompleteComboBox executorComboBox = null;
@@ -529,8 +558,6 @@ namespace ResearchProgram
 
             Dispatcher.Invoke(() => Title = oldTitle);
         }
-
-
 
         /// <summary>
         /// Кнопка добавления у заказчика
@@ -904,12 +931,12 @@ namespace ResearchProgram
                 }
             }
 
-            if (LeadNIOKRAutoCompleteComboBox.SelectedItem != null)
+            if (SelectedLeadNIOKR.Count > 0)
             {
                 newGrant.LeadNIOKR = new Person()
                 {
-                    Id = ((Person)LeadNIOKRAutoCompleteComboBox.SelectedItem).Id,
-                    FIO = ((Person)LeadNIOKRAutoCompleteComboBox.SelectedItem).FIO
+                    Id = SelectedLeadNIOKR[0].Id,
+                    FIO = SelectedLeadNIOKR[0].FIO
                 };
             }
             else
@@ -1207,12 +1234,11 @@ namespace ResearchProgram
                 priceNoNDSTextBox.Text = "";
         }
 
-        private void LeadNIOKRAutoCompleteComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void LeadNIOKRMultiSelectComboBox_SelectedItemsChanged(object sender, Sdl.MultiSelectComboBox.EventArgs.SelectedItemsChangedEventArgs e)
         {
-            if (LeadNIOKRAutoCompleteComboBox.SelectedItem == null) return;
+            if (SelectedLeadNIOKR.Count == 0) return;
 
-            AutoCompleteComboBox autoCompleteComboBox = (AutoCompleteComboBox)sender;
-            Person person = (Person)autoCompleteComboBox.SelectedItem;
+            Person person = SelectedLeadNIOKR[0];
             CRUDDataBase.ConnectToDataBase();
 
             HashSet<String> set = new HashSet<String>();
@@ -1359,7 +1385,7 @@ namespace ResearchProgram
 
         private void Window_Closing(object sender, CancelEventArgs e)
         {
-            FormsManager.CreateGrantWindow = null; 
+            FormsManager.CreateGrantWindow = null;
         }
     }
 }

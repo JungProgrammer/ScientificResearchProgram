@@ -1,4 +1,5 @@
-﻿using OfficeOpenXml;
+﻿using Npgsql;
+using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using ResearchProgram.Forms;
 using System;
@@ -8,6 +9,8 @@ using System.Data;
 using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -73,6 +76,8 @@ namespace ResearchProgram
 
             GrantsFilters.ResetFilters();
 
+            //LoadDataAsync();
+
             // Загружаем данные в таблицу грантов
             LoadGrantsTable();
             // Загружаем данные в таблицу людей
@@ -85,6 +90,15 @@ namespace ResearchProgram
             DataContext = this;
         }
 
+        //private async void LoadDataAsync()
+        //{
+        //    await Task.Run(() => LoadGrantsTable());
+        //    await Task.Run(() => LoadPeopleTable());
+        //    await Task.Run(() => LoadCustomerTable());
+
+        //}
+
+
         /// <summary>
         /// Загрузка данных в таблицу договоров
         /// </summary>
@@ -93,11 +107,8 @@ namespace ResearchProgram
             var ds = new DataSet("Grants");
             GrantsDataTable = ds.Tables.Add("GrantsTable");
 
-            CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.CreateGrantsHeaders(GrantsDataTable);
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
-            CRUDDataBase.CloseConnection();
-
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -111,13 +122,11 @@ namespace ResearchProgram
         /// </summary>
         private void LoadPeopleTable()
         {
-            var ds = new DataSet("Grants");
+            var ds = new DataSet("People");
             PeopleDataTable = ds.Tables.Add("PeopleTable");
 
-            CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.CreatePersonsHeaders(PeopleDataTable);
             CRUDDataBase.LoadPersonsTable(PeopleDataTable);
-            CRUDDataBase.CloseConnection();
         }
 
         private void LoadCustomerTable()
@@ -125,10 +134,8 @@ namespace ResearchProgram
             var ds = new DataSet("Customers");
             CustomersDataTable = ds.Tables.Add("CustomersTable");
 
-            CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.CreateCustomersHeaders(CustomersDataTable);
             CRUDDataBase.LoadCustomersTable(CustomersDataTable);
-            CRUDDataBase.CloseConnection();
         }
 
         // открытие окна с созданием договора

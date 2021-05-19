@@ -492,12 +492,12 @@ namespace ResearchProgram
         {
             List<Grant> grants = new List<Grant>();
             Dictionary<int, Grant> grantsDict = new Dictionary<int, Grant>();
-
+            NpgsqlConnection connection = GetNewConnection();
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT grants.id as gid, grants.grantnumber as ggn, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO as lead_niokr, " +
                                     " GRNTI, NIR, NOC, pricenonds, is_with_nds, " +
                                     " first_node_id, second_node_id, third_node_id, fourth_node_id FROM grants " +
                                     " LEFT JOIN persons p2 on grants.leadNIOKRId = p2.id " +
-                                    " ORDER BY grants.id; ", conn);
+                                    " ORDER BY grants.id; ", connection);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -531,7 +531,7 @@ namespace ResearchProgram
 
             // Получение типов исследования
             cmd = new NpgsqlCommand("SELECT grantid, title FROM grantResearchType " +
-                                    "JOIN researchTypes rT on grantResearchType.researchTypeId = rT.id; ", conn);
+                                    "JOIN researchTypes rT on grantResearchType.researchTypeId = rT.id; ", connection);
             reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -548,7 +548,7 @@ namespace ResearchProgram
 
             // Получение приоритетных направлений
             cmd = new NpgsqlCommand("SELECT grantid, title FROM grantPriorityTrends " +
-                                        "JOIN priorityTrends on grantPriorityTrends.priorityTrendsId = priorityTrends.id;", conn);
+                                        "JOIN priorityTrends on grantPriorityTrends.priorityTrendsId = priorityTrends.id;", connection);
             reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -565,7 +565,7 @@ namespace ResearchProgram
 
             // Получение типов наук
             cmd = new NpgsqlCommand("SELECT grantid, title FROM grantScienceTypes " +
-                                        "JOIN scienceTypes sT on grantScienceTypes.scienceTypesId = sT.id;", conn);
+                                        "JOIN scienceTypes sT on grantScienceTypes.scienceTypesId = sT.id;", connection);
             reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -582,7 +582,7 @@ namespace ResearchProgram
 
             // Получение спонсоров
             cmd = new NpgsqlCommand("SELECT grantid, title, PartSum, receiptDate, PartSumNoNDS FROM grantDeposits " +
-                                        "JOIN depositors d on grantDeposits.sourceId = d.id;", conn);
+                                        "JOIN depositors d on grantDeposits.sourceId = d.id;", connection);
             reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -608,7 +608,7 @@ namespace ResearchProgram
 
             // Получение заказчиков
             cmd = new NpgsqlCommand("SELECT grant_id, customer_id, title, short_title FROM grants_customers " +
-                                        "JOIN customers ON customers.customerid = grants_customers.customer_id;", conn);
+                                        "JOIN customers ON customers.customerid = grants_customers.customer_id;", connection);
             reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -627,7 +627,7 @@ namespace ResearchProgram
 
             // Получение исполнителей
             cmd = new NpgsqlCommand("SELECT grantid, FIO, executorId FROM executors " +
-                                    "JOIN persons p on executors.executorId = p.id;", conn);
+                                    "JOIN persons p on executors.executorId = p.id;", connection);
             reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -646,6 +646,7 @@ namespace ResearchProgram
 
             grants = grantsDict.Values.ToList();
 
+            connection.Close();
             return grants;
         }
 
@@ -1005,13 +1006,14 @@ namespace ResearchProgram
         /// <param name="dataTable"></param>
         public static void LoadCustomersTable(DataTable dataTable)
         {
+            NpgsqlConnection connection = GetNewConnection();
             dataTable.Rows.Clear();
 
             // массив людей
             List<Customer> customers = new List<Customer>();
 
             // Получение остальных столбцов
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT customerid, title, short_title FROM customers ORDER BY customerid", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT customerid, title, short_title FROM customers ORDER BY customerid", connection);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
 
@@ -1029,7 +1031,7 @@ namespace ResearchProgram
                 }
             }
             reader.Close();
-
+            connection.Close();
             for (int i = 0; i < customers.Count; i++)
             {
                 WorkerWithTablesOnMainForm.AddRowToCustomersTable(dataTable, customers[i]);
@@ -1041,7 +1043,8 @@ namespace ResearchProgram
         /// </summary>
         public static void CreateGrantsHeaders(DataTable dataTable)
         {
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, field_title, field_id FROM fieldslist ORDER BY id", conn);
+            NpgsqlConnection connection = GetNewConnection();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, field_title, field_id FROM fieldslist ORDER BY id", connection);
             NpgsqlDataReader reader = cmd.ExecuteReader();
             WorkerWithTablesOnMainForm.AddHeadersToPersonTable(dataTable, "id");
 
@@ -1052,11 +1055,8 @@ namespace ResearchProgram
                     WorkerWithTablesOnMainForm.AddHeadersToGrantTable(dataTable, reader[1].ToString());
                 }
             }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
             reader.Close();
+            connection.Close();
         }
 
         /// <summary>
@@ -1064,7 +1064,8 @@ namespace ResearchProgram
         /// </summary>
         public static void CreatePersonsHeaders(DataTable dataTable)
         {
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, name_field FROM fields_persons_list ORDER BY id", conn);
+            NpgsqlConnection connection = GetNewConnection();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, name_field FROM fields_persons_list ORDER BY id", connection);
             NpgsqlDataReader reader = cmd.ExecuteReader();
             WorkerWithTablesOnMainForm.AddHeadersToPersonTable(dataTable, "id");
 
@@ -1080,6 +1081,7 @@ namespace ResearchProgram
                 Debug.WriteLine("No rows found.");
             }
             reader.Close();
+            connection.Close();
         }
 
         /// <summary>
@@ -1087,7 +1089,8 @@ namespace ResearchProgram
         /// </summary>
         public static void CreateCustomersHeaders(DataTable dataTable)
         {
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, name_field FROM fields_customers_list ORDER BY id", conn);
+            NpgsqlConnection connection = GetNewConnection();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, name_field FROM fields_customers_list ORDER BY id", connection);
             NpgsqlDataReader reader = cmd.ExecuteReader();
             WorkerWithTablesOnMainForm.AddHeadersToCustomersTable(dataTable, "id");
 
@@ -1098,11 +1101,8 @@ namespace ResearchProgram
                     WorkerWithTablesOnMainForm.AddHeadersToCustomersTable(dataTable, reader[1].ToString());
                 }
             }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
             reader.Close();
+            connection.Close();
         }
         /// <summary>
         /// Получение списка людей
@@ -1113,13 +1113,16 @@ namespace ResearchProgram
             // МОЖНО ПЕРЕПИСАТЬ ДЛЯ УВЕЛИЧЕНИЯ ПРОИЗВОДИТЕЛЬНОСТИ (КАК В GetGrantsInBulk() )
             ObservableCollection<Person> personsList = new ObservableCollection<Person>();
             List<int> persons_ids = new List<int>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id FROM persons ORDER BY FIO; ", conn);
+            NpgsqlConnection connection = GetNewConnection();
+
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id FROM persons ORDER BY FIO; ", connection);
             NpgsqlDataReader reader = cmd.ExecuteReader();
             if (reader.HasRows)
                 while (reader.Read())
                     persons_ids.Add(Convert.ToInt32(reader[0]));
 
             reader.Close();
+            connection.Close();
             for (int i = 0; i < persons_ids.Count; i++)
             {
                 personsList.Add(GetPersonById(persons_ids[i], is_jobs_needed));
@@ -1145,22 +1148,25 @@ namespace ResearchProgram
                     persons_ids.Add(Convert.ToInt32(reader[0]));
 
             reader.Close();
+            connection.Close();
+
             for (int i = 0; i < persons_ids.Count; i++)
             {
-                personsList.Add(GetPersonById(persons_ids[i], is_jobs_needed, connection));
+                personsList.Add(GetPersonById(persons_ids[i], is_jobs_needed));
             }
 
-            connection.Close();
 
             return personsList;
         }
 
-        public static Person GetPersonById(int person_id, bool is_jobs_needed = false, NpgsqlConnection connection = null)
+        public static Person GetPersonById(int person_id, bool is_jobs_needed = false)
         {
+            NpgsqlConnection connection = GetNewConnection();
+
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT persons.id as pid, fio, birthdate, sex, degree_id,wd.title, rank_id, wr.title FROM persons " +
                                                     "LEFT  JOIN work_degree wd ON persons.degree_id = wd.id " +
                                                     "LEFT JOIN work_rank wr on persons.rank_id = wr.id " +
-                                                    "WHERE persons.id = :person_id; ", connection == null ? conn : connection);
+                                                    "WHERE persons.id = :person_id; ", connection);
             cmd.Parameters.Add(new NpgsqlParameter(":person_id", person_id));
 
             NpgsqlDataReader reader = cmd.ExecuteReader();
@@ -1227,7 +1233,7 @@ namespace ResearchProgram
                     " FROM persons " +
                     "JOIN persons_work_places ON persons.id = persons_work_places.person_id " +
                     "LEFT JOIN work_categories wc on persons_work_places.category_id = wc.id " +
-                    "WHERE persons.id = :person_id", conn);
+                    "WHERE persons.id = :person_id", connection);
                 cmd.Parameters.Add(new NpgsqlParameter("person_id", newPerson.Id));
 
                 reader = cmd.ExecuteReader();
@@ -1304,7 +1310,7 @@ namespace ResearchProgram
 
                     cmd = new NpgsqlCommand("SELECT persons_jobs.job_id, j.title, j.salary, salary_rate FROM persons_jobs " +
                         "LEFT JOIN jobs j on persons_jobs.job_id = j.id " +
-                        "WHERE persons_work_places_id = :persons_work_places_id;", conn);
+                        "WHERE persons_work_places_id = :persons_work_places_id;", connection);
                     cmd.Parameters.Add(new NpgsqlParameter("persons_work_places_id", workPlace.Id));
                     reader = cmd.ExecuteReader();
                     if (reader.HasRows)
@@ -1323,6 +1329,7 @@ namespace ResearchProgram
                     reader.Close();
                 }
             }
+            connection.Close();
             return newPerson;
         }
 
