@@ -53,8 +53,17 @@ namespace ResearchProgram
         public ObservableCollection<Customer> _customerSource;
         public ObservableCollection<Customer> CustomerSource { get { return _customerSource; } set { _customerSource = value; OnPropertyChanged("CustomerSource"); } }
 
-        public ObservableCollection<Customer> CustomersList { get; set; }
+        private ObservableCollection<PriorityTrend> _selectedPriorityTrend;
+        public ObservableCollection<PriorityTrend> SelectedPriorityTrend { get { return _selectedPriorityTrend; } set { _selectedPriorityTrend = value; OnPropertyChanged("SelectedPriorityTrend"); } }
+        public ObservableCollection<PriorityTrend> _priorityTrendSource;
+        public ObservableCollection<PriorityTrend> PriorityTrendSource { get { return _priorityTrendSource; } set { _priorityTrendSource = value; OnPropertyChanged("PriorityTrendSource"); } }
 
+        private ObservableCollection<ScienceType> _selectedScienceType;
+        public ObservableCollection<ScienceType> SelectedScienceType { get { return _selectedScienceType; } set { _selectedScienceType = value; OnPropertyChanged("SelectedScienceType"); } }
+        public ObservableCollection<ScienceType> _scienceTypeSource;
+        public ObservableCollection<ScienceType> ScienceTypeSource { get { return _scienceTypeSource; } set { _scienceTypeSource = value; OnPropertyChanged("ScienceTypeSource"); } }
+
+        public ObservableCollection<Customer> CustomersList { get; set; }
         public List<Depositor> DepositsList { get; set; }
         public ObservableCollection<ScienceType> ScienceTypeList { get; set; }
         public ObservableCollection<ResearchType> ResearchTypesList { get; set; }
@@ -70,6 +79,8 @@ namespace ResearchProgram
         public MultiSelectComboBox LeadNIOKRMultiSelectComboBox;
         public MultiSelectComboBox ExecutorMultiSelectComboBox;
         public MultiSelectComboBox CustomerMultiSelectComboBox;
+        public MultiSelectComboBox ScienceTypeMultiSelectComboBox;
+        public MultiSelectComboBox PriorityTrendMultiSelectComboBox;
 
 
         // Если это окно отрыто для редактирования.
@@ -97,6 +108,8 @@ namespace ResearchProgram
             LeadNiokrSource = new ObservableCollection<Person>();
             ExecutorSource = new ObservableCollection<Person>();
             CustomerSource = new ObservableCollection<Customer>();
+            PriorityTrendSource = new ObservableCollection<PriorityTrend>();
+            ScienceTypeSource = new ObservableCollection<ScienceType>();
 
             LoadDataAsync();
 
@@ -283,6 +296,46 @@ namespace ResearchProgram
                 Dispatcher.Invoke(() => CustomerSource.Add(c));
             }
 
+            Dispatcher.Invoke(() => ScienceTypeMultiSelectComboBox = new MultiSelectComboBox()
+            {
+                ItemsSource = ScienceTypeSource,
+                Margin = new Thickness(5),
+                Height = 350,
+                OpenDropDownListAlsoWhenNotInEditMode = true,
+                VerticalAlignment = VerticalAlignment.Top,
+            });
+            Binding scienceTypeBinding = new Binding("SelectedScienceType");
+            scienceTypeBinding.Source = this;
+            Dispatcher.Invoke(() => ScienceTypeMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, scienceTypeBinding));
+            Dispatcher.Invoke(() => Grid.SetColumn(ScienceTypeMultiSelectComboBox, 1));
+            Dispatcher.Invoke(() => Grid.SetRow(ScienceTypeMultiSelectComboBox, 3));
+            Dispatcher.Invoke(() => researchTypesGrid.Children.Add(ScienceTypeMultiSelectComboBox));
+
+            foreach (ScienceType s in ScienceTypeList)
+            {
+                Dispatcher.Invoke(() => ScienceTypeSource.Add(s));
+            }
+
+            Dispatcher.Invoke(() => PriorityTrendMultiSelectComboBox = new MultiSelectComboBox()
+            {
+                ItemsSource = PriorityTrendSource,
+                Margin = new Thickness(5),
+                Height = 350,
+                OpenDropDownListAlsoWhenNotInEditMode = true,
+                VerticalAlignment = VerticalAlignment.Top,
+            });
+            Binding priorityTrendBinding = new Binding("SelectedPriorityTrend");
+            priorityTrendBinding.Source = this;
+            Dispatcher.Invoke(() => PriorityTrendMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, priorityTrendBinding));
+            Dispatcher.Invoke(() => Grid.SetColumn(PriorityTrendMultiSelectComboBox, 0));
+            Dispatcher.Invoke(() => Grid.SetRow(PriorityTrendMultiSelectComboBox, 3));
+            Dispatcher.Invoke(() => researchTypesGrid.Children.Add(PriorityTrendMultiSelectComboBox));
+
+            foreach (PriorityTrend p in PriorityTrendList)
+            {
+                Dispatcher.Invoke(() => PriorityTrendSource.Add(p));
+            }
+
             Dispatcher.Invoke(() => researchTypeComboBox.ItemsSource = new ObservableCollection<ResearchType>(ResearchTypesList));
 
             FirstNodeList = new ObservableCollection<UniversityStructureNode>();
@@ -298,6 +351,8 @@ namespace ResearchProgram
             SelectedCustomer = new ObservableCollection<Customer>();
             SelectedLeadNIOKR = new ObservableCollection<Person>();
             SelectedExecutor = new ObservableCollection<Person>();
+            SelectedPriorityTrend = new ObservableCollection<PriorityTrend>();
+            SelectedScienceType = new ObservableCollection<ScienceType>();
 
             // Если открыта форма редактирования, то вставим в нее данные
             if (grantToEdit != null)
@@ -314,7 +369,9 @@ namespace ResearchProgram
 
                 foreach (Customer c in grantToEdit.Customer)
                 {
-                    SelectedCustomer.Add(c);
+                    foreach (Customer c1 in CustomerSource)
+                        if (c1.Id == c.Id)
+                            SelectedCustomer.Add(c1);
                 }
 
                 Dispatcher.Invoke(() => startDateDatePicker.SelectedDate = grantToEdit.StartDate);
@@ -427,7 +484,9 @@ namespace ResearchProgram
 
                 foreach (Person p in grantToEdit.Executor)
                 {
-                    SelectedExecutor.Add(p);
+                    foreach (Person p1 in ExecutorSource)
+                        if (p.Id == p1.Id)
+                            SelectedExecutor.Add(p1);
                 }
 
                 Dispatcher.Invoke(() => FirstNodeComboBox.SelectedIndex = -1);
@@ -499,38 +558,19 @@ namespace ResearchProgram
                             Dispatcher.Invoke(() => researchTypeComboBox.SelectedIndex = j);
                 }
 
-                for (int i = 0; i < grantToEdit.PriorityTrands.Count; i++)
+                foreach (PriorityTrend p in grantToEdit.PriorityTrands)
                 {
-                    AutoCompleteComboBox priorityTrendComboBox = null;
-                    Dispatcher.Invoke(() => priorityTrendComboBox = new AutoCompleteComboBox()
-                    {
-                        Margin = new Thickness(5),
-                        ItemsSource = new List<PriorityTrend>(PriorityTrendList),
-                        Width = 270
-                    });
-                    for (int j = 0; j < PriorityTrendList.Count; j++)
-                        if (PriorityTrendList[j].Title == grantToEdit.PriorityTrands[i].Title)
-                            Dispatcher.Invoke(() => priorityTrendComboBox.SelectedIndex = j);
-
-
-                    Dispatcher.Invoke(() => priorityTrendsVerticalListView.Items.Add(priorityTrendComboBox));
+                    foreach(PriorityTrend p1 in PriorityTrendSource)
+                        if (p1.Id == p.Id)
+                            SelectedPriorityTrend.Add(p1);
                 }
 
-                for (int i = 0; i < grantToEdit.ScienceType.Count; i++)
+
+                foreach (ScienceType s in grantToEdit.ScienceType)
                 {
-                    AutoCompleteComboBox scienceTypeComboBox = null;
-                    Dispatcher.Invoke(() => scienceTypeComboBox = new AutoCompleteComboBox()
-                    {
-                        Margin = new Thickness(5),
-                        ItemsSource = new List<ScienceType>(ScienceTypeList),
-                        Width = 270
-                    });
-
-                    for (int j = 0; j < ScienceTypeList.Count; j++)
-                        if (ScienceTypeList[j].Title == grantToEdit.ScienceType[i].Title)
-                            Dispatcher.Invoke(() => scienceTypeComboBox.SelectedIndex = j);
-
-                    Dispatcher.Invoke(() => scienceTypeVerticalListView.Items.Add(scienceTypeComboBox));
+                    foreach (ScienceType s1 in ScienceTypeSource)
+                        if (s.Id == s1.Id)
+                            SelectedScienceType.Add(s1);
                 }
 
                 switch (grantToEdit.NIR)
@@ -666,61 +706,6 @@ namespace ResearchProgram
             }
         }
 
-        private void PriorityTrendAddButton_Click(object sender, RoutedEventArgs e)
-        {
-            AutoCompleteComboBox priorityTrendComboBox = new AutoCompleteComboBox()
-            {
-                Margin = new Thickness(5),
-                ItemsSource = new List<PriorityTrend>(PriorityTrendList),
-                Width = 270
-            };
-
-
-            priorityTrendsVerticalListView.Items.Add(priorityTrendComboBox);
-        }
-
-        private void PriorityTrendDeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            int countSelectedElement = priorityTrendsVerticalListView.SelectedItems.Count;
-            if (countSelectedElement > 0)
-            {
-                for (int i = 0; i < countSelectedElement; i++)
-                {
-                    priorityTrendsVerticalListView.Items.Remove(priorityTrendsVerticalListView.SelectedItems[0]);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
-
-        private void ScienceTypeAddButton_Click(object sender, RoutedEventArgs e)
-        {
-            AutoCompleteComboBox scienceTypeComboBox = new AutoCompleteComboBox()
-            {
-                Margin = new Thickness(5),
-                ItemsSource = new List<ScienceType>(ScienceTypeList),
-                Width = 270
-            };
-            scienceTypeVerticalListView.Items.Add(scienceTypeComboBox);
-        }
-
-        private void ScienceTypeDeleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            int countSelectedElement = scienceTypeVerticalListView.SelectedItems.Count;
-            if (countSelectedElement > 0)
-            {
-                for (int i = 0; i < countSelectedElement; i++)
-                {
-                    scienceTypeVerticalListView.Items.Remove(scienceTypeVerticalListView.SelectedItems[0]);
-                }
-            }
-            else
-            {
-                MessageBox.Show("Выделите нужный для удаления элемент", "Внимание", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
         /// <summary>
         /// Смена вкладок по нажатию кнопки и изменение цвета фона
         /// </summary>
@@ -918,34 +903,15 @@ namespace ResearchProgram
                     Title = researchTypeComboBox.SelectedItem.ToString()
                 });
             }
-            if (priorityTrendsVerticalListView.Items != null)
+
+            foreach (PriorityTrend p in SelectedPriorityTrend)
             {
-                foreach (AutoCompleteComboBox cmb in priorityTrendsVerticalListView.Items.OfType<AutoCompleteComboBox>())
-                {
-                    if (cmb.SelectedItem != null)
-                    {
-                        newGrant.PriorityTrands.Add(new PriorityTrend()
-                        {
-                            Id = ((PriorityTrend)cmb.SelectedItem).Id,
-                            Title = cmb.SelectedItem.ToString()
-                        });
-                    }
-                }
+                newGrant.PriorityTrands.Add(p);
             }
 
-            if (scienceTypeVerticalListView.Items != null)
+            foreach (ScienceType s in SelectedScienceType)
             {
-                foreach (AutoCompleteComboBox cmb in scienceTypeVerticalListView.Items.OfType<AutoCompleteComboBox>())
-                {
-                    if (cmb.SelectedItem != null)
-                    {
-                        newGrant.ScienceType.Add(new ScienceType()
-                        {
-                            Id = ((ScienceType)cmb.SelectedItem).Id,
-                            Title = cmb.SelectedItem.ToString()
-                        });
-                    }
-                }
+                newGrant.ScienceType.Add(s);
             }
 
             if (NirChecker != null)

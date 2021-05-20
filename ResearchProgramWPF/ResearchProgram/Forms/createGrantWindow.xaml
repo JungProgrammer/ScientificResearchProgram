@@ -230,90 +230,7 @@
                                    Grid.Column="1"
                                        FontWeight="Bold"
                                    HorizontalAlignment="Center"/>
-                            <!--<Grid x:Name="customerGrid"
-                                  Grid.Row="0"
-                                  Grid.Column="0"
-                                  Margin="2">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="30"/>
-                                    <RowDefinition Height="15*"/>
-                                    <RowDefinition Height="35"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="3*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Label Content="Заказчики"
-                                   Grid.Row="0"
-                                       FontWeight="Bold"
-                                   Grid.ColumnSpan="3"/>
-
-
-                                <ListView Grid.Row="1"
-                                      Grid.ColumnSpan="3"
-                                      x:Name="customersVerticalListView">
-                                </ListView>
-
-
-                                <Button Content="Добавить"
-                                    Name="customerAddButton"
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Margin="0 5 20 5"
-                                    Width="Auto" Click="customerAddButton_Click"/>
-                                <Button Content="Удалить"
-                                    Name="customerDeleteButton"
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    Margin="0 5 20 5"
-                                    Width="Auto" Click="customerDeleteButton_Click"/>
-                            </Grid>-->
-                            <!--<Grid x:Name="executorsGrid"
-                                  Grid.Row="0"
-                                  Grid.Column="1"
-                                  Margin="2">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="30"/>
-                                    <RowDefinition Height="15*"/>
-                                    <RowDefinition Height="35"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="3*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Label Content="Исполнители"
-                                       Grid.Row="0"
-                                       FontWeight="Bold"
-                                       Grid.ColumnSpan="3"/>
-
-
-                                <ListView Grid.Row="1"
-                                      Grid.ColumnSpan="3"
-                                      x:Name="executorsVerticalListView">
-                                </ListView>
-
-
-                                <Button Content="Добавить"
-                                    Name="executorAddButton"
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Margin="0 5 20 5"
-                                    Width="Auto" Click="ExecutorAddButton_Click"/>
-                                <Button Content="Удалить"
-                                    Name="executorDeleteButton"
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    Margin="0 5 20 5"
-                                    Width="Auto" Click="ExecutorDeleteButton_Click"/>
-
-                            </Grid>-->
                         </Grid>
-
-
                     </TabItem.Content>
                 </TabItem>
 
@@ -549,6 +466,7 @@
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="35"/>
                                 <RowDefinition Height="30"/>
+                                <RowDefinition Height="35"/>
                                 <RowDefinition/>
                             </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
@@ -560,15 +478,29 @@
                                    Grid.Row="0"
                                    Margin="0 5 0 0"
                                    Grid.Column="0"
-                                   Grid.ColumnSpan="2"/>
+                                   Grid.ColumnSpan="2"
+                                   FontWeight="Bold"/>
 
                             <ComboBox
                                 x:Name="researchTypeComboBox"
                                 Grid.Row="1"
                                 Grid.ColumnSpan="2"
                                 Margin="5 0"/>
-
-                            <Grid Name="priorityTrendsGrid"
+                            <Label Content="Приоритетные направления"
+                                   Grid.Row="2"
+                                   Margin="0 5 0 0"
+                                   Grid.Column="0"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"/>
+                            
+                            <Label Content="Тип науки"
+                                   Grid.Row="2"
+                                   Margin="0 5 0 0"
+                                   Grid.Column="1"
+                                   Grid.ColumnSpan="2"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Center"/>
+                            <!--<Grid Name="priorityTrendsGrid"
                                   Grid.Row="3"
                                   Grid.Column="0"
                                   Margin="2">
@@ -651,7 +583,7 @@
                                     Margin="0 5 20 5"
                                     Width="Auto" Click="ScienceTypeDeleteButton_Click"/>
 
-                            </Grid>
+                            </Grid>-->
 
                         </Grid>
                     </TabItem.Content>

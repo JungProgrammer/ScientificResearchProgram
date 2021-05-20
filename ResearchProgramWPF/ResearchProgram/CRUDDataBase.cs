@@ -304,7 +304,7 @@ namespace ResearchProgram
             NpgsqlConnection connection = GetNewConnection();
 
             // Получение типов исследования
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT title FROM grantResearchType " +
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT title, grantResearchType.researchTypeId rId FROM grantResearchType " +
                                     "JOIN researchTypes rT on grantResearchType.researchTypeId = rT.id " +
                                     "WHERE grantId = :grantId; ", connection);
             cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
@@ -316,6 +316,7 @@ namespace ResearchProgram
                 {
                     grant.ResearchType.Add(new ResearchType()
                     {
+                        Id = Convert.ToInt32(reader["rId"]),
                         Title = reader["title"].ToString()
                     });
                 }
@@ -323,7 +324,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение приоритетных направлений
-            cmd = new NpgsqlCommand("SELECT title FROM grantPriorityTrends " +
+            cmd = new NpgsqlCommand("SELECT title, grantPriorityTrends.priorityTrendsId pId FROM grantPriorityTrends " +
                                         "JOIN priorityTrends on grantPriorityTrends.priorityTrendsId = priorityTrends.id " +
                                     "WHERE grantId = :grantId; ", connection);
             cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
@@ -335,6 +336,7 @@ namespace ResearchProgram
                 {
                     grant.PriorityTrands.Add(new PriorityTrend()
                     {
+                        Id = Convert.ToInt32(reader["pId"]),
                         Title = reader["title"].ToString()
                     });
                 }
@@ -342,7 +344,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение типов наук
-            cmd = new NpgsqlCommand("SELECT  title FROM grantScienceTypes " +
+            cmd = new NpgsqlCommand("SELECT  title, grantScienceTypes.scienceTypesId sId FROM grantScienceTypes " +
                                         "JOIN scienceTypes sT on grantScienceTypes.scienceTypesId = sT.id " +
                                     "WHERE grantId = :grantId; ", connection);
             cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
@@ -354,6 +356,7 @@ namespace ResearchProgram
                 {
                     grant.ScienceType.Add(new ScienceType()
                     {
+                        Id = Convert.ToInt32(reader["sId"]),
                         Title = reader["title"].ToString()
                     });
                 }
@@ -361,7 +364,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение спонсоров
-            cmd = new NpgsqlCommand("SELECT title, PartSum, receiptDate, PartSumNoNDS FROM grantDeposits " +
+            cmd = new NpgsqlCommand("SELECT title, PartSum, receiptDate, PartSumNoNDS, grantDeposits.sourceId sId FROM grantDeposits " +
                                         "JOIN depositors d on grantDeposits.sourceId = d.id " +
                                     "WHERE grantId = :grantId; ", connection);
             cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
@@ -379,6 +382,7 @@ namespace ResearchProgram
                     receiptDate = reader["receiptDate"] != DBNull.Value ? DateTime.Parse(reader["receiptDate"].ToString()).ToShortDateString() : string.Empty;
                     grant.Depositor.Add(new Depositor()
                     {
+                        Id = Convert.ToInt32(reader["sId"]),
                         Title = reader["title"].ToString(),
                     });
                     grant.DepositorSum.Add(grantDepositSum);
@@ -531,7 +535,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение типов исследования
-            cmd = new NpgsqlCommand("SELECT grantid, title FROM grantResearchType " +
+            cmd = new NpgsqlCommand("SELECT grantid, title, grantResearchType.researchTypeId rId FROM grantResearchType " +
                                     "JOIN researchTypes rT on grantResearchType.researchTypeId = rT.id; ", connection);
             reader = cmd.ExecuteReader();
 
@@ -541,6 +545,7 @@ namespace ResearchProgram
                 {
                     grantsDict[reader.GetInt16(0)].ResearchType.Add(new ResearchType()
                     {
+                        Id = Convert.ToInt32(reader["rId"]),
                         Title = reader["title"].ToString()
                     });
                 }
@@ -548,7 +553,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение приоритетных направлений
-            cmd = new NpgsqlCommand("SELECT grantid, title FROM grantPriorityTrends " +
+            cmd = new NpgsqlCommand("SELECT grantid, title, grantPriorityTrends.priorityTrendsId pId FROM grantPriorityTrends " +
                                         "JOIN priorityTrends on grantPriorityTrends.priorityTrendsId = priorityTrends.id;", connection);
             reader = cmd.ExecuteReader();
 
@@ -558,6 +563,7 @@ namespace ResearchProgram
                 {
                     grantsDict[reader.GetInt16(0)].PriorityTrands.Add(new PriorityTrend()
                     {
+                        Id = Convert.ToInt32(reader["pId"]),
                         Title = reader["title"].ToString()
                     });
                 }
@@ -565,7 +571,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение типов наук
-            cmd = new NpgsqlCommand("SELECT grantid, title FROM grantScienceTypes " +
+            cmd = new NpgsqlCommand("SELECT grantid, title, grantScienceTypes.scienceTypesId sId FROM grantScienceTypes " +
                                         "JOIN scienceTypes sT on grantScienceTypes.scienceTypesId = sT.id;", connection);
             reader = cmd.ExecuteReader();
 
@@ -575,6 +581,7 @@ namespace ResearchProgram
                 {
                     grantsDict[reader.GetInt16(0)].ScienceType.Add(new ScienceType()
                     {
+                        Id = Convert.ToInt32(reader["sId"]),
                         Title = reader["title"].ToString()
                     });
                 }
@@ -582,7 +589,7 @@ namespace ResearchProgram
             reader.Close();
 
             // Получение спонсоров
-            cmd = new NpgsqlCommand("SELECT grantid, title, PartSum, receiptDate, PartSumNoNDS FROM grantDeposits " +
+            cmd = new NpgsqlCommand("SELECT grantid, title, PartSum, receiptDate, PartSumNoNDS, grantDeposits.sourceId sId FROM grantDeposits " +
                                         "JOIN depositors d on grantDeposits.sourceId = d.id;", connection);
             reader = cmd.ExecuteReader();
 
@@ -598,6 +605,7 @@ namespace ResearchProgram
                     receiptDate = reader["receiptDate"] != DBNull.Value ? DateTime.Parse(reader["receiptDate"].ToString()).ToShortDateString() : string.Empty;
                     grantsDict[reader.GetInt16(0)].Depositor.Add(new Depositor()
                     {
+                        Id = Convert.ToInt32(reader["sId"]),
                         Title = reader["title"].ToString(),
                     });
                     grantsDict[reader.GetInt16(0)].DepositorSum.Add(grantDepositSum);
