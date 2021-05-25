@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Globalization;
 using System.Linq;
 //using System.Windows.Controls;
 
 namespace ResearchProgram
 {
-    public class WorkerWithTablesOnMainForm
+    public static class WorkerWithTablesOnMainForm
     {
         private static int countOfGrantRows = 0;
         private static int countOfPersonRows = 0;
@@ -58,10 +57,8 @@ namespace ResearchProgram
             "Полное наименование",
         };
 
-        public WorkerWithTablesOnMainForm() { }
-
         /// <summary>
-        /// Загружает заголовки в grantsDataTable
+        /// Загружает заголовки в указанную таблицу
         /// </summary>
         /// <param name="grantsDataTable"></param>
         /// <param name="header"></param>
@@ -140,10 +137,7 @@ namespace ResearchProgram
                 depositsSum += string.Format("{0:#,0.##}", depositorSum) + '\n';
             }
 
-
-            //var first = string.Format("0k", grant.PriceNoNDS);
             var first = grant.PriceNoNDS.ToString("C");
-
 
             if (grantsDataTable.Rows.Count == 0) countOfGrantRows = 0;
             countOfGrantRows++;

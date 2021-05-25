@@ -1,5 +1,4 @@
-﻿using Npgsql;
-using OfficeOpenXml;
+﻿using OfficeOpenXml;
 using OfficeOpenXml.Style;
 using ResearchProgram.Forms;
 using System;
@@ -7,10 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.IO;
-using System.Net;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -26,42 +22,10 @@ namespace ResearchProgram
 
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        // Выбранная начальная дата оплат
-        private DateTime _selectedStartDate;
-        public DateTime SelectedStartDate
-        {
-            get => _selectedStartDate;
-            set
-            {
-                _selectedStartDate = value;
-                OnPropertyChanged(nameof(SelectedStartDate));
-            }
-        }
-
-        // Выбранная конечная дата оплат
-        private DateTime _selectedEndDate;
-        public DateTime SelectedEndDate
-        {
-            get => _selectedEndDate;
-            set
-            {
-                _selectedEndDate = value;
-                OnPropertyChanged(nameof(SelectedEndDate));
-            }
-        }
-
 
         // Таблица договоров
         private DataTable _grantsDataTable;
-        public DataTable GrantsDataTable
-        {
-            get => _grantsDataTable;
-            set
-            {
-                _grantsDataTable = value;
-                OnPropertyChanged(nameof(GrantsDataTable));
-            }
-        }
+        public DataTable GrantsDataTable { get => _grantsDataTable; set { _grantsDataTable = value; OnPropertyChanged(nameof(GrantsDataTable)); } }
         // Таблица людей
         public DataTable PeopleDataTable { get; set; }
 
@@ -76,8 +40,6 @@ namespace ResearchProgram
 
             GrantsFilters.ResetFilters();
 
-            //LoadDataAsync();
-
             // Загружаем данные в таблицу грантов
             LoadGrantsTable();
             // Загружаем данные в таблицу людей
@@ -89,14 +51,6 @@ namespace ResearchProgram
 
             DataContext = this;
         }
-
-        //private async void LoadDataAsync()
-        //{
-        //    await Task.Run(() => LoadGrantsTable());
-        //    await Task.Run(() => LoadPeopleTable());
-        //    await Task.Run(() => LoadCustomerTable());
-
-        //}
 
 
         /// <summary>
@@ -270,11 +224,7 @@ namespace ResearchProgram
         }
 
         public DataRowView selectedGrantRow;
-        public DataRowView SelectedGrantRow
-        {
-            get { return selectedGrantRow; }
-            set { selectedGrantRow = value; }
-        }
+        public DataRowView SelectedGrantRow { get { return selectedGrantRow; } set { selectedGrantRow = value; } }
         private void EditGrant(object sender, RoutedEventArgs e)
         {
             string grantId = "";
@@ -299,11 +249,7 @@ namespace ResearchProgram
         }
 
         public DataRowView selectedPersonRow;
-        public DataRowView SelectedPersonRow
-        {
-            get { return selectedPersonRow; }
-            set { selectedPersonRow = value; }
-        }
+        public DataRowView SelectedPersonRow { get { return selectedPersonRow; } set { selectedPersonRow = value; } }
         private void EditPeople(object sender, RoutedEventArgs e)
         {
             string personId = "";
@@ -327,11 +273,7 @@ namespace ResearchProgram
         }
 
         public DataRowView selectedCustomerRow;
-        public DataRowView SelectedCustomerRow
-        {
-            get { return selectedPersonRow; }
-            set { selectedPersonRow = value; }
-        }
+        public DataRowView SelectedCustomerRow { get { return selectedPersonRow; }  set { selectedPersonRow = value; } }
         private void EditCustomer(object sender, RoutedEventArgs e)
         {
             string CustomerId = "";
@@ -468,8 +410,6 @@ namespace ResearchProgram
 
         private void MainWindow_Closing(object sender, CancelEventArgs e)
         {
-            //filtersWindow.WindowCanToBeClose = true;
-            //filtersWindow.Close();
             Environment.Exit(0);
         }
 

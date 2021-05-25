@@ -27,7 +27,7 @@ namespace ResearchProgram
 
 
         private static NpgsqlConnection conn;
-        
+
 
         /// <summary>
         /// Подключение к БД
@@ -480,7 +480,7 @@ namespace ResearchProgram
             {
                 Console.WriteLine("FILTERS ACTIVE");
                 List<int> grantIds = GetGrantIds().ToList();
-                for(int i = 0; i < grantIds.Count; i++)
+                for (int i = 0; i < grantIds.Count; i++)
                 {
                     grants.Add(GetGrantById(grantIds[i]));
                 }
@@ -1578,7 +1578,7 @@ namespace ResearchProgram
             {
                 cmd.Parameters.Add(new NpgsqlParameter("startdate", DBNull.Value));
             }
-            else 
+            else
             {
                 cmd.Parameters.Add(new NpgsqlParameter("startdate", fixedGrant.StartDate));
             }
