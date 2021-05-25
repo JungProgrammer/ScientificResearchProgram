@@ -107,7 +107,7 @@ namespace ResearchProgram
             var ds = new DataSet("Grants");
             GrantsDataTable = ds.Tables.Add("GrantsTable");
 
-            CRUDDataBase.CreateGrantsHeaders(GrantsDataTable);
+            WorkerWithTablesOnMainForm.CreateHeaders(GrantsDataTable, WorkerWithTablesOnMainForm.GrantsHeaders);
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
         }
 
@@ -125,7 +125,7 @@ namespace ResearchProgram
             var ds = new DataSet("People");
             PeopleDataTable = ds.Tables.Add("PeopleTable");
 
-            CRUDDataBase.CreatePersonsHeaders(PeopleDataTable);
+            WorkerWithTablesOnMainForm.CreateHeaders(PeopleDataTable, WorkerWithTablesOnMainForm.PersonsHeaders);
             CRUDDataBase.LoadPersonsTable(PeopleDataTable);
         }
 
@@ -134,7 +134,7 @@ namespace ResearchProgram
             var ds = new DataSet("Customers");
             CustomersDataTable = ds.Tables.Add("CustomersTable");
 
-            CRUDDataBase.CreateCustomersHeaders(CustomersDataTable);
+            WorkerWithTablesOnMainForm.CreateHeaders(CustomersDataTable, WorkerWithTablesOnMainForm.CustomersHeaders);
             CRUDDataBase.LoadCustomersTable(CustomersDataTable);
         }
 

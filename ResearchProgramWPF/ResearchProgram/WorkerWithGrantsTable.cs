@@ -12,6 +12,52 @@ namespace ResearchProgram
         private static int countOfGrantRows = 0;
         private static int countOfPersonRows = 0;
 
+        public static List<string> PersonsHeaders = new List<string>()
+        {
+            "#",
+            "id",
+            "ФИО",
+            "Дата рождения",
+            "Пол",
+            "Степень",
+            "Звание"
+        };
+
+        public static List<string> GrantsHeaders = new List<string>()
+        {
+            "id",
+            "№",
+            "Номер договора",
+            "ОКВЭД",
+            "Наименование НИОКР",
+            "Заказчик",
+            "Дата начала",
+            "Дата завершения",
+            "Стоимость договора",
+            "Источник финансирования",
+            "Поступления",
+            "Руководитель НИОКР",
+            "Исполнители",
+            "Учреждение",
+            "Подразделение",
+            "Отдел",
+            "Структурная единица",
+            "ГРНТИ",
+            "Тип исследования",
+            "Приоритетные направления",
+            "Тип науки",
+            "НИР или УСЛУГА",
+            "НОЦ",
+            "Наличие НДС",
+        };
+
+        public static List<string> CustomersHeaders = new List<string>()
+        {
+            "id",
+            "Наименование",
+            "Полное наименование",
+        };
+
         public WorkerWithTablesOnMainForm() { }
 
         /// <summary>
@@ -19,59 +65,18 @@ namespace ResearchProgram
         /// </summary>
         /// <param name="grantsDataTable"></param>
         /// <param name="header"></param>
-        public static void AddHeadersToGrantTable(DataTable grantsDataTable, string header)
+        public static void CreateHeaders(DataTable dataTable, List<string> headers)
         {
-            //grantsDataTable.Columns.Add(header);
-            DataColumn column = new DataColumn
+            foreach (string header in headers)
             {
-                DataType = Type.GetType("System.String"),
-                ColumnName = header,
-                Caption = header,
-            };
-            //switch (column.ColumnName)
-            //{
-            //    case "№":
-            //        column.DataType = Type.GetType("System.Int32");
-            //        break;
-            //    case "Стоимость договора":
-            //        //column.DataType = Type.GetType("System.Double");
-            //        break;
-            //}
-
-            grantsDataTable.Columns.Add(column);
-        }
-
-        /// <summary>
-        /// Загружает заголовки в customerssDataTable
-        /// </summary>
-        /// <param name="grantsDataTable"></param>
-        /// <param name="header"></param>
-        public static void AddHeadersToCustomersTable(DataTable customersDataTable, string header)
-        {
-            DataColumn column = new DataColumn
-            {
-                DataType = Type.GetType("System.String"),
-                ColumnName = header,
-                Caption = header
-            };
-            customersDataTable.Columns.Add(column);
-        }
-
-        /// <summary>
-        /// Загружает заголовки в personsDataTable
-        /// </summary>
-        /// <param name="personsDataTable"></param>
-        /// <param name="header"></param>
-        public static void AddHeadersToPersonTable(DataTable personsDataTable, string header)
-        {
-            DataColumn column = new DataColumn
-            {
-                DataType = Type.GetType("System.String"),
-                ColumnName = header,
-                Caption = header
-            };
-            personsDataTable.Columns.Add(column);
-
+                DataColumn column = new DataColumn
+                {
+                    DataType = Type.GetType("System.String"),
+                    ColumnName = header,
+                    Caption = header
+                };
+                dataTable.Columns.Add(column);
+            }
         }
 
         /// <summary>
