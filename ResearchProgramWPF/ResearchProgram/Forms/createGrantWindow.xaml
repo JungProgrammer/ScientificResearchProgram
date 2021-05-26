@@ -492,7 +492,7 @@
                                    Grid.Column="0"
                                    FontWeight="Bold"
                                    HorizontalAlignment="Center"/>
-                            
+
                             <Label Content="Тип науки"
                                    Grid.Row="2"
                                    Margin="0 5 0 0"
@@ -500,91 +500,6 @@
                                    Grid.ColumnSpan="2"
                                    FontWeight="Bold"
                                    HorizontalAlignment="Center"/>
-                            <!--<Grid Name="priorityTrendsGrid"
-                                  Grid.Row="3"
-                                  Grid.Column="0"
-                                  Margin="2">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="3*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="35"/>
-                                    <RowDefinition Height="15*"/>
-                                    <RowDefinition Height="35"/>
-                                </Grid.RowDefinitions>
-
-                                <Label Content="Приоритетные направления"
-                            Grid.Row="0"
-                            Margin="0 5 0 0" Grid.ColumnSpan="2"/>
-
-
-                                <ListView Grid.Row="1"
-                                      Grid.ColumnSpan="5"
-                                      x:Name="priorityTrendsVerticalListView">
-                                </ListView>
-
-
-                                <Button Content="Добавить"
-                                    Name="priorityTrendAddButton"
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Margin="2 5 10 5"
-                                    Width="Auto" Click="PriorityTrendAddButton_Click"/>
-                                <Button Content="Удалить"
-                                    Name="priorityTrendDeleteButton"
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    Margin="0 5 20 5"
-                                    Width="Auto" Click="PriorityTrendDeleteButton_Click"/>
-
-                            </Grid>
-
-                            <Grid Name ="scienceTypeGrid"
-                                  Grid.Row="3"
-                                  Grid.Column="1"
-                                  Margin="2">
-
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="3*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="35"/>
-                                    <RowDefinition Height="15*"/>
-                                    <RowDefinition Height="35"/>
-                                </Grid.RowDefinitions>
-
-                                <Label Content="Тип науки"
-                            Grid.Row="0"
-                            Margin="0 5 0 0" Grid.ColumnSpan="2"/>
-
-
-                                <ListView Grid.Row="1"
-                                      Grid.ColumnSpan="5"
-                                      x:Name="scienceTypeVerticalListView">
-                                </ListView>
-
-
-                                <Button Content="Добавить"
-                                    Name="scienceTypeAddButton"
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Margin="2 5 10 5"
-                                    Width="Auto" Click="ScienceTypeAddButton_Click"/>
-                                <Button Content="Удалить"
-                                    Name="scienceTypeDeleteButton"
-                                    Grid.Row="2"
-                                    Grid.Column="1"
-                                    Margin="0 5 20 5"
-                                    Width="Auto" Click="ScienceTypeDeleteButton_Click"/>
-
-                            </Grid>-->
-
                         </Grid>
                     </TabItem.Content>
                 </TabItem>

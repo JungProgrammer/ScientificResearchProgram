@@ -219,25 +219,25 @@
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Учреждение:"
                                    Style="{StaticResource BoldLabel}"/>
-                            <Label Content="{Binding Institution}"
+                            <Label Content="{Binding FirstNode}"
                                    Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
                             <Label Content="Подразделение:"
                                    Style="{StaticResource BoldLabel}"/>
-                            <Label Content="{Binding Unit}"
+                            <Label Content="{Binding SecondNode}"
                                    Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="Кафедра:"
+                            <Label Content="Отдел:"
                                    Style="{StaticResource BoldLabel}"/>
-                            <Label Content="{Binding Kafedra}"
+                            <Label Content="{Binding ThirdNode}"
                                    Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                         <StackPanel Orientation="Horizontal">
-                            <Label Content="Лаборатория:"
+                            <Label Content="Структурная единица:"
                                    Style="{StaticResource BoldLabel}"/>
-                            <Label Content="{Binding Laboratory}"
+                            <Label Content="{Binding FourthNode}"
                                    Style="{StaticResource NormalLabel}"/>
                         </StackPanel>
                     </StackPanel>

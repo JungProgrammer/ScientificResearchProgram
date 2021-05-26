@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -95,6 +96,7 @@ namespace ResearchProgram
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
+        private readonly object _collectionOfObjectsSync = new object();
 
         public CreateGrantWindow(DataTable grantsDataTable, Grant grantToEdit = null, MainWindow Owner = null)
         {
@@ -111,8 +113,11 @@ namespace ResearchProgram
             PriorityTrendSource = new ObservableCollection<PriorityTrend>();
             ScienceTypeSource = new ObservableCollection<ScienceType>();
 
-            LoadDataAsync();
 
+            //LoadDataAsync();
+
+            Thread thread = new Thread(LoadData);
+            thread.Start();
             DataContext = this;
         }
 
@@ -202,7 +207,6 @@ namespace ResearchProgram
         private async void LoadDataAsync()
         {
             await Task.Run(() => LoadData());
-
         }
 
 
@@ -228,7 +232,6 @@ namespace ResearchProgram
             // Закрытие подключения к базе данных
             CRUDDataBase.CloseConnection();
 
-
             // Список инвесторов
             EnteredDepositsList = new List<object[]>();
             // Список типов наук
@@ -246,10 +249,6 @@ namespace ResearchProgram
                 Height = 30,
                 OpenDropDownListAlsoWhenNotInEditMode = true,
             });
-
-            Binding myBinding = new Binding("SelectedLeadNIOKR");
-            myBinding.Source = this;
-            Dispatcher.Invoke(() => LeadNIOKRMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, myBinding));
             LeadNIOKRMultiSelectComboBox.SelectedItemsChanged += LeadNIOKRMultiSelectComboBox_SelectedItemsChanged; ;
             Dispatcher.Invoke(() => Grid.SetColumn(LeadNIOKRMultiSelectComboBox, 1));
             Dispatcher.Invoke(() => Grid.SetRow(LeadNIOKRMultiSelectComboBox, 3));
@@ -269,9 +268,6 @@ namespace ResearchProgram
                 OpenDropDownListAlsoWhenNotInEditMode = true,
                 VerticalAlignment = VerticalAlignment.Top,
             });
-            Binding executorBinding = new Binding("SelectedExecutor");
-            executorBinding.Source = this;
-            Dispatcher.Invoke(() => ExecutorMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, executorBinding));
             Dispatcher.Invoke(() => Grid.SetColumn(ExecutorMultiSelectComboBox, 1));
             Dispatcher.Invoke(() => Grid.SetRow(ExecutorMultiSelectComboBox, 1));
             Dispatcher.Invoke(() => customersAndExecutorsGrid.Children.Add(ExecutorMultiSelectComboBox));
@@ -284,9 +280,6 @@ namespace ResearchProgram
                 OpenDropDownListAlsoWhenNotInEditMode = true,
                 VerticalAlignment = VerticalAlignment.Top,
             });
-            Binding customerBinding = new Binding("SelectedCustomer");
-            customerBinding.Source = this;
-            Dispatcher.Invoke(() => CustomerMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, customerBinding));
             Dispatcher.Invoke(() => Grid.SetColumn(CustomerMultiSelectComboBox, 0));
             Dispatcher.Invoke(() => Grid.SetRow(CustomerMultiSelectComboBox, 1));
             Dispatcher.Invoke(() => customersAndExecutorsGrid.Children.Add(CustomerMultiSelectComboBox));
@@ -304,9 +297,7 @@ namespace ResearchProgram
                 OpenDropDownListAlsoWhenNotInEditMode = true,
                 VerticalAlignment = VerticalAlignment.Top,
             });
-            Binding scienceTypeBinding = new Binding("SelectedScienceType");
-            scienceTypeBinding.Source = this;
-            Dispatcher.Invoke(() => ScienceTypeMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, scienceTypeBinding));
+
             Dispatcher.Invoke(() => Grid.SetColumn(ScienceTypeMultiSelectComboBox, 1));
             Dispatcher.Invoke(() => Grid.SetRow(ScienceTypeMultiSelectComboBox, 3));
             Dispatcher.Invoke(() => researchTypesGrid.Children.Add(ScienceTypeMultiSelectComboBox));
@@ -324,9 +315,6 @@ namespace ResearchProgram
                 OpenDropDownListAlsoWhenNotInEditMode = true,
                 VerticalAlignment = VerticalAlignment.Top,
             });
-            Binding priorityTrendBinding = new Binding("SelectedPriorityTrend");
-            priorityTrendBinding.Source = this;
-            Dispatcher.Invoke(() => PriorityTrendMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, priorityTrendBinding));
             Dispatcher.Invoke(() => Grid.SetColumn(PriorityTrendMultiSelectComboBox, 0));
             Dispatcher.Invoke(() => Grid.SetRow(PriorityTrendMultiSelectComboBox, 3));
             Dispatcher.Invoke(() => researchTypesGrid.Children.Add(PriorityTrendMultiSelectComboBox));
@@ -343,7 +331,6 @@ namespace ResearchProgram
             ThirdNodeList = new ObservableCollection<UniversityStructureNode>();
             FourthNodeList = new ObservableCollection<UniversityStructureNode>();
 
-
             priceTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
             priceNoNDSTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
 
@@ -353,6 +340,7 @@ namespace ResearchProgram
             SelectedExecutor = new ObservableCollection<Person>();
             SelectedPriorityTrend = new ObservableCollection<PriorityTrend>();
             SelectedScienceType = new ObservableCollection<ScienceType>();
+            //Dispatcher.Invoke(() => BindingOperations.EnableCollectionSynchronization(SelectedExecutor, _collectionOfObjectsSync));
 
             // Если открыта форма редактирования, то вставим в нее данные
             if (grantToEdit != null)
@@ -371,7 +359,10 @@ namespace ResearchProgram
                 {
                     foreach (Customer c1 in CustomerSource)
                         if (c1.Id == c.Id)
+                        {
                             SelectedCustomer.Add(c1);
+                            break;
+                        }
                 }
 
                 Dispatcher.Invoke(() => startDateDatePicker.SelectedDate = grantToEdit.StartDate);
@@ -486,7 +477,11 @@ namespace ResearchProgram
                 {
                     foreach (Person p1 in ExecutorSource)
                         if (p.Id == p1.Id)
+                        {
+                            Console.WriteLine("Добавили " + p.FIO);
                             SelectedExecutor.Add(p1);
+                            break;
+                        }
                 }
 
                 Dispatcher.Invoke(() => FirstNodeComboBox.SelectedIndex = -1);
@@ -560,9 +555,12 @@ namespace ResearchProgram
 
                 foreach (PriorityTrend p in grantToEdit.PriorityTrands)
                 {
-                    foreach(PriorityTrend p1 in PriorityTrendSource)
+                    foreach (PriorityTrend p1 in PriorityTrendSource)
                         if (p1.Id == p.Id)
+                        {
                             SelectedPriorityTrend.Add(p1);
+                            break;
+                        }
                 }
 
 
@@ -570,7 +568,10 @@ namespace ResearchProgram
                 {
                     foreach (ScienceType s1 in ScienceTypeSource)
                         if (s.Id == s1.Id)
+                        {
                             SelectedScienceType.Add(s1);
+                            break;
+                        }
                 }
 
                 switch (grantToEdit.NIR)
@@ -593,6 +594,26 @@ namespace ResearchProgram
                         break;
                 }
             }
+
+            Binding executorBinding = new Binding("SelectedExecutor");
+            executorBinding.Source = this;
+            Dispatcher.Invoke(() => ExecutorMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, executorBinding));
+
+            Binding priorityTrendBinding = new Binding("SelectedPriorityTrend");
+            priorityTrendBinding.Source = this;
+            Dispatcher.Invoke(() => PriorityTrendMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, priorityTrendBinding));
+
+            Binding scienceTypeBinding = new Binding("SelectedScienceType");
+            scienceTypeBinding.Source = this;
+            Dispatcher.Invoke(() => ScienceTypeMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, scienceTypeBinding));
+
+            Binding customerBinding = new Binding("SelectedCustomer");
+            customerBinding.Source = this;
+            Dispatcher.Invoke(() => CustomerMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, customerBinding));
+
+            Binding LeadNIOKRBinding = new Binding("SelectedLeadNIOKR");
+            LeadNIOKRBinding.Source = this;
+            Dispatcher.Invoke(() => LeadNIOKRMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, LeadNIOKRBinding));
 
             Dispatcher.Invoke(() => Title = oldTitle);
         }

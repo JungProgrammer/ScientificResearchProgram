@@ -20,7 +20,7 @@ namespace ResearchProgram
 
         // К какой базе подключаться при режиме сборки
 #if DEBUG
-        public static bool DEBUG = true;
+        public static bool DEBUG = false;
 #else
         public static bool DEBUG = false;
 #endif
@@ -1387,10 +1387,6 @@ namespace ResearchProgram
                         Title = reader[1].ToString()
                     });
                 }
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
             }
             reader.Close();
             return priorityTrendsList;

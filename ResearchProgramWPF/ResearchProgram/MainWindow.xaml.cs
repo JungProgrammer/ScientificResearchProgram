@@ -13,13 +13,6 @@ using System.Windows.Forms;
 
 namespace ResearchProgram
 {
-
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
-    /// 
-
-
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
 
@@ -426,7 +419,6 @@ namespace ResearchProgram
             };
             // Эта штука нужна чтобы родительское окно не скрывалось, когда дочернее закрывается
             fullGrantInfonewGrantWindow.Closing += (senders, args) => { fullGrantInfonewGrantWindow.Owner = null; };
-
             fullGrantInfonewGrantWindow.Show();
         }
 
