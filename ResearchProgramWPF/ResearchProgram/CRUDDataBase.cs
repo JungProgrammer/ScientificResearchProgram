@@ -25,7 +25,6 @@ namespace ResearchProgram
         public static bool DEBUG = false;
 #endif
 
-
         private static NpgsqlConnection conn;
 
 
