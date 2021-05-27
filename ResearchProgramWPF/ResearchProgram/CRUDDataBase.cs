@@ -20,7 +20,7 @@ namespace ResearchProgram
 
         // К какой базе подключаться при режиме сборки
 #if DEBUG
-        public static bool DEBUG = false;
+        public static bool DEBUG = true;
 #else
         public static bool DEBUG = false;
 #endif

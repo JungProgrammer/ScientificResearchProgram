@@ -6,7 +6,13 @@ namespace ResearchProgram
 {
     public class Person : IContainer
     {
-
+        public int Id { get; set; }
+        public string FIO { get; set; }
+        public DateTime? BitrhDate { get; set; }
+        public bool Sex { get; set; }
+        public WorkDegree Degree { get; set; }
+        public WorkRank Rank { get; set; }
+        public List<PersonWorkPlace> workPlaces { get; set; }
         public Person()
         {
             Id = 0;
@@ -17,15 +23,6 @@ namespace ResearchProgram
             Rank = new WorkRank();
             workPlaces = new List<PersonWorkPlace>();
         }
-
-        public int Id { get; set; }
-        public string FIO { get; set; }
-        public DateTime? BitrhDate { get; set; }
-        public bool Sex { get; set; }
-        public WorkDegree Degree { get; set; }
-        public WorkRank Rank { get; set; }
-        public List<PersonWorkPlace> workPlaces { get; set; }
-
 
         public string GetTitle()
         {

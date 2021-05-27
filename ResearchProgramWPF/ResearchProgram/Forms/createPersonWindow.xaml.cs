@@ -203,16 +203,22 @@ namespace ResearchProgram
                 Dispatcher.Invoke(() => createPersonButton.Content = "Сохранить");
                 Dispatcher.Invoke(() => FIOTextBox.Text = _personToEdit.FIO);
 
-                for (int i = 0; i < WorkDegreesList.Count; i++)
+                if (_personToEdit.Degree != null)
                 {
-                    if (_personToEdit.Degree.Id == WorkDegreesList[i].Id)
-                        Dispatcher.Invoke(() => WorkDegreeSelectedItem = WorkDegreesList[i]);
+                    for (int i = 0; i < WorkDegreesList.Count; i++)
+                    {
+                        if (_personToEdit.Degree.Id == WorkDegreesList[i].Id)
+                            Dispatcher.Invoke(() => WorkDegreeSelectedItem = WorkDegreesList[i]);
+                    }
                 }
 
-                for (int i = 0; i < WorkRanksList.Count; i++)
+                if (_personToEdit.Rank != null)
                 {
-                    if (_personToEdit.Rank.Id == WorkRanksList[i].Id)
-                        Dispatcher.Invoke(() => WorkRankSelectedItem = WorkRanksList[i]);
+                    for (int i = 0; i < WorkRanksList.Count; i++)
+                    {
+                        if (_personToEdit.Rank.Id == WorkRanksList[i].Id)
+                            Dispatcher.Invoke(() => WorkRankSelectedItem = WorkRanksList[i]);
+                    }
                 }
 
                 Dispatcher.Invoke(() => BirthDateDatePicker.SelectedDate = _personToEdit.BitrhDate);
@@ -272,7 +278,7 @@ namespace ResearchProgram
 
             if (BirthDateDatePicker.SelectedDate != null)
             {
-                newPerson.BitrhDate = (DateTime?)BirthDateDatePicker.SelectedDate;
+                newPerson.BitrhDate = BirthDateDatePicker.SelectedDate;
             }
 
             newPerson.Sex = _sexSelected;
@@ -305,6 +311,7 @@ namespace ResearchProgram
                     CRUDDataBase.UpdateDegree(newPerson);
                     CRUDDataBase.UpdateRank(newPerson);
                     MessageBox.Show("Информация о человеке успешно изменена", "Успешно", MessageBoxButton.OK, MessageBoxImage.Information);
+                    ((MainWindow)Owner).PersonsUpdateButton_Click(sender, e);
 
                     FormsManager.UpdateOpenedWindows();
                 }

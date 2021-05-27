@@ -25,7 +25,7 @@ namespace ResearchProgram.Forms
     /// <summary>
     /// Логика взаимодействия для NewFilterWindow.xaml
     /// </summary>
-    public partial class NewFilterWindow : Window, INotifyPropertyChanged
+    public partial class GrantFilterWindow : Window, INotifyPropertyChanged
     {
 
         private const int SIMPLE_SEARCH_HEIGHT = 150;
@@ -100,7 +100,7 @@ namespace ResearchProgram.Forms
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
-        public NewFilterWindow(DataTable grantsDataTable)
+        public GrantFilterWindow(DataTable grantsDataTable)
         {
             InitializeComponent();
 
@@ -384,7 +384,6 @@ namespace ResearchProgram.Forms
                             filterRange.RightSign = FilterRange.Signs.LessEqual;
                             break;
                     }
-
                 }
             }
             if (filterRange.isActive())

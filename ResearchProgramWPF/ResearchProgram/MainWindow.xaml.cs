@@ -5,11 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Windows.Forms;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 
 namespace ResearchProgram
 {
@@ -31,7 +31,7 @@ namespace ResearchProgram
             CRUDDataBase.GetDepositsVerbose();
             StaticData.LoadUniversityStructNodesStatic();
 
-            Title = "Гранты НИЧ v" + Settings.Default.ProgrammVersion;
+            Title = "Гранты НИЧ ";
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
             GrantsFilters.ResetFilters();
@@ -42,8 +42,6 @@ namespace ResearchProgram
             LoadPeopleTable();
             //Загружаем данные в таблицу заказчиков
             LoadCustomerTable();
-
-
 
             DataContext = this;
         }
@@ -138,11 +136,9 @@ namespace ResearchProgram
             newSettingWindow.ShowDialog();
         }
 
-        // Открытые окна фильтров
         private void GrantsFiltersButton_Click(object sender, RoutedEventArgs e)
         {
-            //filtersWindow.Show();
-            NewFilterWindow newFilterWindow = new NewFilterWindow(GrantsDataTable)
+            GrantFilterWindow newFilterWindow = new GrantFilterWindow(GrantsDataTable)
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Owner = this
@@ -151,6 +147,18 @@ namespace ResearchProgram
             newFilterWindow.Closing += (senders, args) => { newFilterWindow.Owner = null; };
             newFilterWindow.Show();
 
+        }
+
+        private void PersonsFiltersButton_Click(object sender, RoutedEventArgs e)
+        {
+            PersonFilterWindow newFilterWindow = new PersonFilterWindow(PeopleDataTable)
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Owner = this
+            };
+            // Эта штука нужна чтобы родительское окно не скрывалось, когда дочернее закрывается
+            newFilterWindow.Closing += (senders, args) => { newFilterWindow.Owner = null; };
+            newFilterWindow.Show();
         }
 
         /// <summary>
@@ -207,6 +215,8 @@ namespace ResearchProgram
 
         public void PersonsUpdateButton_Click(object sender, EventArgs e)
         {
+            PeopleDataTable.DefaultView.RowFilter = null;
+
             CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.LoadPersonsTable(PeopleDataTable);
             CRUDDataBase.CloseConnection();
