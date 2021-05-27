@@ -30,7 +30,7 @@
     <ProductName>Гранты НИЧ</ProductName>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
-    <ApplicationRevision>9</ApplicationRevision>
+    <ApplicationRevision>10</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
@@ -170,6 +170,7 @@
     <Compile Include="Classes\FilterRange.cs" />
     <Compile Include="Classes\FormsManager.cs" />
     <Compile Include="Classes\OKVED.cs" />
+    <Compile Include="Classes\PersonsFilters.cs" />
     <Compile Include="Classes\PersonWorkPlace.cs" />
     <Compile Include="Classes\TreeNode.cs" />
     <Compile Include="Classes\UniversityStructureNode.cs" />
@@ -208,8 +209,11 @@
     <Compile Include="Forms\HelpWindows\EditElementWindow.xaml.cs">
       <DependentUpon>EditElementWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Forms\FilterWindow.xaml.cs">
-      <DependentUpon>FilterWindow.xaml</DependentUpon>
+    <Compile Include="Forms\GrantFilterWindow.xaml.cs">
+      <DependentUpon>GrantFilterWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\PersonFilterWindow.xaml.cs">
+      <DependentUpon>PersonFilterWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="InitialWindow.xaml.cs">
       <DependentUpon>InitialWindow.xaml</DependentUpon>
@@ -243,7 +247,7 @@
     <Compile Include="Forms\UniversityStructureWindow.xaml.cs">
       <DependentUpon>UniversityStructureWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="StaticDataTemp.cs" />
+    <Compile Include="StaticData.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Converters\VisibilityConveter.cs" />
     <Compile Include="WorkerWithGrantsTable.cs" />
@@ -283,7 +287,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Forms\FilterWindow.xaml">
+    <Page Include="Forms\GrantFilterWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\PersonFilterWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -350,7 +358,6 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="ResearchProgram_TemporaryKey.pfx" />
     <None Include="Settings.settings">
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

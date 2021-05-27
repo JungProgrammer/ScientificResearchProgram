@@ -202,7 +202,8 @@
                               CanUserAddRows="False"
                               CanUserDeleteRows="False"
                               IsReadOnly="True"
-                              CurrentItem="{Binding Path=SelectedPersonRow, Mode=TwoWay}" GotFocus="PeopleTable_GotFocus">
+                              CurrentItem="{Binding Path=SelectedPersonRow, Mode=TwoWay}" GotFocus="PeopleTable_GotFocus"
+                              AutoGeneratingColumn="PeopleTable_AutoGeneratingColumn">
                         <DataGrid.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Редактировать" 

@@ -42,6 +42,15 @@ namespace ResearchProgram.Classes
         public CheckBox isMainWorkPlace;
 
         public event PropertyChangedEventHandler PropertyChanged;
+
+        public PersonWorkPlace()
+        {
+            jobList = new List<Job>();
+            firstNode = new UniversityStructureNode();
+            secondNode = new UniversityStructureNode();
+            thirdNode = new UniversityStructureNode();
+            fourthNode = new UniversityStructureNode();
+        }
         public void OnPropertyChanged(string prop)
         {
             if (PropertyChanged != null)

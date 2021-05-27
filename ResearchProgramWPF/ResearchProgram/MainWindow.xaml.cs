@@ -28,6 +28,9 @@ namespace ResearchProgram
         {
             InitializeComponent();
 
+            CRUDDataBase.GetDepositsVerbose();
+            StaticData.LoadUniversityStructNodesStatic();
+
             Title = "Гранты НИЧ v" + Settings.Default.ProgrammVersion;
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
 
@@ -40,7 +43,7 @@ namespace ResearchProgram
             //Загружаем данные в таблицу заказчиков
             LoadCustomerTable();
 
-            CRUDDataBase.GetDepositsVerbose();
+
 
             DataContext = this;
         }
@@ -483,6 +486,20 @@ namespace ResearchProgram
         }
 
         private void GrantsTable_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
+        {
+            var col = e.Column as DataGridTextColumn;
+
+            var style = new Style(typeof(TextBlock));
+            style.Setters.Add(new Setter(TextBlock.TextWrappingProperty, TextWrapping.Wrap));
+            style.Setters.Add(new Setter(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center));
+
+            col.ElementStyle = style;
+
+            col.MaxWidth = 400;
+        }
+
+
+        private void PeopleTable_AutoGeneratingColumn(object sender, DataGridAutoGeneratingColumnEventArgs e)
         {
             var col = e.Column as DataGridTextColumn;
 

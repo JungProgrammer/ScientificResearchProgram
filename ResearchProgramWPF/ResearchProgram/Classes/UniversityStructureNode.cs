@@ -63,6 +63,7 @@ namespace ResearchProgram.Classes
         public UniversityStructureNode()
         {
             IsMainWorkPlace = false;
+            ShortTitle = "";
         }
 
         public override string ToString()

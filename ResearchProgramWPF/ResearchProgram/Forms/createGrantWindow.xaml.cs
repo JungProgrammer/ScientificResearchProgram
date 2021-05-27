@@ -132,7 +132,7 @@ namespace ResearchProgram
 
         private void UpdateData()
         {
-            PersonsList = CRUDDataBase.GetPersonsInNewThread();
+            PersonsList = new ObservableCollection<Person>(CRUDDataBase.GetPersons());
             CustomersList = CRUDDataBase.GetCustomersInNewThread();
 
             // Обновление комбобокса для руководителя
@@ -222,7 +222,7 @@ namespace ResearchProgram
 
             // Подключение к базе данных
             CRUDDataBase.ConnectToDataBase();
-            PersonsList = CRUDDataBase.GetPersons();
+            PersonsList = new ObservableCollection<Person>(CRUDDataBase.GetPersons());
             //PersonsList = StaticProperties.PersonsList;
             CustomersList = CRUDDataBase.GetCustomers();
             DepositsList = CRUDDataBase.GetDeposits();

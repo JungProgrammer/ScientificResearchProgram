@@ -62,5 +62,20 @@ namespace ResearchProgram
 
             return shortName;
         }
+
+        public PersonWorkPlace GetActiveWorkPlace()
+        {
+            if (workPlaces.Count == 0)
+                return new PersonWorkPlace();
+
+            foreach(PersonWorkPlace personWorkPlace in workPlaces)
+            {
+                if (personWorkPlace.IsMainWorkPlace)
+                {
+                    return personWorkPlace;
+                }
+            }
+            return workPlaces[0];
+        }
     }
 }

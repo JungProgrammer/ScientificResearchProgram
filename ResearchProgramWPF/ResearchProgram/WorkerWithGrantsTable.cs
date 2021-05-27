@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ResearchProgram.Classes;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -10,16 +11,21 @@ namespace ResearchProgram
     {
         private static int countOfGrantRows = 0;
         private static int countOfPersonRows = 0;
+        private static int countOfCustomerRows = 0;
 
         public static List<string> PersonsHeaders = new List<string>()
         {
-            "#",
             "id",
+            "#",
             "ФИО",
             "Дата рождения",
             "Пол",
             "Степень",
-            "Звание"
+            "Звание",
+            "Учреждение",
+            "Подразделение",
+            "Отдел",
+            "Структурная единица"
         };
 
         public static List<string> GrantsHeaders = new List<string>()
@@ -53,8 +59,9 @@ namespace ResearchProgram
         public static List<string> CustomersHeaders = new List<string>()
         {
             "id",
+            "#",
             "Наименование",
-            "Полное наименование",
+            "Полное наименование"
         };
 
         /// <summary>
@@ -184,15 +191,25 @@ namespace ResearchProgram
             row["ФИО"] = person.FIO;
             row["Дата рождения"] = person.BitrhDate == null ? "" : person.BitrhDate?.ToString("dd.MM.yyyy");
             row["Пол"] = person.Sex ? "M" : "Ж";
-            row["Степень"] = person.Degree.Title;
-            row["Звание"] = person.Rank.Title;
+            row["Степень"] = person.Degree != null ? person.Degree.Title : "";
+            row["Звание"] = person.Rank != null ? person.Rank.Title: "";
+
+            PersonWorkPlace personWorkPlace = person.GetActiveWorkPlace();
+
+            row["Учреждение"] = personWorkPlace.firstNode != null ?  personWorkPlace.firstNode.ToString() : "";
+            row["Подразделение"] = personWorkPlace.secondNode != null ? personWorkPlace.secondNode.ToString() : "";
+            row["Отдел"] = personWorkPlace.thirdNode != null ? personWorkPlace.thirdNode.ToString() : "";
+            row["Структурная единица"] = personWorkPlace.fourthNode != null ? personWorkPlace.fourthNode.ToString() : "";
             personsDataTable.Rows.Add(row);
         }
 
         public static void AddRowToCustomersTable(DataTable customersDataTable, Customer customer)
         {
+            if (customersDataTable.Rows.Count == 0) countOfCustomerRows = 0;
+            countOfCustomerRows++;
             DataRow row = customersDataTable.NewRow();
             row["id"] = customer.Id;
+            row["#"] = countOfCustomerRows;
             row["Наименование"] = customer.ShortTitle;
             row["Полное наименование"] = customer.Title;
             customersDataTable.Rows.Add(row);

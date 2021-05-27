@@ -1,5 +1,4 @@
 ﻿using ResearchProgram.Classes;
-using Sdl.MultiSelectComboBox.Themes.Generic;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,7 +7,6 @@ using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,16 +16,14 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Xceed.Wpf.AvalonDock.Layout;
 
 namespace ResearchProgram.Forms
 {
     /// <summary>
-    /// Логика взаимодействия для NewFilterWindow.xaml
+    /// Логика взаимодействия для PersonFilterWindow.xaml
     /// </summary>
-    public partial class NewFilterWindow : Window, INotifyPropertyChanged
+    public partial class PersonFilterWindow : Window
     {
-
         private const int SIMPLE_SEARCH_HEIGHT = 150;
         private const int EXTENDED_SEARCH_HEIGHT = 700;
         private const int SIMPLE_SEARCH_WIDTH = 600;
@@ -100,16 +96,16 @@ namespace ResearchProgram.Forms
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
-        public NewFilterWindow(DataTable grantsDataTable)
+        public PersonFilterWindow(DataTable personsDataTable)
         {
             InitializeComponent();
 
 
-            GrantsDataTable = grantsDataTable;
+            GrantsDataTable = personsDataTable;
 
             CRUDDataBase.ConnectToDataBase();
 
-            People = CRUDDataBase.GetPersons();
+            People = new ObservableCollection<Person>(CRUDDataBase.GetPersons());
             Customers = CRUDDataBase.GetCustomers();
 
             FirstNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+$'"); // получение всех узлов с адресом первого уровня
@@ -506,7 +502,7 @@ namespace ResearchProgram.Forms
                     if (GrantsFilters.Depositors == null)
                     {
                         GrantsFilters.Depositors = new ObservableCollection<FilterRange>();
-                        for (int i = 0; i < StaticDataTemp.DepositsVerbose.Count; i++)
+                        for (int i = 0; i < StaticData.DepositsVerbose.Count; i++)
                         {
                             GrantsFilters.Depositors.Add(new FilterRange());
                         }
@@ -557,5 +553,6 @@ namespace ResearchProgram.Forms
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
             CRUDDataBase.CloseConnection();
         }
+
     }
 }

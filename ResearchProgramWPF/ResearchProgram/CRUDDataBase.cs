@@ -20,7 +20,7 @@ namespace ResearchProgram
 
         // К какой базе подключаться при режиме сборки
 #if DEBUG
-        public static bool DEBUG = true;
+        public static bool DEBUG = false;
 #else
         public static bool DEBUG = false;
 #endif
@@ -682,7 +682,7 @@ namespace ResearchProgram
         public static void LoadPersonsTable(DataTable dataTable)
         {
             dataTable.Rows.Clear();
-            ObservableCollection<Person> persons = GetPersons();
+            List<Person> persons = GetPersons(true);
             for (int i = 0; i < persons.Count; i++)
             {
                 WorkerWithTablesOnMainForm.AddRowToPersonsTable(dataTable, persons[i]);
@@ -1050,128 +1050,162 @@ namespace ResearchProgram
         /// Получение списка людей
         /// </summary>
         /// <returns></returns>
-        public static ObservableCollection<Person> GetPersons(bool is_jobs_needed = false)
+        public static List<Person> GetPersons(bool is_jobs_needed = false)
         {
-            // МОЖНО ПЕРЕПИСАТЬ ДЛЯ УВЕЛИЧЕНИЯ ПРОИЗВОДИТЕЛЬНОСТИ (КАК В GetGrantsInBulk() )
-            ObservableCollection<Person> personsList = new ObservableCollection<Person>();
-            List<int> persons_ids = new List<int>();
-            NpgsqlConnection connection = GetNewConnection();
-
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id FROM persons ORDER BY FIO; ", connection);
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-            if (reader.HasRows)
-                while (reader.Read())
-                    persons_ids.Add(Convert.ToInt32(reader[0]));
-
-            reader.Close();
-            connection.Close();
-            for (int i = 0; i < persons_ids.Count; i++)
+            List<Person> persons = new List<Person>();
+            if (PersonsFilters.IsActive())
             {
-                personsList.Add(GetPersonById(persons_ids[i], is_jobs_needed));
+                Console.WriteLine("PERSONS FILTERS ACTIVE");
+                List<int> personsIds = GetPersonsIds().ToList();
+                for (int i = 0; i < personsIds.Count; i++)
+                {
+                    persons.Add(GetPersonById(personsIds[i]));
+                }
+            }
+            else
+            {
+                Console.WriteLine("PERSONS FILTERS INACTIVE");
+                persons = GetPersonsInBulk();
             }
 
-            return personsList;
+            return persons;
         }
 
-        /// <summary>
-        /// Получение списка людей в новом соедигении
-        /// </summary>
-        /// <returns></returns>
-        public static ObservableCollection<Person> GetPersonsInNewThread(bool is_jobs_needed = false)
+        public static HashSet<int> GetPersonsIds()
         {
+
+            return new HashSet<int>();
+        }
+
+
+        public static List<Person> GetPersonsInBulk()
+        {
+            Dictionary<int, Person> personsDict = new Dictionary<int, Person>();
             NpgsqlConnection connection = GetNewConnection();
+            int personId;
 
-            ObservableCollection<Person> personsList = new ObservableCollection<Person>();
-            List<int> persons_ids = new List<int>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id FROM persons ORDER BY FIO; ", connection);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT persons.id as pid, fio, birthdate, sex, degree_id, wd.title wdt, rank_id, wr.title wrt FROM persons " +
+                                                    "LEFT  JOIN work_degree wd ON persons.degree_id = wd.id " +
+                                                    "LEFT JOIN work_rank wr on persons.rank_id = wr.id ", connection);
+
             NpgsqlDataReader reader = cmd.ExecuteReader();
+
             if (reader.HasRows)
-                while (reader.Read())
-                    persons_ids.Add(Convert.ToInt32(reader[0]));
-
-            reader.Close();
-            connection.Close();
-
-            for (int i = 0; i < persons_ids.Count; i++)
             {
-                personsList.Add(GetPersonById(persons_ids[i], is_jobs_needed));
+                while (reader.Read())
+                {
+                    personId = Convert.ToInt32(reader["pid"]);
+                    personsDict[personId] = new Person()
+                    {
+                        Id = Convert.ToInt32(reader["pid"]),
+                        FIO = reader["fio"].ToString(),
+                        BitrhDate = reader["birthdate"] is DBNull ? null : (DateTime?)reader["birthdate"],
+                        Sex = (bool)reader["sex"],
+                        Degree = reader["degree_id"] != DBNull.Value ? new WorkDegree { Id = Convert.ToInt32(reader["degree_id"]), Title = reader["wdt"].ToString() } : null,
+                        Rank = reader["rank_id"] != DBNull.Value ? new WorkRank { Id = Convert.ToInt32(reader["rank_id"]), Title = reader["wrt"].ToString() } : null
+                    };
+                }
             }
 
+            reader.Close();
+            cmd = new NpgsqlCommand("SELECT persons.id pid, persons_work_places.id pwpid, category_id cid, wc.title wct, is_main_work_place, first_node_id, second_node_id, third_node_id, fourth_node_id" +
+                                    " FROM persons " +
+                                    "JOIN persons_work_places ON persons.id = persons_work_places.person_id " +
+                                    "LEFT JOIN work_categories wc on persons_work_places.category_id = wc.id ", connection);
 
-            return personsList;
+            reader = cmd.ExecuteReader();
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    personId = Convert.ToInt32(reader["pid"]);
+                    PersonWorkPlace workPlace = new PersonWorkPlace();
+                    workPlace.workCategory = new WorkCategories();
+
+                    workPlace.Id = reader["pwpid"] != DBNull.Value ? Convert.ToInt32(reader["pwpid"]) : -1;
+                    workPlace.workCategory.Id = reader["cid"] != DBNull.Value ? Convert.ToInt32(reader["cid"]) : -1;
+                    workPlace.workCategory.Title = reader["wct"] != DBNull.Value ? reader["wct"].ToString() : "";
+                    workPlace.IsMainWorkPlace = reader["is_main_work_place"] != DBNull.Value ? Convert.ToBoolean(reader["is_main_work_place"]) : false;
+
+
+                    if (reader["first_node_id"] != DBNull.Value)
+                    {
+                        workPlace.firstNode = StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["first_node_id"]));
+                    }
+                    else
+                    {
+                        workPlace.firstNode = null;
+                    }
+
+                    if (reader["second_node_id"] != DBNull.Value)
+                    {
+                        workPlace.secondNode = StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["second_node_id"]));
+                    }
+                    else
+                    {
+                        workPlace.secondNode = null;
+                    }
+
+                    if (reader["third_node_id"] != DBNull.Value)
+                    {
+                        workPlace.thirdNode = StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["third_node_id"]));
+                    }
+                    else
+                    {
+                        workPlace.thirdNode = null;
+                    }
+
+                    if (reader["fourth_node_id"] != DBNull.Value)
+                    {
+                        workPlace.fourthNode = StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["fourth_node_id"]));
+                    }
+                    else
+                    {
+                        workPlace.fourthNode = null;
+                    }
+
+                    personsDict[personId].workPlaces.Add(workPlace);
+                }
+            }
+            reader.Close();
+            connection.Close();
+            return personsDict.Values.ToList();
+
         }
 
         public static Person GetPersonById(int person_id, bool is_jobs_needed = false)
         {
             NpgsqlConnection connection = GetNewConnection();
 
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT persons.id as pid, fio, birthdate, sex, degree_id,wd.title, rank_id, wr.title FROM persons " +
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT fio, birthdate, sex, degree_id, wd.title wdt, rank_id, wr.title wrt FROM persons " +
                                                     "LEFT  JOIN work_degree wd ON persons.degree_id = wd.id " +
                                                     "LEFT JOIN work_rank wr on persons.rank_id = wr.id " +
                                                     "WHERE persons.id = :person_id; ", connection);
             cmd.Parameters.Add(new NpgsqlParameter(":person_id", person_id));
 
             NpgsqlDataReader reader = cmd.ExecuteReader();
-
             Person newPerson = new Person();
             if (reader.HasRows)
             {
                 reader.Read();
-                newPerson.Id = Convert.ToInt32(reader["pid"]);
 
-                newPerson.FIO = reader[1].ToString();
-
-                newPerson.BitrhDate = reader["birthdate"] is DBNull ? null : (DateTime?)reader["birthdate"];
-
-                newPerson.Sex = (bool)reader[3];
-
-                if (reader[4] != DBNull.Value)
+                newPerson = new Person()
                 {
-                    newPerson.Degree = new WorkDegree
-                    {
-                        Id = Convert.ToInt32(reader[4]),
-                        Title = reader[5].ToString()
-                    };
-                }
-                else
-                {
-                    newPerson.Degree = new WorkDegree();
-                }
-
-                if (reader[6] != DBNull.Value)
-                {
-                    newPerson.Rank = new WorkRank
-                    {
-                        Id = Convert.ToInt32(reader[6]),
-                        Title = reader[7].ToString()
-                    };
-                }
-                else
-                {
-                    newPerson.Rank = new WorkRank();
-                }
-
+                    Id = person_id,
+                    FIO = reader["fio"].ToString(),
+                    BitrhDate = reader["birthdate"] is DBNull ? null : (DateTime?)reader["birthdate"],
+                    Sex = (bool)reader["sex"],
+                    Degree = reader["degree_id"] != DBNull.Value ? new WorkDegree { Id = Convert.ToInt32(reader["degree_id"]), Title = reader["wdt"].ToString() } : null,
+                    Rank = reader["rank_id"] != DBNull.Value ? new WorkRank { Id = Convert.ToInt32(reader["rank_id"]), Title = reader["wrt"].ToString() } : null
+                };
             }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
+
             reader.Close();
             if (is_jobs_needed)
             {
-                cmd = new NpgsqlCommand("SELECT persons_work_places.id, category_id, wc.title, is_main_work_place, first_node_id, second_node_id, third_node_id, fourth_node_id, " +
-                    "(SELECT title FROM work_place_structure WHERE id = first_node_id), " +
-                    "(SELECT address FROM work_place_structure WHERE id = first_node_id), " +
-                    "(SELECT title FROM work_place_structure WHERE id = second_node_id), " +
-                    "(SELECT address FROM work_place_structure WHERE id = second_node_id), " +
-                    "(SELECT title FROM work_place_structure WHERE id = third_node_id), " +
-                    "(SELECT address FROM work_place_structure WHERE id = third_node_id), " +
-                    "(SELECT title FROM work_place_structure WHERE id = fourth_node_id), " +
-                    "(SELECT address FROM work_place_structure WHERE id = fourth_node_id), " +
-                    "(SELECT short_title FROM work_place_structure WHERE id = first_node_id), " +
-                    "(SELECT short_title FROM work_place_structure WHERE id = second_node_id), " +
-                    "(SELECT short_title FROM work_place_structure WHERE id = third_node_id), " +
-                    "(SELECT short_title FROM work_place_structure WHERE id = fourth_node_id) " +
+                Dictionary<int, PersonWorkPlace> workPlaces = new Dictionary<int, PersonWorkPlace>();
+                int workPlaceId;
+                cmd = new NpgsqlCommand("SELECT persons_work_places.id pwpid, category_id cid, wc.title wct, is_main_work_place, first_node_id, second_node_id, third_node_id, fourth_node_id " +
                     " FROM persons " +
                     "JOIN persons_work_places ON persons.id = persons_work_places.person_id " +
                     "LEFT JOIN work_categories wc on persons_work_places.category_id = wc.id " +
@@ -1183,93 +1217,51 @@ namespace ResearchProgram
                 {
                     while (reader.Read())
                     {
-                        PersonWorkPlace workPlace = new PersonWorkPlace();
-                        workPlace.workCategory = new WorkCategories();
-                        workPlace.Id = reader[0] != DBNull.Value ? Convert.ToInt32(reader[0]) : -1;
-                        workPlace.workCategory.Id = reader[1] != DBNull.Value ? Convert.ToInt32(reader[1]) : -1;
-                        workPlace.workCategory.Title = reader[2] != DBNull.Value ? reader[2].ToString() : "";
-                        workPlace.IsMainWorkPlace = reader[3] != DBNull.Value ? Convert.ToBoolean(reader[3]) : false;
+                        workPlaceId = Convert.ToInt32(reader["pwpid"]);
+                        workPlaces[workPlaceId] = new PersonWorkPlace()
+                        {
+                            workCategory = new WorkCategories(),
+                            Id = workPlaceId,
+                            firstNode = reader["first_node_id"] != DBNull.Value ? StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["first_node_id"])) : null,
+                            secondNode = reader["second_node_id"] != DBNull.Value ? StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["second_node_id"])) : null,
+                            thirdNode = reader["third_node_id"] != DBNull.Value ? StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["third_node_id"])) : null,
+                            fourthNode = reader["fourth_node_id"] != DBNull.Value ? StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["fourth_node_id"])) : null
+                        };
 
-
-                        if (reader[4] != DBNull.Value)
-                        {
-                            workPlace.firstNode = new UniversityStructureNode { Id = Convert.ToInt32(reader[4]) };
-                            workPlace.firstNode.Title = reader[8] != DBNull.Value ? reader[8].ToString() : "";
-                            workPlace.firstNode.Address = reader[9] != DBNull.Value ? reader[9].ToString() : "";
-                            workPlace.firstNode.ShortTitle = reader[16] != DBNull.Value ? reader[16].ToString() : "";
-                        }
-                        else
-                        {
-                            workPlace.firstNode = new UniversityStructureNode();
-                        }
-
-                        if (reader[5] != DBNull.Value)
-                        {
-                            workPlace.secondNode = new UniversityStructureNode { Id = Convert.ToInt32(reader[5]) };
-                            workPlace.secondNode.Title = reader[10] != DBNull.Value ? reader[10].ToString() : "";
-                            workPlace.secondNode.Address = reader[11] != DBNull.Value ? reader[11].ToString() : "";
-                            workPlace.secondNode.ShortTitle = reader[17] != DBNull.Value ? reader[17].ToString() : "";
-                        }
-                        else
-                        {
-                            workPlace.secondNode = new UniversityStructureNode();
-                        }
-
-                        if (reader[6] != DBNull.Value)
-                        {
-                            workPlace.thirdNode = new UniversityStructureNode { Id = Convert.ToInt32(reader[6]) };
-                            workPlace.thirdNode.Title = reader[12] != DBNull.Value ? reader[12].ToString() : "";
-                            workPlace.thirdNode.Address = reader[13] != DBNull.Value ? reader[13].ToString() : "";
-                            workPlace.thirdNode.ShortTitle = reader[18] != DBNull.Value ? reader[18].ToString() : "";
-                        }
-                        else
-                        {
-                            workPlace.thirdNode = new UniversityStructureNode();
-                        }
-
-                        if (reader[7] != DBNull.Value)
-                        {
-                            workPlace.fourthNode = new UniversityStructureNode { Id = Convert.ToInt32(reader[7]) };
-                            workPlace.fourthNode.Title = reader[14] != DBNull.Value ? reader[14].ToString() : "";
-                            workPlace.fourthNode.Address = reader[15] != DBNull.Value ? reader[15].ToString() : "";
-                            workPlace.fourthNode.ShortTitle = reader[19] != DBNull.Value ? reader[19].ToString() : "";
-                        }
-                        else
-                        {
-                            workPlace.fourthNode = new UniversityStructureNode();
-                        }
-                        workPlace.jobList = new List<Job>();
-
-                        newPerson.workPlaces.Add(workPlace);
+                        workPlaces[workPlaceId].workCategory.Id = reader["cid"] != DBNull.Value ? Convert.ToInt32(reader["cid"]) : -1;
+                        workPlaces[workPlaceId].workCategory.Title = reader["wct"] != DBNull.Value ? reader["wct"].ToString() : "";
+                        workPlaces[workPlaceId].IsMainWorkPlace = reader["is_main_work_place"] != DBNull.Value ? Convert.ToBoolean(reader["is_main_work_place"]) : false;
                     }
                 }
                 reader.Close();
 
+                cmd = new NpgsqlCommand("SELECT persons_jobs.job_id jid, j.title jti, j.salary jsl, salary_rate, persons_work_places_id FROM persons_jobs " +
+                    "LEFT JOIN jobs j on persons_jobs.job_id = j.id " +
+                    "JOIN persons_work_places pwp on persons_jobs.persons_work_places_id = pwp.id " +
+                    "JOIN persons p on pwp.person_id = p.id " +
+                    "WHERE p.id = :persond_id; ", connection);
+                cmd.Parameters.Add(new NpgsqlParameter("persond_id", person_id));
+                reader = cmd.ExecuteReader();
 
-
-                foreach (PersonWorkPlace workPlace in newPerson.workPlaces)
+                if (reader.HasRows)
                 {
-
-                    cmd = new NpgsqlCommand("SELECT persons_jobs.job_id, j.title, j.salary, salary_rate FROM persons_jobs " +
-                        "LEFT JOIN jobs j on persons_jobs.job_id = j.id " +
-                        "WHERE persons_work_places_id = :persons_work_places_id;", connection);
-                    cmd.Parameters.Add(new NpgsqlParameter("persons_work_places_id", workPlace.Id));
-                    reader = cmd.ExecuteReader();
-                    if (reader.HasRows)
+                    while (reader.Read())
                     {
-                        while (reader.Read())
+                        workPlaceId = Convert.ToInt32(reader["persons_work_places_id"]);
+                        if (workPlaces[workPlaceId].jobList == null) workPlaces[workPlaceId].jobList = new List<Job>();
+
+                        workPlaces[workPlaceId].jobList.Add(new Job
                         {
-                            workPlace.jobList.Add(new Job
-                            {
-                                Id = Convert.ToInt32(reader[0]),
-                                Title = reader[1].ToString(),
-                                Salary = Convert.ToSingle(reader[2]),
-                                SalaryRate = reader[3] == DBNull.Value ? 0 : Convert.ToSingle(reader[3])
-                            });
-                        }
+                            Id = Convert.ToInt32(reader["jid"]),
+                            Title = reader["jti"].ToString(),
+                            Salary = Convert.ToSingle(reader["jsl"]),
+                            SalaryRate = reader["salary_rate"] == DBNull.Value ? 0 : Convert.ToSingle(reader["salary_rate"])
+                        });
                     }
-                    reader.Close();
                 }
+                reader.Close();
+
+                newPerson.workPlaces = workPlaces.Values.ToList();
             }
             connection.Close();
             return newPerson;
@@ -2510,7 +2502,7 @@ namespace ResearchProgram
 
             ObservableCollection<UniversityStructureNode> NodeList = new ObservableCollection<UniversityStructureNode>();
 
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, address, title, short_title FROM work_place_structure WHERE address ~ " + regex + "ORDER BY title;", con);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, address, title, short_title FROM work_place_structure WHERE address ~ " + regex + " ORDER BY title;", con);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -2519,17 +2511,15 @@ namespace ResearchProgram
                 {
                     NodeList.Add(new UniversityStructureNode()
                     {
-                        Id = Convert.ToInt32(reader[0]),
-                        Address = reader[1].ToString(),
-                        Title = reader[2].ToString(),
-                        ShortTitle = reader[3].ToString()
+                        Id = Convert.ToInt32(reader["id"]),
+                        Address = reader["address"].ToString(),
+                        Title = reader["title"].ToString(),
+                        ShortTitle = reader["short_title"].ToString()
                     });
                 }
             }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
+
+
             reader.Close();
             con.Close();
             return NodeList;
@@ -2885,7 +2875,7 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    StaticDataTemp.DepositsVerbose.Add(reader["verbose_name"].ToString(), reader["title"].ToString());
+                    StaticData.DepositsVerbose.Add(reader["verbose_name"].ToString(), reader["title"].ToString());
                 }
             }
             reader.Close();
