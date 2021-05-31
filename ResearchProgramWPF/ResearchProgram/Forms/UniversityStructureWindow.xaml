@@ -5,12 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResearchProgram"
         mc:Ignorable="d"
-        Title="Структура университета" Height="450" Width="800">
+        Title="Структура университета"
+        Height="450"
+        Width="800">
     <Grid>
 
         <Grid.RowDefinitions>
-            <RowDefinition Height="14*"/>
-            <RowDefinition Height="1*"/>
+            <RowDefinition Height="14*" />
+            <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
 
         <TreeView Grid.Row="0"
@@ -18,33 +20,40 @@
             <TreeView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Добавить"
-                              Click="AddItem_Click"/>
+                              Click="AddItem_Click" />
                     <MenuItem Header="Редактировать"
-                              Click="EditItem_Click"/>
+                              Click="EditItem_Click" />
                 </ContextMenu>
             </TreeView.ContextMenu>
 
             <TreeView.ItemContainerStyle>
-                 
+
                 <Style TargetType="{x:Type TreeViewItem}">
-                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                    <Setter Property="FontWeight" Value="Normal" />
+                    <Setter Property="IsExpanded"
+                            Value="{Binding IsExpanded, Mode=TwoWay}" />
+                    <Setter Property="IsSelected"
+                            Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="FontWeight"
+                            Value="Normal" />
                     <Style.Triggers>
-                        <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="FontWeight" Value="Bold" />
+                        <Trigger Property="IsSelected"
+                                 Value="True">
+                            <Setter Property="FontWeight"
+                                    Value="Bold" />
                         </Trigger>
-                        <Trigger Property="IsExpanded" Value="True">
-                            <Setter Property="FontWeight" Value="Bold" />
+                        <Trigger Property="IsExpanded"
+                                 Value="True">
+                            <Setter Property="FontWeight"
+                                    Value="Bold" />
                         </Trigger>
                     </Style.Triggers>
                 </Style>
             </TreeView.ItemContainerStyle>
-            
+
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Path=Nodes}" >
+                <HierarchicalDataTemplate ItemsSource="{Binding Path=Nodes}">
                     <TextBlock Text="{Binding Path=Title}"
-                               PreviewMouseRightButtonDown="TextBlock_PreviewMouseRightButtonDown"/>
+                               PreviewMouseRightButtonDown="TextBlock_PreviewMouseRightButtonDown" />
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>

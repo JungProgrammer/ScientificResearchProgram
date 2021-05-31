@@ -105,25 +105,6 @@ namespace ResearchProgram
             return false;
         }
 
-        public static string GetSignLiteral(FilterRange.Signs sign)
-        {
-            switch (sign)
-            {
-                case FilterRange.Signs.More:
-                    return " > ";
-                case FilterRange.Signs.MoreEqual:
-                    return " >= ";
-                case FilterRange.Signs.Equal:
-                    return " = ";
-                case FilterRange.Signs.Less:
-                    return " < ";
-                case FilterRange.Signs.LessEqual:
-                    return " <= ";
-                default:
-                    return " = ";
-            }
-        }
-
         public static string GetResearchTypesQuarry()
         {
             string quarry = "SELECT grantId FROM grantResearchType ";
@@ -174,28 +155,28 @@ namespace ResearchProgram
                     quarry += "WHERE d.title = '" + StaticData.DepositsVerbose[index.ToString()] + "' ";
                     if (Depositors[index].LeftDate != null)
                     {
-                        quarry += " AND receiptdate " + GetSignLiteral(Depositors[index].LeftDateSign) + "'" + Depositors[index].LeftDate?.ToString("yyyy-MM-dd") + "'";
+                        quarry += " AND receiptdate " + FilterRange.GetSignLiteral(Depositors[index].LeftDateSign) + "'" + Depositors[index].LeftDate?.ToString("yyyy-MM-dd") + "'";
                     }
                     if (Depositors[index].RightDate != null)
                     {
-                        quarry += " AND receiptdate " + GetSignLiteral(Depositors[index].RightDateSign) + "'" + Depositors[index].RightDate?.ToString("yyyy-MM-dd") + "'";
+                        quarry += " AND receiptdate " + FilterRange.GetSignLiteral(Depositors[index].RightDateSign) + "'" + Depositors[index].RightDate?.ToString("yyyy-MM-dd") + "'";
                     }
                     isCondition = false;
                     quarry += " GROUP BY grantId ";
                     if (Depositors[index].LeftValue != null)
                     {
-                        quarry += " HAVING sum(partsum) " + GetSignLiteral(Depositors[index].LeftSign) + Depositors[index].LeftValue.ToString();
+                        quarry += " HAVING sum(partsum) " + FilterRange.GetSignLiteral(Depositors[index].LeftSign) + Depositors[index].LeftValue.ToString();
                         isCondition = true;
                     }
                     if (Depositors[index].RightValue != null)
                     {
                         if (!isCondition)
                         {
-                            quarry += " HAVING sum(partsum) " + GetSignLiteral(Depositors[index].RightSign) + Depositors[index].RightValue.ToString();
+                            quarry += " HAVING sum(partsum) " + FilterRange.GetSignLiteral(Depositors[index].RightSign) + Depositors[index].RightValue.ToString();
                         }
                         else
                         {
-                            quarry += " AND sum(partsum) " + GetSignLiteral(Depositors[index].RightSign) + Depositors[index].RightValue.ToString();
+                            quarry += " AND sum(partsum) " + FilterRange.GetSignLiteral(Depositors[index].RightSign) + Depositors[index].RightValue.ToString();
                         }
                     }
                 }
@@ -317,42 +298,14 @@ namespace ResearchProgram
 
             if (Price != null)
             {
-                //if(IsNoNDS != null)
-                //{
-                //    if ((bool)IsNoNDS)
-                //    {
-                //        if (Price.LeftValue != null)
-                //        {
-                //            quarryList.Add("( pricenonds " + GetSignLiteral(Price.LeftSign) + " " + Price.LeftValue + ") ");
-                //        }
-                //        if (Price.RightValue != null)
-                //        {
-                //            quarryList.Add("( pricenonds " + GetSignLiteral(Price.RightSign) + " " + Price.RightValue + ") ");
-                //        }
-                //    }
-                //    else
-                //    {
-                //        if (Price.LeftValue != null)
-                //        {
-                //            quarryList.Add("( price " + GetSignLiteral(Price.LeftSign) + " " + Price.LeftValue + ") ");
-                //        }
-                //        if (Price.RightValue != null)
-                //        {
-                //            quarryList.Add("( price " + GetSignLiteral(Price.RightSign) + " " + Price.RightValue + ") ");
-                //        }
-                //    }
-                //}
-                //else
-                //{
                 if (Price.LeftValue != null)
                 {
-                    quarryList.Add("( price " + GetSignLiteral(Price.LeftSign) + " " + Price.LeftValue + ") ");
+                    quarryList.Add("( price " + FilterRange.GetSignLiteral(Price.LeftSign) + " " + Price.LeftValue + ") ");
                 }
                 if (Price.RightValue != null)
                 {
-                    quarryList.Add("( price " + GetSignLiteral(Price.RightSign) + " " + Price.RightValue + ") ");
+                    quarryList.Add("( price " + FilterRange.GetSignLiteral(Price.RightSign) + " " + Price.RightValue + ") ");
                 }
-                //}
 
             }
 

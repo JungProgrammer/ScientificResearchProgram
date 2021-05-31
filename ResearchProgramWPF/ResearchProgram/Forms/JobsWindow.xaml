@@ -5,11 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ResearchProgram.Forms"
         mc:Ignorable="d"
-        Title="Должности" Height="450" Width="800">
+        Title="Должности"
+        Height="450"
+        Width="800">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="15*"/>
-            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="15*" />
+            <ColumnDefinition Width="150" />
         </Grid.ColumnDefinitions>
 
         <ListView Grid.Column="0"
@@ -17,13 +19,13 @@
                   SelectedItem="{Binding SelectedJob}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Должность" 
-                                        DisplayMemberBinding="{Binding Path=Title}"
-                                        Width="250">
+                    <GridViewColumn Header="Должность"
+                                    DisplayMemberBinding="{Binding Path=Title}"
+                                    Width="250">
                     </GridViewColumn>
-                    <GridViewColumn Header="Оклад" 
-                                        DisplayMemberBinding="{Binding Path=Salary}"
-                                        Width="250">
+                    <GridViewColumn Header="Оклад"
+                                    DisplayMemberBinding="{Binding Path=Salary}"
+                                    Width="250">
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
@@ -32,14 +34,17 @@
         <StackPanel Grid.Column="1">
             <Button Content="Добавить"
                     Width="120"
-                    Margin="10 20 10 10" Click="Button_Click"/>
+                    Margin="10 20 10 10"
+                    Click="Button_Click" />
             <Button Content="Редактировать"
                     Width="120"
-                    Margin="10 0 10 10" Click="Button_Click_1"/>
-            <Button x:Name="delete" 
+                    Margin="10 0 10 10"
+                    Click="Button_Click_1" />
+            <Button x:Name="delete"
                     Content="Удалить"
                     Width="120"
-                    Margin="10 0 10 10" Click="delete_Click"/>
+                    Margin="10 0 10 10"
+                    Click="delete_Click" />
         </StackPanel>
     </Grid>
 </Window>

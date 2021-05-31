@@ -291,6 +291,7 @@ namespace ResearchProgram
                     tempHash = new HashSet<int>();
                 }
             }
+            connection.Close();
             return grantIds;
         }
 
@@ -1073,10 +1074,56 @@ namespace ResearchProgram
 
         public static HashSet<int> GetPersonsIds()
         {
+            NpgsqlCommand cmd;
+            NpgsqlDataReader reader;
+            int personId;
 
-            return new HashSet<int>();
+            //Множество из id людей, которые необходимо получить(например в запросе без фильтров тут будут храниться все id. Но если будет активен фильтр, то id отфильтруются)
+            HashSet<int> personIds = new HashSet<int>();
+
+            NpgsqlConnection connection = GetNewConnection();
+            //Фильтры не активны
+            cmd = new NpgsqlCommand("SELECT id FROM persons ORDER BY id;", connection);
+            reader = cmd.ExecuteReader();
+
+            if (reader.HasRows)
+            {
+                while (reader.Read())
+                {
+                    personId = Convert.ToInt32(reader["id"]);
+                    personIds.Add(personId);
+                }
+            }
+            else
+            {
+                //Людей нет, возвращаем пустой список
+                return personIds;
+            }
+            reader.Close();
+
+
+            if (PersonsFilters.IsActive())
+            {
+                //Фильтры активны
+                HashSet<int> tempHash = new HashSet<int>();
+
+                // Основные поля гранта
+                cmd = new NpgsqlCommand(PersonsFilters.GetPersonQuarry(), connection);
+                reader = cmd.ExecuteReader();
+
+                if (reader.HasRows)
+                {
+                    while (reader.Read())
+                    {
+                        personId = Convert.ToInt32(reader["pid"]);
+                        tempHash.Add(personId);
+                    }
+                }
+                reader.Close();
+                personIds.IntersectWith(tempHash);
+            }
+            return personIds;
         }
-
 
         public static List<Person> GetPersonsInBulk()
         {
@@ -1085,11 +1132,10 @@ namespace ResearchProgram
             int personId;
 
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT persons.id as pid, fio, birthdate, sex, degree_id, wd.title wdt, rank_id, wr.title wrt FROM persons " +
-                                                    "LEFT  JOIN work_degree wd ON persons.degree_id = wd.id " +
+                                                    "LEFT JOIN work_degree wd ON persons.degree_id = wd.id " +
                                                     "LEFT JOIN work_rank wr on persons.rank_id = wr.id ", connection);
 
             NpgsqlDataReader reader = cmd.ExecuteReader();
-
             if (reader.HasRows)
             {
                 while (reader.Read())

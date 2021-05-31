@@ -3,42 +3,44 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ResearchProgram.Forms" xmlns:sdl="http://schemas.sdl.com/xaml"
+        xmlns:local="clr-namespace:ResearchProgram.Forms"
+        xmlns:sdl="http://schemas.sdl.com/xaml"
         mc:Ignorable="d"
-        Title="Поиск" Height="600" Width="800"
+        Title="Поиск"
+        Height="150"
+        Width="600"
         ResizeMode="NoResize">
-    <!--150 600-->
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="35"/>
-            <RowDefinition Height="35"/>
-            <RowDefinition/>
+            <RowDefinition Height="35" />
+            <RowDefinition Height="35" />
+            <RowDefinition />
         </Grid.RowDefinitions>
 
         <Label Content="Простой поиск"
                Margin="1 0"
                FontSize="15"
                FontWeight="DemiBold"
-               x:Name="SimpleSearchLabel"/>
+               x:Name="SimpleSearchLabel" />
 
         <Grid Grid.Row="1"
               x:Name="SimpleSearchGrid">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition/>
-                <ColumnDefinition Width="80"/>
+                <ColumnDefinition />
+                <ColumnDefinition Width="80" />
             </Grid.ColumnDefinitions>
             <TextBox x:Name="SimpleSearchTextBox"
-                 Margin="5 3"
-                 Padding="1 4"
-                FontSize="14"/>
+                     Margin="5 3"
+                     Padding="1 4"
+                     FontSize="14" />
             <Button x:Name="SimpleSearchButton"
-                Grid.Column="1"
+                    Grid.Column="1"
                     Margin="5 3"
                     Content="Поиск"
-                    Click="SimpleSearchButton_Click"/>
+                    Click="SimpleSearchButton_Click" />
         </Grid>
 
-        <Expander Grid.Row="2" 
+        <Expander Grid.Row="2"
                   Expanded="SearchExpander_Expanded"
                   Collapsed="SearchExpander_Expanded"
                   x:Name="SearchExpander">
@@ -50,95 +52,95 @@
             </Expander.Header>
             <ScrollViewer>
                 <StackPanel x:Name="SearchMainPanel"
-                    Margin="10 5 5 5">
+                            Margin="10 5 5 5">
                     <Expander>
                         <Expander.Header>
                             <DockPanel VerticalAlignment="Stretch">
                                 <TextBlock FontStyle="Italic"
-                               FontSize="15"
-                               FontWeight="DemiBold">Общая информация</TextBlock>
+                                           FontSize="15"
+                                           FontWeight="DemiBold">Общая информация</TextBlock>
                             </DockPanel>
                         </Expander.Header>
                         <DockPanel>
                             <Grid x:Name="CommonInfoGrid">
                                 <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="50*"/>
-                                    <ColumnDefinition Width="50*"/>
+                                    <ColumnDefinition Width="50*" />
+                                    <ColumnDefinition Width="50*" />
                                 </Grid.ColumnDefinitions>
                                 <Label Content="ФИО"
-                                   FontWeight="Bold"
-                                   Grid.Row="0"
-                                   Margin="0 5 0 0" Grid.ColumnSpan="7"/>
+                                       FontWeight="Bold"
+                                       Grid.Row="0"
+                                       Margin="0 5 0 0"
+                                       Grid.ColumnSpan="7" />
 
 
                                 <TextBox Grid.Row="1"
-                                         Height="25"
-                                     Name="FIOtextBox"
-                                     Margin="5 0"/>
+                                         Name="FIOtextBox"
+                                         Margin="5"
+                                         Height="28"
+                                         Padding="0 3" />
 
                                 <Label Content="Пол"
-                                   Grid.Row="0"
-                                   Grid.Column="7"
-                                   FontWeight="Bold"
-                                   Margin="0 5 0 0"/>
+                                       Grid.Row="0"
+                                       Grid.Column="7"
+                                       FontWeight="Bold"
+                                       Margin="0 5 0 0" />
 
                                 <StackPanel Name="nirStackPanel"
-                                        Grid.Row="1"
+                                            Grid.Row="1"
                                             Grid.Column="1"
                                             Margin="5">
-                                    <CheckBox   Content="Мужчина"   
-                                            x:Name="MaleCheckBox"
-                                                Checked="MaleCheckBox_Checked"/>
+                                    <CheckBox   Content="Мужчина"
+                                                x:Name="MaleCheckBox"
+                                                Checked="MaleCheckBox_Checked" />
                                     <CheckBox  Content="Женщина"
-                                           x:Name="FemaleCheckBox"
-                                               Checked="FemaleCheckBox_Checked"/>
+                                               x:Name="FemaleCheckBox"
+                                               Checked="FemaleCheckBox_Checked" />
                                 </StackPanel>
 
                                 <Label Content="Степень"
-                                   Grid.Row="2"
-                                   FontWeight="Bold"
-                                   Margin="0 5 0 0"/>
+                                       Grid.Row="2"
+                                       FontWeight="Bold"
+                                       Margin="0 5 0 0" />
 
-                                <sdl:MultiSelectComboBox 
-                                    Grid.Row="3"
-                                    x:Name="DegreeMultiSelectComboBox"
-                                    Margin="5 0"
-                                    ItemsSource="{Binding Degree}"
-                                    SelectedItems="{Binding SelectedDegree}"
-                                    MinHeight="30" 
-                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>
+                                <sdl:MultiSelectComboBox Grid.Row="3"
+                                                         x:Name="DegreeMultiSelectComboBox"
+                                                         Margin="5 0"
+                                                         ItemsSource="{Binding Degree}"
+                                                         SelectedItems="{Binding SelectedDegree}"
+                                                         MinHeight="30"
+                                                         OpenDropDownListAlsoWhenNotInEditMode="True" />
 
                                 <Label Content="Звание"
-                                   Grid.Row="2"
+                                       Grid.Row="2"
                                        Grid.Column="1"
-                                   FontWeight="Bold"
-                                   Margin="0 5 0 0"/>
+                                       FontWeight="Bold"
+                                       Margin="0 5 0 0" />
 
-                                <sdl:MultiSelectComboBox 
-                                    Grid.Row="3"
-                                    Grid.Column="1"
-                                    x:Name="RankMultiSelectComboBox"
-                                    Margin="5 0"
-                                    ItemsSource="{Binding Rank}"
-                                    SelectedItems="{Binding SelectedRank}"
-                                    MinHeight="30" 
-                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>
+                                <sdl:MultiSelectComboBox Grid.Row="3"
+                                                         Grid.Column="1"
+                                                         x:Name="RankMultiSelectComboBox"
+                                                         Margin="5 0"
+                                                         ItemsSource="{Binding Rank}"
+                                                         SelectedItems="{Binding SelectedRank}"
+                                                         MinHeight="30"
+                                                         OpenDropDownListAlsoWhenNotInEditMode="True" />
 
 
                                 <StackPanel Orientation="Horizontal"
@@ -147,41 +149,41 @@
                                             Margin="0 5">
                                     <Grid Width="758">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
                                         <TextBox Tag="LeftTextBox"
-                                                x:Name="AgeLeftTextBox"
-                                                    Grid.Column="0"
-                                                    Margin="5"/>
+                                                 x:Name="AgeLeftTextBox"
+                                                 Grid.Column="0"
+                                                 Margin="5" />
                                         <ComboBox Grid.Column="1"
-                                        Tag="LeftDateComboBox"
-                                                x:Name="AgeLeftComboBox"
-                                                      Margin="5">
-                                            <TextBlock Text=""/>
-                                            <TextBlock Text="Больше"/>
-                                            <TextBlock Text="Больше/равно"/>
+                                                  Tag="LeftDateComboBox"
+                                                  x:Name="AgeLeftComboBox"
+                                                  Margin="5">
+                                            <TextBlock Text="" />
+                                            <TextBlock Text="Больше" />
+                                            <TextBlock Text="Больше/равно" />
                                         </ComboBox>
                                         <Label Grid.Column="2"
-                                                Content="Возраст"
-                                                HorizontalAlignment="Center"
-                                                FontWeight="Bold"
-                                                Margin="5"/>
+                                               Content="Возраст"
+                                               HorizontalAlignment="Center"
+                                               FontWeight="Bold"
+                                               Margin="5" />
                                         <ComboBox Grid.Column="3"
                                                   Tag="RightDateComboBox"
-                                                x:Name="AgeRightComboBox"
-                                                    Margin="5">
-                                            <TextBlock Text=""/>
-                                            <TextBlock Text="Меньше"/>
-                                            <TextBlock Text="Меньше/равно"/>
+                                                  x:Name="AgeRightComboBox"
+                                                  Margin="5">
+                                            <TextBlock Text="" />
+                                            <TextBlock Text="Меньше" />
+                                            <TextBlock Text="Меньше/равно" />
                                         </ComboBox>
                                         <TextBox Tag="RightTextBox"
-                                                x:Name="AgeRightTextBox"
-                                                    Grid.Column="4"
-                                                    Margin="5"/>
+                                                 x:Name="AgeRightTextBox"
+                                                 Grid.Column="4"
+                                                 Margin="5" />
                                     </Grid>
                                 </StackPanel>
 
@@ -191,41 +193,40 @@
                                             Margin="0 5">
                                     <Grid Width="758">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
+                                            <ColumnDefinition />
                                         </Grid.ColumnDefinitions>
-                                        <DatePicker
-                                                x:Name="BirthDateLeftDatePicker"
+                                        <DatePicker x:Name="BirthDateLeftDatePicker"
                                                     Grid.Column="0"
-                                                    Margin="5"/>
+                                                    Margin="5" />
                                         <ComboBox Grid.Column="1"
-                                        Tag="LeftDateComboBox"
-                                                x:Name="BirthDateLeftDateComboBox"
-                                                      Margin="5">
-                                            <TextBlock Text=""/>
-                                            <TextBlock Text="От"/>
-                                            <TextBlock Text="От/равно"/>
+                                                  Tag="LeftDateComboBox"
+                                                  x:Name="BirthDateLeftDateComboBox"
+                                                  Margin="5">
+                                            <TextBlock Text="" />
+                                            <TextBlock Text="От" />
+                                            <TextBlock Text="От/равно" />
                                         </ComboBox>
                                         <Label Grid.Column="2"
-                                                Content="Дата рождения"
-                                                HorizontalAlignment="Center"
-                                                FontWeight="Bold"
-                                                Margin="5"/>
+                                               Content="Дата рождения"
+                                               HorizontalAlignment="Center"
+                                               FontWeight="Bold"
+                                               Margin="5" />
                                         <ComboBox Grid.Column="3"
                                                   Tag="RightDateComboBox"
-                                                x:Name="BirthDateRightDateComboBox"
-                                                    Margin="5">
-                                            <TextBlock Text=""/>
-                                            <TextBlock Text="До"/>
-                                            <TextBlock Text="До/равно"/>
+                                                  x:Name="BirthDateRightDateComboBox"
+                                                  Margin="5">
+                                            <TextBlock Text="" />
+                                            <TextBlock Text="До" />
+                                            <TextBlock Text="До/равно" />
                                         </ComboBox>
                                         <DatePicker Tag="RightTextBox"
-                                                x:Name="BirthDateRightComboBox"
+                                                    x:Name="BirthDateRightComboBox"
                                                     Grid.Column="4"
-                                                    Margin="5"/>
+                                                    Margin="5" />
                                     </Grid>
                                 </StackPanel>
                             </Grid>
@@ -236,130 +237,124 @@
                         <Expander.Header>
                             <DockPanel VerticalAlignment="Stretch">
                                 <TextBlock FontStyle="Italic"
-                               FontSize="15"
-                               FontWeight="DemiBold">Место работы</TextBlock>
+                                           FontSize="15"
+                                           FontWeight="DemiBold">Место работы</TextBlock>
                             </DockPanel>
                         </Expander.Header>
                         <DockPanel>
                             <Grid>
                                 <Grid.RowDefinitions>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
-                                    <RowDefinition/>
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
+                                    <RowDefinition />
                                 </Grid.RowDefinitions>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition/>
-                                    <ColumnDefinition/>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition />
                                 </Grid.ColumnDefinitions>
 
                                 <Label Content="Категория"
-                                   Grid.Row="0"
-                                   Grid.Column="0"
-                                   FontWeight="Bold"/>
-                                <sdl:MultiSelectComboBox
-                                x:Name="CategoryMultiselectComboBox"
-                                    SelectedItems="{Binding SelectedCategory}"
-                                    ItemsSource="{Binding Category}"
-                                    Height="30"
-                                Grid.Row="1"
-                                Grid.Column="0"
-                                SelectionMode="Multiple"
-                                Margin="5"
-                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>
+                                       Grid.Row="0"
+                                       Grid.Column="0"
+                                       FontWeight="Bold" />
+                                <sdl:MultiSelectComboBox x:Name="CategoryMultiselectComboBox"
+                                                         SelectedItems="{Binding SelectedCategory}"
+                                                         ItemsSource="{Binding Category}"
+                                                         Height="30"
+                                                         Grid.Row="1"
+                                                         Grid.Column="0"
+                                                         SelectionMode="Multiple"
+                                                         Margin="5"
+                                                         OpenDropDownListAlsoWhenNotInEditMode="True" />
 
-                                <CheckBox
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Content="Основное место работы"
-                                    FontWeight="Bold"
-                                    Margin="0 5"
-                                    x:Name="MainWorkPlaceCheckBox"/>
+                                <CheckBox Grid.Row="1"
+                                          Grid.Column="1"
+                                          Content="Основное место работы"
+                                          FontWeight="Bold"
+                                          Margin="0 5"
+                                          x:Name="MainWorkPlaceCheckBox" />
 
                                 <Label Content="Учреждение"
-                                   Grid.Row="2"
-                                   Grid.Column="0"
-                                   FontWeight="Bold"/>
+                                       Grid.Row="2"
+                                       Grid.Column="0"
+                                       FontWeight="Bold" />
 
-                                <sdl:MultiSelectComboBox
-                                x:Name="FirstNodeMultiselectComboBox"
-                                    SelectedItems="{Binding SelectedFirstNode}"
-                                    ItemsSource="{Binding FirstNode}"
-                                    Height="60"
-                                Grid.Row="3"
-                                Grid.Column="0"
-                                SelectionMode="Multiple"
-                                Margin="5"
-                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>
+                                <sdl:MultiSelectComboBox x:Name="FirstNodeMultiselectComboBox"
+                                                         SelectedItems="{Binding SelectedFirstNode}"
+                                                         ItemsSource="{Binding FirstNode}"
+                                                         Height="60"
+                                                         Grid.Row="3"
+                                                         Grid.Column="0"
+                                                         SelectionMode="Multiple"
+                                                         Margin="5"
+                                                         OpenDropDownListAlsoWhenNotInEditMode="True" />
 
                                 <Label Content="Подразделение"
-                                   Grid.Row="4"
-                                   Grid.Column="0"
-                                   FontWeight="Bold"/>
+                                       Grid.Row="4"
+                                       Grid.Column="0"
+                                       FontWeight="Bold" />
 
-                                <sdl:MultiSelectComboBox
-                                x:Name="SecondNodeMultiselectComboBox"
-                                    SelectedItems="{Binding SelectedSecondNode}"
-                                    ItemsSource="{Binding SecondNode}"
-                                    Height="60"
-                                Grid.Row="5"
-                                Grid.Column="0"
-                                SelectionMode="Multiple"
-                                Margin="5"
-                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>
+                                <sdl:MultiSelectComboBox x:Name="SecondNodeMultiselectComboBox"
+                                                         SelectedItems="{Binding SelectedSecondNode}"
+                                                         ItemsSource="{Binding SecondNode}"
+                                                         Height="60"
+                                                         Grid.Row="5"
+                                                         Grid.Column="0"
+                                                         SelectionMode="Multiple"
+                                                         Margin="5"
+                                                         OpenDropDownListAlsoWhenNotInEditMode="True" />
 
                                 <Label Content="Отдел"
-                                   Grid.Row="2"
-                                   Grid.Column="1"
-                                   FontWeight="Bold"/>
+                                       Grid.Row="2"
+                                       Grid.Column="1"
+                                       FontWeight="Bold" />
 
-                                <sdl:MultiSelectComboBox
-                                x:Name="ThirdNodeMultiselectComboBox"
-                                    SelectedItems="{Binding SelectedThirdNode}"
-                                    ItemsSource="{Binding ThirdNode}"
-                                    Height="60"
-                                Grid.Row="3"
-                                Grid.Column="1"
-                                SelectionMode="Multiple"
-                                Margin="5"
-                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>
+                                <sdl:MultiSelectComboBox x:Name="ThirdNodeMultiselectComboBox"
+                                                         SelectedItems="{Binding SelectedThirdNode}"
+                                                         ItemsSource="{Binding ThirdNode}"
+                                                         Height="60"
+                                                         Grid.Row="3"
+                                                         Grid.Column="1"
+                                                         SelectionMode="Multiple"
+                                                         Margin="5"
+                                                         OpenDropDownListAlsoWhenNotInEditMode="True" />
 
                                 <Label Content="Структурная единица"
-                                   Grid.Row="4"
-                                   Grid.Column="1"
-                                   FontWeight="Bold"/>
+                                       Grid.Row="4"
+                                       Grid.Column="1"
+                                       FontWeight="Bold" />
 
-                                <sdl:MultiSelectComboBox
-                                x:Name="FourthNodeMultiselectComboBox"
-                                    SelectedItems="{Binding SelectedFourthNode}"
-                                    ItemsSource="{Binding FourthNode}"
-                                    Height="60"
-                                Grid.Row="5"
-                                Grid.Column="1"
-                                SelectionMode="Multiple"
-                                Margin="5"
-                                    OpenDropDownListAlsoWhenNotInEditMode="True"/>
+                                <sdl:MultiSelectComboBox x:Name="FourthNodeMultiselectComboBox"
+                                                         SelectedItems="{Binding SelectedFourthNode}"
+                                                         ItemsSource="{Binding FourthNode}"
+                                                         Height="60"
+                                                         Grid.Row="5"
+                                                         Grid.Column="1"
+                                                         SelectionMode="Multiple"
+                                                         Margin="5"
+                                                         OpenDropDownListAlsoWhenNotInEditMode="True" />
                             </Grid>
                         </DockPanel>
                     </Expander>
                     <DockPanel Margin="0 5">
                         <Button x:Name="ComplexSearchButton"
-                            Content="Поиск"
-                        DockPanel.Dock="Right"
-                        Height="29"
-                        Width="70"
-                                Click="ComplexSearchButton_Click"/>
+                                Content="Поиск"
+                                DockPanel.Dock="Right"
+                                Height="29"
+                                Width="70"
+                                Click="ComplexSearchButton_Click" />
 
                         <Button Content="Сброс"
                                 x:Name="DropSearchButton"
                                 Click="DropSearchButton_Click"
-                        HorizontalAlignment="Left"
-                        Height="29"
-                        Width="70"/>
+                                HorizontalAlignment="Left"
+                                Height="29"
+                                Width="70" />
 
                     </DockPanel>
 
