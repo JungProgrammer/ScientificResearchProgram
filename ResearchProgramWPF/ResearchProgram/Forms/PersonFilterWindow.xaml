@@ -88,9 +88,10 @@
 
 
                                 <TextBox Grid.Row="1"
-                                         Height="25"
                                      Name="FIOtextBox"
-                                     Margin="5 0"/>
+                                     Margin="5"
+                                         Height="28"
+                                         Padding="0 3"/>
 
                                 <Label Content="Пол"
                                    Grid.Row="0"

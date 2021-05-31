@@ -354,12 +354,9 @@ namespace ResearchProgram.Forms
                 PersonsFilters.BirthDate = filterRange;
             }
 
-
-
-            Console.WriteLine(PersonsFilters.IsActive());
-            //CRUDDataBase.ConnectToDataBase();
-            //CRUDDataBase.LoadPersonsTable(PersonsDataTable);
-            //CRUDDataBase.CloseConnection();
+            CRUDDataBase.ConnectToDataBase();
+            CRUDDataBase.LoadPersonsTable(PersonsDataTable);
+            CRUDDataBase.CloseConnection();
         }
 
         private void MaleCheckBox_Checked(object sender, RoutedEventArgs e)

@@ -50,5 +50,25 @@ namespace ResearchProgram.Classes
             }
             return false;
         }
+
+        public static string GetSignLiteral(Signs sign)
+        {
+            switch (sign)
+            {
+                case Signs.More:
+                    return " > ";
+                case Signs.MoreEqual:
+                    return " >= ";
+                case Signs.Equal:
+                    return " = ";
+                case Signs.Less:
+                    return " < ";
+                case Signs.LessEqual:
+                    return " <= ";
+                default:
+                    return " = ";
+            }
+        }
+
     }
 }
