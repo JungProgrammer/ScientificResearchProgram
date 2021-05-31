@@ -249,7 +249,7 @@ namespace ResearchProgram
                 Height = 30,
                 OpenDropDownListAlsoWhenNotInEditMode = true,
             });
-            LeadNIOKRMultiSelectComboBox.SelectedItemsChanged += LeadNIOKRMultiSelectComboBox_SelectedItemsChanged; ;
+            LeadNIOKRMultiSelectComboBox.SelectedItemsChanged += LeadNIOKRMultiSelectComboBox_SelectedItemsChanged;
             Dispatcher.Invoke(() => Grid.SetColumn(LeadNIOKRMultiSelectComboBox, 1));
             Dispatcher.Invoke(() => Grid.SetRow(LeadNIOKRMultiSelectComboBox, 3));
             Dispatcher.Invoke(() => CommonInfoGrid.Children.Add(LeadNIOKRMultiSelectComboBox));
@@ -391,10 +391,14 @@ namespace ResearchProgram
                             //Если пользователь поставил запятую, то чтобы она не сбрасывалась
                             if (sumTextBox.Text[sumTextBox.Text.Length - 1] != ',' && !sumTextBox.Text.Contains(",0"))
                             {
+                                int lengthToComma = 0;
+                                int commaIndex = sumTextBox.Text.ToString().IndexOf(',');
+                                lengthToComma = commaIndex > 0 ? commaIndex : 0;
+
                                 // запомнить, где текущий индекс сейчас курсора в текстбоксе
-                                int index = sumTextBox.CaretIndex;
+                                int indexCursor = lengthToComma % 4 == 0 ? sumTextBox.CaretIndex + 1 : sumTextBox.CaretIndex;
                                 sumTextBox.Text = Convert.ToDouble(sumTextBox.Text) < 0.0000001 ? "" : String.Format("{0:#,0.#####}", Convert.ToDouble(sumTextBox.Text));
-                                sumTextBox.SelectionStart = index;
+                                sumTextBox.SelectionStart = indexCursor;
                             }
                         }
                         else
@@ -637,10 +641,14 @@ namespace ResearchProgram
                     ///Если пользователь поставил запятую, то чтобы она не сбрасывалась
                     if (sumTextBox.Text[sumTextBox.Text.Length - 1] != ',' && !sumTextBox.Text.Contains(",0"))
                     {
+                        int lengthToComma = 0;
+                        int commaIndex = sumTextBox.Text.ToString().IndexOf(',');
+                        lengthToComma = commaIndex > 0 ? commaIndex : 0;
+
                         // запомнить, где текущий индекс сейчас курсора в текстбоксе
-                        int index = sumTextBox.CaretIndex;
+                        int indexCursor = lengthToComma % 4 == 0 ? sumTextBox.CaretIndex + 1 : sumTextBox.CaretIndex;
                         sumTextBox.Text = Convert.ToDouble(sumTextBox.Text) < 0.0000001 ? "" : String.Format("{0:#,0.#####}", Convert.ToDouble(sumTextBox.Text));
-                        sumTextBox.SelectionStart = index;
+                        sumTextBox.SelectionStart = indexCursor;
                     }
                 }
                 else
@@ -1116,10 +1124,14 @@ namespace ResearchProgram
                 //Если пользователь поставил запятую, то чтобы она не сбрасывалась
                 if (priceTextBox.Text[priceTextBox.Text.Length - 1] != ',' && !priceTextBox.Text.Contains(",0") && !priceTextBox.Text.Contains(",00"))
                 {
+                    int lengthToComma = 0;
+                    int commaIndex = priceTextBox.Text.ToString().IndexOf(',');
+                    lengthToComma = commaIndex > 0 ? commaIndex : 0;
+
                     // запомнить, где текущий индекс сейчас курсора в текстбоксе
-                    int index = priceTextBox.CaretIndex;
+                    int indexCursor = lengthToComma % 4 == 0 ? priceTextBox.CaretIndex + 1 : priceTextBox.CaretIndex;
                     priceTextBox.Text = Convert.ToDouble(priceTextBox.Text) < 0.0000001 ? "" : String.Format("{0:#,0.#####}", Convert.ToDouble(priceTextBox.Text));
-                    priceTextBox.SelectionStart = index;
+                    priceTextBox.SelectionStart = indexCursor;
                 }
             }
             else
