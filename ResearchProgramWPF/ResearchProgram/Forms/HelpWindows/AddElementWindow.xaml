@@ -6,66 +6,66 @@
         xmlns:local="clr-namespace:ResearchProgram.Forms.HelpWindows"
         xmlns:formNameSpace="clr-namespace:ResearchProgram"
         mc:Ignorable="d"
-        Title="Добавление элемента" Height="145"
-        ResizeMode="NoResize" d:DesignWidth="400"
+        Title="Добавление элемента"
+        Height="145"
+        ResizeMode="NoResize"
+        d:DesignWidth="400"
         MinWidth="350"
-         MaxWidth ="400">
+        MaxWidth="400">
 
     <Window.Resources>
-        <formNameSpace:WindowsHelperConverter x:Key="windowsHelperConverter"/>
-        <formNameSpace:VisibilityToColumnLengthConverter x:Key="visConv"/>
+        <formNameSpace:WindowsHelperConverter x:Key="windowsHelperConverter" />
+        <formNameSpace:VisibilityToColumnLengthConverter x:Key="visConv" />
     </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
 
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="65*"/>
-            <RowDefinition Height="35*"/>
+            <RowDefinition Height="65*" />
+            <RowDefinition Height="35*" />
         </Grid.RowDefinitions>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="30"/>
-                <RowDefinition Height="40"/>
-                <RowDefinition Height="30"/>
+                <RowDefinition Height="30" />
+                <RowDefinition Height="40" />
+                <RowDefinition Height="30" />
             </Grid.RowDefinitions>
 
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="65*"/>
-                <ColumnDefinition Width="{Binding ElementName=SalaryTextBox, Path=Visibility, Converter={StaticResource visConv}}"/>
+                <ColumnDefinition Width="65*" />
+                <ColumnDefinition Width="{Binding ElementName=SalaryTextBox, Path=Visibility, Converter={StaticResource visConv}}" />
             </Grid.ColumnDefinitions>
 
             <TextBlock Text="Наименование"
-                            Margin="5"
-                            FontSize="14"                        
-                           Grid.Row="0"
-                        Grid.Column="0"/>
+                       Margin="5"
+                       FontSize="14"
+                       Grid.Row="0"
+                       Grid.Column="0" />
 
-            <TextBox
-                         Margin="5"
-                        FontSize="14"
-                        Text="{Binding NewNameOfElement}"
-                                           Grid.Row="1"
-                                Padding="0 4"
-                        Grid.Column="0">
+            <TextBox Margin="5"
+                     FontSize="14"
+                     Text="{Binding NewNameOfElement}"
+                     Grid.Row="1"
+                     Padding="0 4"
+                     Grid.Column="0">
             </TextBox>
 
             <TextBlock Text="Оклад"
-Visibility="{Binding TypeWindow, Converter={StaticResource windowsHelperConverter}}"
+                       Visibility="{Binding TypeWindow, Converter={StaticResource windowsHelperConverter}}"
                        Margin="5"
                        FontSize="14"
-                    Grid.Row="0"
-                    Grid.Column="1"/>
+                       Grid.Row="0"
+                       Grid.Column="1" />
 
-            <TextBox
-                x:Name="SalaryTextBox"
-                         Margin="5"
-                        FontSize="14"
-                        Text="{Binding Salary}"
-                                         Grid.Row="1"
-                                Padding="0 4"
-                    Grid.Column="1"
-Visibility="{Binding TypeWindow, Converter={StaticResource windowsHelperConverter}}"/>
+            <TextBox x:Name="SalaryTextBox"
+                     Margin="5"
+                     FontSize="14"
+                     Text="{Binding Salary}"
+                     Grid.Row="1"
+                     Padding="0 4"
+                     Grid.Column="1"
+                     Visibility="{Binding TypeWindow, Converter={StaticResource windowsHelperConverter}}" />
 
 
 
@@ -76,6 +76,7 @@ Visibility="{Binding TypeWindow, Converter={StaticResource windowsHelperConverte
                 Width="100"
                 Height="25"
                 HorizontalAlignment="Right"
-                Margin="5" Click="Button_Click"/>
+                Margin="5"
+                Click="Button_Click" />
     </Grid>
 </Window>
