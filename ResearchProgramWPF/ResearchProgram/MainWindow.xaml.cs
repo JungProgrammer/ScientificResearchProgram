@@ -10,6 +10,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using ResearchProgram.Classes;
 
 namespace ResearchProgram
 {
@@ -216,6 +217,7 @@ namespace ResearchProgram
         public void PersonsUpdateButton_Click(object sender, EventArgs e)
         {
             PeopleDataTable.DefaultView.RowFilter = null;
+            PersonsFilters.ResetFilters();
 
             CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.LoadPersonsTable(PeopleDataTable);
