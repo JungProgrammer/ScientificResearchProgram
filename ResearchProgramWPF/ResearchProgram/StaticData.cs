@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ResearchProgram
@@ -36,6 +37,12 @@ namespace ResearchProgram
                 return universityStructureNodesDict[Id];
             else
                 return null;
+        }
+
+        public static ObservableCollection<UniversityStructureNode> GetUniversityStructureNodeByRegex(string regex)
+        {
+            //TODO Триггер в БД
+            return  new ObservableCollection<UniversityStructureNode>(universityStructureNodes.ToList().FindAll(x => Regex.IsMatch(x.Address, regex)));
         }
 
 

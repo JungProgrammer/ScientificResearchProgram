@@ -88,10 +88,10 @@ namespace ResearchProgram.Forms
 
             CRUDDataBase.ConnectToDataBase();
 
-            FirstNode = CRUDDataBase.GetStructureNodes("'^[0-9]+$'"); // получение всех узлов с адресом первого уровня
-            SecondNode = CRUDDataBase.GetStructureNodes("'^[0-9]+\\.[0-9]+$'"); // получение всех узлов с адресом второго уровня
-            ThirdNode = CRUDDataBase.GetStructureNodes("'^[0-9]+\\.[0-9]+\\.[0-9]+$'"); // получение всех узлов с адресом третьего уровня
-            FourthNode = CRUDDataBase.GetStructureNodes("'^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$'"); // получение всех узлов с адресом четвертого уровня
+            FirstNode = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+$"); // получение всех узлов с адресом первого уровня
+            SecondNode = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+\\.[0-9]+$"); // получение всех узлов с адресом второго уровня
+            ThirdNode = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+\\.[0-9]+\\.[0-9]+$"); // получение всех узлов с адресом третьего уровня
+            FourthNode = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$"); // получение всех узлов с адресом четвертого уровня
             Degree = new ObservableCollection<WorkDegree>(CRUDDataBase.GetWorkDegrees());
             Rank = new ObservableCollection<WorkRank>(CRUDDataBase.GetWorkRanks());
             Category = new ObservableCollection<WorkCategories>(CRUDDataBase.GetWorkCategories());

@@ -67,10 +67,10 @@ namespace ResearchProgram.Classes
             CRUDDataBase.CloseConnection();
 
             CRUDDataBase.ConnectToDataBase();
-            FirstNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+$'"); // получение всех узлов с адресом первого уровня
-            SecondNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+\\.[0-9]+$'"); // получение всех узлов с адресом второго уровня
-            ThirdNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+\\.[0-9]+\\.[0-9]+$'"); // получение всех узлов с адресом третьего уровня
-            FourthNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$'"); // получение всех узлов с адресом четвертого уровня
+            FirstNodeList = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+$"); // получение всех узлов с адресом первого уровня
+            SecondNodeList = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+\\.[0-9]+$"); // получение всех узлов с адресом второго уровня
+            ThirdNodeList = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+\\.[0-9]+\\.[0-9]+$"); // получение всех узлов с адресом третьего уровня
+            FourthNodeList = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$"); // получение всех узлов с адресом четвертого уровня
             CRUDDataBase.CloseConnection();
 
             Grid grid = new Grid();
@@ -386,7 +386,7 @@ namespace ResearchProgram.Classes
             {
 
                 CRUDDataBase.ConnectToDataBase();
-                FirstNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$'"); // получение всех узлов с адресом первого уровня
+                FirstNodeList = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$");
                 CRUDDataBase.CloseConnection();
 
 
@@ -456,18 +456,18 @@ namespace ResearchProgram.Classes
                     UniversityStructureNode universityStructureNode = (UniversityStructureNode)comboBox.SelectedItem;
 
                     SecondNodeList.Clear();
-                    foreach (UniversityStructureNode u in CRUDDataBase.GetStructureNodes("'^" + universityStructureNode.Address + "\\.[0-9]+$'"))
+                    foreach (UniversityStructureNode u in StaticData.GetUniversityStructureNodeByRegex("^" + universityStructureNode.Address + "\\.[0-9]+$"))
                     {
                         SecondNodeList.Add(u);
                     }
                     ThirdNodeList.Clear();
-                    foreach (UniversityStructureNode u in CRUDDataBase.GetStructureNodes("'^" + universityStructureNode.Address + "\\.[0-9]+\\.[0-9]+$'"))
+                    foreach (UniversityStructureNode u in StaticData.GetUniversityStructureNodeByRegex("^" + universityStructureNode.Address + "\\.[0-9]+\\.[0-9]+$"))
                     {
                         ThirdNodeList.Add(u);
                     }
 
                     FourthNodeList.Clear();
-                    foreach (UniversityStructureNode u in CRUDDataBase.GetStructureNodes("'^" + universityStructureNode.Address + "\\.[0-9]+\\.[0-9]+\\.[0-9]+$'"))
+                    foreach (UniversityStructureNode u in StaticData.GetUniversityStructureNodeByRegex("^" + universityStructureNode.Address + "\\.[0-9]+\\.[0-9]+\\.[0-9]+$"))
                     {
                         FourthNodeList.Add(u);
                     }
@@ -483,7 +483,7 @@ namespace ResearchProgram.Classes
                     ComboBox comboBox = (ComboBox)sender2;
                     UniversityStructureNode universityStructureNode = (UniversityStructureNode)comboBox.SelectedItem;
                     string[] address = universityStructureNode.Address.Split('.');
-                    UniversityStructureNode parentNode = CRUDDataBase.GetStructureNodes("'^" + address[0] + "$'")[0];
+                    UniversityStructureNode parentNode = StaticData.GetUniversityStructureNodeByRegex("^" + address[0] + "$")[0];
 
 
                     for (int i = 0; i < workPlaceComboBox.Items.Count; i++)
@@ -506,13 +506,13 @@ namespace ResearchProgram.Classes
                     if (universityStructureNode != null)
                     {
                         ThirdNodeList.Clear();
-                        foreach (UniversityStructureNode u in CRUDDataBase.GetStructureNodes("'^" + universityStructureNode.Address + "\\.[0-9]+$'"))
+                        foreach (UniversityStructureNode u in StaticData.GetUniversityStructureNodeByRegex("^" + universityStructureNode.Address + "\\.[0-9]+$"))
                         {
                             ThirdNodeList.Add(u);
                         }
 
                         FourthNodeList.Clear();
-                        foreach (UniversityStructureNode u in CRUDDataBase.GetStructureNodes("'^" + universityStructureNode.Address + "\\.[0-9]+\\.[0-9]+$'"))
+                        foreach (UniversityStructureNode u in StaticData.GetUniversityStructureNodeByRegex("^" + universityStructureNode.Address + "\\.[0-9]+\\.[0-9]+$"))
                         {
                             FourthNodeList.Add(u);
                         }
@@ -528,7 +528,7 @@ namespace ResearchProgram.Classes
                     ComboBox comboBox = (ComboBox)sender2;
                     UniversityStructureNode universityStructureNode = (UniversityStructureNode)comboBox.SelectedItem;
 
-                    UniversityStructureNode parentNode = CRUDDataBase.GetStructureNodes("'^" + universityStructureNode.Address.Split('.')[0] + "$'")[0];
+                    UniversityStructureNode parentNode = StaticData.GetUniversityStructureNodeByRegex("^" + universityStructureNode.Address.Split('.')[0] + "$")[0];
 
                     for (int i = 0; i < workPlaceComboBox.Items.Count; i++)
                     {
@@ -547,7 +547,7 @@ namespace ResearchProgram.Classes
                             break;
                         }
                     }
-                    parentNode = CRUDDataBase.GetStructureNodes("'^" + universityStructureNode.Address.Split('.')[0] + '.' + universityStructureNode.Address.Split('.')[1] + "$'")[0];
+                    parentNode = StaticData.GetUniversityStructureNodeByRegex("^" + universityStructureNode.Address.Split('.')[0] + '.' + universityStructureNode.Address.Split('.')[1] + "$")[0];
 
                     for (int i = 0; i < UnitComboBox.Items.Count; i++)
                     {
@@ -569,7 +569,7 @@ namespace ResearchProgram.Classes
                     if (universityStructureNode != null)
                     {
                         FourthNodeList.Clear();
-                        foreach (UniversityStructureNode u in CRUDDataBase.GetStructureNodes("'^" + universityStructureNode.Address + "\\.[0-9]+$'"))
+                        foreach (UniversityStructureNode u in StaticData.GetUniversityStructureNodeByRegex("^" + universityStructureNode.Address + "\\.[0-9]+$"))
                         {
                             FourthNodeList.Add(u);
                         }
@@ -584,7 +584,7 @@ namespace ResearchProgram.Classes
                     isUserInteraction = false;
                     ComboBox comboBox = (ComboBox)sender2;
                     UniversityStructureNode universityStructureNode = (UniversityStructureNode)comboBox.SelectedItem;
-                    UniversityStructureNode parentNode = CRUDDataBase.GetStructureNodes("'^" + universityStructureNode.Address.Split('.')[0] + "$'")[0];
+                    UniversityStructureNode parentNode = StaticData.GetUniversityStructureNodeByRegex("^" + universityStructureNode.Address.Split('.')[0] + "$")[0];
 
                     for (int i = 0; i < workPlaceComboBox.Items.Count; i++)
                     {
@@ -603,7 +603,7 @@ namespace ResearchProgram.Classes
                             break;
                         }
                     }
-                    parentNode = CRUDDataBase.GetStructureNodes("'^" + universityStructureNode.Address.Split('.')[0] + '.' + universityStructureNode.Address.Split('.')[1] + "$'")[0];
+                    parentNode = StaticData.GetUniversityStructureNodeByRegex("^" + universityStructureNode.Address.Split('.')[0] + '.' + universityStructureNode.Address.Split('.')[1] + "$")[0];
 
                     for (int i = 0; i < UnitComboBox.Items.Count; i++)
                     {
@@ -622,7 +622,7 @@ namespace ResearchProgram.Classes
                             break;
                         }
                     }
-                    parentNode = CRUDDataBase.GetStructureNodes("'^" + universityStructureNode.Address.Split('.')[0] + '.' + universityStructureNode.Address.Split('.')[1] + '.' + universityStructureNode.Address.Split('.')[2] + "$'")[0];
+                    parentNode = StaticData.GetUniversityStructureNodeByRegex("^" + universityStructureNode.Address.Split('.')[0] + '.' + universityStructureNode.Address.Split('.')[1] + '.' + universityStructureNode.Address.Split('.')[2] + "$")[0];
 
                     for (int i = 0; i < DepartmentComboBox.Items.Count; i++)
                     {

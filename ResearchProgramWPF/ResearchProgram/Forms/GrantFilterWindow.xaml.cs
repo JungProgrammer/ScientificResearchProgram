@@ -112,10 +112,10 @@ namespace ResearchProgram.Forms
             People = new ObservableCollection<Person>(CRUDDataBase.GetPersons());
             Customers = CRUDDataBase.GetCustomers();
 
-            FirstNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+$'"); // получение всех узлов с адресом первого уровня
-            SecondNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+\\.[0-9]+$'"); // получение всех узлов с адресом второго уровня
-            ThirdNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+\\.[0-9]+\\.[0-9]+$'"); // получение всех узлов с адресом третьего уровня
-            FourthNodeList = CRUDDataBase.GetStructureNodes("'^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$'"); // получение всех узлов с адресом четвертого уровня
+            FirstNodeList = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+$"); // получение всех узлов с адресом первого уровня
+            SecondNodeList = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+\\.[0-9]+$"); // получение всех узлов с адресом второго уровня
+            ThirdNodeList = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+\\.[0-9]+\\.[0-9]+$"); // получение всех узлов с адресом третьего уровня
+            FourthNodeList = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$"); // получение всех узлов с адресом четвертого уровня
 
             ResearchTypes = CRUDDataBase.GetResearchTypes();
             ScienceTypes = CRUDDataBase.GetScienceTypes();

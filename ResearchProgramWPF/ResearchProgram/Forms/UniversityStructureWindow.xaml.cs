@@ -57,8 +57,7 @@ namespace ResearchProgram
 
         private TreeNode GetHierarchicalNodes()
         {
-
-            ObservableCollection<UniversityStructureNode> universityStructureNodes = CRUDDataBase.GetStructureNodes("''");
+            ObservableCollection<UniversityStructureNode> universityStructureNodes = StaticData.GetUniversityStructureNodeByRegex("");
 
             Regex rgx = new Regex("^[0-9]+$");
             int k = 0;
