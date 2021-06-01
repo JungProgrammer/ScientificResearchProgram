@@ -114,7 +114,7 @@ namespace ResearchProgram.Forms
             CRUDDataBase.ConnectToDataBase();
 
             People = new ObservableCollection<Person>(StaticData.GetAllPersons());
-            Customers = CRUDDataBase.GetCustomers();
+            Customers = new ObservableCollection<Customer>(StaticData.GetAllCustomers());
             ResearchTypes = CRUDDataBase.GetResearchTypes();
             ScienceTypes = CRUDDataBase.GetScienceTypes();
             PriorityTrends = CRUDDataBase.GetPriorityTrends();

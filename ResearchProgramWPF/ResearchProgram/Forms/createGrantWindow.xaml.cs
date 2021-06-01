@@ -134,7 +134,7 @@ namespace ResearchProgram
         private void UpdateData()
         {
             PersonsList = new ObservableCollection<Person>(StaticData.GetAllPersons());
-            CustomersList = CRUDDataBase.GetCustomersInNewThread();
+            CustomersList = new ObservableCollection<Customer>(StaticData.GetAllCustomers());
 
             // Обновление комбобокса для руководителя
             Person selectedLead = null;
@@ -222,11 +222,10 @@ namespace ResearchProgram
             Dispatcher.Invoke(() => Title = String.Format("{0} (Загрузка данных...)", Title));
 
             // Подключение к базе данных
-            CRUDDataBase.ConnectToDataBase();
             PersonsList = new ObservableCollection<Person>(StaticData.GetAllPersons());
-            //PersonsList = StaticProperties.PersonsList;
-            CustomersList = CRUDDataBase.GetCustomers();
-            DepositsList = CRUDDataBase.GetDeposits();
+            CustomersList = new ObservableCollection<Customer>(StaticData.GetAllCustomers());
+            DepositsList = StaticData.GetAllDeposits();
+            CRUDDataBase.ConnectToDataBase();
             ResearchTypesList = CRUDDataBase.GetResearchTypes();
             ScienceTypeList = CRUDDataBase.GetScienceTypes();
             PriorityTrendList = CRUDDataBase.GetPriorityTrends();
@@ -487,7 +486,6 @@ namespace ResearchProgram
                     foreach (Person p1 in ExecutorSource)
                         if (p.Id == p1.Id)
                         {
-                            Console.WriteLine("Добавили " + p.FIO);
                             SelectedExecutor.Add(p1);
                             break;
                         }
@@ -773,7 +771,6 @@ namespace ResearchProgram
 
                 foreach (StackPanel sp in depositsVerticalListView.Items.OfType<StackPanel>())
                 {
-                    Console.WriteLine("111");
                     cmb = (ComboBox)sp.Children[0];
                     partSum = (TextBox)sp.Children[1];
                     partSumNoNDS = (TextBox)sp.Children[3];

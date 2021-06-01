@@ -36,8 +36,6 @@ namespace ResearchProgram
             InitializeComponent();
 
             CRUDDataBase.GetDepositsVerbose();
-            StaticData.LoadUniversityStructNodesStatic();
-            StaticData.LoadPersons();
 
             Title = "Гранты НИЧ ";
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -245,7 +243,7 @@ namespace ResearchProgram
             { return; }
             Console.WriteLine(grantId);
 
-            Grant grant = CRUDDataBase.GetGrantById(Convert.ToInt32(grantId));
+            Grant grant = StaticData.GetGrantById(Convert.ToInt32(grantId));
 
             CreateGrantWindow newGrantWindow = new CreateGrantWindow(GrantsDataTable, grant)
             {
@@ -292,7 +290,7 @@ namespace ResearchProgram
             }
             catch { return; }
             Console.WriteLine(CustomerId);
-            Customer customer = CRUDDataBase.GetCustomerByCustomerId(CustomerId);
+            Customer customer = StaticData.GetCustomerById(Convert.ToInt32(CustomerId));
 
             CreateCustomerWindow newCustomerWindow = new CreateCustomerWindow(customer)
             {
@@ -342,7 +340,7 @@ namespace ResearchProgram
             worksheet.DeleteColumn(EXCEL_DEPOSITS_START_COLUMN, 2);
             //получаем список средств
             CRUDDataBase.ConnectToDataBase();
-            List<Depositor> depositors = CRUDDataBase.GetDeposits();
+            List<Depositor> depositors = StaticData.GetAllDeposits();
             CRUDDataBase.CloseConnection();
             //вставлям колонки по количеству средств
             worksheet.InsertColumn(EXCEL_DEPOSITS_START_COLUMN, depositors.Count);
@@ -426,7 +424,7 @@ namespace ResearchProgram
         private void ShowFullInformation(object sender, RoutedEventArgs e)
         {
             string grantId = SelectedGrantRow.Row.Field<string>("id");
-            Grant grant = CRUDDataBase.GetGrantById(Convert.ToInt32(grantId));
+            Grant grant = StaticData.GetGrantById(Convert.ToInt32(grantId));
 
             FullGrantInfo fullGrantInfonewGrantWindow = new FullGrantInfo(grant)
             {
