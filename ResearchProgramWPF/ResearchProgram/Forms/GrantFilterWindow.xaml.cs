@@ -66,7 +66,6 @@ namespace ResearchProgram.Forms
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        // Таблица, которая отвечает за гранты
         DataTable GrantsDataTable { get; set; }
 
         private ObservableCollection<OKVED> _selectedOkved;
@@ -107,16 +106,15 @@ namespace ResearchProgram.Forms
 
             GrantsDataTable = grantsDataTable;
 
-            CRUDDataBase.ConnectToDataBase();
-
-            People = new ObservableCollection<Person>(CRUDDataBase.GetPersons());
-            Customers = CRUDDataBase.GetCustomers();
-
             FirstNodeList = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+$"); // получение всех узлов с адресом первого уровня
             SecondNodeList = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+\\.[0-9]+$"); // получение всех узлов с адресом второго уровня
             ThirdNodeList = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+\\.[0-9]+\\.[0-9]+$"); // получение всех узлов с адресом третьего уровня
             FourthNodeList = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$"); // получение всех узлов с адресом четвертого уровня
 
+            CRUDDataBase.ConnectToDataBase();
+
+            People = new ObservableCollection<Person>(CRUDDataBase.GetPersons());
+            Customers = CRUDDataBase.GetCustomers();
             ResearchTypes = CRUDDataBase.GetResearchTypes();
             ScienceTypes = CRUDDataBase.GetScienceTypes();
             PriorityTrends = CRUDDataBase.GetPriorityTrends();
@@ -245,8 +243,6 @@ namespace ResearchProgram.Forms
         /// <summary>
         /// Простой поиск по тексту таблицы без обращения к БД
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void SimpleSearchButton_Click(object sender, RoutedEventArgs e)
         {
             string searchQuarry = SimpleSearchTextBox.Text;

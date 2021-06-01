@@ -2574,12 +2574,9 @@ namespace ResearchProgram
         public static ObservableCollection<UniversityStructureNode> GetAllFirstNodesByPerson(Person person)
         {
             ObservableCollection<UniversityStructureNode> universityStructureNodes = new ObservableCollection<UniversityStructureNode>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT first_node_id, is_main_work_place, " +
-                    "(SELECT title FROM work_place_structure WHERE id = first_node_id), " +
-                    "(SELECT address FROM work_place_structure WHERE id = first_node_id), " +
-                    "(SELECT short_title FROM work_place_structure WHERE id = first_node_id) " +
-                    "FROM persons_work_places " +
-                    "WHERE person_id = :person_id", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT first_node_id, is_main_work_place " +
+                                                    "FROM persons_work_places " +
+                                                    "WHERE person_id = :person_id", conn);
             cmd.Parameters.Add(new NpgsqlParameter(":person_id", person.Id));
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
@@ -2587,14 +2584,14 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    universityStructureNodes.Add(new UniversityStructureNode
+                    if (reader["first_node_id"] == DBNull.Value)
                     {
-                        Id = reader[0] != DBNull.Value ? Convert.ToInt32(reader[0]) : -1,
-                        Title = reader[2] != DBNull.Value ? reader[2].ToString() : "",
-                        Address = reader[3] != DBNull.Value ? reader[3].ToString() : "",
-                        ShortTitle = reader[4] != DBNull.Value ? reader[4].ToString() : "",
-                        IsMainWorkPlace = reader[1] != DBNull.Value ? Convert.ToBoolean(reader[1]) : false
-                    });
+                        universityStructureNodes.Add(new UniversityStructureNode());
+                        continue;
+                    }
+                    UniversityStructureNode u = StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["first_node_id"]));
+                    u.IsMainWorkPlace = Convert.ToBoolean(reader["is_main_work_place"]);
+                    universityStructureNodes.Add(u);
                 }
             }
             reader.Close();
@@ -2603,12 +2600,9 @@ namespace ResearchProgram
         public static ObservableCollection<UniversityStructureNode> GetAllSecondNodesByPerson(Person person)
         {
             ObservableCollection<UniversityStructureNode> universityStructureNodes = new ObservableCollection<UniversityStructureNode>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT second_node_id, is_main_work_place, " +
-                    "(SELECT title FROM work_place_structure WHERE id = second_node_id), " +
-                    "(SELECT address FROM work_place_structure WHERE id = second_node_id), " +
-                    "(SELECT short_title FROM work_place_structure WHERE id = second_node_id) " +
-                    "FROM persons_work_places " +
-                    "WHERE person_id = :person_id", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT second_node_id, is_main_work_place " +
+                                                    "FROM persons_work_places " +
+                                                    "WHERE person_id = :person_id", conn);
             cmd.Parameters.Add(new NpgsqlParameter(":person_id", person.Id));
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
@@ -2616,14 +2610,14 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    universityStructureNodes.Add(new UniversityStructureNode
+                    if (reader["second_node_id"] == DBNull.Value)
                     {
-                        Id = reader[0] != DBNull.Value ? Convert.ToInt32(reader[0]) : -1,
-                        Title = reader[2] != DBNull.Value ? reader[2].ToString() : "",
-                        Address = reader[3] != DBNull.Value ? reader[3].ToString() : "",
-                        ShortTitle = reader[4] != DBNull.Value ? reader[4].ToString() : "",
-                        IsMainWorkPlace = reader[1] != DBNull.Value ? Convert.ToBoolean(reader[1]) : false
-                    });
+                        universityStructureNodes.Add(new UniversityStructureNode());
+                        continue;
+                    }; ;
+                    UniversityStructureNode u = StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["second_node_id"]));
+                    u.IsMainWorkPlace = Convert.ToBoolean(reader["is_main_work_place"]);
+                    universityStructureNodes.Add(u);
                 }
             }
             reader.Close();
@@ -2632,10 +2626,7 @@ namespace ResearchProgram
         public static ObservableCollection<UniversityStructureNode> GetAllThirdNodesByPerson(Person person)
         {
             ObservableCollection<UniversityStructureNode> universityStructureNodes = new ObservableCollection<UniversityStructureNode>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT third_node_id, is_main_work_place, " +
-                    "(SELECT title FROM work_place_structure WHERE id = third_node_id), " +
-                    "(SELECT address FROM work_place_structure WHERE id = third_node_id), " +
-                    "(SELECT short_title FROM work_place_structure WHERE id = third_node_id) " +
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT third_node_id, is_main_work_place " +
                     "FROM persons_work_places " +
                     "WHERE person_id = :person_id", conn);
             cmd.Parameters.Add(new NpgsqlParameter(":person_id", person.Id));
@@ -2645,14 +2636,14 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    universityStructureNodes.Add(new UniversityStructureNode
+                    if (reader["third_node_id"] == DBNull.Value)
                     {
-                        Id = reader[0] != DBNull.Value ? Convert.ToInt32(reader[0]) : -1,
-                        Title = reader[2] != DBNull.Value ? reader[2].ToString() : "",
-                        Address = reader[3] != DBNull.Value ? reader[3].ToString() : "",
-                        ShortTitle = reader[4] != DBNull.Value ? reader[4].ToString() : "",
-                        IsMainWorkPlace = reader[1] != DBNull.Value ? Convert.ToBoolean(reader[1]) : false
-                    });
+                        universityStructureNodes.Add(new UniversityStructureNode());
+                        continue;
+                    }; ;
+                    UniversityStructureNode u = StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["third_node_id"]));
+                    u.IsMainWorkPlace = Convert.ToBoolean(reader["is_main_work_place"]);
+                    universityStructureNodes.Add(u);
                 }
             }
             reader.Close();
@@ -2661,10 +2652,7 @@ namespace ResearchProgram
         public static ObservableCollection<UniversityStructureNode> GetAllFourthNodesByPerson(Person person)
         {
             ObservableCollection<UniversityStructureNode> universityStructureNodes = new ObservableCollection<UniversityStructureNode>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT fourth_node_id, is_main_work_place, " +
-                    "(SELECT title FROM work_place_structure WHERE id = fourth_node_id), " +
-                    "(SELECT address FROM work_place_structure WHERE id = fourth_node_id), " +
-                    "(SELECT short_title FROM work_place_structure WHERE id = fourth_node_id) " +
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT fourth_node_id, is_main_work_place " +
                     "FROM persons_work_places " +
                     "WHERE person_id = :person_id", conn);
             cmd.Parameters.Add(new NpgsqlParameter(":person_id", person.Id));
@@ -2674,14 +2662,14 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    universityStructureNodes.Add(new UniversityStructureNode
+                    if (reader["fourth_node_id"] == DBNull.Value)
                     {
-                        Id = reader[0] != DBNull.Value ? Convert.ToInt32(reader[0]) : -1,
-                        Title = reader[2] != DBNull.Value ? reader[2].ToString() : "",
-                        Address = reader[3] != DBNull.Value ? reader[3].ToString() : "",
-                        ShortTitle = reader[4] != DBNull.Value ? reader[4].ToString() : "",
-                        IsMainWorkPlace = reader[1] != DBNull.Value ? Convert.ToBoolean(reader[1]) : false
-                    });
+                        universityStructureNodes.Add(new UniversityStructureNode());
+                        continue;
+                    };
+                    UniversityStructureNode u = StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["fourth_node_id"]));
+                    u.IsMainWorkPlace = Convert.ToBoolean(reader["is_main_work_place"]);
+                    universityStructureNodes.Add(u);
                 }
             }
             reader.Close();

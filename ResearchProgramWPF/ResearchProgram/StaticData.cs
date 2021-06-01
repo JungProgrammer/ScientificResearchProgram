@@ -1,11 +1,8 @@
 ﻿using ResearchProgram.Classes;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ResearchProgram
 {
@@ -29,8 +26,6 @@ namespace ResearchProgram
         /// <summary>
         /// Поиск в словаре структуры универа по Id
         /// </summary>
-        /// <param name="Id"></param>
-        /// <returns></returns>
         public static UniversityStructureNode GetUniversityStructureNodeById(int Id)
         {
             if (universityStructureNodesDict.ContainsKey(Id))
@@ -39,6 +34,9 @@ namespace ResearchProgram
                 return null;
         }
 
+        /// <summary>
+        /// Получение узлов структуры универа по регулярному выражению
+        /// </summary>
         public static ObservableCollection<UniversityStructureNode> GetUniversityStructureNodeByRegex(string regex)
         {
             //TODO Триггер в БД
