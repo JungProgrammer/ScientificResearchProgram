@@ -1952,7 +1952,6 @@ namespace ResearchProgram
         /// <summary>
         /// Получение списка должностей с их зарплатами из БД
         /// </summary>
-        /// <returns></returns>
         public static List<Job> GetJobs()
         {
             List<Job> jobsList = new List<Job>();
@@ -1978,14 +1977,6 @@ namespace ResearchProgram
             reader.Close();
             return jobsList;
         }
-
-        //public static Person GetPersonByPersonId(string personId)
-        //{
-        //    ConnectToDataBase();
-        //    Person person = GetPersonById(Convert.ToInt32(personId), true);
-        //    CloseConnection();
-        //    return person;
-        //}
 
         public static void DeleteGrant(string grantNumber)
         {
