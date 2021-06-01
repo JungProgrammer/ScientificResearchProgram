@@ -1,6 +1,4 @@
-﻿using DotNetKit.Windows.Controls;
-using Npgsql;
-using ResearchProgram.Classes;
+﻿using ResearchProgram.Classes;
 using Sdl.MultiSelectComboBox.Themes.Generic;
 using System;
 using System.Collections.Generic;
@@ -9,7 +7,6 @@ using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,6 +30,14 @@ namespace ResearchProgram
         public ObservableCollection<UniversityStructureNode> ThirdNodeList { get { return _thirdNodeList; } set { _thirdNodeList = value; OnPropertyChanged("ThirdNodeList"); } }
         public ObservableCollection<UniversityStructureNode> FourthNodeList { get { return _fourthNodeList; } set { _fourthNodeList = value; OnPropertyChanged("FourthNodeList"); } }
 
+        private UniversityStructureNode _selectedFirstNode;
+        private UniversityStructureNode _selectedSecondNode;
+        private UniversityStructureNode _selectedThirdNode;
+        private UniversityStructureNode _selectedFourthNode;
+        public UniversityStructureNode SelectedFirstNode { get { return _selectedFirstNode; } set { _selectedFirstNode = value; OnPropertyChanged(nameof(SelectedFirstNode)); } }
+        public UniversityStructureNode SelectedSecondNode { get { return _selectedSecondNode; } set { _selectedSecondNode = value; OnPropertyChanged(nameof(SelectedSecondNode)); } }
+        public UniversityStructureNode SelectedThirdNode { get { return _selectedThirdNode; } set { _selectedThirdNode = value; OnPropertyChanged(nameof(SelectedThirdNode)); } }
+        public UniversityStructureNode SelectedFourthNode { get { return _selectedFourthNode; } set { _selectedFourthNode = value; OnPropertyChanged(nameof(SelectedFourthNode)); } }
 
         //Списки данных из БД
 
@@ -71,7 +76,7 @@ namespace ResearchProgram
         public ObservableCollection<PriorityTrend> PriorityTrendList { get; set; }
         //Списки данных из формы
         public List<ComboBox> EnteredExecutorsList { get; set; }
-        public List<Object[]> EnteredDepositsList { get; set; }
+        public List<object[]> EnteredDepositsList { get; set; }
         public List<ComboBox> EnteredScienceTypesList { get; set; }
 
         Grant grantToEdit;
@@ -96,8 +101,6 @@ namespace ResearchProgram
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        private readonly object _collectionOfObjectsSync = new object();
-
         public CreateGrantWindow(DataTable grantsDataTable, Grant grantToEdit = null, MainWindow Owner = null)
         {
             InitializeComponent();
@@ -114,10 +117,8 @@ namespace ResearchProgram
             ScienceTypeSource = new ObservableCollection<ScienceType>();
 
 
-            //LoadDataAsync();
+            LoadDataAsync();
 
-            Thread thread = new Thread(LoadData);
-            thread.Start();
             DataContext = this;
         }
 
@@ -160,7 +161,7 @@ namespace ResearchProgram
             ObservableCollection<Customer> tempCustomer = SelectedCustomer;
             SelectedCustomer.Clear();
             Dispatcher.Invoke(() => CustomerSource.Clear());
-            foreach(Customer c in CustomersList)
+            foreach (Customer c in CustomersList)
             {
                 Dispatcher.Invoke(() => CustomerSource.Add(c));
             }
@@ -240,6 +241,10 @@ namespace ResearchProgram
             EnteredExecutorsList = new List<ComboBox>();
             SelectedLeadNIOKR = new ObservableCollection<Person>();
             SelectedExecutor = new ObservableCollection<Person>();
+            SelectedFirstNode = new UniversityStructureNode();
+            SelectedSecondNode = new UniversityStructureNode();
+            SelectedThirdNode = new UniversityStructureNode();
+            SelectedFourthNode = new UniversityStructureNode();
 
             Dispatcher.Invoke(() => LeadNIOKRMultiSelectComboBox = new MultiSelectComboBox()
             {
@@ -488,65 +493,6 @@ namespace ResearchProgram
                         }
                 }
 
-                Dispatcher.Invoke(() => FirstNodeComboBox.SelectedIndex = -1);
-                if (grantToEdit.FirstNode != null)
-                {
-                    if (grantToEdit.FirstNode.Title != null)
-                    {
-                        for (int i = 0; i < FirstNodeList.Count; i++)
-                        {
-                            if (grantToEdit.FirstNode.Id == FirstNodeList[i].Id)
-                            {
-                                Dispatcher.Invoke(() => FirstNodeComboBox.SelectedIndex = i);
-                            }
-                        }
-                    }
-                }
-
-                Dispatcher.Invoke(() => SecondNodeComboBox.SelectedIndex = -1);
-                if (grantToEdit.SecondNode != null)
-                {
-                    if (grantToEdit.SecondNode.Title != null)
-                    {
-                        for (int i = 0; i < SecondNodeList.Count; i++)
-                        {
-                            if (grantToEdit.SecondNode.Id == SecondNodeList[i].Id)
-                            {
-                                Dispatcher.Invoke(() => SecondNodeComboBox.SelectedIndex = i);
-                            }
-                        }
-                    }
-                }
-
-                Dispatcher.Invoke(() => ThirdNodeComboBox.SelectedIndex = -1);
-                if (grantToEdit.ThirdNode != null)
-                {
-                    if (grantToEdit.ThirdNode.Title != null)
-                    {
-                        for (int i = 0; i < ThirdNodeList.Count; i++)
-                        {
-                            if (grantToEdit.ThirdNode.Id == ThirdNodeList[i].Id)
-                            {
-                                Dispatcher.Invoke(() => ThirdNodeComboBox.SelectedIndex = i);
-                            }
-                        }
-                    }
-                }
-
-                Dispatcher.Invoke(() => FourthComboBox.SelectedIndex = -1);
-                if (grantToEdit.FourthNode != null)
-                {
-                    if (grantToEdit.FourthNode.Title != null)
-                    {
-                        for (int i = 0; i < FourthNodeList.Count; i++)
-                        {
-                            if (grantToEdit.FourthNode.Id == FourthNodeList[i].Id)
-                            {
-                                Dispatcher.Invoke(() => FourthComboBox.SelectedIndex = i);
-                            }
-                        }
-                    }
-                }
 
                 Dispatcher.Invoke(() => GRNTITextBox.Text = grantToEdit.GRNTI);
 
@@ -1141,19 +1087,14 @@ namespace ResearchProgram
         private void LeadNIOKRMultiSelectComboBox_SelectedItemsChanged(object sender, Sdl.MultiSelectComboBox.EventArgs.SelectedItemsChangedEventArgs e)
         {
             if (SelectedLeadNIOKR.Count == 0) return;
-
+            FirstNodeList = new ObservableCollection<UniversityStructureNode>();
+            SecondNodeList = new ObservableCollection<UniversityStructureNode>();
+            ThirdNodeList = new ObservableCollection<UniversityStructureNode>();
+            FourthNodeList = new ObservableCollection<UniversityStructureNode>();
             Person person = SelectedLeadNIOKR[0];
             CRUDDataBase.ConnectToDataBase();
 
             HashSet<String> set = new HashSet<String>();
-            if (grantToEdit != null)
-            {
-                if (grantToEdit.FirstNode.Title != null)
-                {
-                    FirstNodeList.Add(grantToEdit.FirstNode);
-                    set.Add(grantToEdit.FirstNode.Title);
-                }
-            }
             foreach (UniversityStructureNode u in CRUDDataBase.GetAllFirstNodesByPerson(person))
             {
                 if (!set.Contains(u.Title))
@@ -1161,25 +1102,16 @@ namespace ResearchProgram
                     FirstNodeList.Add(u);
                     set.Add(u.Title);
                 }
-                if (u.IsMainWorkPlace)
+                if ((u.IsMainWorkPlace && u.Id != -1) || (grantToEdit != null && grantToEdit.FirstNode.Id == u.Id))
                 {
                     for (int i = 0; i < FirstNodeList.Count; i++)
                     {
                         if (u.Id == FirstNodeList[i].Id)
-                            FirstNodeComboBox.SelectedIndex = i;
+                            SelectedFirstNode = FirstNodeList[i];
                     }
                 }
             }
             set.Clear();
-
-            if (grantToEdit != null)
-            {
-                if (grantToEdit.SecondNode.Title != null)
-                {
-                    SecondNodeList.Add(grantToEdit.SecondNode);
-                    set.Add(grantToEdit.SecondNode.Title);
-                }
-            }
             foreach (UniversityStructureNode u in CRUDDataBase.GetAllSecondNodesByPerson(person))
             {
                 if (!set.Contains(u.Title))
@@ -1187,24 +1119,16 @@ namespace ResearchProgram
                     SecondNodeList.Add(u);
                     set.Add(u.Title);
                 }
-                if (u.IsMainWorkPlace)
+                if ((u.IsMainWorkPlace && u.Id != -1) || (grantToEdit != null && grantToEdit.SecondNode.Id == u.Id))
                 {
                     for (int i = 0; i < SecondNodeList.Count; i++)
                     {
                         if (u.Id == SecondNodeList[i].Id)
-                            SecondNodeComboBox.SelectedIndex = i;
+                            SelectedSecondNode = SecondNodeList[i];
                     }
                 }
             }
             set.Clear();
-            if (grantToEdit != null)
-            {
-                if (grantToEdit.ThirdNode.Title != null)
-                {
-                    ThirdNodeList.Add(grantToEdit.ThirdNode);
-                    set.Add(grantToEdit.ThirdNode.Title);
-                }
-            }
             foreach (UniversityStructureNode u in CRUDDataBase.GetAllThirdNodesByPerson(person))
             {
                 if (!set.Contains(u.Title))
@@ -1212,24 +1136,16 @@ namespace ResearchProgram
                     ThirdNodeList.Add(u);
                     set.Add(u.Title);
                 }
-                if (u.IsMainWorkPlace)
+                if ((u.IsMainWorkPlace && u.Id != -1) || (grantToEdit != null && grantToEdit.ThirdNode.Id == u.Id))
                 {
                     for (int i = 0; i < ThirdNodeList.Count; i++)
                     {
                         if (u.Id == ThirdNodeList[i].Id)
-                            ThirdNodeComboBox.SelectedIndex = i;
+                            SelectedThirdNode = ThirdNodeList[i];
                     }
                 }
             }
             set.Clear();
-            if (grantToEdit != null)
-            {
-                if (grantToEdit.FourthNode.Title != null)
-                {
-                    FourthNodeList.Add(grantToEdit.FourthNode);
-                    set.Add(grantToEdit.FourthNode.Title);
-                }
-            }
             foreach (UniversityStructureNode u in CRUDDataBase.GetAllFourthNodesByPerson(person))
             {
                 if (!set.Contains(u.Title))
@@ -1237,12 +1153,12 @@ namespace ResearchProgram
                     FourthNodeList.Add(u);
                     set.Add(u.Title);
                 }
-                if (u.IsMainWorkPlace)
+                if ((u.IsMainWorkPlace && u.Id != -1) || (grantToEdit !=null && grantToEdit.FourthNode.Id == u.Id))
                 {
                     for (int i = 0; i < FourthNodeList.Count; i++)
                     {
                         if (u.Id == FourthNodeList[i].Id)
-                            FourthComboBox.SelectedIndex = i;
+                            SelectedFourthNode = FourthNodeList[i];
                     }
                 }
             }

@@ -424,6 +424,7 @@
                             <ComboBox Grid.Row="1"
                                       x:Name="FirstNodeComboBox"
                                       Margin="5"
+                                      SelectedItem="{Binding SelectedFirstNode}"
                                       ItemsSource="{Binding FirstNodeList}" />
 
                             <Label Content="Подразделение"
@@ -433,6 +434,7 @@
                             <ComboBox Grid.Row="3"
                                       x:Name="SecondNodeComboBox"
                                       Margin="5"
+                                      SelectedItem="{Binding SelectedSecondNode}"
                                       ItemsSource="{Binding SecondNodeList}" />
 
                             <Label Content="Отдел"
@@ -444,6 +446,7 @@
                                       Grid.Column="1"
                                       x:Name="ThirdNodeComboBox"
                                       Margin="5"
+                                      SelectedItem="{Binding SelectedThirdNode}"
                                       ItemsSource="{Binding ThirdNodeList}" />
 
                             <Label Content="Структурная единица"
@@ -455,6 +458,7 @@
                                       Grid.Column="1"
                                       x:Name="FourthComboBox"
                                       Margin="5"
+                                      SelectedItem="{Binding SelectedFourthNode}"
                                       ItemsSource="{Binding FourthNodeList}" />
 
                         </Grid>

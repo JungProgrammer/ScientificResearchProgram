@@ -461,10 +461,10 @@ namespace ResearchProgram
                 grant.NIR = reader["NIR"].ToString();
                 grant.NOC = reader["NOC"].ToString();
                 grant.isWIthNDS = Convert.ToBoolean(reader["is_with_nds"]);
-                grant.FirstNode = reader["first_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["first_node_id"])) : new UniversityStructureNode();
-                grant.SecondNode = reader["second_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["second_node_id"])) : new UniversityStructureNode();
-                grant.ThirdNode = reader["third_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["third_node_id"])) : new UniversityStructureNode();
-                grant.FourthNode = reader["fourth_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["fourth_node_id"])) : new UniversityStructureNode();
+                grant.FirstNode = reader["first_node_id"] != DBNull.Value ? StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["first_node_id"])) : new UniversityStructureNode();
+                grant.SecondNode = reader["second_node_id"] != DBNull.Value ? StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["second_node_id"])) : new UniversityStructureNode();
+                grant.ThirdNode = reader["third_node_id"] != DBNull.Value ? StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["third_node_id"])) : new UniversityStructureNode();
+                grant.FourthNode = reader["fourth_node_id"] != DBNull.Value ? StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["fourth_node_id"])) : new UniversityStructureNode();
             }
             reader.Close();
 
@@ -524,10 +524,10 @@ namespace ResearchProgram
                         NIR = reader["NIR"].ToString(),
                         NOC = reader["NOC"].ToString(),
                         isWIthNDS = Convert.ToBoolean(reader["is_with_nds"]),
-                        FirstNode = reader["first_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["first_node_id"])) : new UniversityStructureNode(),
-                        SecondNode = reader["second_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["second_node_id"])) : new UniversityStructureNode(),
-                        ThirdNode = reader["third_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["third_node_id"])) : new UniversityStructureNode(),
-                        FourthNode = reader["fourth_node_id"] != DBNull.Value ? GetStructNodeById(Convert.ToInt32(reader["fourth_node_id"])) : new UniversityStructureNode()
+                        FirstNode = reader["first_node_id"] != DBNull.Value ? StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["first_node_id"])) : new UniversityStructureNode(),
+                        SecondNode = reader["second_node_id"] != DBNull.Value ? StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["second_node_id"])) : new UniversityStructureNode(),
+                        ThirdNode = reader["third_node_id"] != DBNull.Value ? StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["third_node_id"])) : new UniversityStructureNode(),
+                        FourthNode = reader["fourth_node_id"] != DBNull.Value ? StaticData.GetUniversityStructureNodeById(Convert.ToInt32(reader["fourth_node_id"])) : new UniversityStructureNode()
                     };
 
                 }
@@ -2569,33 +2569,6 @@ namespace ResearchProgram
             reader.Close();
             con.Close();
             return NodeList;
-        }
-
-        public static UniversityStructureNode GetStructNodeById(int StructNodeId)
-        {
-            UniversityStructureNode Node = new UniversityStructureNode();
-            NpgsqlConnection connection = GetNewConnection();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, address, title, short_title FROM work_place_structure WHERE id = :id;", connection);
-            cmd.Parameters.Add(new NpgsqlParameter(":id", StructNodeId));
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                while (reader.Read())
-                {
-                    Node.Id = StructNodeId;
-                    Node.Address = reader[1].ToString();
-                    Node.Title = reader[2].ToString();
-                    Node.ShortTitle = reader[3].ToString();
-                }
-            }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
-            reader.Close();
-            connection.Close();
-            return Node;
         }
 
         public static ObservableCollection<UniversityStructureNode> GetAllFirstNodesByPerson(Person person)
