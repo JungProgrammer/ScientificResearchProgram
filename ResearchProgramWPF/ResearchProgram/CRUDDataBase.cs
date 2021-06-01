@@ -683,7 +683,7 @@ namespace ResearchProgram
         public static void LoadPersonsTable(DataTable dataTable)
         {
             dataTable.Rows.Clear();
-            List<Person> persons = GetPersons(true);
+            List<Person> persons = StaticData.GetAllPersons();
             for (int i = 0; i < persons.Count; i++)
             {
                 WorkerWithTablesOnMainForm.AddRowToPersonsTable(dataTable, persons[i]);
@@ -1047,11 +1047,7 @@ namespace ResearchProgram
             }
         }
 
-        /// <summary>
-        /// Получение списка людей
-        /// </summary>
-        /// <returns></returns>
-        public static List<Person> GetPersons(bool is_jobs_needed = false)
+        public static List<Person> GetPersons()
         {
             List<Person> persons = new List<Person>();
             if (PersonsFilters.IsActive())
@@ -1060,7 +1056,7 @@ namespace ResearchProgram
                 List<int> personsIds = GetPersonsIds().ToList();
                 for (int i = 0; i < personsIds.Count; i++)
                 {
-                    persons.Add(GetPersonById(personsIds[i]));
+                    persons.Add(StaticData.GetPersonById(personsIds[i]));
                 }
             }
             else
@@ -2298,13 +2294,13 @@ namespace ResearchProgram
             return jobsList;
         }
 
-        public static Person GetPersonByPersonId(string personId)
-        {
-            ConnectToDataBase();
-            Person person = GetPersonById(Convert.ToInt32(personId), true);
-            CloseConnection();
-            return person;
-        }
+        //public static Person GetPersonByPersonId(string personId)
+        //{
+        //    ConnectToDataBase();
+        //    Person person = GetPersonById(Convert.ToInt32(personId), true);
+        //    CloseConnection();
+        //    return person;
+        //}
 
         public static Customer GetCustomerByCustomerId(string customerId)
         {
@@ -2882,7 +2878,7 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    StaticData.DepositsVerbose.Add(reader["verbose_name"].ToString(), reader["title"].ToString());
+                    StaticData.depositsVerbose.Add(reader["verbose_name"].ToString(), reader["title"].ToString());
                 }
             }
             reader.Close();

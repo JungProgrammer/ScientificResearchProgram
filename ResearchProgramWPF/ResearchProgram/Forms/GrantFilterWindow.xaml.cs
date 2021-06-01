@@ -113,7 +113,7 @@ namespace ResearchProgram.Forms
 
             CRUDDataBase.ConnectToDataBase();
 
-            People = new ObservableCollection<Person>(CRUDDataBase.GetPersons());
+            People = new ObservableCollection<Person>(StaticData.GetAllPersons());
             Customers = CRUDDataBase.GetCustomers();
             ResearchTypes = CRUDDataBase.GetResearchTypes();
             ScienceTypes = CRUDDataBase.GetScienceTypes();
@@ -501,7 +501,7 @@ namespace ResearchProgram.Forms
                     if (GrantsFilters.Depositors == null)
                     {
                         GrantsFilters.Depositors = new ObservableCollection<FilterRange>();
-                        for (int i = 0; i < StaticData.DepositsVerbose.Count; i++)
+                        for (int i = 0; i < StaticData.depositsVerbose.Count; i++)
                         {
                             GrantsFilters.Depositors.Add(new FilterRange());
                         }

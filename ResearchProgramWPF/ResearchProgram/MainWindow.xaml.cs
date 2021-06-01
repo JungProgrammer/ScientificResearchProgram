@@ -25,12 +25,19 @@ namespace ResearchProgram
 
         public DataTable CustomersDataTable { get; set; }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        public void OnPropertyChanged([CallerMemberName] string prop = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
+        }
+
         public MainWindow()
         {
             InitializeComponent();
 
             CRUDDataBase.GetDepositsVerbose();
             StaticData.LoadUniversityStructNodesStatic();
+            StaticData.LoadPersons();
 
             Title = "Гранты НИЧ ";
             WindowStartupLocation = WindowStartupLocation.CenterScreen;
@@ -58,12 +65,6 @@ namespace ResearchProgram
 
             WorkerWithTablesOnMainForm.CreateHeaders(GrantsDataTable, WorkerWithTablesOnMainForm.GrantsHeaders);
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        public void OnPropertyChanged([CallerMemberName] string prop = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
         /// <summary>
@@ -267,7 +268,7 @@ namespace ResearchProgram
             }
             catch { return; }
             Console.WriteLine(personId);
-            Person person = CRUDDataBase.GetPersonByPersonId(personId);
+            Person person = StaticData.GetPersonById(Convert.ToInt32(personId));
 
             createPersonWindow newPersonWindow = new createPersonWindow(GrantsDataTable, person)
             {

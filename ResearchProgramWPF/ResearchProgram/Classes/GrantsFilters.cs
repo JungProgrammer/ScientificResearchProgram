@@ -152,7 +152,7 @@ namespace ResearchProgram
                 if (Depositors[index] != null)
                 {
                     bool isCondition = false;
-                    quarry += "WHERE d.title = '" + StaticData.DepositsVerbose[index.ToString()] + "' ";
+                    quarry += "WHERE d.title = '" + StaticData.depositsVerbose[index.ToString()] + "' ";
                     if (Depositors[index].LeftDate != null)
                     {
                         quarry += " AND receiptdate " + FilterRange.GetSignLiteral(Depositors[index].LeftDateSign) + "'" + Depositors[index].LeftDate?.ToString("yyyy-MM-dd") + "'";
