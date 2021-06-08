@@ -111,15 +111,11 @@ namespace ResearchProgram.Forms
             ThirdNodeList = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+\\.[0-9]+\\.[0-9]+$"); // получение всех узлов с адресом третьего уровня
             FourthNodeList = StaticData.GetUniversityStructureNodeByRegex("^[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+$"); // получение всех узлов с адресом четвертого уровня
 
-            CRUDDataBase.ConnectToDataBase();
-
             People = new ObservableCollection<Person>(StaticData.GetAllPersons());
             Customers = new ObservableCollection<Customer>(StaticData.GetAllCustomers());
-            ResearchTypes = CRUDDataBase.GetResearchTypes();
-            ScienceTypes = CRUDDataBase.GetScienceTypes();
-            PriorityTrends = CRUDDataBase.GetPriorityTrends();
-
-            CRUDDataBase.CloseConnection();
+            ResearchTypes = new ObservableCollection<ResearchType>(StaticData.GetAllResearchTypes());
+            ScienceTypes = new ObservableCollection<ScienceType>(StaticData.GetAllScienceTypes());
+            PriorityTrends = new ObservableCollection<PriorityTrend>(StaticData.GetAllPriorityTrends());
 
             LeadNIOKRMultiselectComboBox.ItemsSource = new ObservableCollection<Person>(People);
             CustomerMultiselectComboBox.ItemsSource = Customers;
@@ -265,6 +261,7 @@ namespace ResearchProgram.Forms
                     filter += " OR ";
                 }
             }
+            GrantsFilters.grantFilter = filter;
             GrantsDataTable.DefaultView.RowFilter = filter;
         }
 

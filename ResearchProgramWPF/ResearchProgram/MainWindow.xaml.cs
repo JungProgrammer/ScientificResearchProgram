@@ -89,7 +89,7 @@ namespace ResearchProgram
         // открытие окна с созданием договора
         private void CreateGrantMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            CreateGrantWindow newGrantWindow = new CreateGrantWindow(GrantsDataTable, Owner: this)
+            CreateGrantWindow newGrantWindow = new CreateGrantWindow()
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Owner = this
@@ -245,7 +245,7 @@ namespace ResearchProgram
 
             Grant grant = StaticData.GetGrantById(Convert.ToInt32(grantId));
 
-            CreateGrantWindow newGrantWindow = new CreateGrantWindow(GrantsDataTable, grant)
+            CreateGrantWindow newGrantWindow = new CreateGrantWindow(grant)
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Owner = this
@@ -317,9 +317,12 @@ namespace ResearchProgram
 
         private void ReportButton_Click(object sender, RoutedEventArgs e)
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Filter = "Excel |*.xlsx";
-            saveFileDialog1.FileName = "Отчёт " + DateTime.Now.ToString("dd-MM-yyyy hh-mm");
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog
+            {
+                Filter = "Excel |*.xlsx",
+                FileName = "Отчёт " + DateTime.Now.ToString("dd-MM-yyyy hh-mm")
+            };
+
             if (saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
                 return;
             string filename = saveFileDialog1.FileName;
@@ -523,7 +526,7 @@ namespace ResearchProgram
             col.MaxWidth = 400;
         }
 
-        private void mainWindow_ContentRendered(object sender, EventArgs e)
+        private void MainWindow_ContentRendered(object sender, EventArgs e)
         {
             if (File.Exists("changelog.txt"))
             {
@@ -533,6 +536,17 @@ namespace ResearchProgram
                 }
                 File.Delete(Path.GetFileName("changelog.txt"));
             }
+        }
+
+        private void grantsAggregateButton_Click(object sender, RoutedEventArgs e)
+        {
+            GrantAggregationWindow grantAggregationWindow = new GrantAggregationWindow(GrantsDataTable)
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Owner = this
+            };
+
+            grantAggregationWindow.ShowDialog();
         }
     }
 }

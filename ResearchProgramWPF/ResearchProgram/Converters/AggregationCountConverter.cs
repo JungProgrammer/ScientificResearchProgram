@@ -2,23 +2,21 @@
 using System.Globalization;
 using System.Windows;
 using System.Windows.Data;
-using System.Windows.Media;
 
-namespace ResearchProgram
+namespace ResearchProgram.Converters
 {
-    class DepositsConverter : IValueConverter
+    class AggregationCountConverter: IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
 
-            int seed = (int)DateTime.Now.Ticks & 0x0000FFFF;
+            int selectedIndex = (int)value;
 
-            var rand = new Random(seed);
-
-            int xuy = rand.Next();
-
-
-            return new SolidColorBrush(xuy % 2 == 0 ? Colors.Red : Colors.Green);
+            if (selectedIndex == 1)
+                return Visibility.Visible;
+            else
+                return
+                    Visibility.Hidden;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

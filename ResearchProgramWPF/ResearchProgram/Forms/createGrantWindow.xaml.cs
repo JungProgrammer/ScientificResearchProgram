@@ -16,9 +16,6 @@ using System.Windows.Media;
 
 namespace ResearchProgram
 {
-    /// <summary>
-    /// Логика взаимодействия для createGrantWindow.xaml
-    /// </summary>
     public partial class CreateGrantWindow : Window, INotifyPropertyChanged
     {
         private ObservableCollection<UniversityStructureNode> _firstNodeList;
@@ -46,38 +43,39 @@ namespace ResearchProgram
 
         public ObservableCollection<Person> _leadNiokrSource;
         public ObservableCollection<Person> LeadNiokrSource { get { return _leadNiokrSource; } set { _leadNiokrSource = value; OnPropertyChanged("LeadNiokrSource"); } }
+
         private ObservableCollection<Person> _selectedLeadNIOKR;
         public ObservableCollection<Person> SelectedLeadNIOKR { get { return _selectedLeadNIOKR; } set { _selectedLeadNIOKR = value; OnPropertyChanged("SelectedLeadNIOKR"); } }
 
         private ObservableCollection<Person> _selectedExecutor;
         public ObservableCollection<Person> SelectedExecutor { get { return _selectedExecutor; } set { _selectedExecutor = value; OnPropertyChanged("SelectedExecutor"); } }
+
         public ObservableCollection<Person> _executorSource;
         public ObservableCollection<Person> ExecutorSource { get { return _executorSource; } set { _executorSource = value; OnPropertyChanged("ExecutorSource"); } }
 
         private ObservableCollection<Customer> _selectedCustomer;
         public ObservableCollection<Customer> SelectedCustomer { get { return _selectedCustomer; } set { _selectedCustomer = value; OnPropertyChanged("SelectedCustomer"); } }
+
         public ObservableCollection<Customer> _customerSource;
         public ObservableCollection<Customer> CustomerSource { get { return _customerSource; } set { _customerSource = value; OnPropertyChanged("CustomerSource"); } }
 
         private ObservableCollection<PriorityTrend> _selectedPriorityTrend;
         public ObservableCollection<PriorityTrend> SelectedPriorityTrend { get { return _selectedPriorityTrend; } set { _selectedPriorityTrend = value; OnPropertyChanged("SelectedPriorityTrend"); } }
+        
         public ObservableCollection<PriorityTrend> _priorityTrendSource;
         public ObservableCollection<PriorityTrend> PriorityTrendSource { get { return _priorityTrendSource; } set { _priorityTrendSource = value; OnPropertyChanged("PriorityTrendSource"); } }
 
         private ObservableCollection<ScienceType> _selectedScienceType;
         public ObservableCollection<ScienceType> SelectedScienceType { get { return _selectedScienceType; } set { _selectedScienceType = value; OnPropertyChanged("SelectedScienceType"); } }
+        
         public ObservableCollection<ScienceType> _scienceTypeSource;
         public ObservableCollection<ScienceType> ScienceTypeSource { get { return _scienceTypeSource; } set { _scienceTypeSource = value; OnPropertyChanged("ScienceTypeSource"); } }
 
         public ObservableCollection<Customer> CustomersList { get; set; }
-        public List<Depositor> DepositsList { get; set; }
+        public ObservableCollection<Depositor> DepositsList { get; set; }
         public ObservableCollection<ScienceType> ScienceTypeList { get; set; }
         public ObservableCollection<ResearchType> ResearchTypesList { get; set; }
         public ObservableCollection<PriorityTrend> PriorityTrendList { get; set; }
-        //Списки данных из формы
-        public List<ComboBox> EnteredExecutorsList { get; set; }
-        public List<object[]> EnteredDepositsList { get; set; }
-        public List<ComboBox> EnteredScienceTypesList { get; set; }
 
         Grant grantToEdit;
         public string NirChecker;
@@ -101,7 +99,7 @@ namespace ResearchProgram
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        public CreateGrantWindow(DataTable grantsDataTable, Grant grantToEdit = null, MainWindow Owner = null)
+        public CreateGrantWindow(Grant grantToEdit = null)
         {
             InitializeComponent();
 
@@ -221,23 +219,14 @@ namespace ResearchProgram
             Dispatcher.Invoke(() => oldTitle = Title);
             Dispatcher.Invoke(() => Title = String.Format("{0} (Загрузка данных...)", Title));
 
-            // Подключение к базе данных
             PersonsList = new ObservableCollection<Person>(StaticData.GetAllPersons());
             CustomersList = new ObservableCollection<Customer>(StaticData.GetAllCustomers());
-            DepositsList = StaticData.GetAllDeposits();
-            CRUDDataBase.ConnectToDataBase();
-            ResearchTypesList = CRUDDataBase.GetResearchTypes();
-            ScienceTypeList = CRUDDataBase.GetScienceTypes();
-            PriorityTrendList = CRUDDataBase.GetPriorityTrends();
-            // Закрытие подключения к базе данных
-            CRUDDataBase.CloseConnection();
+            ResearchTypesList = new ObservableCollection<ResearchType>(StaticData.GetAllResearchTypes());
+            DepositsList = new ObservableCollection<Depositor>(StaticData.GetAllDeposits());
+            ScienceTypeList = new ObservableCollection<ScienceType>(StaticData.GetAllScienceTypes());
+            PriorityTrendList = new ObservableCollection<PriorityTrend>(StaticData.GetAllPriorityTrends());
 
-            // Список инвесторов
-            EnteredDepositsList = new List<object[]>();
-            // Список типов наук
-            EnteredScienceTypesList = new List<ComboBox>();
             // Список исполнителей
-            EnteredExecutorsList = new List<ComboBox>();
             SelectedLeadNIOKR = new ObservableCollection<Person>();
             SelectedExecutor = new ObservableCollection<Person>();
             SelectedFirstNode = new UniversityStructureNode();
@@ -444,16 +433,15 @@ namespace ResearchProgram
                         Text = String.Format("{0:#,0.##}", grantToEdit.DepositorSumNoNDS[i])
                     });
                     Dispatcher.Invoke(() => sumTextBoxNoNDS.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput);
-                    Dispatcher.Invoke(() => sumTextBoxNoNDS.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown);
+                    Dispatcher.Invoke(() => sumTextBoxNoNDS.PreviewKeyDown += PriceNoNDSTextBox_PreviewKeyDown);
                     Dispatcher.Invoke(() => sumTextBoxNoNDS.TextChanged += sumTextBoxNoNDSTextChangedEventHandler);
 
                     Dispatcher.Invoke(() => sumTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput);
                     Dispatcher.Invoke(() => sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler);
-                    Dispatcher.Invoke(() => sumTextBox.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown);
+                    Dispatcher.Invoke(() => sumTextBox.PreviewKeyDown += PriceNoNDSTextBox_PreviewKeyDown);
 
 
-                    DateTime selectedDate;
-                    DateTime.TryParse(grantToEdit.ReceiptDate[i], out selectedDate);
+                    DateTime.TryParse(grantToEdit.ReceiptDate[i], out DateTime selectedDate);
 
                     DatePicker dateComboBox = null;
                     Dispatcher.Invoke(() => dateComboBox = new DatePicker()
@@ -543,24 +531,19 @@ namespace ResearchProgram
                 }
             }
 
-            Binding executorBinding = new Binding("SelectedExecutor");
-            executorBinding.Source = this;
+            Binding executorBinding = new Binding("SelectedExecutor") { Source = this };
             Dispatcher.Invoke(() => ExecutorMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, executorBinding));
 
-            Binding priorityTrendBinding = new Binding("SelectedPriorityTrend");
-            priorityTrendBinding.Source = this;
+            Binding priorityTrendBinding = new Binding("SelectedPriorityTrend") { Source = this };
             Dispatcher.Invoke(() => PriorityTrendMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, priorityTrendBinding));
 
-            Binding scienceTypeBinding = new Binding("SelectedScienceType");
-            scienceTypeBinding.Source = this;
+            Binding scienceTypeBinding = new Binding("SelectedScienceType") { Source = this };
             Dispatcher.Invoke(() => ScienceTypeMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, scienceTypeBinding));
 
-            Binding customerBinding = new Binding("SelectedCustomer");
-            customerBinding.Source = this;
+            Binding customerBinding = new Binding("SelectedCustomer") { Source = this };
             Dispatcher.Invoke(() => CustomerMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, customerBinding));
 
-            Binding LeadNIOKRBinding = new Binding("SelectedLeadNIOKR");
-            LeadNIOKRBinding.Source = this;
+            Binding LeadNIOKRBinding = new Binding("SelectedLeadNIOKR") { Source = this };
             Dispatcher.Invoke(() => LeadNIOKRMultiSelectComboBox.SetBinding(MultiSelectComboBox.SelectedItemsProperty, LeadNIOKRBinding));
 
             Dispatcher.Invoke(() => Title = oldTitle);
@@ -634,11 +617,11 @@ namespace ResearchProgram
                 Padding = new Thickness(0, 2, 0, 2)
             };
             sumTextBox.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-            sumTextBox.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
+            sumTextBox.PreviewKeyDown += PriceNoNDSTextBox_PreviewKeyDown;
             sumTextBox.TextChanged += sumTextBoxTextChangedEventHandler;
 
             sumTextBoxNoNDS.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput;
-            sumTextBoxNoNDS.PreviewKeyDown += priceNoNDSTextBox_PreviewKeyDown;
+            sumTextBoxNoNDS.PreviewKeyDown += PriceNoNDSTextBox_PreviewKeyDown;
             sumTextBoxNoNDS.TextChanged += sumTextBoxNoNDSTextChangedEventHandler;
 
             DatePicker datePicker = new DatePicker()
@@ -701,8 +684,7 @@ namespace ResearchProgram
         /// <param name="e"></param>
         private void CreateGrantButtonClick(object sender, RoutedEventArgs e)
         {
-            Grant newGrant = new Grant();
-            newGrant.Id = grantEditId;
+            Grant newGrant = new Grant { Id = grantEditId };
 
             string incorrectDataString = "";
             // Булевская переменная, которая отвечает за правильное создание договора. Если все необходимые данные были внесены, то договор создается
@@ -777,8 +759,7 @@ namespace ResearchProgram
                     datePicker = (DatePicker)sp.Children[5];
                     partSum.Text.Replace(" ", "");
                     partSumNoNDS.Text.Replace(" ", "");
-                    DateTime selectedDate;
-                    DateTime.TryParse(datePicker.SelectedDate.ToString(), out selectedDate);
+                    DateTime.TryParse(datePicker.SelectedDate.ToString(), out DateTime selectedDate);
 
                     if (cmb.SelectedItem == null)
                     {
@@ -1045,7 +1026,7 @@ namespace ResearchProgram
             CalculateDepositorsSumNoNDS();
         }
 
-        private void priceNoNDSTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void PriceNoNDSTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Space)
             {
@@ -1058,7 +1039,7 @@ namespace ResearchProgram
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void priceTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        private void PriceTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (priceTextBox.Text.Length > 0)
             {
@@ -1067,9 +1048,8 @@ namespace ResearchProgram
                 //Если пользователь поставил запятую, то чтобы она не сбрасывалась
                 if (priceTextBox.Text[priceTextBox.Text.Length - 1] != ',' && !priceTextBox.Text.Contains(",0") && !priceTextBox.Text.Contains(",00"))
                 {
-                    int lengthToComma = 0;
                     int commaIndex = priceTextBox.Text.ToString().IndexOf(',');
-                    lengthToComma = commaIndex > 0 ? commaIndex : 0;
+                    int lengthToComma = commaIndex > 0 ? commaIndex : 0;
 
                     // запомнить, где текущий индекс сейчас курсора в текстбоксе
                     int indexCursor = lengthToComma % 4 == 0 ? priceTextBox.CaretIndex + 1 : priceTextBox.CaretIndex;
@@ -1150,7 +1130,7 @@ namespace ResearchProgram
                     FourthNodeList.Add(u);
                     set.Add(u.Title);
                 }
-                if ((u.IsMainWorkPlace && u.Id != -1) || (grantToEdit !=null && grantToEdit.FourthNode.Id == u.Id))
+                if ((u.IsMainWorkPlace && u.Id != -1) || (grantToEdit != null && grantToEdit.FourthNode.Id == u.Id))
                 {
                     for (int i = 0; i < FourthNodeList.Count; i++)
                     {
@@ -1194,10 +1174,10 @@ namespace ResearchProgram
             {
                 TextBox partSum = (TextBox)sp.Children[3];
 
-                sumDeposits += partSum.Text != "" ? Double.Parse(partSum.Text) : 0;
+                sumDeposits += partSum.Text != "" ? double.Parse(partSum.Text) : 0;
             }
 
-            sumDepositsNoNDSTextBox.Text = String.Format("{0:#,0.##}", sumDeposits);
+            sumDepositsNoNDSTextBox.Text = string.Format("{0:#,0.##}", sumDeposits);
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)

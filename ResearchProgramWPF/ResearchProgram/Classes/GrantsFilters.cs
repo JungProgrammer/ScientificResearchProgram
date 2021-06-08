@@ -57,6 +57,9 @@ namespace ResearchProgram
         // Тип науки
         public static ObservableCollection<ScienceType> ScienceType;
 
+        // Фильтр в строковом представлении
+        public static string grantFilter;
+
 
 
         ///// <summary>
@@ -85,6 +88,7 @@ namespace ResearchProgram
             ScienceType = null;
             NIR = null;
             NOC = null;
+            grantFilter = null;
         }
 
         /// <summary>

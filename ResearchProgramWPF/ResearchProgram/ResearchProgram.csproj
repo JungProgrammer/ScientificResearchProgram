@@ -179,6 +179,7 @@
     <Compile Include="Classes\WorkCategories.cs" />
     <Compile Include="Classes\WorkDegree.cs" />
     <Compile Include="Classes\WorkRank.cs" />
+    <Compile Include="Converters\AggregationCountConverter.cs" />
     <Compile Include="Converters\NOCConverter.cs" />
     <Compile Include="Converters\SumConverter.cs" />
     <Compile Include="Converters\VisibilityToColumnLengthConverter.cs" />
@@ -203,6 +204,9 @@
     </Compile>
     <Compile Include="Forms\FullGrantInfo.xaml.cs">
       <DependentUpon>FullGrantInfo.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\GrantAggregationWindow.xaml.cs">
+      <DependentUpon>GrantAggregationWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Forms\HelpWindows\AddElementWindow.xaml.cs">
       <DependentUpon>AddElementWindow.xaml</DependentUpon>
@@ -277,6 +281,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Forms\FullGrantInfo.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\GrantAggregationWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
