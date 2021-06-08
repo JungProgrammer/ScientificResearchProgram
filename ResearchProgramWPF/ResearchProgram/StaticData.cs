@@ -24,7 +24,16 @@ namespace ResearchProgram
         public static Dictionary<int, Customer> customersDict = new Dictionary<int, Customer>();
 
         public static List<Depositor> deposits;
-        public static Dictionary<int, Depositor> depositsDict = new Dictionary<int, Depositor>();
+        //public static Dictionary<int, Depositor> depositsDict = new Dictionary<int, Depositor>();
+
+        public static List<ResearchType> researchTypes;
+        //public static Dictionary<int, ResearchType> researchTypesDict = new Dictionary<int, ResearchType>();
+
+        public static List<ScienceType> scienceTypes;
+        //public static Dictionary<int, ScienceType> scienceTypesDict = new Dictionary<int, ScienceType>();
+
+        public static List<PriorityTrend> priorityTrends;
+        //public static Dictionary<int, PriorityTrend> priorityTrendsDict = new Dictionary<int, PriorityTrend>();
 
 
 
@@ -66,7 +75,7 @@ namespace ResearchProgram
         public static void LoadPersons()
         {
             //TODO Триггер в БД
-            persons = CRUDDataBase.GetPersons();
+            persons = CRUDDataBase.GetPersonsInBulk();
             persondsDict = persons.ToDictionary(x => x.Id, x => x);
         }
 
@@ -92,7 +101,7 @@ namespace ResearchProgram
         public static void LoadGrants()
         {
             //TODO Триггер в БД
-            grants = CRUDDataBase.GetGrants();
+            grants = CRUDDataBase.GetGrantsInBulk();
             grantsDict = grants.ToDictionary(x => x.Id, x => x);
         }
 
@@ -108,6 +117,7 @@ namespace ResearchProgram
 
         public static List<Grant> GetAllGrants()
         {
+            
             if (grants == null) LoadGrants();
 
             return grants;
@@ -138,7 +148,7 @@ namespace ResearchProgram
         public static void LoadDeposits()
         {
             deposits = CRUDDataBase.GetDeposits();
-            depositsDict = deposits.ToDictionary(x => x.Id, x => x);
+            //depositsDict = deposits.ToDictionary(x => x.Id, x => x);
         }
 
         public static List<Depositor> GetAllDeposits()
@@ -146,6 +156,45 @@ namespace ResearchProgram
             if (deposits == null) LoadDeposits();
 
             return deposits;
+        }
+
+        public static void LoadResearchTypes()
+        {
+            researchTypes = CRUDDataBase.GetResearchTypes();
+            //researchTypesDict = researchTypes.ToDictionary(x => x.Id, x => x);
+        }
+
+        public static List<ResearchType> GetAllResearchTypes()
+        {
+            if (researchTypes == null) LoadResearchTypes();
+
+            return researchTypes;
+        }
+
+        public static void LoadScienceTypes()
+        {
+            scienceTypes = CRUDDataBase.GetScienceTypes();
+            //scienceTypesDict = scienceTypes.ToDictionary(x => x.Id, x => x);
+        }
+
+        public static List<ScienceType> GetAllScienceTypes()
+        {
+            if (scienceTypes == null) LoadScienceTypes();
+
+            return scienceTypes;
+        }
+
+        public static void LoadPriorityTrends()
+        {
+            priorityTrends = CRUDDataBase.GetPriorityTrends();
+            //priorityTrendsDict = priorityTrends.ToDictionary(x => x.Id, x => x);
+        }
+
+        public static List<PriorityTrend> GetAllPriorityTrends()
+        {
+            if (priorityTrends == null) LoadPriorityTrends();
+
+            return priorityTrends;
         }
     }
 }

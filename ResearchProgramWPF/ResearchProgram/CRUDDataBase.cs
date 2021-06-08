@@ -310,7 +310,7 @@ namespace ResearchProgram
             else
             {
                 Console.WriteLine("FILTERS INACTIVE");
-                grants = GetGrantsInBulk();
+                grants = StaticData.GetAllGrants();
             }
             return grants;
         }
@@ -490,7 +490,7 @@ namespace ResearchProgram
         {
             dataTable.Rows.Clear();
 
-            List<Grant> grants = StaticData.GetAllGrants();
+            List<Grant> grants = GetGrants();
 
             for (int i = 0; i < grants.Count; i++)
             {
@@ -505,7 +505,7 @@ namespace ResearchProgram
         public static void LoadPersonsTable(DataTable dataTable)
         {
             dataTable.Rows.Clear();
-            List<Person> persons = StaticData.GetAllPersons();
+            List<Person> persons = GetPersons();
             for (int i = 0; i < persons.Count; i++)
             {
                 WorkerWithTablesOnMainForm.AddRowToPersonsTable(dataTable, persons[i]);
@@ -884,7 +884,7 @@ namespace ResearchProgram
             else
             {
                 Console.WriteLine("PERSONS FILTERS INACTIVE");
-                persons = GetPersonsInBulk();
+                persons = StaticData.GetAllPersons();
             }
 
             return persons;
@@ -1088,10 +1088,9 @@ namespace ResearchProgram
         /// <summary>
         /// Получение приоритетных направлений
         /// </summary>
-        /// <returns></returns>
-        public static ObservableCollection<PriorityTrend> GetPriorityTrends()
+        public static List<PriorityTrend> GetPriorityTrends()
         {
-            ObservableCollection<PriorityTrend> priorityTrendsList = new ObservableCollection<PriorityTrend>();
+            List<PriorityTrend> priorityTrendsList = new List<PriorityTrend>();
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM prioritytrends ORDER BY title;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
@@ -1114,9 +1113,9 @@ namespace ResearchProgram
         /// Получение списка типов исследования
         /// </summary>
         /// <returns></returns>
-        public static ObservableCollection<ResearchType> GetResearchTypes()
+        public static List<ResearchType> GetResearchTypes()
         {
-            ObservableCollection<ResearchType> researchTypesList = new ObservableCollection<ResearchType>();
+            List<ResearchType> researchTypesList = new List<ResearchType>();
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM researchTypes ORDER BY title;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
@@ -1131,10 +1130,6 @@ namespace ResearchProgram
                     });
                 }
             }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
             reader.Close();
             return researchTypesList;
         }
@@ -1142,10 +1137,9 @@ namespace ResearchProgram
         /// <summary>
         /// Получение списка типов науки
         /// </summary>
-        /// <returns></returns>
-        public static ObservableCollection<ScienceType> GetScienceTypes()
+        public static List<ScienceType> GetScienceTypes()
         {
-            ObservableCollection<ScienceType> scienctTypeTypesList = new ObservableCollection<ScienceType>();
+            List<ScienceType> scienctTypeTypesList = new List<ScienceType>();
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM scienceTypes ORDER BY title;", conn);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
@@ -1160,10 +1154,6 @@ namespace ResearchProgram
                     });
                 }
             }
-            else
-            {
-                Debug.WriteLine("No rows found.");
-            }
             reader.Close();
             return scienctTypeTypesList;
         }
@@ -1171,7 +1161,6 @@ namespace ResearchProgram
         /// <summary>
         /// Загрузка в БД нового человека
         /// </summary>
-        /// <param name="person"></param>
         public static Person InsertNewPersonToDB(Person person)
         {
             // Вставляем в БД нового человека

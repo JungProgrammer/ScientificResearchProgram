@@ -70,14 +70,10 @@ namespace ResearchProgram
         public ObservableCollection<ScienceType> ScienceTypeSource { get { return _scienceTypeSource; } set { _scienceTypeSource = value; OnPropertyChanged("ScienceTypeSource"); } }
 
         public ObservableCollection<Customer> CustomersList { get; set; }
-        public List<Depositor> DepositsList { get; set; }
+        public ObservableCollection<Depositor> DepositsList { get; set; }
         public ObservableCollection<ScienceType> ScienceTypeList { get; set; }
         public ObservableCollection<ResearchType> ResearchTypesList { get; set; }
         public ObservableCollection<PriorityTrend> PriorityTrendList { get; set; }
-        //Списки данных из формы
-        public List<ComboBox> EnteredExecutorsList { get; set; }
-        public List<object[]> EnteredDepositsList { get; set; }
-        public List<ComboBox> EnteredScienceTypesList { get; set; }
 
         Grant grantToEdit;
         public string NirChecker;
@@ -101,7 +97,7 @@ namespace ResearchProgram
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(prop));
         }
 
-        public CreateGrantWindow(DataTable grantsDataTable, Grant grantToEdit = null, MainWindow Owner = null)
+        public CreateGrantWindow(Grant grantToEdit = null)
         {
             InitializeComponent();
 
@@ -221,23 +217,14 @@ namespace ResearchProgram
             Dispatcher.Invoke(() => oldTitle = Title);
             Dispatcher.Invoke(() => Title = String.Format("{0} (Загрузка данных...)", Title));
 
-            // Подключение к базе данных
             PersonsList = new ObservableCollection<Person>(StaticData.GetAllPersons());
             CustomersList = new ObservableCollection<Customer>(StaticData.GetAllCustomers());
-            DepositsList = StaticData.GetAllDeposits();
-            CRUDDataBase.ConnectToDataBase();
-            ResearchTypesList = CRUDDataBase.GetResearchTypes();
-            ScienceTypeList = CRUDDataBase.GetScienceTypes();
-            PriorityTrendList = CRUDDataBase.GetPriorityTrends();
-            // Закрытие подключения к базе данных
-            CRUDDataBase.CloseConnection();
+            ResearchTypesList = new ObservableCollection<ResearchType>(StaticData.GetAllResearchTypes());
+            DepositsList = new ObservableCollection<Depositor>(StaticData.GetAllDeposits());
+            ScienceTypeList = new ObservableCollection<ScienceType>(StaticData.GetAllScienceTypes());
+            PriorityTrendList = new ObservableCollection<PriorityTrend>(StaticData.GetAllPriorityTrends());
 
-            // Список инвесторов
-            EnteredDepositsList = new List<object[]>();
-            // Список типов наук
-            EnteredScienceTypesList = new List<ComboBox>();
             // Список исполнителей
-            EnteredExecutorsList = new List<ComboBox>();
             SelectedLeadNIOKR = new ObservableCollection<Person>();
             SelectedExecutor = new ObservableCollection<Person>();
             SelectedFirstNode = new UniversityStructureNode();

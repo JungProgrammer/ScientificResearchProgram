@@ -89,7 +89,7 @@ namespace ResearchProgram
         // открытие окна с созданием договора
         private void CreateGrantMenuItem_Click(object sender, RoutedEventArgs e)
         {
-            CreateGrantWindow newGrantWindow = new CreateGrantWindow(GrantsDataTable, Owner: this)
+            CreateGrantWindow newGrantWindow = new CreateGrantWindow()
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Owner = this
@@ -245,7 +245,7 @@ namespace ResearchProgram
 
             Grant grant = StaticData.GetGrantById(Convert.ToInt32(grantId));
 
-            CreateGrantWindow newGrantWindow = new CreateGrantWindow(GrantsDataTable, grant)
+            CreateGrantWindow newGrantWindow = new CreateGrantWindow(grant)
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Owner = this
