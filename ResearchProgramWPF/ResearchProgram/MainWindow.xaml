@@ -11,7 +11,7 @@
         x:Name="mainWindow"
         Closing="MainWindow_Closing"
         WindowState="Maximized"
-        ContentRendered="mainWindow_ContentRendered">
+        ContentRendered="MainWindow_ContentRendered">
     <Window.Resources>
         <local:NDSConverter x:Key="NDSConverter" />
         <local:DepositsConverter x:Key="depositsConverter" />

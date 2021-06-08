@@ -289,9 +289,9 @@
                                          Grid.Column="0"
                                          Name="priceTextBox"
                                          Margin="5 0"
-                                         PreviewKeyDown="priceNoNDSTextBox_PreviewKeyDown"
+                                         PreviewKeyDown="PriceNoNDSTextBox_PreviewKeyDown"
                                          Padding="0 3"
-                                         TextChanged="priceTextBox_TextChanged" />
+                                         TextChanged="PriceTextBox_TextChanged" />
 
                                 <Label Content="руб."
                                        x:Name="PriceRubLabel"
@@ -309,7 +309,7 @@
                                          Name="priceNoNDSTextBox"
                                          Margin="5 0"
                                          Grid.Column="2"
-                                         PreviewKeyDown="priceNoNDSTextBox_PreviewKeyDown"
+                                         PreviewKeyDown="PriceNoNDSTextBox_PreviewKeyDown"
                                          Padding="0 3" />
                                 <Label Content="руб."
                                        Grid.Row="2"

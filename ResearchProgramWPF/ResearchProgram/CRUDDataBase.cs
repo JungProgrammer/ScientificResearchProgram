@@ -288,7 +288,6 @@ namespace ResearchProgram
                         return grantIds;
                     }
                     reader.Close();
-                    tempHash = new HashSet<int>();
                 }
             }
             connection.Close();
@@ -316,7 +315,6 @@ namespace ResearchProgram
         }
         public static List<Grant> GetGrantsInBulk()
         {
-            List<Grant> grants = new List<Grant>();
             Dictionary<int, Grant> grantsDict = new Dictionary<int, Grant>();
             NpgsqlConnection connection = GetNewConnection();
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT grants.id as gid, grants.grantnumber as ggn, OKVED, nameNIOKR, startDate, endDate, price, p2.FIO as lead_niokr, p2.ID as lead_niokr_id, " +
@@ -475,7 +473,7 @@ namespace ResearchProgram
 
             reader.Close();
 
-            grants = grantsDict.Values.ToList();
+            List<Grant> grants = grantsDict.Values.ToList();
 
             connection.Close();
             return grants;
@@ -983,13 +981,15 @@ namespace ResearchProgram
                 while (reader.Read())
                 {
                     personId = Convert.ToInt32(reader["pid"]);
-                    PersonWorkPlace workPlace = new PersonWorkPlace();
-                    workPlace.workCategory = new WorkCategories();
+                    PersonWorkPlace workPlace = new PersonWorkPlace
+                    {
+                        workCategory = new WorkCategories(),
+                        Id = reader["pwpid"] != DBNull.Value ? Convert.ToInt32(reader["pwpid"]) : -1
+                    };
 
-                    workPlace.Id = reader["pwpid"] != DBNull.Value ? Convert.ToInt32(reader["pwpid"]) : -1;
                     workPlace.workCategory.Id = reader["cid"] != DBNull.Value ? Convert.ToInt32(reader["cid"]) : -1;
                     workPlace.workCategory.Title = reader["wct"] != DBNull.Value ? reader["wct"].ToString() : "";
-                    workPlace.IsMainWorkPlace = reader["is_main_work_place"] != DBNull.Value ? Convert.ToBoolean(reader["is_main_work_place"]) : false;
+                    workPlace.IsMainWorkPlace = reader["is_main_work_place"] != DBNull.Value && Convert.ToBoolean(reader["is_main_work_place"]);
 
 
                     if (reader["first_node_id"] != DBNull.Value)
@@ -1090,8 +1090,9 @@ namespace ResearchProgram
         /// </summary>
         public static List<PriorityTrend> GetPriorityTrends()
         {
+            NpgsqlConnection connection = GetNewConnection();
             List<PriorityTrend> priorityTrendsList = new List<PriorityTrend>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM prioritytrends ORDER BY title;", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM prioritytrends ORDER BY title;", connection);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -1106,6 +1107,7 @@ namespace ResearchProgram
                 }
             }
             reader.Close();
+            connection.Close();
             return priorityTrendsList;
         }
 
@@ -1115,8 +1117,9 @@ namespace ResearchProgram
         /// <returns></returns>
         public static List<ResearchType> GetResearchTypes()
         {
+            NpgsqlConnection connection = GetNewConnection();
             List<ResearchType> researchTypesList = new List<ResearchType>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM researchTypes ORDER BY title;", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM researchTypes ORDER BY title;", connection);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -1131,6 +1134,7 @@ namespace ResearchProgram
                 }
             }
             reader.Close();
+            connection.Close();
             return researchTypesList;
         }
 
@@ -1139,8 +1143,9 @@ namespace ResearchProgram
         /// </summary>
         public static List<ScienceType> GetScienceTypes()
         {
+            NpgsqlConnection connection = GetNewConnection();
             List<ScienceType> scienctTypeTypesList = new List<ScienceType>();
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM scienceTypes ORDER BY title;", conn);
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id, title FROM scienceTypes ORDER BY title;", connection);
             NpgsqlDataReader reader = cmd.ExecuteReader();
 
             if (reader.HasRows)
@@ -1155,6 +1160,7 @@ namespace ResearchProgram
                 }
             }
             reader.Close();
+            connection.Close();
             return scienctTypeTypesList;
         }
 
@@ -1193,12 +1199,10 @@ namespace ResearchProgram
             else
             {
                 cmd.Parameters.Add(new NpgsqlParameter("degree_id", DBNull.Value));
-
             }
             if (person.Rank.Title != null)
             {
                 cmd.Parameters.Add(new NpgsqlParameter("rank_id", person.Rank.Id));
-
             }
             else
             {
@@ -1493,7 +1497,7 @@ namespace ResearchProgram
         public static void UpdateNOC(Grant fixedGrant)
         {
             NpgsqlCommand cmd = new NpgsqlCommand("UPDATE grants SET noc = :noc WHERE id = :id", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("noc", fixedGrant.NOC == "Да" ? true : false));
+            cmd.Parameters.Add(new NpgsqlParameter("noc", fixedGrant.NOC == "Да"));
             cmd.Parameters.Add(new NpgsqlParameter("id", fixedGrant.Id));
             cmd.ExecuteNonQuery();
         }
