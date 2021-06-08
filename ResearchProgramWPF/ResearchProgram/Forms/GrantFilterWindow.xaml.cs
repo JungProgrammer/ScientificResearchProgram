@@ -241,6 +241,9 @@ namespace ResearchProgram.Forms
         /// </summary>
         private void SimpleSearchButton_Click(object sender, RoutedEventArgs e)
         {
+            GrantsFilters.ResetFilters();
+            CRUDDataBase.LoadGrantsTable(GrantsDataTable);
+
             string searchQuarry = SimpleSearchTextBox.Text;
             searchQuarry = searchQuarry.Trim();
             if (searchQuarry == "")
@@ -545,9 +548,7 @@ namespace ResearchProgram.Forms
             GrantsDataTable.DefaultView.RowFilter = null;
 
             Console.WriteLine(GrantsFilters.IsActive());
-            CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.LoadGrantsTable(GrantsDataTable);
-            CRUDDataBase.CloseConnection();
         }
     }
 }

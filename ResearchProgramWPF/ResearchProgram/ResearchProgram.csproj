@@ -173,6 +173,7 @@
     <Compile Include="Classes\OKVED.cs" />
     <Compile Include="Classes\PersonsFilters.cs" />
     <Compile Include="Classes\PersonWorkPlace.cs" />
+    <Compile Include="Classes\TableHeader.cs" />
     <Compile Include="Classes\TreeNode.cs" />
     <Compile Include="Classes\UniversityStructureNode.cs" />
     <Compile Include="Classes\WindowsArgumentsTranfer.cs" />
@@ -255,7 +256,7 @@
     <Compile Include="StaticData.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="Converters\VisibilityConveter.cs" />
-    <Compile Include="WorkerWithGrantsTable.cs" />
+    <Compile Include="WorkerWithTablesOnMainForm.cs" />
     <Page Include="Forms\AddUniversityStructureNodeWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

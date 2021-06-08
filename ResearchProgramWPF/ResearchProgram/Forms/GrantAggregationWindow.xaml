@@ -36,6 +36,9 @@
             </ComboBox>
         </DockPanel>
         <ComboBox Grid.Row="1"
+                  x:Name="AggregationCountComboBox"
+                  ItemsSource="{Binding AggregationCountSource}"
+                  SelectedItem="{Binding AggregationCountSelectedItem}"
                   Margin="5"
                   Padding="5"
                   Visibility="{Binding ElementName=WhatToCountComboBox, Path=SelectedIndex, Converter={StaticResource AggregationCountConverter}}">

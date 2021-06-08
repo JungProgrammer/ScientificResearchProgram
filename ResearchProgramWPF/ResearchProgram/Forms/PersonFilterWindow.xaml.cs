@@ -19,9 +19,6 @@ using System.Windows.Shapes;
 
 namespace ResearchProgram.Forms
 {
-    /// <summary>
-    /// Логика взаимодействия для PersonFilterWindow.xaml
-    /// </summary>
     public partial class PersonFilterWindow : Window, INotifyPropertyChanged
     {
         private const int SIMPLE_SEARCH_HEIGHT = 150;
@@ -181,10 +178,11 @@ namespace ResearchProgram.Forms
         /// <summary>
         /// Простой поиск по тексту таблицы без обращения к БД
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void SimpleSearchButton_Click(object sender, RoutedEventArgs e)
         {
+            PersonsFilters.ResetFilters();
+            CRUDDataBase.LoadPersonsTable(PersonsDataTable);
+
             string searchQuarry = SimpleSearchTextBox.Text;
             searchQuarry = searchQuarry.Trim();
             if (searchQuarry == "")
@@ -354,9 +352,7 @@ namespace ResearchProgram.Forms
                 PersonsFilters.BirthDate = filterRange;
             }
 
-            CRUDDataBase.ConnectToDataBase();
             CRUDDataBase.LoadPersonsTable(PersonsDataTable);
-            CRUDDataBase.CloseConnection();
         }
 
         private void MaleCheckBox_Checked(object sender, RoutedEventArgs e)

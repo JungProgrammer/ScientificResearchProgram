@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-//using System.Windows.Controls;
 
 namespace ResearchProgram
 {
@@ -13,71 +12,69 @@ namespace ResearchProgram
         private static int countOfPersonRows = 0;
         private static int countOfCustomerRows = 0;
 
-        public static List<string> PersonsHeaders = new List<string>()
+        public static List<TableHeader> PersonsHeaders = new List<TableHeader>()
         {
-            "id",
-            "#",
-            "ФИО",
-            "Дата рождения",
-            "Пол",
-            "Степень",
-            "Звание",
-            "Учреждение",
-            "Подразделение",
-            "Отдел",
-            "Структурная единица"
+            new TableHeader{Title = "id", IsService=true },
+            new TableHeader{Title = "#" , IsService=true},
+            new TableHeader{Title = "ФИО" },
+            new TableHeader{Title = "Дата рождения" },
+            new TableHeader{Title = "Пол" },
+            new TableHeader{Title = "Степень" },
+            new TableHeader{Title = "Звание" },
+            new TableHeader{Title = "Учреждение" },
+            new TableHeader{Title = "Подразделение" },
+            new TableHeader{Title = "Отдел" },
+            new TableHeader{Title = "Структурная единица" },
         };
 
-        public static List<string> GrantsHeaders = new List<string>()
+        public static List<TableHeader> GrantsHeaders = new List<TableHeader>()
         {
-            "id",
-            "№",
-            "Номер договора",
-            "ОКВЭД",
-            "Наименование НИОКР",
-            "Заказчик",
-            "Дата начала",
-            "Дата завершения",
-            "Стоимость договора",
-            "Источник финансирования",
-            "Поступления",
-            "Руководитель НИОКР",
-            "Исполнители",
-            "Учреждение",
-            "Подразделение",
-            "Отдел",
-            "Структурная единица",
-            "ГРНТИ",
-            "Тип исследования",
-            "Приоритетные направления",
-            "Тип науки",
-            "НИР или УСЛУГА",
-            "НОЦ",
-            "Наличие НДС",
+            new TableHeader{Title = "id", IsService=true },
+            new TableHeader{Title = "№", IsService=true },
+            new TableHeader{Title = "Номер договора" },
+            new TableHeader{Title = "ОКВЭД", IsCountable = true },
+            new TableHeader{Title = "Наименование НИОКР", IsCountable = true},
+            new TableHeader{Title = "Заказчик", IsMultiple = true, IsCountable = true },
+            new TableHeader{Title = "Дата начала" },
+            new TableHeader{Title = "Дата завершения" },
+            new TableHeader{Title = "Стоимость договора" },
+            new TableHeader{Title = "Источник финансирования", IsMultiple = true, IsCountable = true },
+            new TableHeader{Title = "Поступления", IsMultiple = true },
+            new TableHeader{Title = "Руководитель НИОКР", IsCountable = true },
+            new TableHeader{Title = "Исполнители", IsMultiple = true, IsCountable = true },
+            new TableHeader{Title = "Учреждение", IsCountable = true },
+            new TableHeader{Title = "Подразделение", IsCountable = true },
+            new TableHeader{Title = "Отдел", IsCountable = true },
+            new TableHeader{Title = "Структурная единица", IsCountable = true },
+            new TableHeader{Title = "ГРНТИ", IsCountable = true },
+            new TableHeader{Title = "Тип исследования", IsMultiple = true, IsCountable = true },
+            new TableHeader{Title = "Приоритетные направления", IsMultiple = true, IsCountable = true },
+            new TableHeader{Title = "Тип науки", IsMultiple = true, IsCountable = true },
+            new TableHeader{Title = "НИР или УСЛУГА", IsCountable = true },
+            new TableHeader{Title = "НОЦ", IsCountable = true },
+            new TableHeader{Title = "Наличие НДС", IsCountable = true }
         };
 
-        public static List<string> CustomersHeaders = new List<string>()
+        public static List<TableHeader> CustomersHeaders = new List<TableHeader>()
         {
-            "id",
-            "#",
-            "Наименование",
-            "Полное наименование"
+            new TableHeader{Title = "id", IsService=true },
+            new TableHeader{Title = "#", IsService=true },
+            new TableHeader{Title = "Наименование" },
+            new TableHeader{Title = "Полное наименование" },
         };
 
         /// <summary>
         /// Загружает заголовки в указанную таблицу
         /// </summary>
-        /// <param name="grantsDataTable"></param>
-        /// <param name="header"></param>
-        public static void CreateHeaders(DataTable dataTable, List<string> headers)
+        public static void CreateHeaders(DataTable dataTable, List<TableHeader> headers)
         {
-            foreach (string header in headers)
+            foreach (TableHeader header in headers)
             {
                 DataColumn column = new DataColumn
                 {
                     DataType = Type.GetType("System.String"),
-                    ColumnName = header,
-                    Caption = header
+                    ColumnName = header.Title,
+                    Caption = header.Title
                 };
                 dataTable.Columns.Add(column);
             }
@@ -192,11 +189,11 @@ namespace ResearchProgram
             row["Дата рождения"] = person.BitrhDate == null ? "" : person.BitrhDate?.ToString("dd.MM.yyyy");
             row["Пол"] = person.Sex ? "M" : "Ж";
             row["Степень"] = person.Degree != null ? person.Degree.Title : "";
-            row["Звание"] = person.Rank != null ? person.Rank.Title: "";
+            row["Звание"] = person.Rank != null ? person.Rank.Title : "";
 
             PersonWorkPlace personWorkPlace = person.GetActiveWorkPlace();
 
-            row["Учреждение"] = personWorkPlace.firstNode != null ?  personWorkPlace.firstNode.ToString() : "";
+            row["Учреждение"] = personWorkPlace.firstNode != null ? personWorkPlace.firstNode.ToString() : "";
             row["Подразделение"] = personWorkPlace.secondNode != null ? personWorkPlace.secondNode.ToString() : "";
             row["Отдел"] = personWorkPlace.thirdNode != null ? personWorkPlace.thirdNode.ToString() : "";
             row["Структурная единица"] = personWorkPlace.fourthNode != null ? personWorkPlace.fourthNode.ToString() : "";

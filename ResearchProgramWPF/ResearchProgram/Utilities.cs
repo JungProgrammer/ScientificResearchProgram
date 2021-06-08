@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -69,7 +68,7 @@ namespace ResearchProgram
         /// Нахождение всех элементов в xaml дереве
         /// Опциональный параметр - тэг, с которым нужно найти элементы
         /// </summary>
-        public static void GetLogicalElements(object parent, List<FrameworkElement> logicalElements, string tag=null)
+        public static void GetLogicalElements(object parent, List<FrameworkElement> logicalElements, string tag = null)
         {
             if (parent == null) return;
 
@@ -83,7 +82,7 @@ namespace ResearchProgram
                 {
                     if (((FrameworkElement)parent).Tag != null)
                     {
-                        if(((FrameworkElement)parent).Tag.ToString() == tag)
+                        if (((FrameworkElement)parent).Tag.ToString() == tag)
                         {
                             logicalElements.Add((FrameworkElement)parent);
                         }
@@ -100,6 +99,5 @@ namespace ResearchProgram
                 GetLogicalElements(child, logicalElements, tag);
             }
         }
-
     }
 }
