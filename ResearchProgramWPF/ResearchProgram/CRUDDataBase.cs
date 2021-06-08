@@ -311,6 +311,7 @@ namespace ResearchProgram
                 Console.WriteLine("FILTERS INACTIVE");
                 grants = StaticData.GetAllGrants();
             }
+
             return grants;
         }
         public static List<Grant> GetGrantsInBulk()

@@ -261,6 +261,7 @@ namespace ResearchProgram.Forms
                     filter += " OR ";
                 }
             }
+            GrantsFilters.grantFilter = filter;
             GrantsDataTable.DefaultView.RowFilter = filter;
         }
 

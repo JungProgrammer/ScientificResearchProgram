@@ -540,7 +540,7 @@ namespace ResearchProgram
 
         private void grantsAggregateButton_Click(object sender, RoutedEventArgs e)
         {
-            GrantAggregationWindow grantAggregationWindow = new GrantAggregationWindow()
+            GrantAggregationWindow grantAggregationWindow = new GrantAggregationWindow(GrantsDataTable)
             {
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Owner = this
