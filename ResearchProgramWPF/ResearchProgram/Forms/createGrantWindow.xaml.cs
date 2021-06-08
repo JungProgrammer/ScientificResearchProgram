@@ -16,9 +16,6 @@ using System.Windows.Media;
 
 namespace ResearchProgram
 {
-    /// <summary>
-    /// Логика взаимодействия для createGrantWindow.xaml
-    /// </summary>
     public partial class CreateGrantWindow : Window, INotifyPropertyChanged
     {
         private ObservableCollection<UniversityStructureNode> _firstNodeList;
@@ -46,26 +43,31 @@ namespace ResearchProgram
 
         public ObservableCollection<Person> _leadNiokrSource;
         public ObservableCollection<Person> LeadNiokrSource { get { return _leadNiokrSource; } set { _leadNiokrSource = value; OnPropertyChanged("LeadNiokrSource"); } }
+
         private ObservableCollection<Person> _selectedLeadNIOKR;
         public ObservableCollection<Person> SelectedLeadNIOKR { get { return _selectedLeadNIOKR; } set { _selectedLeadNIOKR = value; OnPropertyChanged("SelectedLeadNIOKR"); } }
 
         private ObservableCollection<Person> _selectedExecutor;
         public ObservableCollection<Person> SelectedExecutor { get { return _selectedExecutor; } set { _selectedExecutor = value; OnPropertyChanged("SelectedExecutor"); } }
+
         public ObservableCollection<Person> _executorSource;
         public ObservableCollection<Person> ExecutorSource { get { return _executorSource; } set { _executorSource = value; OnPropertyChanged("ExecutorSource"); } }
 
         private ObservableCollection<Customer> _selectedCustomer;
         public ObservableCollection<Customer> SelectedCustomer { get { return _selectedCustomer; } set { _selectedCustomer = value; OnPropertyChanged("SelectedCustomer"); } }
+
         public ObservableCollection<Customer> _customerSource;
         public ObservableCollection<Customer> CustomerSource { get { return _customerSource; } set { _customerSource = value; OnPropertyChanged("CustomerSource"); } }
 
         private ObservableCollection<PriorityTrend> _selectedPriorityTrend;
         public ObservableCollection<PriorityTrend> SelectedPriorityTrend { get { return _selectedPriorityTrend; } set { _selectedPriorityTrend = value; OnPropertyChanged("SelectedPriorityTrend"); } }
+        
         public ObservableCollection<PriorityTrend> _priorityTrendSource;
         public ObservableCollection<PriorityTrend> PriorityTrendSource { get { return _priorityTrendSource; } set { _priorityTrendSource = value; OnPropertyChanged("PriorityTrendSource"); } }
 
         private ObservableCollection<ScienceType> _selectedScienceType;
         public ObservableCollection<ScienceType> SelectedScienceType { get { return _selectedScienceType; } set { _selectedScienceType = value; OnPropertyChanged("SelectedScienceType"); } }
+        
         public ObservableCollection<ScienceType> _scienceTypeSource;
         public ObservableCollection<ScienceType> ScienceTypeSource { get { return _scienceTypeSource; } set { _scienceTypeSource = value; OnPropertyChanged("ScienceTypeSource"); } }
 
@@ -1172,10 +1174,10 @@ namespace ResearchProgram
             {
                 TextBox partSum = (TextBox)sp.Children[3];
 
-                sumDeposits += partSum.Text != "" ? Double.Parse(partSum.Text) : 0;
+                sumDeposits += partSum.Text != "" ? double.Parse(partSum.Text) : 0;
             }
 
-            sumDepositsNoNDSTextBox.Text = String.Format("{0:#,0.##}", sumDeposits);
+            sumDepositsNoNDSTextBox.Text = string.Format("{0:#,0.##}", sumDeposits);
         }
 
         private void Window_Closing(object sender, CancelEventArgs e)

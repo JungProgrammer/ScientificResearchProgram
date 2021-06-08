@@ -537,5 +537,16 @@ namespace ResearchProgram
                 File.Delete(Path.GetFileName("changelog.txt"));
             }
         }
+
+        private void grantsAggregateButton_Click(object sender, RoutedEventArgs e)
+        {
+            GrantAggregationWindow grantAggregationWindow = new GrantAggregationWindow()
+            {
+                WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                Owner = this
+            };
+
+            grantAggregationWindow.ShowDialog();
+        }
     }
 }

@@ -183,6 +183,17 @@
                             Click="GrantsFiltersButton_Click" />
 
                     <Button Grid.Row="2"
+                            x:Name="grantsAggregateButton"
+                            Margin="120 8 10 8"
+                            MinWidth="100"
+                            MinHeight="30"
+                            MaxWidth="150"
+                            Content="Аггрегация"
+                            HorizontalAlignment="Left"
+                            FontSize="14"
+                            Click="grantsAggregateButton_Click" />
+
+                    <Button Grid.Row="2"
                             x:Name="reportButton"
                             Margin="10 8 10 8"
                             MinWidth="100"
