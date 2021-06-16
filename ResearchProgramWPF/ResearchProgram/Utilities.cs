@@ -9,6 +9,11 @@ namespace ResearchProgram
 {
     public static class Utilities
     {
+        public class MappedValue
+        {
+            public int Count { get; set; }
+            public string Title { get; set; }
+        }
         public static bool ComparativeOperator(string sign, string x, string y)
         {
             switch (sign)

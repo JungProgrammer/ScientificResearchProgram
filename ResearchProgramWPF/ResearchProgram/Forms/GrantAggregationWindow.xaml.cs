@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using ResearchProgram.Classes;
+using static ResearchProgram.Utilities;
 
 namespace ResearchProgram.Forms
 {
@@ -32,11 +33,12 @@ namespace ResearchProgram.Forms
             List<TableHeader> headers = new List<TableHeader>(WorkerWithTablesOnMainForm.GrantsHeaders);
 
             AggregationCountSource = new List<TableHeader>();
-            foreach (TableHeader s in headers.Where(x => x.IsService == false && x.IsCountable == true))
+            IEnumerable<TableHeader> tableHeaders = headers.Where(x => x.IsService == false && x.IsCountable == true);
+            foreach (TableHeader s in tableHeaders)
             {
                 AggregationCountSource.Add(s);
             }
-            AggregationCountComboBox.SelectedIndex = 0;
+            AggregationCountSelectedItem = tableHeaders.First();
 
             DataContext = this;
         }
@@ -66,11 +68,13 @@ namespace ResearchProgram.Forms
 
                 Console.WriteLine(PriceSum);
                 Console.WriteLine(PriceSumNoNds);
+
+                // TODO СУММА СРЕДСТВ
             }
             else if (WhatToCountComboBox.SelectedIndex == 1)
             {
                 Dictionary<string, int> stringDataDict = new Dictionary<string, int>();
-                Dictionary<int, int> intDataDict = new Dictionary<int, int>();
+                Dictionary<int, MappedValue> MappedDataDict = new Dictionary<int, MappedValue>();
                 Dictionary<bool?, int> boolDataDict = new Dictionary<bool?, int>();
 
                 switch (AggregationCountSelectedItem.Title)
@@ -95,83 +99,88 @@ namespace ResearchProgram.Forms
                     case "Заказчик":
                         foreach (Grant g in filteredGrants)
                             foreach (Customer c in g.Customer)
-                                if (!intDataDict.ContainsKey(c.Id))
-                                    intDataDict[c.Id] = 1;
+                                if (!MappedDataDict.ContainsKey(c.Id))
+                                    MappedDataDict[c.Id] = new MappedValue() { Count = 1, Title = c.Title };
                                 else
-                                    intDataDict[c.Id]++;
+                                    MappedDataDict[c.Id].Count++;
                         break;
 
                     case "Источник финансирования":
                         foreach (Grant g in filteredGrants)
                             foreach (Depositor d in g.Depositor)
-                                if (!intDataDict.ContainsKey(d.Id))
-                                    intDataDict[d.Id] = 1;
+                                if (!MappedDataDict.ContainsKey(d.Id))
+                                    MappedDataDict[d.Id] = new MappedValue() { Count = 1, Title = d.Title };
                                 else
-                                    intDataDict[d.Id]++;
+                                    MappedDataDict[d.Id].Count++;
                         break;
 
                     case "Руководитель НИОКР":
+                        MappedDataDict[-1] = new MappedValue() { Count = 0, Title = "Нет значения" };
                         foreach (Grant g in filteredGrants)
                             if (g.LeadNIOKR != null)
                             {
-                                if (!intDataDict.ContainsKey(g.LeadNIOKR.Id))
-                                    intDataDict[g.LeadNIOKR.Id] = 1;
+                                if (!MappedDataDict.ContainsKey(g.LeadNIOKR.Id))
+                                    MappedDataDict[g.LeadNIOKR.Id] = new MappedValue() { Count = 1, Title = g.LeadNIOKR.FIO };
                             }
                             else
-                                intDataDict[-1]++;
+                                MappedDataDict[-1].Count++;
                         break;
 
                     case "Исполнители":
                         foreach (Grant g in filteredGrants)
                             foreach (Person ex in g.Executor)
-                                if (!intDataDict.ContainsKey(ex.Id))
-                                    intDataDict[ex.Id] = 1;
+                                if (!MappedDataDict.ContainsKey(ex.Id))
+                                    MappedDataDict[ex.Id] = new MappedValue() { Count = 1, Title = ex.FIO };
                                 else
-                                    intDataDict[ex.Id]++;
+                                    MappedDataDict[ex.Id].Count++;
                         break;
 
                     case "Учреждение":
+                        MappedDataDict[-1] = new MappedValue() { Count = 0, Title = "Нет значения" };
                         foreach (Grant g in filteredGrants)
                             if (g.FirstNode != null)
                             {
-                                if (!intDataDict.ContainsKey(g.FirstNode.Id))
-                                    intDataDict[g.FirstNode.Id] = 1;
+                                if (!MappedDataDict.ContainsKey(g.FirstNode.Id))
+                                    MappedDataDict[g.FirstNode.Id] = new MappedValue() { Count = 1, Title = g.FirstNode.Title };
                             }
                             else
-                                intDataDict[-1]++;
+                                MappedDataDict[-1].Count++;
                         break;
 
                     case "Подразделение":
+                        MappedDataDict[-1] = new MappedValue() { Count = 0, Title = "Нет значения" };
                         foreach (Grant g in filteredGrants)
                             if (g.SecondNode != null)
                             {
-                                if (!intDataDict.ContainsKey(g.SecondNode.Id))
-                                    intDataDict[g.SecondNode.Id] = 1;
+                                if (!MappedDataDict.ContainsKey(g.SecondNode.Id))
+                                    MappedDataDict[g.SecondNode.Id] = new MappedValue() { Count = 1, Title = g.SecondNode.Title };
                             }
                             else
-                                intDataDict[-1]++;
+                                MappedDataDict[-1].Count++;
                         break;
 
                     case "Отдел":
+                        MappedDataDict[-1] = new MappedValue() { Count = 0, Title = "Нет значения" };
                         foreach (Grant g in filteredGrants)
                             if (g.ThirdNode != null)
                             {
-                                if (!intDataDict.ContainsKey(g.ThirdNode.Id))
-                                    intDataDict[-1] = 1;
+                                if (!MappedDataDict.ContainsKey(g.ThirdNode.Id))
+                                    MappedDataDict[-1] = new MappedValue() { Count = 1, Title = g.ThirdNode.Title };
                             }
                             else
-                                intDataDict[g.ThirdNode.Id]++;
+                                MappedDataDict[g.ThirdNode.Id].Count++;
                         break;
 
                     case "Структурная единица":
+                        MappedDataDict[-1] = new MappedValue() { Count = 0, Title = "Нет значения" };
                         foreach (Grant g in filteredGrants)
                             if (g.FourthNode != null)
                             {
-                                if (!intDataDict.ContainsKey(g.FourthNode.Id))
-                                    intDataDict[g.FourthNode.Id] = 1;
+                                if (!MappedDataDict.ContainsKey(g.FourthNode.Id))
+                                    MappedDataDict[g.FourthNode.Id] = new MappedValue() { Count = 1, Title = g.FourthNode.Title };
                             }
                             else
-                                intDataDict[-1]++;
+                                MappedDataDict[-1].Count++;
                         break;
 
                     case "ГРНТИ":
@@ -185,28 +194,28 @@ namespace ResearchProgram.Forms
                     case "Тип исследования":
                         foreach (Grant g in filteredGrants)
                             foreach (ResearchType r in g.ResearchType)
-                                if (!intDataDict.ContainsKey(r.Id))
-                                    intDataDict[r.Id] = 1;
+                                if (!MappedDataDict.ContainsKey(r.Id))
+                                    MappedDataDict[r.Id] = new MappedValue() { Count = 1, Title = r.Title };
                                 else
-                                    intDataDict[r.Id]++;
+                                    MappedDataDict[r.Id].Count++;
                         break;
 
                     case "Приоритетные направления":
                         foreach (Grant g in filteredGrants)
                             foreach (PriorityTrend p in g.PriorityTrands)
-                                if (!intDataDict.ContainsKey(p.Id))
-                                    intDataDict[p.Id] = 1;
+                                if (!MappedDataDict.ContainsKey(p.Id))
+                                    MappedDataDict[p.Id] = new MappedValue() { Count = 1, Title = p.Title };
                                 else
-                                    intDataDict[p.Id]++;
+                                    MappedDataDict[p.Id].Count++;
                         break;
 
                     case "Тип науки":
                         foreach (Grant g in filteredGrants)
                             foreach (ScienceType s in g.ScienceType)
-                                if (!intDataDict.ContainsKey(s.Id))
-                                    intDataDict[s.Id] = 1;
+                                if (!MappedDataDict.ContainsKey(s.Id))
+                                    MappedDataDict[s.Id] = new MappedValue() { Count = 1, Title = s.Title };
                                 else
-                                    intDataDict[s.Id]++;
+                                    MappedDataDict[s.Id].Count++;
                         break;
 
                     case "НИР или УСЛУГА":
@@ -257,8 +266,14 @@ namespace ResearchProgram.Forms
                 //        dataDict[s]++;
                 //    }
                 //}
-
-                Console.WriteLine("aboba");
+                AggregationForm aggregationWindow = new AggregationForm(AggregationCountSelectedItem.Title, boolDataDict, MappedDataDict, stringDataDict)
+                {
+                    WindowStartupLocation = WindowStartupLocation.CenterScreen,
+                    Owner = this
+                };
+                // Эта штука нужна чтобы родительское окно не скрывалось, когда дочернее закрывается
+                aggregationWindow.Closing += (senders, args) => { aggregationWindow.Owner = null; };
+                aggregationWindow.Show();
             }
         }
     }

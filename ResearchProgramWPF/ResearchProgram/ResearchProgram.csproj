@@ -188,6 +188,9 @@
     <Compile Include="Forms\AddUniversityStructureNodeWindow.xaml.cs">
       <DependentUpon>AddUniversityStructureNodeWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Forms\AggregationForm.xaml.cs">
+      <DependentUpon>AggregationForm.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Forms\CategoryWindow.xaml.cs">
       <DependentUpon>CategoryWindow.xaml</DependentUpon>
     </Compile>
@@ -258,6 +261,10 @@
     <Compile Include="Converters\VisibilityConveter.cs" />
     <Compile Include="WorkerWithTablesOnMainForm.cs" />
     <Page Include="Forms\AddUniversityStructureNodeWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Forms\AggregationForm.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
