@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using ResearchProgram.Classes;
+using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 
 namespace ResearchProgram.Forms
@@ -40,7 +42,7 @@ namespace ResearchProgram.Forms
 
         private void SetStartViewModelSettings(Grant grant)
         {
-            grant.Depositor.Insert(0, new Depositor() { Title = "Источники:" });
+            grant.Depositors.Insert(0, new GrantDepositor() { Depositor = new Depositor() { Title = "Источники:" }});
         }
 
         private void CopyRecieptDates(Grant grant)
@@ -49,9 +51,9 @@ namespace ResearchProgram.Forms
 
             recieptDates.Add(new RecieptDate() { Date = "Даты поступления:" });
 
-            foreach (string recieptDate in grant.ReceiptDate)
+            foreach (GrantDepositor depositor in grant.Depositors)
             {
-                recieptDates.Add(new RecieptDate() { Date = recieptDate });
+                recieptDates.Add(new RecieptDate() { Date = depositor.RecieptDate?.ToString("dd.MM.yyyy") });
             }
         }
 
@@ -63,14 +65,10 @@ namespace ResearchProgram.Forms
             depositorSums.Add(new DepositorSum() { Sum = "Сумма:" });
             depositorSumsNoNDS.Add(new DepositorSum() { Sum = "Сумма:" });
 
-            foreach (float depositorSum in grant.DepositorSum)
+            foreach (GrantDepositor depositor in grant.Depositors)
             {
-                depositorSums.Add(new DepositorSum() { Sum = depositorSum.ToString() });
-            }
-
-            foreach (float depositorSumNoNDS in grant.DepositorSumNoNDS)
-            {
-                depositorSumsNoNDS.Add(new DepositorSum() { Sum = depositorSumNoNDS.ToString() });
+                depositorSums.Add(new DepositorSum() { Sum = depositor.Sum.ToString() });
+                depositorSumsNoNDS.Add(new DepositorSum() { Sum = depositor.SumNoNds.ToString() });
             }
         }
 

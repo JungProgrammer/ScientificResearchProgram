@@ -170,6 +170,7 @@
     </ApplicationDefinition>
     <Compile Include="Classes\FilterRange.cs" />
     <Compile Include="Classes\FormsManager.cs" />
+    <Compile Include="Classes\GrantDepositor.cs" />
     <Compile Include="Classes\OKVED.cs" />
     <Compile Include="Classes\PersonsFilters.cs" />
     <Compile Include="Classes\PersonWorkPlace.cs" />

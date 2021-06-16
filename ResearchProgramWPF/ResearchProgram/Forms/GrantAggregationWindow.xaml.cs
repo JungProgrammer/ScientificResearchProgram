@@ -107,11 +107,11 @@ namespace ResearchProgram.Forms
 
                     case "Источник финансирования":
                         foreach (Grant g in filteredGrants)
-                            foreach (Depositor d in g.Depositor)
-                                if (!MappedDataDict.ContainsKey(d.Id))
-                                    MappedDataDict[d.Id] = new MappedValue() { Count = 1, Title = d.Title };
+                            foreach (GrantDepositor d in g.Depositors)
+                                if (!MappedDataDict.ContainsKey(d.Depositor.Id))
+                                    MappedDataDict[d.Depositor.Id] = new MappedValue() { Count = 1, Title = d.Depositor.Title };
                                 else
-                                    MappedDataDict[d.Id].Count++;
+                                    MappedDataDict[d.Depositor.Id].Count++;
                         break;
 
                     case "Руководитель НИОКР":
@@ -202,7 +202,7 @@ namespace ResearchProgram.Forms
 
                     case "Приоритетные направления":
                         foreach (Grant g in filteredGrants)
-                            foreach (PriorityTrend p in g.PriorityTrands)
+                            foreach (PriorityTrend p in g.PriorityTrends)
                                 if (!MappedDataDict.ContainsKey(p.Id))
                                     MappedDataDict[p.Id] = new MappedValue() { Count = 1, Title = p.Title };
                                 else

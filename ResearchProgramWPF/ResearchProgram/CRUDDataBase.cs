@@ -382,7 +382,7 @@ namespace ResearchProgram
             {
                 while (reader.Read())
                 {
-                    grantsDict[reader.GetInt16(0)].PriorityTrands.Add(new PriorityTrend()
+                    grantsDict[reader.GetInt16(0)].PriorityTrends.Add(new PriorityTrend()
                     {
                         Id = Convert.ToInt32(reader["pId"]),
                         Title = reader["title"].ToString()
@@ -418,20 +418,23 @@ namespace ResearchProgram
             {
                 double grantDepositSum;
                 double grantDepositSumNoNDS;
-                string receiptDate;
+                DateTime? receiptDate;
                 while (reader.Read())
                 {
                     grantDepositSum = reader.GetDouble(2);
                     grantDepositSumNoNDS = reader.GetDouble(4);
-                    receiptDate = reader["receiptDate"] != DBNull.Value ? DateTime.Parse(reader["receiptDate"].ToString()).ToShortDateString() : string.Empty;
-                    grantsDict[reader.GetInt16(0)].Depositor.Add(new Depositor()
+                    receiptDate = reader["receiptDate"] != DBNull.Value ? (DateTime?)Convert.ToDateTime(reader["receiptDate"]) : null;
+                    grantsDict[reader.GetInt16(0)].Depositors.Add(new GrantDepositor()
                     {
-                        Id = Convert.ToInt32(reader["sId"]),
-                        Title = reader["title"].ToString(),
+                        Depositor = new Depositor()
+                        {
+                            Id = Convert.ToInt32(reader["sId"]),
+                            Title = reader["title"].ToString(),
+                        },
+                        Sum = grantDepositSum,
+                        SumNoNds = grantDepositSumNoNDS,
+                        RecieptDate = receiptDate
                     });
-                    grantsDict[reader.GetInt16(0)].DepositorSum.Add(grantDepositSum);
-                    grantsDict[reader.GetInt16(0)].DepositorSumNoNDS.Add(grantDepositSumNoNDS);
-                    grantsDict[reader.GetInt16(0)].ReceiptDate.Add(receiptDate);
                 }
             }
             reader.Close();
@@ -1888,7 +1891,7 @@ namespace ResearchProgram
         /// <param name="grantId"></param>
         public static void AddDeposits(Grant grant, int grantId)
         {
-            for (int i = 0; i < grant.Depositor.Count(); i++)
+            for (int i = 0; i < grant.Depositors.Count; i++)
             {
                 NpgsqlCommand cmd = new NpgsqlCommand("insert into grantdeposits (" +
                 "grantid, " +
@@ -1903,17 +1906,20 @@ namespace ResearchProgram
                 ":partsumnonds," +
                 ":receiptDate)", conn);
                 cmd.Parameters.Add(new NpgsqlParameter("grantid", grantId));
-                cmd.Parameters.Add(new NpgsqlParameter("sourceid", grant.Depositor[i].Id));
-                cmd.Parameters.Add(new NpgsqlParameter("partsum", grant.DepositorSum[i]));
-                cmd.Parameters.Add(new NpgsqlParameter("partsumnonds", grant.DepositorSumNoNDS[i]));
-                cmd.Parameters.Add(new NpgsqlParameter("receiptDate", grant.ReceiptDate[i] != string.Empty ? DateTime.Parse(grant.ReceiptDate[i]) : DateTime.MinValue));
+                cmd.Parameters.Add(new NpgsqlParameter("sourceid", grant.Depositors[i].Depositor.Id));
+                cmd.Parameters.Add(new NpgsqlParameter("partsum", grant.Depositors[i].Sum));
+                cmd.Parameters.Add(new NpgsqlParameter("partsumnonds", grant.Depositors[i].SumNoNds));
+                if (grant.Depositors[i].RecieptDate != null)
+                    cmd.Parameters.Add(new NpgsqlParameter("receiptDate", grant.Depositors[i].RecieptDate));
+                else
+                    cmd.Parameters.Add(new NpgsqlParameter("receiptDate", DBNull.Value));
                 cmd.ExecuteNonQuery();
             }
         }
 
         public static void AddPriorityTrends(Grant grant, int grantId)
         {
-            foreach (PriorityTrend priorityTrend in grant.PriorityTrands)
+            foreach (PriorityTrend priorityTrend in grant.PriorityTrends)
             {
                 NpgsqlCommand cmd = new NpgsqlCommand("insert into grantprioritytrends (" +
                 "grantid, " +

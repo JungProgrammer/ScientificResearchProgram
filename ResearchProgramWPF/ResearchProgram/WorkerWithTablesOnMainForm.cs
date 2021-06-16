@@ -89,15 +89,15 @@ namespace ResearchProgram
         {
             // Словарь для отображения средств
             Dictionary<string, double> depositDict = new Dictionary<string, double>();
-            for (int i = 0; i < grant.Depositor.Count; i++)
+            for (int i = 0; i < grant.Depositors.Count; i++)
             {
                 string depositorStr;
                 double depositorSum;
                 double depositorSumNoNDS;
 
-                depositorStr = grant.Depositor[i].Title;
-                depositorSum = grant.DepositorSum[i];
-                depositorSumNoNDS = grant.DepositorSumNoNDS[i];
+                depositorStr = grant.Depositors[i].Depositor.Title;
+                depositorSum = grant.Depositors[i].Sum;
+                depositorSumNoNDS = grant.Depositors[i].SumNoNds;
 
                 // Если в словаре такое средство уже есть, то суммируем
                 if (depositDict.ContainsKey(depositorStr))
@@ -165,7 +165,7 @@ namespace ResearchProgram
             row["Структурная единица"] = grant.FourthNode;
             row["ГРНТИ"] = grant.GRNTI;
             row["Тип исследования"] = string.Join("\n", grant.ResearchType);
-            row["Приоритетные направления"] = string.Join("\n", grant.PriorityTrands);
+            row["Приоритетные направления"] = string.Join("\n", grant.PriorityTrends);
             row["Тип науки"] = string.Join("\n", grant.ScienceType);
             row["НИР или УСЛУГА"] = grant.NIR;
             row["НОЦ"] = grant.NOC == "True" ? "Да" : grant.NOC == "False" ? "Нет" : "";

@@ -61,13 +61,13 @@ namespace ResearchProgram
 
         private ObservableCollection<PriorityTrend> _selectedPriorityTrend;
         public ObservableCollection<PriorityTrend> SelectedPriorityTrend { get { return _selectedPriorityTrend; } set { _selectedPriorityTrend = value; OnPropertyChanged("SelectedPriorityTrend"); } }
-        
+
         public ObservableCollection<PriorityTrend> _priorityTrendSource;
         public ObservableCollection<PriorityTrend> PriorityTrendSource { get { return _priorityTrendSource; } set { _priorityTrendSource = value; OnPropertyChanged("PriorityTrendSource"); } }
 
         private ObservableCollection<ScienceType> _selectedScienceType;
         public ObservableCollection<ScienceType> SelectedScienceType { get { return _selectedScienceType; } set { _selectedScienceType = value; OnPropertyChanged("SelectedScienceType"); } }
-        
+
         public ObservableCollection<ScienceType> _scienceTypeSource;
         public ObservableCollection<ScienceType> ScienceTypeSource { get { return _scienceTypeSource; } set { _scienceTypeSource = value; OnPropertyChanged("ScienceTypeSource"); } }
 
@@ -365,7 +365,7 @@ namespace ResearchProgram
                 Dispatcher.Invoke(() => GrantWithoutNDSCheckBox.IsChecked = !grantToEdit.isWIthNDS);
 
                 // Добавление источников финансирования
-                for (int i = 0; i < grantToEdit.Depositor.Count; i++)
+                for (int i = 0; i < grantToEdit.Depositors.Count; i++)
                 {
                     StackPanel horizontalStackPanel = null;
                     Dispatcher.Invoke(() => horizontalStackPanel = new StackPanel()
@@ -415,14 +415,14 @@ namespace ResearchProgram
                         Width = 160,
                     });
                     for (int j = 0; j < DepositsList.Count; j++)
-                        if (DepositsList[j].Title == grantToEdit.Depositor[i].Title)
+                        if (DepositsList[j].Title == grantToEdit.Depositors[i].Depositor.Title)
                             Dispatcher.Invoke(() => depositorComboBox.SelectedIndex = j);
 
                     Dispatcher.Invoke(() => sumTextBox = new TextBox()
                     {
                         Margin = new Thickness(5, 0, 5, 10),
                         Width = 110,
-                        Text = String.Format("{0:#,0.##}", grantToEdit.DepositorSum[i]),
+                        Text = string.Format("{0:#,0.##}", grantToEdit.Depositors[i].Sum),
                     });
 
 
@@ -430,7 +430,7 @@ namespace ResearchProgram
                     {
                         Margin = new Thickness(5, 0, 5, 10),
                         Width = 110,
-                        Text = String.Format("{0:#,0.##}", grantToEdit.DepositorSumNoNDS[i])
+                        Text = string.Format("{0:#,0.##}", grantToEdit.Depositors[i].SumNoNds)
                     });
                     Dispatcher.Invoke(() => sumTextBoxNoNDS.PreviewTextInput += Utilities.TextBoxNumbersPreviewInput);
                     Dispatcher.Invoke(() => sumTextBoxNoNDS.PreviewKeyDown += PriceNoNDSTextBox_PreviewKeyDown);
@@ -441,14 +441,12 @@ namespace ResearchProgram
                     Dispatcher.Invoke(() => sumTextBox.PreviewKeyDown += PriceNoNDSTextBox_PreviewKeyDown);
 
 
-                    DateTime.TryParse(grantToEdit.ReceiptDate[i], out DateTime selectedDate);
-
                     DatePicker dateComboBox = null;
                     Dispatcher.Invoke(() => dateComboBox = new DatePicker()
                     {
                         Margin = new Thickness(5, 0, 5, 10),
                         Width = 110,
-                        SelectedDate = selectedDate
+                        SelectedDate = grantToEdit.Depositors[i].RecieptDate
                     });
 
                     Dispatcher.Invoke(() => horizontalStackPanel.Children.Add(depositorComboBox));
@@ -489,7 +487,7 @@ namespace ResearchProgram
                             Dispatcher.Invoke(() => researchTypeComboBox.SelectedIndex = j);
                 }
 
-                foreach (PriorityTrend p in grantToEdit.PriorityTrands)
+                foreach (PriorityTrend p in grantToEdit.PriorityTrends)
                 {
                     foreach (PriorityTrend p1 in PriorityTrendSource)
                         if (p1.Id == p.Id)
@@ -759,8 +757,6 @@ namespace ResearchProgram
                     datePicker = (DatePicker)sp.Children[5];
                     partSum.Text.Replace(" ", "");
                     partSumNoNDS.Text.Replace(" ", "");
-                    DateTime.TryParse(datePicker.SelectedDate.ToString(), out DateTime selectedDate);
-
                     if (cmb.SelectedItem == null)
                     {
                         isAllOkey = false;
@@ -771,14 +767,17 @@ namespace ResearchProgram
                     {
                         if (partSumNoNDS.Text.ToString() != "" && partSum.Text.ToString() != "")
                         {
-                            newGrant.Depositor.Add(new Depositor()
+                            newGrant.Depositors.Add(new GrantDepositor()
                             {
-                                Id = ((Depositor)cmb.SelectedItem).Id,
-                                Title = cmb.SelectedItem.ToString(),
+                                Depositor = new Depositor()
+                                {
+                                    Id = ((Depositor)cmb.SelectedItem).Id,
+                                    Title = cmb.SelectedItem.ToString(),
+                                },
+                                Sum = double.Parse(partSum.Text),
+                                SumNoNds = double.Parse(partSumNoNDS.Text),
+                                RecieptDate = datePicker.SelectedDate
                             });
-                            newGrant.DepositorSum.Add(Double.Parse(partSum.Text));
-                            newGrant.DepositorSumNoNDS.Add(Double.Parse(partSumNoNDS.Text));
-                            newGrant.ReceiptDate.Add(selectedDate.ToShortDateString());
                         }
                     }
                 }
@@ -859,7 +858,7 @@ namespace ResearchProgram
 
             foreach (PriorityTrend p in SelectedPriorityTrend)
             {
-                newGrant.PriorityTrands.Add(p);
+                newGrant.PriorityTrends.Add(p);
             }
 
             foreach (ScienceType s in SelectedScienceType)
