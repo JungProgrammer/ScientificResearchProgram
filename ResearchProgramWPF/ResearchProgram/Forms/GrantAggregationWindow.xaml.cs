@@ -66,10 +66,41 @@ namespace ResearchProgram.Forms
                 double PriceSum = filteredGrants.Sum(x => x.Price);
                 double PriceSumNoNds = filteredGrants.Sum(x => x.PriceNoNDS);
 
-                Console.WriteLine(PriceSum);
-                Console.WriteLine(PriceSumNoNds);
+                Dictionary<string, double> depositorsNDS = new Dictionary<string, double>();
+                Dictionary<string, double> depositorsNoNDS = new Dictionary<string, double>();
 
-                // TODO СУММА СРЕДСТВ
+                foreach (Grant g in filteredGrants)
+                {
+                    foreach (GrantDepositor grantDepositor in g.Depositors)
+                    {
+                        if (depositorsNDS.ContainsKey(grantDepositor.Depositor.Title))
+                        {
+                            depositorsNDS[grantDepositor.Depositor.Title] += grantDepositor.Sum;
+                            depositorsNoNDS[grantDepositor.Depositor.Title] += grantDepositor.SumNoNds;
+                        }
+                        else
+                        {
+                            depositorsNDS[grantDepositor.Depositor.Title] = grantDepositor.Sum;
+                            depositorsNoNDS[grantDepositor.Depositor.Title] = grantDepositor.SumNoNds;
+                        }
+                    }
+                }
+                string text = $"Стоимость: {string.Format("{0:#,0.##}", PriceSum)} руб.\n" +
+                    $"Стоимость без НДС {string.Format("{0:#,0.##}", PriceSumNoNds)} руб.\n\n" +
+                    $"Поступления:\n";
+
+                foreach(string key in depositorsNDS.Keys)
+                {
+                    text += $"{key}: {string.Format("{0:#,0.##}", depositorsNDS[key])} руб.\n";
+                }
+                text += "\nПоступления без НДС:\n";
+
+                foreach (string key in depositorsNoNDS.Keys)
+                {
+                    text += $"{key}: {string.Format("{0:#,0.##}", depositorsNoNDS[key])} руб.\n";
+                }
+
+                MessageBox.Show(text, "Отчёт", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else if (WhatToCountComboBox.SelectedIndex == 1)
             {
