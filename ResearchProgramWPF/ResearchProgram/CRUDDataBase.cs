@@ -2543,5 +2543,24 @@ namespace ResearchProgram
             reader.Close();
             connection.Close();
         }
+
+        public static Guid GetTableUUID(string tableName, out Guid newGuid)
+        {
+            NpgsqlConnection connection = GetNewConnection();
+            NpgsqlCommand cmd = new NpgsqlCommand("SELECT modification_uuid FROM tables_system_data WHERE table_name = :table_name;", connection);
+            cmd.Parameters.Add(new NpgsqlParameter("table_name", tableName));
+            NpgsqlDataReader reader = cmd.ExecuteReader();
+            Guid guid = new Guid();
+            if (reader.HasRows)
+            {
+                reader.Read();
+                guid = (Guid)reader["modification_uuid"];
+            }
+            reader.Close();
+            connection.Close();
+
+            newGuid = guid;
+            return guid;
+        }
     }
 }
