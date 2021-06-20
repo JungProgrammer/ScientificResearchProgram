@@ -28,11 +28,11 @@
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>http://212.192.88.14:8000/update/</InstallUrl>
     <ProductName>Гранты НИЧ</ProductName>
-    <MinimumRequiredVersion>1.0.0.11</MinimumRequiredVersion>
+    <MinimumRequiredVersion>1.0.0.17</MinimumRequiredVersion>
     <CreateWebPageOnPublish>true</CreateWebPageOnPublish>
     <WebPage>publish.htm</WebPage>
     <OpenBrowserOnPublish>false</OpenBrowserOnPublish>
-    <ApplicationRevision>16</ApplicationRevision>
+    <ApplicationRevision>18</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>

@@ -84,7 +84,7 @@ namespace ResearchProgram
         /// </summary>
         public static void LoadPersons()
         {
-            //TODO Триггер в БД
+            //TODO Триггер в БД 
             persons = CRUDDataBase.GetPersonsInBulk();
             persondsDict = persons.ToDictionary(x => x.Id, x => x);
         }

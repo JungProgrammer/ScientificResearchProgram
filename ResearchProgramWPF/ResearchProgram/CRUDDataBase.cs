@@ -953,7 +953,7 @@ namespace ResearchProgram
 
             NpgsqlCommand cmd = new NpgsqlCommand("SELECT persons.id as pid, fio, birthdate, sex, degree_id, wd.title wdt, rank_id, wr.title wrt FROM persons " +
                                                     "LEFT JOIN work_degree wd ON persons.degree_id = wd.id " +
-                                                    "LEFT JOIN work_rank wr on persons.rank_id = wr.id ", connection);
+                                                    "LEFT JOIN work_rank wr on persons.rank_id = wr.id ORDER BY FIO", connection);
 
             NpgsqlDataReader reader = cmd.ExecuteReader();
             if (reader.HasRows)
