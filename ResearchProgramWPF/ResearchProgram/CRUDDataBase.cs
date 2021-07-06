@@ -1978,25 +1978,12 @@ namespace ResearchProgram
             return jobsList;
         }
 
-        public static void DeleteGrant(string grantNumber)
+        public static void DeleteGrant(int grantId)
         {
-            int grantId = -1;
             ConnectToDataBase();
 
-            NpgsqlCommand cmd = new NpgsqlCommand("SELECT id FROM grants WHERE grantNumber = :grantNumber;", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("grantNumber", grantNumber));
-
-            NpgsqlDataReader reader = cmd.ExecuteReader();
-
-            if (reader.HasRows)
-            {
-                reader.Read();
-                grantId = Convert.ToInt32(reader[0]);
-            }
-            reader.Close();
-
-            cmd = new NpgsqlCommand("DELETE FROM grants WHERE grantNumber = :grantNumber", conn);
-            cmd.Parameters.Add(new NpgsqlParameter("grantNumber", grantNumber));
+            NpgsqlCommand cmd = new NpgsqlCommand("DELETE FROM grants WHERE id = :id", conn);
+            cmd.Parameters.Add(new NpgsqlParameter("id", grantId));
             cmd.ExecuteNonQuery();
 
             cmd = new NpgsqlCommand("DELETE FROM grantsciencetypes WHERE grantId = :grantId", conn);
@@ -2023,7 +2010,6 @@ namespace ResearchProgram
             cmd.Parameters.Add(new NpgsqlParameter("grantId", grantId));
             cmd.ExecuteNonQuery();
 
-            Console.WriteLine(grantNumber);
             CloseConnection();
         }
 

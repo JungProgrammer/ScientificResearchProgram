@@ -967,7 +967,7 @@ namespace ResearchProgram
             switch (sure)
             {
                 case MessageBoxResult.Yes:
-                    CRUDDataBase.DeleteGrant(grantNumber);
+                    CRUDDataBase.DeleteGrant(grantToEdit.Id);
                     MessageBox.Show("Удаление успешно", "Удаление договора", MessageBoxButton.OK, MessageBoxImage.Information);
                     ((MainWindow)Owner).ReloadGrantsWithFilters();
                     Close();
